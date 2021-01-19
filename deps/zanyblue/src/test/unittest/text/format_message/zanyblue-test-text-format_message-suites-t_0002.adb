@@ -48,7 +48,7 @@ begin
    Arguments.Append (+1964);
    Arguments.Append (+1965);
    declare
-      Formatted : constant Wide_String := Format_Message ("{{0}}", Arguments,
+      Formatted : constant String := Format_Message ("{{0}}", Arguments,
                                                           null, Locale, False);
    begin
       Check_Value (T, Formatted, "1964", "Format based on nested selection");

@@ -57,8 +57,8 @@ procedure ZBX_GJenkins is
    Usage_Error : exception;
 
    procedure Add_Buttons (Container    : Gtk_Box;
-                          Locale_Name1 : Wide_String;
-                          Locale_Name2 : Wide_String);
+                          Locale_Name1 : String;
+                          Locale_Name2 : String);
    procedure Process_Command_Line;
 
    procedure Process_Command_Line is
@@ -85,8 +85,8 @@ procedure ZBX_GJenkins is
    end Process_Command_Line;
 
    procedure Add_Buttons (Container    : Gtk_Box;
-                          Locale_Name1 : Wide_String;
-                          Locale_Name2 : Wide_String) is
+                          Locale_Name1 : String;
+                          Locale_Name2 : String) is
       Button  : Locale_Button;
       Hbox    : Gtk_Box;
    begin

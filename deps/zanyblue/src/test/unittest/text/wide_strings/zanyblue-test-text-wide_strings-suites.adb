@@ -53,8 +53,8 @@ package body ZanyBlue.Test.Text.Wide_Strings.Suites is
    procedure Initialize (T : in out Test) is
    begin
       Set_Name (T, "ZanyBlue.Text.Wide_Strings");
-      Add_Test_Routine (T, T_0001'Access, "T_0001, Wide_String Create/Format");
-      Add_Test_Routine (T, T_0002'Access, "T_0002, Wide_String +/Format");
+      Add_Test_Routine (T, T_0001'Access, "T_0001, String Create/Format");
+      Add_Test_Routine (T, T_0002'Access, "T_0002, String +/Format");
       Add_Test_Routine (T, T_0003'Access,
                      "T_0003, Format Left, space fill");
       Add_Test_Routine (T, T_0004'Access,
@@ -62,7 +62,7 @@ package body ZanyBlue.Test.Text.Wide_Strings.Suites is
       Add_Test_Routine (T, T_0005'Access,
                      "T_0005, Format Right, space fill");
       Add_Test_Routine (T, T_0006'Access,
-                     "T_0006, Wide_String Argument_List/Format");
+                     "T_0006, String Argument_List/Format");
       Add_Test_Routine (T, T_0007'Access,
                      "T_0007, Format Center, dot fill");
       Add_Test_Routine (T, T_0008'Access,

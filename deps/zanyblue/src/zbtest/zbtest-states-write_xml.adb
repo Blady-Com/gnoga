@@ -45,7 +45,7 @@ procedure Write_XML (State : in out State_Type) is
    N_Fail : constant Natural := State.Get_Integer ("_n_fail");
    N_Test : constant Natural := State.Get_Integer ("_n_tests");
    Elapsed : constant Float := Float (Clock - State.Get_Time ("_last_test"));
-   Test_Name : constant Wide_String := State.Get_String ("_fulltestname");
+   Test_Name : constant String := State.Get_String ("_fulltestname");
    XML_Results : constant List_Type
                         := State.Get_List ("_xml_results", Deep => False);
    XML_File : File_Type;
@@ -55,7 +55,7 @@ begin
       --  No tests executed for the scope, skip the creation of the XML file
       return;
    end if;
-   Create (XML_File, Out_File, "ZBTest-" & Wide_To_UTF8 (Test_Name) & ".xml");
+   Create (XML_File, Out_File, "ZBTest-" & To_UTF_8 (Test_Name) & ".xml");
    Print_01001 (XML_File);
    Print_01002 (+N_Fail, +N_Test, +Elapsed, +Test_Name,
       Destination => XML_File);

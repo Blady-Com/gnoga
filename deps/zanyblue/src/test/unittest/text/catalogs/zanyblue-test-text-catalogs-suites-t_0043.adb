@@ -37,7 +37,7 @@ procedure T_0043 (T : in out Test_Case'Class) is
 
    use Ada.Wide_Text_IO;
 
-   Test_Name : constant Wide_String := "t_0043";
+   Test_Name : constant String := "t_0043";
    Catalog   : constant Catalog_Type := Create;
    Output    : File_Type;
 

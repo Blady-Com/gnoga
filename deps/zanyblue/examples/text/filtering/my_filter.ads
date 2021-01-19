@@ -46,8 +46,8 @@ package My_Filter is
 
    overriding
    function Is_Filtered (Filter   : My_Filter_Type;
-                         Facility : Wide_String;
-                         Key : Wide_String) return Boolean;
+                         Facility : String;
+                         Key : String) return Boolean;
 
    App_Filter : aliased My_Filter_Type;
 

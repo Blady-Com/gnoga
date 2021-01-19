@@ -40,8 +40,8 @@ package ZanyBlue.Text.Filter is
 
    function Is_Filtered
      (Filter   : Message_Filter_Type;
-      Facility : Wide_String;
-      Key      : Wide_String)
+      Facility : String;
+      Key      : String)
       return Boolean is abstract;
 
 private

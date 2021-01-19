@@ -41,5 +41,5 @@ procedure T_0001 (T : in out Test_Case'Class) is
    use ZanyBlue.Text;
 
 begin
-   WAssert (T, Wide_To_UTF8 ("") = "", "Empty UTF-8 string conversion");
+   WAssert (T, To_UTF_8 ("") = "", "Empty UTF-8 string conversion");
 end T_0001;

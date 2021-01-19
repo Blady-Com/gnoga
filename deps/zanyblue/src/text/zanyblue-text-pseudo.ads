@@ -33,18 +33,18 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Strings.Wide_Maps;
+with Ada.Strings.Wide_Wide_Maps;
 
 package ZanyBlue.Text.Pseudo is
 
-   use Ada.Strings.Wide_Maps;
+   use Ada.Strings.Wide_Wide_Maps;
 
    type Pseudo_Map_Type is tagged private;
    type Pseudo_Map_Access is access Pseudo_Map_Type;
 
    type Pseudo_Character_Map is record
-      Source : Wide_Character;
-      Target : Wide_Character;
+      Source : Unicode_Character;
+      Target : Unicode_Character;
    end record;
 
    type Pseudo_Map_Vector is array (Positive range <>) of Pseudo_Character_Map;
@@ -56,16 +56,16 @@ package ZanyBlue.Text.Pseudo is
 
    function Map
      (Pseudo_Map : Pseudo_Map_Type;
-      Ch         : Wide_Character)
-      return Wide_Character;
+      Ch         : Unicode_Character)
+      return Unicode_Character;
    --  Return the mapping for a character wrt a pseudo map.
 
-   function Pseudo_Start return Wide_Character;
-   function Pseudo_End return Wide_Character;
+   function Pseudo_Start return Unicode_Character;
+   function Pseudo_End return Unicode_Character;
    --  Characters used to mark the start and end of a formatted message.
 
-   function Format_Start return Wide_Character;
-   function Format_End return Wide_Character;
+   function Format_Start return Unicode_Character;
+   function Format_End return Unicode_Character;
    --  Characters used to mark the start and end of a formatted argument.
 
    function Null_Map return Pseudo_Map_Vector;
@@ -78,7 +78,7 @@ package ZanyBlue.Text.Pseudo is
 private
 
    type Pseudo_Map_Type is tagged record
-      Mapping : Wide_Character_Mapping;
+      Mapping : Wide_Wide_Character_Mapping;
    end record;
 
 end ZanyBlue.Text.Pseudo;

@@ -56,7 +56,7 @@ package body ZanyBlue.Test.Text.Codecs.Encoding.CP932.Suites is
    procedure T_0018 (T : in out Test_Case'Class);
 
    procedure Check_String (T      : in out Test_Case'Class;
-                           Source : Wide_String;
+                           Source : String;
                            Expect : String);
 
    Codecs : constant Codecs_Type := Make_Codecs ("CP932");
@@ -66,11 +66,11 @@ package body ZanyBlue.Test.Text.Codecs.Encoding.CP932.Suites is
    ------------------
 
    procedure Check_String (T      : in out Test_Case'Class;
-                           Source : Wide_String;
+                           Source : String;
                            Expect : String) is
 
       use Ada.Strings.Wide_Unbounded;
-      Hex_Digits : constant Wide_String := "0123456789ABCDEF";
+      Hex_Digits : constant String := "0123456789ABCDEF";
       Encoded : constant String := Codecs.Encode (Source);
       Message : Unbounded_Wide_String;
    begin
@@ -80,8 +80,8 @@ package body ZanyBlue.Test.Text.Codecs.Encoding.CP932.Suites is
             Ch_V : constant Natural := Character'Pos (Encoded (I));
             D1 : constant Natural := Ch_V / 16#10#;
             D2 : constant Natural := Ch_V rem 16#10#;
-            Ch1 : constant Wide_Character := Hex_Digits (D1 + 1);
-            Ch2 : constant Wide_Character := Hex_Digits (D2 + 1);
+            Ch1 : constant Unicode_Character := Hex_Digits (D1 + 1);
+            Ch2 : constant Unicode_Character := Hex_Digits (D2 + 1);
          begin
             Append (Message, ' ');
             Append (Message, Ch1);

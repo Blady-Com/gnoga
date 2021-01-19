@@ -65,10 +65,10 @@ package ZanyBlue.Text.Times is
 
    overriding function Format
      (Value     : Time_Argument_Type;
-      Type_Name : Wide_String;
-      Template  : Wide_String;
+      Type_Name : String;
+      Template  : String;
       Locale    : Locale_Type)
-      return Wide_String;
+      return String;
    --  Format a time value according to the Template.
 
    function Day_In_Week

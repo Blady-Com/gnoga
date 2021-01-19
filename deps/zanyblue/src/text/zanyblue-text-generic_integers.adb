@@ -62,10 +62,10 @@ package body ZanyBlue.Text.Generic_Integers is
 
    overriding function Format
      (Value     : Integer_Argument_Type;
-      Type_Name : Wide_String;
-      Template  : Wide_String;
+      Type_Name : String;
+      Template  : String;
       Locale    : Locale_Type)
-      return Wide_String
+      return String
    is
       pragma Unreferenced (Type_Name);
 

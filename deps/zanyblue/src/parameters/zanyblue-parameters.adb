@@ -41,10 +41,10 @@ package body ZanyBlue.Parameters is
 
    procedure Append
      (List  : in out List_Type;
-      Value :        Wide_String)
+      Value :        String)
    is
 
-      New_Element : Unbounded_Wide_String;
+      New_Element : String;
 
    begin
       Append (New_Element, Value);
@@ -70,10 +70,10 @@ package body ZanyBlue.Parameters is
    function Value
      (List  : List_Type;
       Index : Positive)
-      return Wide_String
+      return String
    is
    begin
-      return To_Wide_String (Word_List_Package.Element (List, Index));
+      return Word_List_Package.Element (List, Index);
    end Value;
 
 end ZanyBlue.Parameters;

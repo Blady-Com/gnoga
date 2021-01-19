@@ -33,30 +33,28 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Strings.Wide_Unbounded;
 with ZanyBlue.Text.Buffer;
 with ZanyBlue.Text.Utils;
 
 package body ZanyBlue.Text.Times is
 
-   use Ada.Strings.Wide_Unbounded;
    use ZanyBlue.Text.Buffer;
    use ZanyBlue.Text.Utils;
 
    function Format_Value
-     (Format_String : Wide_String;
+     (Format_String : String;
       Data          : Time;
       TZ_Offset     : Time_Offset;
       Locale        : Locale_Type)
-      return Wide_String;
+      return String;
    --  Apply the date/time format string which includes the Unicode.org
    --  value strings, e.g., EEEE for the full day name.
 
    function Compose_Values
-     (Format_String : Wide_String;
-      Date_String   : Wide_String;
-      Time_String   : Wide_String)
-      return Wide_String;
+     (Format_String : String;
+      Date_String   : String;
+      Time_String   : String)
+      return String;
    --  Compose the date and time values into a single date-time string
    --  based on the formatting information from Unicode.org.
 
@@ -74,23 +72,24 @@ package body ZanyBlue.Text.Times is
    --
 
    function Compose_Values
-     (Format_String : Wide_String;
-      Date_String   : Wide_String;
-      Time_String   : Wide_String)
-      return Wide_String
+     (Format_String : String;
+      Date_String   : String;
+      Time_String   : String)
+      return String
    is
 
-      Last   : constant Positive := Format_String'Last;
-      Result : Unbounded_Wide_String;
-      I      : Positive          := Format_String'First;
+      Last   : constant Positive := Format_String.Last;
+      Result : String;
+      I      : Positive          := Format_String.First;
 
    begin
       Debug;
       while I <= Last loop
-         if I <= Last - 2 and then Format_String (I .. I + 2) = "{0}" then
+         if I <= Last - 2 and then Format_String.Slice (I, I + 2) = "{0}" then
             Append (Result, Time_String);
             I := I + 2;
-         elsif I <= Last - 2 and then Format_String (I .. I + 2) = "{1}" then
+         elsif I <= Last - 2 and then Format_String.Slice (I, I + 2) = "{1}"
+         then
             Append (Result, Date_String);
             I := I + 2;
          elsif Format_String (I) /= ''' then
@@ -98,7 +97,7 @@ package body ZanyBlue.Text.Times is
          end if;
          I := I + 1;
       end loop;
-      return To_Wide_String (Result);
+      return Result;
    end Compose_Values;
 
    ------------
@@ -177,10 +176,10 @@ package body ZanyBlue.Text.Times is
 
    overriding function Format
      (Value     : Time_Argument_Type;
-      Type_Name : Wide_String;
-      Template  : Wide_String;
+      Type_Name : String;
+      Template  : String;
       Locale    : Locale_Type)
-      return Wide_String
+      return String
    is
 
       T : constant Time        := Value.Data;
@@ -194,7 +193,7 @@ package body ZanyBlue.Text.Times is
             return Format_Value (Time_Format (Locale, Long), T, Z, Locale);
          elsif Template = "medium" then
             return Format_Value (Time_Format (Locale, Medium), T, Z, Locale);
-         elsif Template = "short" or else Template'Length = 0 then
+         elsif Template = "short" or else Template.Length = 0 then
             return Format_Value (Time_Format (Locale, Short), T, Z, Locale);
          end if;
       elsif Type_Name = "date" then
@@ -204,7 +203,7 @@ package body ZanyBlue.Text.Times is
             return Format_Value (Date_Format (Locale, Long), T, Z, Locale);
          elsif Template = "medium" then
             return Format_Value (Date_Format (Locale, Medium), T, Z, Locale);
-         elsif Template = "short" or else Template'Length = 0 then
+         elsif Template = "short" or else Template.Length = 0 then
             return Format_Value (Date_Format (Locale, Short), T, Z, Locale);
          end if;
       elsif Type_Name = "datetime" or Type_Name = "" then
@@ -226,7 +225,7 @@ package body ZanyBlue.Text.Times is
                 (Date_Time_Format (Locale, Medium),
                  Format_Value (Date_Format (Locale, Medium), T, Z, Locale),
                  Format_Value (Time_Format (Locale, Medium), T, Z, Locale));
-         elsif Template = "short" or else Template'Length = 0 then
+         elsif Template = "short" or else Template.Length = 0 then
             return
               Compose_Values
                 (Date_Time_Format (Locale, Short),
@@ -242,14 +241,14 @@ package body ZanyBlue.Text.Times is
    ------------------
 
    function Format_Value
-     (Format_String : Wide_String;
+     (Format_String : String;
       Data          : Time;
       TZ_Offset     : Time_Offset;
       Locale        : Locale_Type)
-      return Wide_String
+      return String
    is
 
-      Quote_Ch : constant Wide_Character := ''';
+      Quote_Ch : constant Unicode_Character := ''';
       Year     : Year_Number;
       Month    : Month_Number;
       Day      : Day_Number;
@@ -258,10 +257,10 @@ package body ZanyBlue.Text.Times is
       Minutes  : Minute_Type;
       Seconds  : Integer range 0 .. 60;
       Period   : Day_Period_Type;
-      Position : Natural                 := Format_String'First;
+      Position : Natural                    := Format_String.First;
       Buffer   : Buffer_Type;
-      Quoted   : Boolean                 := False;
-      Ch       : Wide_Character;
+      Quoted   : Boolean                    := False;
+      Ch       : Unicode_Character;
 
    begin
       Split (Data, Year, Month, Day, DSeconds);
@@ -271,7 +270,7 @@ package body ZanyBlue.Text.Times is
       Period  := Day_Period_For_Time (Locale, Hours, Minutes, Seconds);
       Interpret_Format :
       loop
-         exit Interpret_Format when Position > Format_String'Last;
+         exit Interpret_Format when Position > Format_String.Last;
          Ch       := Format_String (Position);
          Position := Position + 1;
          if Quoted then

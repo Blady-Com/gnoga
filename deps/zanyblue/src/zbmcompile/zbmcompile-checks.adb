@@ -89,12 +89,12 @@ package body ZBMCompile.Checks is
    -----------------------
 
    procedure Consistency_Check (Handler     : in out ZBMC_Handler_Type;
-                                Facility    : Wide_String;
-                                Base_Locale : Wide_String) is
+                                Facility    : String;
+                                Base_Locale : String) is
 
       procedure Callback (Catalog  : Catalog_Type;
-                          Facility : Wide_String;
-                          Key_Name : Wide_String;
+                          Facility : String;
+                          Key_Name : String;
                           Locales  : Locale_Definitions_Map);
 
       --------------
@@ -102,8 +102,8 @@ package body ZBMCompile.Checks is
       --------------
 
       procedure Callback (Catalog  : Catalog_Type;
-                          Facility : Wide_String;
-                          Key_Name : Wide_String;
+                          Facility : String;
+                          Key_Name : String;
                           Locales  : Locale_Definitions_Map) is
 
          pragma Unreferenced (Catalog);

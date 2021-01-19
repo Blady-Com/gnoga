@@ -35,7 +35,7 @@
 separate (ZanyBlue.Test.Text.Utils.Suites)
 procedure T_0009 (T : in out Test_Case'Class) is
 
-   Value : Wide_String := "ΑΒΓ";
+   Value : String := "ΑΒΓ";
 
 begin
    ASCII_Lowercase (Value);

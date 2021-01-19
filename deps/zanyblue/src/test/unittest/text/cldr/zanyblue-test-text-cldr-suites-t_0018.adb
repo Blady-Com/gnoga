@@ -35,7 +35,7 @@
 separate (ZanyBlue.Test.Text.CLDR.Suites)
 procedure T_0018 (T : in out Test_Case'Class) is
 
-   L_Name : constant Wide_String := "ja";
+   L_Name : constant String := "ja";
    L : constant Locale_Type := Make_Locale (L_Name);
 
 begin

@@ -38,7 +38,7 @@ procedure T_0001 (T : in out Test_Case'Class) is
    pragma Unreferenced (T);
 
    Codecs_ISO8895_1 : constant Codecs_Type := Make_Codecs ("ISO8859-1");
-   W_S : constant Wide_String := "An ISO8859-1 string: 50¢";
+   W_S : constant String := "An ISO8859-1 string: 50¢";
    N_S : constant String := "An ISO8859-1 string: 50" & Character'Val (16#a2#);
 
 begin

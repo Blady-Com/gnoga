@@ -37,6 +37,7 @@ with Ada.Containers.Indefinite_Vectors;
 with ZanyBlue.OS;
 with ZanyBlue.Text.Message_Maps;
 with ZanyBlue.Text.Indexed_Strings;
+with UXStrings.Conversions;
 
 package body ZanyBlue.Text.Catalogs is
 
@@ -63,8 +64,8 @@ package body ZanyBlue.Text.Catalogs is
 
    function Map_To_Triple
      (Catalog  : Catalog_Type;
-      Facility : Wide_String;
-      Key      : Wide_String;
+      Facility : String;
+      Key      : String;
       Locale   : Locale_Type;
       Create   : Boolean)
       return Message_Triple;
@@ -75,9 +76,9 @@ package body ZanyBlue.Text.Catalogs is
 
    procedure Add
      (Catalog  : Catalog_Type;
-      Facility : Wide_String;
-      Key      : Wide_String;
-      Message  : Wide_String;
+      Facility : String;
+      Key      : String;
+      Message  : String;
       Locale   : Locale_Type)
    is
    begin
@@ -90,9 +91,9 @@ package body ZanyBlue.Text.Catalogs is
 
    procedure Add
      (Catalog       : Catalog_Type;
-      Facility      : Wide_String;
-      Key           : Wide_String;
-      Message       : Wide_String;
+      Facility      : String;
+      Key           : String;
+      Message       : String;
       Locale        : Locale_Type;
       Source_Locale : Locale_Type)
    is
@@ -102,7 +103,7 @@ package body ZanyBlue.Text.Catalogs is
 
    begin
       Add_Locale (Catalog, Source_Locale);
-      Catalog.C.Logical_Size := Catalog.C.Logical_Size + Message'Length;
+      Catalog.C.Logical_Size := Catalog.C.Logical_Size + Message.Length;
       Catalog.C.Messages.Add
         (Triple, Message, Get_Locale_Index (Catalog, Source_Locale));
    end Add;
@@ -113,8 +114,8 @@ package body ZanyBlue.Text.Catalogs is
 
    procedure Add
      (Catalog  : Catalog_Type;
-      Facility : Wide_String;
-      Key      : Wide_String;
+      Facility : String;
+      Key      : String;
       Pool     : Static_Message_Pool_Type;
       First    : Positive;
       Last     : Natural;
@@ -130,8 +131,8 @@ package body ZanyBlue.Text.Catalogs is
 
    procedure Add
      (Catalog       : Catalog_Type;
-      Facility      : Wide_String;
-      Key           : Wide_String;
+      Facility      : String;
+      Key           : String;
       Pool          : Static_Message_Pool_Type;
       First         : Positive;
       Last          : Natural;
@@ -145,7 +146,7 @@ package body ZanyBlue.Text.Catalogs is
    begin
       Add_Locale (Catalog, Source_Locale);
       --  Validate the message is actually within the argument pool
-      if First < Pool.all'First or else Last > Pool.all'Last then
+      if First < Pool.First or else Last > Pool.Last then
          raise Invalid_Static_Message_Error;
       end if;
       if Catalog.C.Single_Pool then
@@ -153,7 +154,7 @@ package body ZanyBlue.Text.Catalogs is
          --  pool: simply add static message to the dynamic pool area.
          --  This is normally used by "zbmcompile" when generating code.
          Add
-           (Catalog, Facility, Key, Pool.all (First .. Last), Locale,
+           (Catalog, Facility, Key, Pool.Slice (First, Last), Locale,
             Source_Locale);
          return;
       end if;
@@ -171,7 +172,7 @@ package body ZanyBlue.Text.Catalogs is
 
    procedure Add_Facility
      (Catalog  : Catalog_Type;
-      Facility : Wide_String)
+      Facility : String)
    is
       Index : Facility_Index_Type;             --  Throwaway value
       pragma Warnings (Off, Index);
@@ -185,7 +186,7 @@ package body ZanyBlue.Text.Catalogs is
 
    procedure Add_Facility
      (Catalog  :     Catalog_Type;
-      Facility :     Wide_String;
+      Facility :     String;
       Index    : out Facility_Index_Type)
    is
    begin
@@ -198,7 +199,7 @@ package body ZanyBlue.Text.Catalogs is
 
    procedure Add_Key
      (Catalog :     Catalog_Type;
-      Key     :     Wide_String;
+      Key     :     String;
       Index   : out Key_Index_Type)
    is
    begin
@@ -211,12 +212,12 @@ package body ZanyBlue.Text.Catalogs is
 
    overriding procedure Add_Key_Value
      (Handler       : in out Catalog_Handler_Type;
-      Facility      :        Wide_String;
-      Key           :        Wide_String;
-      Value         :        Wide_String;
+      Facility      :        String;
+      Key           :        String;
+      Value         :        String;
       Locale        :        Locale_Type;
       Source_Locale :        Locale_Type;
-      File_Name     :        Wide_String;
+      File_Name     :        String;
       Line          :        Natural)
    is
       pragma Unreferenced (File_Name);
@@ -286,7 +287,7 @@ package body ZanyBlue.Text.Catalogs is
 
    procedure Dump
      (Catalog   : Catalog_Type;
-      File_Name : Wide_String := "") is separate;
+      File_Name : String := "") is separate;
 
    -------------------
    -- Duplicate_Key --
@@ -294,10 +295,10 @@ package body ZanyBlue.Text.Catalogs is
 
    overriding procedure Duplicate_Key
      (Handler       : in out Catalog_Handler_Type;
-      Facility      :        Wide_String;
-      Key           :        Wide_String;
+      Facility      :        String;
+      Key           :        String;
       Locale        :        Locale_Type;
-      File_Name     :        Wide_String;
+      File_Name     :        String;
       Current_Line  :        Natural;
       Previous_Line :        Natural)
    is
@@ -306,7 +307,7 @@ package body ZanyBlue.Text.Catalogs is
       pragma Unreferenced (Locale);
    begin
       raise Duplicate_Key_Error
-        with Wide_To_UTF8 (File_Name & ":" & Key) & ":" &
+        with To_UTF_8 (File_Name & ":" & Key) & ":" &
         Natural'Image (Current_Line) & ":" & Natural'Image (Previous_Line);
    end Duplicate_Key;
 
@@ -376,7 +377,7 @@ package body ZanyBlue.Text.Catalogs is
    function Get_Facility
      (Catalog : Catalog_Type;
       Index   : Facility_Index_Type)
-      return Wide_String
+      return String
    is
    begin
       return Catalog.C.Facilities.Get (Positive (Index));
@@ -391,7 +392,7 @@ package body ZanyBlue.Text.Catalogs is
 
    function Get_Facility_Index
      (Catalog : Catalog_Type;
-      Name    : Wide_String)
+      Name    : String)
       return Facility_Index_Type
    is
       Index : Positive;
@@ -408,7 +409,7 @@ package body ZanyBlue.Text.Catalogs is
    function Get_Key
      (Catalog : Catalog_Type;
       Index   : Key_Index_Type)
-      return Wide_String
+      return String
    is
    begin
       return Catalog.C.Keys.Get (Positive (Index));
@@ -423,7 +424,7 @@ package body ZanyBlue.Text.Catalogs is
 
    function Get_Key_Index
      (Catalog : Catalog_Type;
-      Name    : Wide_String)
+      Name    : String)
       return Key_Index_Type
    is
       Index : Positive;
@@ -454,7 +455,7 @@ package body ZanyBlue.Text.Catalogs is
 
    function Get_Locale_Index
      (Catalog : Catalog_Type;
-      Name    : Wide_String)
+      Name    : String)
       return Locale_Index_Type
    is
       Index : Positive;
@@ -483,7 +484,7 @@ package body ZanyBlue.Text.Catalogs is
    function Get_Locale_Name
      (Catalog : Catalog_Type;
       Index   : Locale_Index_Type)
-      return Wide_String
+      return String
    is
    begin
       return Locale_Name (Get_Locale (Catalog, Index));
@@ -519,7 +520,7 @@ package body ZanyBlue.Text.Catalogs is
 
    function Get_Pool
      (Catalog : Catalog_Type)
-      return Wide_String
+      return String
    is
    begin
       if not Catalog.C.Single_Pool then
@@ -546,11 +547,11 @@ package body ZanyBlue.Text.Catalogs is
 
    function Get_Text
      (Catalog        : Catalog_Type;
-      Facility       : Wide_String;
-      Key            : Wide_String;
+      Facility       : String;
+      Key            : String;
       Locale         : Locale_Type;
       Message_Locale : access Locale_Type := null)
-      return Wide_String
+      return String
    is
 
       Message        : Message_Definition;
@@ -585,7 +586,7 @@ package body ZanyBlue.Text.Catalogs is
                   Base_Territory => Base_Territory);
          end Map_Locale_Triple;
       end loop Locale_Loop;
-      raise No_Such_Message_Error with Wide_To_UTF8 (Facility & "/" & Key);
+      raise No_Such_Message_Error with To_UTF_8 (Facility & "/" & Key);
    end Get_Text;
 
    --------------
@@ -597,7 +598,7 @@ package body ZanyBlue.Text.Catalogs is
       Facility_Index : Facility_Index_Type;
       Key_Index      : Key_Index_Type;
       Locale_Index   : Locale_Index_Type)
-      return Wide_String
+      return String
    is
 
       Message : Message_Definition;
@@ -626,16 +627,16 @@ package body ZanyBlue.Text.Catalogs is
       Facilities      : Constant_String_List;
       Keys            : Constant_String_List;
       Locales         : Constant_String_List;
-      Package_Name    : Wide_String := "";
-      Pool_Length     : Natural     := 0;
-      Expected_Length : Natural     := 0)
+      Package_Name    : String  := "";
+      Pool_Length     : Natural := 0;
+      Expected_Length : Natural := 0)
    is
       F, K, L, EL : Positive;
    begin
       if Pool_Length /= Expected_Length then
          raise Pool_Size_Mismatch_Error
-           with Wide_To_UTF8 (Package_Name) & Natural'Image (Pool_Length) &
-           " /=" & Natural'Image (Expected_Length);
+           with To_UTF_8 (Package_Name) & Natural'Image (Pool_Length) & " /=" &
+           Natural'Image (Expected_Length);
       end if;
       Reserve (Catalog, Messages => Messages'Length);
       for I in Messages'Range loop
@@ -656,8 +657,8 @@ package body ZanyBlue.Text.Catalogs is
 
    overriding procedure Invalid_Character
      (Handler      : in out Catalog_Handler_Type;
-      Facility     :        Wide_String;
-      File_Name    :        Wide_String;
+      Facility     :        String;
+      File_Name    :        String;
       Current_Line :        Natural;
       Ch           :        Character)
    is
@@ -665,8 +666,8 @@ package body ZanyBlue.Text.Catalogs is
       pragma Unreferenced (Facility);
    begin
       raise Unicode_Escape_Error
-        with Wide_To_UTF8 (File_Name) & ":" & Natural'Image (Current_Line) &
-        ":" & "Invalid character: " & Ch;
+        with To_UTF_8 (File_Name) & ":" & Natural'Image (Current_Line) & ":" &
+        "Invalid character: " & Ch;
    end Invalid_Character;
 
    ------------------------
@@ -675,19 +676,20 @@ package body ZanyBlue.Text.Catalogs is
 
    overriding procedure Invalid_Definition
      (Handler         : in out Catalog_Handler_Type;
-      Facility        :        Wide_String;
+      Facility        :        String;
       Locale          :        Locale_Type;
-      File_Name       :        Wide_String;
+      File_Name       :        String;
       Current_Line    :        Natural;
       Additional_Info :        String)
    is
       pragma Unreferenced (Handler);
       pragma Unreferenced (Facility);
       pragma Unreferenced (Locale);
+      function Image is new UXStrings.Conversions.Integer_Image (Natural);
    begin
       raise Unicode_Escape_Error
-        with Wide_To_UTF8 (File_Name) & ":" & Natural'Image (Current_Line) &
-        ":" & Additional_Info;
+        with To_UTF_8
+          (File_Name & ":" & Image (Current_Line) & ":" & Additional_Info);
    end Invalid_Definition;
 
    -----------------
@@ -696,8 +698,8 @@ package body ZanyBlue.Text.Catalogs is
 
    function Is_Filtered
      (Catalog  : Catalog_Type;
-      Facility : Wide_String;
-      Key      : Wide_String)
+      Facility : String;
+      Key      : String)
       return Boolean
    is
    begin
@@ -748,7 +750,7 @@ package body ZanyBlue.Text.Catalogs is
          Key           : Key_Index_Type;
          Locale        : Locale_Index_Type;
          Source_Locale : Locale_Index_Type;
-         Message       : Wide_String;
+         Message       : String;
          Count         : Natural))
    is
    begin
@@ -760,15 +762,15 @@ package body ZanyBlue.Text.Catalogs is
    -------------------
 
    procedure Load_Facility
-     (Facility           :        Wide_String;
-      Source_Name        :        Wide_String;
+     (Facility           :        String;
+      Source_Name        :        String;
       N_Locales          :    out Natural;
       N_Messages         :    out Natural;
       Handler            : in out Catalog_Handler_Type'Class;
-      Directory          :        Wide_String := ".";
-      Extension          :        Wide_String := Default_Extension;
+      Directory          :        String      := ".";
+      Extension          :        String      := Default_Extension;
       Base_Locale_Only   :        Boolean     := False;
-      Locale_Prefix      :        Wide_String := "";
+      Locale_Prefix      :        String      := "";
       Source_Root_Locale :        Locale_Type := Root_Locale) is separate;
 
    -------------------
@@ -777,14 +779,14 @@ package body ZanyBlue.Text.Catalogs is
 
    procedure Load_Facility
      (Catalog            :     Catalog_Type;
-      Facility           :     Wide_String;
-      Source_Name        :     Wide_String;
+      Facility           :     String;
+      Source_Name        :     String;
       N_Locales          : out Natural;
       N_Messages         : out Natural;
-      Directory          :     Wide_String := ".";
-      Extension          :     Wide_String := Default_Extension;
+      Directory          :     String      := ".";
+      Extension          :     String      := Default_Extension;
       Base_Locale_Only   :     Boolean     := False;
-      Locale_Prefix      :     Wide_String := "";
+      Locale_Prefix      :     String      := "";
       Source_Root_Locale :     Locale_Type := Root_Locale)
    is
 
@@ -805,11 +807,11 @@ package body ZanyBlue.Text.Catalogs is
 
    procedure Load_Facility
      (Catalog            :     Catalog_Type;
-      Facility           :     Wide_String;
+      Facility           :     String;
       N_Locales          : out Natural;
       N_Messages         : out Natural;
-      Directory          :     Wide_String := ".";
-      Extension          :     Wide_String := Default_Extension;
+      Directory          :     String      := ".";
+      Extension          :     String      := Default_Extension;
       Source_Root_Locale :     Locale_Type := Root_Locale)
    is
    begin
@@ -825,8 +827,8 @@ package body ZanyBlue.Text.Catalogs is
 
    function Load_File
      (Catalog       : Catalog_Type;
-      File_Name     : Wide_String;
-      Facility      : Wide_String;
+      File_Name     : String;
+      Facility      : String;
       Locale        : Locale_Type;
       Source_Locale : Locale_Type := Root_Locale)
       return Natural
@@ -846,8 +848,8 @@ package body ZanyBlue.Text.Catalogs is
    ---------------
 
    procedure Load_File
-     (File_Name     :        Wide_String;
-      Facility      :        Wide_String;
+     (File_Name     :        String;
+      Facility      :        String;
       Locale        :        Locale_Type;
       Handler       : in out Catalog_Handler_Type'Class;
       Source_Locale :        Locale_Type := Root_Locale)
@@ -874,8 +876,8 @@ package body ZanyBlue.Text.Catalogs is
 
    function Map_To_Triple
      (Catalog  : Catalog_Type;
-      Facility : Wide_String;
-      Key      : Wide_String;
+      Facility : String;
+      Key      : String;
       Locale   : Locale_Type;
       Create   : Boolean)
       return Message_Triple
@@ -958,20 +960,20 @@ package body ZanyBlue.Text.Catalogs is
    -- Print --
    -----------
 
-   procedure Print
-     (Catalog     : Catalog_Type;
-      Destination : Ada.Text_IO.File_Type;
-      Facility    : Wide_String;
-      Key         : Wide_String;
-      Locale      : Locale_Type;
-      Arguments   : ZanyBlue.Text.Arguments.Argument_List;
-      Message     : Wide_String;
-      With_NL     : Boolean)
-   is
-   begin
-      Catalog.C.Printer.Print
-        (Destination, Facility, Key, Locale, Arguments, Message, With_NL);
-   end Print;
+--     procedure Print
+--       (Catalog     : Catalog_Type;
+--        Destination : Ada.Text_IO.File_Type;
+--        Facility    : String;
+--        Key         : String;
+--        Locale      : Locale_Type;
+--        Arguments   : ZanyBlue.Text.Arguments.Argument_List;
+--        Message     : String;
+--        With_NL     : Boolean)
+--     is
+--     begin
+--        Catalog.C.Printer.Print
+--          (Destination, Facility, Key, Locale, Arguments, Message, With_NL);
+--     end Print;
 
    -----------
    -- Print --
@@ -979,12 +981,12 @@ package body ZanyBlue.Text.Catalogs is
 
    procedure Print
      (Catalog     : Catalog_Type;
-      Destination : Ada.Wide_Text_IO.File_Type;
-      Facility    : Wide_String;
-      Key         : Wide_String;
+      Destination : UXStrings.Text_IO.File_Type;
+      Facility    : String;
+      Key         : String;
       Locale      : Locale_Type;
       Arguments   : ZanyBlue.Text.Arguments.Argument_List;
-      Message     : Wide_String;
+      Message     : String;
       With_NL     : Boolean)
    is
    begin

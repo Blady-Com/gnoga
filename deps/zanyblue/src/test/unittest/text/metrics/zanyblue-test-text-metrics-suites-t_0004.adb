@@ -36,7 +36,7 @@ separate (ZanyBlue.Test.Text.Metrics.Suites)
 procedure T_0004 (T : in out Test_Case'Class) is
 
    fr_FR     : constant Locale_Type := Make_Locale ("fr_FR");
-   Test_Name : constant Wide_String := "t_0004";
+   Test_Name : constant String := "t_0004";
    Catalog   : constant Catalog_Type := Create;
    Output    : File_Type;
 

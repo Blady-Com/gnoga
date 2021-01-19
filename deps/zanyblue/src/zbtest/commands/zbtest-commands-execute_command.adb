@@ -98,16 +98,16 @@ procedure Execute_Command (State : in out State_Type;
    use Ada.Strings.Wide_Fixed;
 
    procedure Execute_Command (State          : in out State_Type;
-                              Command        : Wide_String;
+                              Command        : String;
                               Expect_Failure : Boolean;
                               Args           : List_Type;
                               Args_Index     : Positive;
                               N_Args         : Natural;
-                              Output_Name    : Wide_String);
+                              Output_Name    : String);
    --  Execute the command, given the full path to the command.
 
    procedure Register_Execute_Failure (State          : in out State_Type;
-                                       Command_Line   : Wide_String;
+                                       Command_Line   : String;
                                        Expect_Failure : Boolean;
                                        Success        : Boolean);
    --  Register a command failure.
@@ -117,12 +117,12 @@ procedure Execute_Command (State : in out State_Type;
    ---------------------
 
    procedure Execute_Command (State          : in out State_Type;
-                              Command        : Wide_String;
+                              Command        : String;
                               Expect_Failure : Boolean;
                               Args           : List_Type;
                               Args_Index     : Positive;
                               N_Args         : Natural;
-                              Output_Name    : Wide_String) is
+                              Output_Name    : String) is
       use Ada.Strings.Wide_Unbounded;
       Command_Line : Unbounded_Wide_String;
       Arguments    : GNAT.OS_Lib.Argument_List (1 .. N_Args);
@@ -132,16 +132,16 @@ procedure Execute_Command (State : in out State_Type;
       Print_00029 (+Command);
       for I in Args_Index .. Args_Index + N_Args - 1 loop
          Arguments (I - Args_Index + 1) :=
-                                   new String'(Wide_To_UTF8 (Value (Args, I)));
+                                   new String'(To_UTF_8 (Value (Args, I)));
          Append (Command_Line, Value (Args, I));
          Append (Command_Line, " ");
       end loop;
       if Output_Name'Length > 0 then
-         GNAT.OS_Lib.Spawn (Wide_To_UTF8 (Command), Arguments,
-                            Wide_To_UTF8 (Output_Name),
+         GNAT.OS_Lib.Spawn (To_UTF_8 (Command), Arguments,
+                            To_UTF_8 (Output_Name),
                             Success, Return_Code);
       else
-         Return_Code := GNAT.OS_Lib.Spawn (Wide_To_UTF8 (Command), Arguments);
+         Return_Code := GNAT.OS_Lib.Spawn (To_UTF_8 (Command), Arguments);
       end if;
       if not (Expect_Failure xor Return_Code = 0) then
          Register_Execute_Failure (State, To_Wide_String (Command_Line),
@@ -157,10 +157,10 @@ procedure Execute_Command (State : in out State_Type;
    ------------------------------
 
    procedure Register_Execute_Failure (State          : in out State_Type;
-                                       Command_Line   : Wide_String;
+                                       Command_Line   : String;
                                        Expect_Failure : Boolean;
                                        Success        : Boolean) is
-      Test_Name : constant Wide_String := Format ("{0}-exec{1}",
+      Test_Name : constant String := Format ("{0}-exec{1}",
                                              +State.Full_Test_Name,
                                              +State.Get_Integer ("_execfail"));
       File      : File_Type;

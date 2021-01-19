@@ -33,21 +33,19 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Strings.Wide_Maps;
-with Ada.Strings.Wide_Fixed;
+with Ada.Strings.Wide_Wide_Maps;
 
 package body ZanyBlue.Utils is
 
-   use Ada.Strings.Wide_Maps;
-   use Ada.Strings.Wide_Fixed;
+   use Ada.Strings.Wide_Wide_Maps;
 
-   Mapping : constant Wide_Character_Mapping :=
+   Mapping : constant Wide_Wide_Character_Mapping :=
      To_Mapping ("ABCDEFGHIJKLMNOPQRSTUVWXYZ.", "abcdefghijklmnopqrstuvwxyz-");
    --  Lower case alpha characters, map '.' to '-' for GNAT style naming
 
    function Gnat_Source_Name
-     (Package_Name : Wide_String)
-      return Wide_String;
+     (Package_Name : String)
+      return String;
    --  Return the GNAT externally formatted (file name) for a package.
 
    --------------------
@@ -55,9 +53,9 @@ package body ZanyBlue.Utils is
    --------------------
 
    function Body_File_Name
-     (Package_Name : Wide_String;
+     (Package_Name : String;
       Style        : Source_Naming_Style_Type)
-      return Wide_String
+      return String
    is
    begin
       case Style is
@@ -71,8 +69,8 @@ package body ZanyBlue.Utils is
    ----------------------
 
    function Gnat_Source_Name
-     (Package_Name : Wide_String)
-      return Wide_String
+     (Package_Name : String)
+      return String
    is
    begin
       --  Lowercase the package name and replace periods with dashes.
@@ -84,9 +82,9 @@ package body ZanyBlue.Utils is
    --------------------
 
    function Spec_File_Name
-     (Package_Name : Wide_String;
+     (Package_Name : String;
       Style        : Source_Naming_Style_Type)
-      return Wide_String
+      return String
    is
    begin
       case Style is

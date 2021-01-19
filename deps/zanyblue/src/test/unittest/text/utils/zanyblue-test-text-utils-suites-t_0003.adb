@@ -39,9 +39,9 @@ procedure T_0003 (T : in out Test_Case'Class) is
 
    use Ada.Characters.Conversions;
 
-   procedure OK (Source : Wide_String; Expected : String);
+   procedure OK (Source : String; Expected : String);
 
-   procedure OK (Source : Wide_String; Expected : String) is
+   procedure OK (Source : String; Expected : String) is
    begin
       WAssert (T, Escape_String (Source) = Expected,
                "Escaped to " & To_Wide_String (Expected) & " failed");

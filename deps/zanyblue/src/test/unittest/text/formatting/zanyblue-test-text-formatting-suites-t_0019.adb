@@ -40,11 +40,11 @@ procedure T_0019 (T : in out Test_Case'Class) is
    use ZanyBlue.Text.Catalogs;
 
    Locale    : constant Locale_Type := Make_Locale ("");
-   Facility  : constant Wide_String := "fac1";
-   Key       : constant Wide_String := "key1";
-   Message   : constant Wide_String := "Message: #1={0}, #2={1}, "
+   Facility  : constant String := "fac1";
+   Key       : constant String := "key1";
+   Message   : constant String := "Message: #1={0}, #2={1}, "
                                      & "#3={2}, #4={3}";
-   Expect    : constant Wide_String := "Message: #1=10, #2=20, "
+   Expect    : constant String := "Message: #1=10, #2=20, "
                                      & "#3=30, #4=40";
    Catalog   : constant Catalog_Type := Create;
 

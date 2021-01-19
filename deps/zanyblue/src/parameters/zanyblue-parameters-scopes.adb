@@ -33,13 +33,11 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Characters.Handling;
 with ZanyBlue.Text.Formatting;
 
 package body ZanyBlue.Parameters.Scopes is
 
    use Ada.Containers;
-   use Ada.Characters.Handling;
    use ZanyBlue.Text.Formatting;
    use Parameter_Set_Vectors;
 
@@ -54,8 +52,8 @@ package body ZanyBlue.Parameters.Scopes is
 
    procedure Append
      (Param_Stack : in out Parameter_Stack_Type;
-      Name        :        Wide_String;
-      Value       :        Wide_String)
+      Name        :        String;
+      Value       :        String)
    is
 
       procedure Append_Value (Params : in out Parameter_Set_Type);
@@ -85,11 +83,11 @@ package body ZanyBlue.Parameters.Scopes is
 
    procedure Dump
      (Param_Stack : Parameter_Stack_Type;
-      Destination : Ada.Text_IO.File_Type;
+      Destination : UXStrings.Text_IO.File_Type;
       All_Scopes  : Boolean)
    is
 
-      use Ada.Text_IO;
+      use UXStrings.Text_IO;
 
       procedure Dump_Set (Params : Parameter_Set_Type);
       --  Helper routine used to dump an individual parameter set.
@@ -123,41 +121,41 @@ package body ZanyBlue.Parameters.Scopes is
    -- Dump --
    ----------
 
-   procedure Dump
-     (Param_Stack : Parameter_Stack_Type;
-      Destination : Ada.Wide_Text_IO.File_Type;
-      All_Scopes  : Boolean)
-   is
-
-      use Ada.Wide_Text_IO;
-
-      procedure Dump_Set (Params : Parameter_Set_Type);
-      --  Helper routine used to dump an individual parameter set.
-
-      Level : Natural := 0;
-
-      --------------
-      -- Dump_Set --
-      --------------
-
-      procedure Dump_Set (Params : Parameter_Set_Type) is
-      begin
-         Params.Dump (Destination, Level => Level);
-      end Dump_Set;
-
-   begin
-      if All_Scopes then
-         Level := 1;
-         Put_Line (Destination, "<parameter-stack>");
-         for Index in 1 .. Top_Index (Param_Stack) loop
-            Query_Element (Param_Stack.Values, Index, Dump_Set'Access);
-         end loop;
-         Put_Line (Destination, "</parameter-stack>");
-      else
-         Query_Element
-           (Param_Stack.Values, Top_Index (Param_Stack), Dump_Set'Access);
-      end if;
-   end Dump;
+--     procedure Dump
+--       (Param_Stack : Parameter_Stack_Type;
+--        Destination : Ada.Wide_Text_IO.File_Type;
+--        All_Scopes  : Boolean)
+--     is
+--
+--        use Ada.Wide_Text_IO;
+--
+--        procedure Dump_Set (Params : Parameter_Set_Type);
+--        --  Helper routine used to dump an individual parameter set.
+--
+--        Level : Natural := 0;
+--
+--        --------------
+--        -- Dump_Set --
+--        --------------
+--
+--        procedure Dump_Set (Params : Parameter_Set_Type) is
+--        begin
+--           Params.Dump (Destination, Level => Level);
+--        end Dump_Set;
+--
+--     begin
+--        if All_Scopes then
+--           Level := 1;
+--           Put_Line (Destination, "<parameter-stack>");
+--           for Index in 1 .. Top_Index (Param_Stack) loop
+--              Query_Element (Param_Stack.Values, Index, Dump_Set'Access);
+--           end loop;
+--           Put_Line (Destination, "</parameter-stack>");
+--        else
+--           Query_Element
+--             (Param_Stack.Values, Top_Index (Param_Stack), Dump_Set'Access);
+--        end if;
+--     end Dump;
 
    ---------------
    -- End_Scope --
@@ -178,7 +176,7 @@ package body ZanyBlue.Parameters.Scopes is
 
    function Get
      (Param_Stack : Parameter_Stack_Type;
-      Name        : Wide_String)
+      Name        : String)
       return Value_Type'Class
    is
       Params : Parameter_Set_Type;
@@ -189,7 +187,7 @@ package body ZanyBlue.Parameters.Scopes is
             return Get (Params, Name);
          end if;
       end loop;
-      raise Not_Defined_Error with To_String (Name);
+      raise Not_Defined_Error with To_Latin_1 (Name);
    end Get;
 
    -----------------
@@ -198,7 +196,7 @@ package body ZanyBlue.Parameters.Scopes is
 
    function Get_Boolean
      (Param_Stack : Parameter_Stack_Type;
-      Name        : Wide_String)
+      Name        : String)
       return Boolean
    is
    begin
@@ -211,7 +209,7 @@ package body ZanyBlue.Parameters.Scopes is
 
    function Get_Float
      (Param_Stack : Parameter_Stack_Type;
-      Name        : Wide_String)
+      Name        : String)
       return Float
    is
    begin
@@ -224,7 +222,7 @@ package body ZanyBlue.Parameters.Scopes is
 
    function Get_Integer
      (Param_Stack : Parameter_Stack_Type;
-      Name        : Wide_String)
+      Name        : String)
       return Integer
    is
    begin
@@ -237,7 +235,7 @@ package body ZanyBlue.Parameters.Scopes is
 
    function Get_List
      (Param_Stack : Parameter_Stack_Type;
-      Name        : Wide_String;
+      Name        : String;
       Deep        : Boolean)
       return List_Type
    is
@@ -276,8 +274,8 @@ package body ZanyBlue.Parameters.Scopes is
 
    function Get_String
      (Param_Stack : Parameter_Stack_Type;
-      Name        : Wide_String)
-      return Wide_String
+      Name        : String)
+      return String
    is
    begin
       return Get (Param_Stack, Name).To_String (Name);
@@ -289,7 +287,7 @@ package body ZanyBlue.Parameters.Scopes is
 
    function Get_Time
      (Param_Stack : Parameter_Stack_Type;
-      Name        : Wide_String)
+      Name        : String)
       return Time
    is
    begin
@@ -302,7 +300,7 @@ package body ZanyBlue.Parameters.Scopes is
 
    procedure Increment
      (Param_Stack : in out Parameter_Stack_Type;
-      Name        :        Wide_String;
+      Name        :        String;
       By_Amount   :        Integer := 1;
       Deep        :        Boolean := True)
    is
@@ -339,7 +337,7 @@ package body ZanyBlue.Parameters.Scopes is
 
    function Is_Defined
      (Param_Stack : Parameter_Stack_Type;
-      Name        : Wide_String;
+      Name        : String;
       Any_Scope   : Boolean := True)
       return Boolean
    is
@@ -377,8 +375,8 @@ package body ZanyBlue.Parameters.Scopes is
 
    procedure Prepend
      (Param_Stack : in out Parameter_Stack_Type;
-      Name        :        Wide_String;
-      Value       :        Wide_String)
+      Name        :        String;
+      Value       :        String)
    is
 
       procedure Prepend_Value (Params : in out Parameter_Set_Type);
@@ -408,7 +406,7 @@ package body ZanyBlue.Parameters.Scopes is
 
    procedure Set
      (Param_Stack : in out Parameter_Stack_Type;
-      Name        :        Wide_String;
+      Name        :        String;
       Value       :        Value_Type'Class)
    is
 
@@ -439,7 +437,7 @@ package body ZanyBlue.Parameters.Scopes is
 
    procedure Set_Boolean
      (Param_Stack : in out Parameter_Stack_Type;
-      Name        :        Wide_String;
+      Name        :        String;
       Value       :        Boolean)
    is
    begin
@@ -452,7 +450,7 @@ package body ZanyBlue.Parameters.Scopes is
 
    procedure Set_Float
      (Param_Stack : in out Parameter_Stack_Type;
-      Name        :        Wide_String;
+      Name        :        String;
       Value       :        Float)
    is
    begin
@@ -465,7 +463,7 @@ package body ZanyBlue.Parameters.Scopes is
 
    procedure Set_Integer
      (Param_Stack : in out Parameter_Stack_Type;
-      Name        :        Wide_String;
+      Name        :        String;
       Value       :        Integer)
    is
    begin
@@ -478,8 +476,8 @@ package body ZanyBlue.Parameters.Scopes is
 
    procedure Set_String
      (Param_Stack : in out Parameter_Stack_Type;
-      Name        :        Wide_String;
-      Value       :        Wide_String)
+      Name        :        String;
+      Value       :        String)
    is
    begin
       Set (Param_Stack, Name, To_String_Value (Value));
@@ -491,7 +489,7 @@ package body ZanyBlue.Parameters.Scopes is
 
    procedure Set_Time
      (Param_Stack : in out Parameter_Stack_Type;
-      Name        :        Wide_String;
+      Name        :        String;
       Value       :        Time)
    is
    begin

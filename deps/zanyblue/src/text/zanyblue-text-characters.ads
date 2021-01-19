@@ -55,16 +55,16 @@ package ZanyBlue.Text.Characters is
 
    overriding function Format
      (Value     : Character_Argument_Type;
-      Type_Name : Wide_String;
-      Template  : Wide_String;
+      Type_Name : String;
+      Template  : String;
       Locale    : Locale_Type)
-      return Wide_String;
+      return String;
    --  Format a character value for printing.
 
 private
 
    type Character_Argument_Type is new Character_Category_Type with record
-      Data : Wide_Character;
+      Data : Unicode_Character;
    end record;
 
 end ZanyBlue.Text.Characters;

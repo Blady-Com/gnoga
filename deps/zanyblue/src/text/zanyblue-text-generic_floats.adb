@@ -64,7 +64,7 @@ package body ZanyBlue.Text.Generic_Floats is
 
    procedure Emit_Digits
      (Buffer         : in out Buffer_Type;
-      Digit_Map      :        Wide_String;
+      Digit_Map      :        String;
       Number_Digits  :        Digits_List_Type;
       Point_Position :        Positive;
       Length         :        Positive;
@@ -89,7 +89,7 @@ package body ZanyBlue.Text.Generic_Floats is
      (Is_Negative : Boolean;
       Sign_Format : Sign_Type;
       Locale      : Locale_Type)
-      return Wide_String;
+      return String;
    --  Return the string for the sign based on whether the value is negative
    --  or if positive, a localized '+' or space character.
 
@@ -98,7 +98,7 @@ package body ZanyBlue.Text.Generic_Floats is
       Number_Digits : in out Digits_List_Type;
       Exponent      : in out Integer;
       Formatting    :        Format_Type;
-      Digit_Map     :        Wide_String;
+      Digit_Map     :        String;
       Locale        :        Locale_Type);
    --  Implement E formatting, e.g., "1.23456E+10"
 
@@ -107,7 +107,7 @@ package body ZanyBlue.Text.Generic_Floats is
       Number_Digits : in out Digits_List_Type;
       Exponent      : in out Integer;
       Formatting    :        Format_Type;
-      Digit_Map     :        Wide_String;
+      Digit_Map     :        String;
       Locale        :        Locale_Type);
    --  Implement F formatting, e.g., "123456E0000.0"
 
@@ -116,7 +116,7 @@ package body ZanyBlue.Text.Generic_Floats is
       Number_Digits : in out Digits_List_Type;
       Exponent      : in out Integer;
       Formatting    :        Format_Type;
-      Digit_Map     :        Wide_String;
+      Digit_Map     :        String;
       Locale        :        Locale_Type);
    --  Implement G formatting, the shorter of E or F.
 
@@ -129,8 +129,8 @@ package body ZanyBlue.Text.Generic_Floats is
 
    procedure Format_Value
      (Buffer     : in out Buffer_Type;
-      Fill       :    out Wide_Character;
-      Sign       :        Wide_String;
+      Fill       :    out Unicode_Character;
+      Sign       :        String;
       Formatting :        Format_Type;
       Value      :        Float_Type;
       Locale     :        Locale_Type);
@@ -258,7 +258,7 @@ package body ZanyBlue.Text.Generic_Floats is
 
    procedure Emit_Digits
      (Buffer         : in out Buffer_Type;
-      Digit_Map      :        Wide_String;
+      Digit_Map      :        String;
       Number_Digits  :        Digits_List_Type;
       Point_Position :        Positive;
       Length         :        Positive;
@@ -266,10 +266,10 @@ package body ZanyBlue.Text.Generic_Floats is
       Locale         :        Locale_Type)
    is
 
-      Zero_Index  : constant Positive       := Digit_Map'First;
-      Zero        : constant Wide_Character := Digit_Map (Zero_Index);
+      Zero_Index  : constant Positive          := Digit_Map.First;
+      Zero        : constant Unicode_Character := Digit_Map (Zero_Index);
       Digit_Index : Integer;
-      Digit       : Wide_Character;
+      Digit       : Unicode_Character;
 
    begin
       for I in 1 .. Length loop
@@ -306,19 +306,19 @@ package body ZanyBlue.Text.Generic_Floats is
 
    overriding function Format
      (Value     : Float_Argument_Type;
-      Type_Name : Wide_String;
-      Template  : Wide_String;
+      Type_Name : String;
+      Template  : String;
       Locale    : Locale_Type)
-      return Wide_String
+      return String
    is
 
       pragma Unreferenced (Type_Name);
 
       Formatting  : constant Format_Type := Parse (Template, Locale);
       Is_Negative : constant Boolean     := Value.Data < 0.0;
-      Sign        : constant Wide_String :=
+      Sign        : constant String      :=
         Sign_String (Is_Negative, Formatting.Sign, Locale);
-      Fill   : Wide_Character := Formatting.Fill;
+      Fill   : Unicode_Character := Formatting.Fill;
       Buffer : Buffer_Type;
 
    begin
@@ -329,12 +329,12 @@ package body ZanyBlue.Text.Generic_Floats is
       else
          Format_Value (Buffer, Fill, Sign, Formatting, Value.Data, Locale);
       end if;
-      if Sign'Length > 0 and then Formatting.Align = Numeric then
+      if Sign.Length > 0 and then Formatting.Align = Numeric then
          return
            Sign &
            Align
              (To_String (Buffer), Fill,
-              Natural'Max (Formatting.Width - Sign'Length, 1),
+              Natural'Max (Formatting.Width - Sign.Length, 1),
               Formatting.Align);
       else
          return
@@ -352,7 +352,7 @@ package body ZanyBlue.Text.Generic_Floats is
       Number_Digits : in out Digits_List_Type;
       Exponent      : in out Integer;
       Formatting    :        Format_Type;
-      Digit_Map     :        Wide_String;
+      Digit_Map     :        String;
       Locale        :        Locale_Type)
    is
 
@@ -393,7 +393,7 @@ package body ZanyBlue.Text.Generic_Floats is
       Number_Digits : in out Digits_List_Type;
       Exponent      : in out Integer;
       Formatting    :        Format_Type;
-      Digit_Map     :        Wide_String;
+      Digit_Map     :        String;
       Locale        :        Locale_Type)
    is
 
@@ -457,7 +457,7 @@ package body ZanyBlue.Text.Generic_Floats is
       Number_Digits : in out Digits_List_Type;
       Exponent      : in out Integer;
       Formatting    :        Format_Type;
-      Digit_Map     :        Wide_String;
+      Digit_Map     :        String;
       Locale        :        Locale_Type)
    is
    begin
@@ -503,23 +503,23 @@ package body ZanyBlue.Text.Generic_Floats is
 
    procedure Format_Value
      (Buffer     : in out Buffer_Type;
-      Fill       :    out Wide_Character;
-      Sign       :        Wide_String;
+      Fill       :    out Unicode_Character;
+      Sign       :        String;
       Formatting :        Format_Type;
       Value      :        Float_Type;
       Locale     :        Locale_Type)
    is
 
-      Digit_Map : constant Wide_String :=
+      Digit_Map : constant String :=
         Numeric_Item (Locale, Decimal_Digits_String);
-      Default_Fill  : Wide_Character := ' ';
+      Default_Fill  : Unicode_Character := ' ';
       Number_Digits : Digits_List_Type (1 .. Number_Of_Digits);
       Exponent      : Integer;
 
    begin
       Decompose (abs Value, Number_Digits, Exponent);
       if Formatting.Align = Numeric then
-         Default_Fill := Digit_Map (Digit_Map'First);
+         Default_Fill := Digit_Map (Digit_Map.First);
       else
          Add (Buffer, Sign);
       end if;
@@ -621,7 +621,7 @@ package body ZanyBlue.Text.Generic_Floats is
      (Is_Negative : Boolean;
       Sign_Format : Sign_Type;
       Locale      : Locale_Type)
-      return Wide_String
+      return String
    is
    begin
       if Is_Negative then

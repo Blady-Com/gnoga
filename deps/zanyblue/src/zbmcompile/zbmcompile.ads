@@ -56,7 +56,7 @@ package ZBMCompile is
 
    package String_Vectors is
       new Ada.Containers.Indefinite_Vectors (Index_Type   => Natural,
-                                             Element_Type => Wide_String);
+                                             Element_Type => String);
    --  The String_Vectors here is used to store the category type associated
    --  with an argument, e.g., "{0,number}" would associated the Number
    --  category with argument 0.  This information is used to verify consistent
@@ -65,13 +65,13 @@ package ZBMCompile is
    --  default if arguments are referenced out of sequence, e.g., "There
    --  are {1,number} moons around {0,string}".
 
-   subtype Message_Id_Type is Wide_String (1 .. 5);
+   subtype Message_Id_Type is String (1 .. 5);
 
-   Accessor_Exceptions : aliased constant Wide_String := "exceptions";
-   Accessor_Strings    : aliased constant Wide_String := "strings";
-   Accessor_WStrings   : aliased constant Wide_String := "wstrings";
-   Accessor_Prints     : aliased constant Wide_String := "prints";
-   Accessor_WPrints    : aliased constant Wide_String := "wprints";
+   Accessor_Exceptions : aliased constant String := "exceptions";
+   Accessor_Strings    : aliased constant String := "strings";
+   Accessor_WStrings   : aliased constant String := "wstrings";
+   Accessor_Prints     : aliased constant String := "prints";
+   Accessor_WPrints    : aliased constant String := "wprints";
    Accessor_Types      : constant ZanyBlue.Text.Constant_String_List := (
                             Accessor_Exceptions'Access,
                             Accessor_Strings'Access,
@@ -84,23 +84,23 @@ package ZBMCompile is
    --  code properties files, e.g, "zbmexceptions.properties" use to generate
    --  the accessor code.
 
-   ZBMBase_Facility    : constant Wide_String := "zbmbase";
-   ZBMCompile_Facility : constant Wide_String := "zbmcompile";
+   ZBMBase_Facility    : constant String := "zbmbase";
+   ZBMCompile_Facility : constant String := "zbmcompile";
 
    function Process (Options : Parameter_Set_Type) return Boolean;
    --  Perform the compilation of the .properties files.  Returns True for
    --  success, False for failure.
 
    function Select_Message (Condition  : Boolean;
-                            True_Id    : Wide_String;
-                            False_Id   : Wide_String) return Wide_String;
+                            True_Id    : String;
+                            False_Id   : String) return String;
    --  Depending on Condition, return either the true or false message
    --  id.  This is a simple utility function.
 
    procedure Print_If (Condition  : Boolean;
                        File       : File_Type;
-                       Facility   : Wide_String;
-                       Key        : Wide_String;
+                       Facility   : String;
+                       Key        : String;
                        Argument0  : Argument_Type'Class := Null_Argument;
                        Argument1  : Argument_Type'Class := Null_Argument;
                        Argument2  : Argument_Type'Class := Null_Argument;
@@ -108,7 +108,7 @@ package ZBMCompile is
                        Argument4  : Argument_Type'Class := Null_Argument);
    --  Print a message if the given condition is true.
 
-   function Is_Ada_Identifier_OK (Name : Wide_String) return Boolean;
+   function Is_Ada_Identifier_OK (Name : String) return Boolean;
    --  Is the given name a valid Ada identifier name?  Leading digits are
    --  OK as the name will be prefixed with standard prefixes later.
 

@@ -39,13 +39,13 @@ procedure T_0014 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Integers;
 
-   function Format (Text : Wide_String;
+   function Format (Text : String;
                     Arg1 : Argument_Type'Class;
-                    Arg2 : Argument_Type'Class) return Wide_String;
+                    Arg2 : Argument_Type'Class) return String;
 
-   function Format (Text : Wide_String;
+   function Format (Text : String;
                     Arg1 : Argument_Type'Class;
-                    Arg2 : Argument_Type'Class) return Wide_String is
+                    Arg2 : Argument_Type'Class) return String is
       Locale    : constant Locale_Type := Make_Locale ("en_US");
       Arguments : Argument_List;
    begin

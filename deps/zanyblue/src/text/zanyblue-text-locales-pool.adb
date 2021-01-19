@@ -4,9 +4,9 @@
 --
 
 separate (ZanyBlue.Text.Locales)
-function Pool return Wide_String is
+function Pool return String is
 
-   Result : constant Wide_String := ""
+   Result : constant String := ""
              & "൦൧൨൩൪൫൬൭൮൯༠༡༢༣༤༥༦༧༨༩꤀꤁꤂꤃꤄꤅꤆꤇꤈꤉௦௧௨௩௪௫௬௭௮௯꩐꩑꩒꩓꩔꩕꩖꩗꩘꩙᪐᪑᪒᪓᪔᪕᪖᪗᪘᪙"
              & "০১২৩৪৫৬৭৮৯᥆᥇᥈᥉᥊᥋᥌᥍᥎᥏꯰꯱꯲꯳꯴꯵꯶꯷꯸꯹೦೧೨೩೪೫೬೭೮೯꧐꧑꧒꧓꧔꧕꧖꧗꧘꧙੦੧੨੩੪੫੬੭੮੯"
              & "୦୧୨୩୪୫୬୭୮୯໐໑໒໓໔໕໖໗໘໙០១២៣៤៥៦៧៨៩᮰᮱᮲᮳᮴᮵᮶᮷᮸᮹0123456789᭐᭑᭒᭓᭔᭕᭖᭗᭘᭙"

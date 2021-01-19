@@ -38,7 +38,7 @@ procedure T_0001 (T : in out Test_Case'Class) is
    pragma Unreferenced (T);
 
    Codecs_ASCII : constant Codecs_Type := Make_Codecs ("ASCII");
-   W_S : constant Wide_String := "An ASCII string";
+   W_S : constant String := "An ASCII string";
    N_S : constant String := "An ASCII string";
 
 begin

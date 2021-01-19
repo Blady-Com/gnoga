@@ -37,11 +37,11 @@ procedure T_0042 (T : in out Test_Case'Class) is
 
    ja : constant Locale_Type := Make_Locale ("ja");
 
-   procedure Check_Territory (Abbreviation : Wide_String;
-                              Value        : Wide_String);
+   procedure Check_Territory (Abbreviation : String;
+                              Value        : String);
 
-   procedure Check_Territory (Abbreviation : Wide_String;
-                              Value        : Wide_String) is
+   procedure Check_Territory (Abbreviation : String;
+                              Value        : String) is
    begin
       Check_Value (T, Territory_Name (Abbreviation, Locale => ja), Value,
                       "Expected: " & Value);

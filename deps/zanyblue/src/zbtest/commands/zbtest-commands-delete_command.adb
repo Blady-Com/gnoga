@@ -51,11 +51,11 @@ procedure Delete_Command (State : in out State_Type;
    use ZanyBlue.Wide_Directories;
 
    procedure Delete_Directory (State : in out State_Type;
-                               Name  : Wide_String);
+                               Name  : String);
    --  Delete a directory (recursively).
 
    procedure Delete_File (State : in out State_Type;
-                          Name  : Wide_String);
+                          Name  : String);
    --  Delete a file.
 
    ----------------------
@@ -63,7 +63,7 @@ procedure Delete_Command (State : in out State_Type;
    ----------------------
 
    procedure Delete_Directory (State : in out State_Type;
-                               Name  : Wide_String) is
+                               Name  : String) is
       pragma Unreferenced (State);
    begin
       Wide_Delete_Tree (Name);
@@ -75,7 +75,7 @@ procedure Delete_Command (State : in out State_Type;
    -----------------
 
    procedure Delete_File (State : in out State_Type;
-                          Name  : Wide_String) is
+                          Name  : String) is
       pragma Unreferenced (State);
    begin
       Wide_Delete_File (Name);

@@ -37,11 +37,11 @@ procedure T_0038 (T : in out Test_Case'Class) is
 
    zh : constant Locale_Type := Make_Locale ("zh");
 
-   procedure Check_Script (Abbreviation : Wide_String;
-                           Value        : Wide_String);
+   procedure Check_Script (Abbreviation : String;
+                           Value        : String);
 
-   procedure Check_Script (Abbreviation : Wide_String;
-                           Value        : Wide_String) is
+   procedure Check_Script (Abbreviation : String;
+                           Value        : String) is
    begin
       Check_Value (T, Script_Name (Abbreviation, Locale => zh), Value,
                       "Unexpected name for " & Abbreviation);

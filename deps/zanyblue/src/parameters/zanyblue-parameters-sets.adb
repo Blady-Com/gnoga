@@ -33,12 +33,10 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Characters.Handling;
 with ZanyBlue.Text.Formatting;
 
 package body ZanyBlue.Parameters.Sets is
 
-   use Ada.Characters.Handling;
    use ZanyBlue.Text.Formatting;
    use Params_Hash_Map;
 
@@ -48,8 +46,8 @@ package body ZanyBlue.Parameters.Sets is
 
    procedure Append
      (Params : in out Parameter_Set_Type;
-      Name   :        Wide_String;
-      Value  :        Wide_String)
+      Name   :        String;
+      Value  :        String)
    is
       Buffer : List_Type;
    begin
@@ -75,11 +73,11 @@ package body ZanyBlue.Parameters.Sets is
 
    procedure Dump
      (Params      : Parameter_Set_Type;
-      Destination : Ada.Text_IO.File_Type;
+      Destination : UXStrings.Text_IO.File_Type;
       Level       : Natural := 0)
    is
 
-      Indentation : constant Wide_String (1 .. 2 * Level) := (others => ' ');
+      Indentation : constant String := (2 * Level) * ' ';
 
       procedure Dump_Parameter (Position : Cursor);
       --  Helper routine to handle an individual parameter
@@ -105,40 +103,40 @@ package body ZanyBlue.Parameters.Sets is
    -- Dump --
    ----------
 
-   procedure Dump
-     (Params      : Parameter_Set_Type;
-      Destination : Ada.Wide_Text_IO.File_Type;
-      Level       : Natural := 0)
-   is
-
-      Indentation : constant Wide_String (1 .. 2 * Level) := (others => ' ');
-
-      procedure Dump_Parameter (Position : Cursor);
-      --  Helper routine to handle an individual parameter
-
-      --------------------
-      -- Dump_Parameter --
-      --------------------
-
-      procedure Dump_Parameter (Position : Cursor) is
-      begin
-         Element (Position).Dump (Key (Position), Destination, Level => Level);
-      end Dump_Parameter;
-
-   begin
-      Print_Line
-        (Destination, "{0}<parameter-set name=""{1}"">", +Indentation,
-         +Get_Name (Params));
-      Iterate (Params.Values, Dump_Parameter'Access);
-      Print_Line (Destination, "{0}</parameter-set>", +Indentation);
-   end Dump;
+--     procedure Dump
+--       (Params      : Parameter_Set_Type;
+--        Destination : Ada.Wide_Text_IO.File_Type;
+--        Level       : Natural := 0)
+--     is
+--
+--        Indentation : constant String (1 .. 2 * Level) := (others => ' ');
+--
+--        procedure Dump_Parameter (Position : Cursor);
+--        --  Helper routine to handle an individual parameter
+--
+--        --------------------
+--        -- Dump_Parameter --
+--        --------------------
+--
+--        procedure Dump_Parameter (Position : Cursor) is
+--        begin
+--      Element (Position).Dump (Key (Position), Destination, Level => Level);
+--        end Dump_Parameter;
+--
+--     begin
+--        Print_Line
+--          (Destination, "{0}<parameter-set name=""{1}"">", +Indentation,
+--           +Get_Name (Params));
+--        Iterate (Params.Values, Dump_Parameter'Access);
+--        Print_Line (Destination, "{0}</parameter-set>", +Indentation);
+--     end Dump;
 
    ---------------------
    -- Equivalent_Keys --
    ---------------------
 
    function Equivalent_Keys
-     (Left, Right : Wide_String)
+     (Left, Right : String)
       return Boolean
    is
    begin
@@ -151,13 +149,13 @@ package body ZanyBlue.Parameters.Sets is
 
    function Get
      (Params : Parameter_Set_Type;
-      Name   : Wide_String)
+      Name   : String)
       return Value_Type'Class
    is
       C : constant Cursor := Find (Params.Values, Name);
    begin
       if C = No_Element then
-         raise Not_Defined_Error with To_String (Name);
+         raise Not_Defined_Error with To_Latin_1 (Name);
       end if;
       return Element (C);
    end Get;
@@ -168,7 +166,7 @@ package body ZanyBlue.Parameters.Sets is
 
    function Get_Boolean
      (Params : Parameter_Set_Type;
-      Name   : Wide_String)
+      Name   : String)
       return Boolean
    is
    begin
@@ -181,7 +179,7 @@ package body ZanyBlue.Parameters.Sets is
 
    function Get_Float
      (Params : Parameter_Set_Type;
-      Name   : Wide_String)
+      Name   : String)
       return Float
    is
    begin
@@ -194,7 +192,7 @@ package body ZanyBlue.Parameters.Sets is
 
    function Get_Integer
      (Params : Parameter_Set_Type;
-      Name   : Wide_String)
+      Name   : String)
       return Integer
    is
    begin
@@ -207,7 +205,7 @@ package body ZanyBlue.Parameters.Sets is
 
    function Get_List
      (Params : Parameter_Set_Type;
-      Name   : Wide_String)
+      Name   : String)
       return List_Type
    is
    begin
@@ -220,10 +218,10 @@ package body ZanyBlue.Parameters.Sets is
 
    function Get_Name
      (Params : Parameter_Set_Type)
-      return Wide_String
+      return String
    is
    begin
-      return To_Wide_String (Params.Name);
+      return Params.Name;
    end Get_Name;
 
    ----------------
@@ -232,8 +230,8 @@ package body ZanyBlue.Parameters.Sets is
 
    function Get_String
      (Params : Parameter_Set_Type;
-      Name   : Wide_String)
-      return Wide_String
+      Name   : String)
+      return String
    is
    begin
       return Get (Params, Name).To_String (Name);
@@ -245,7 +243,7 @@ package body ZanyBlue.Parameters.Sets is
 
    function Get_Time
      (Params : Parameter_Set_Type;
-      Name   : Wide_String)
+      Name   : String)
       return Time
    is
    begin
@@ -258,12 +256,12 @@ package body ZanyBlue.Parameters.Sets is
 
    procedure Increment
      (Params    : in out Parameter_Set_Type;
-      Name      :        Wide_String;
+      Name      :        String;
       By_Amount :        Integer := 1)
    is
 
       procedure Increment_Value
-        (Key     :        Wide_String;
+        (Key     :        String;
          Element : in out Value_Type'Class);
       --  Helper routine to to the incrementing of a value
 
@@ -272,7 +270,7 @@ package body ZanyBlue.Parameters.Sets is
       ---------------------
 
       procedure Increment_Value
-        (Key     :        Wide_String;
+        (Key     :        String;
          Element : in out Value_Type'Class)
       is
          pragma Unreferenced (Key);
@@ -286,7 +284,7 @@ package body ZanyBlue.Parameters.Sets is
       if C /= No_Element then
          Update_Element (Params.Values, C, Increment_Value'Access);
       else
-         raise Not_Defined_Error with To_String (Name);
+         raise Not_Defined_Error with To_Latin_1 (Name);
       end if;
    end Increment;
 
@@ -296,7 +294,7 @@ package body ZanyBlue.Parameters.Sets is
 
    function Is_Defined
      (Params : Parameter_Set_Type;
-      Name   : Wide_String)
+      Name   : String)
       return Boolean
    is
    begin
@@ -321,8 +319,8 @@ package body ZanyBlue.Parameters.Sets is
 
    procedure Prepend
      (Params : in out Parameter_Set_Type;
-      Name   :        Wide_String;
-      Value  :        Wide_String)
+      Name   :        String;
+      Value  :        String)
    is
       Buffer : List_Type;
    begin
@@ -339,7 +337,7 @@ package body ZanyBlue.Parameters.Sets is
 
    procedure Set
      (Params : in out Parameter_Set_Type;
-      Name   :        Wide_String;
+      Name   :        String;
       Value  :        Value_Type'Class)
    is
       Position : constant Cursor := Params.Values.Find (Name);
@@ -357,7 +355,7 @@ package body ZanyBlue.Parameters.Sets is
 
    procedure Set_Boolean
      (Params : in out Parameter_Set_Type;
-      Name   :        Wide_String;
+      Name   :        String;
       Value  :        Boolean)
    is
    begin
@@ -370,7 +368,7 @@ package body ZanyBlue.Parameters.Sets is
 
    procedure Set_Float
      (Params : in out Parameter_Set_Type;
-      Name   :        Wide_String;
+      Name   :        String;
       Value  :        Float)
    is
    begin
@@ -383,7 +381,7 @@ package body ZanyBlue.Parameters.Sets is
 
    procedure Set_Integer
      (Params : in out Parameter_Set_Type;
-      Name   :        Wide_String;
+      Name   :        String;
       Value  :        Integer)
    is
    begin
@@ -396,10 +394,10 @@ package body ZanyBlue.Parameters.Sets is
 
    procedure Set_Name
      (Params : in out Parameter_Set_Type;
-      Name   :        Wide_String)
+      Name   :        String)
    is
    begin
-      Set_Unbounded_Wide_String (Params.Name, Name);
+      Params.Name := Name;
    end Set_Name;
 
    ----------------
@@ -408,8 +406,8 @@ package body ZanyBlue.Parameters.Sets is
 
    procedure Set_String
      (Params : in out Parameter_Set_Type;
-      Name   :        Wide_String;
-      Value  :        Wide_String)
+      Name   :        String;
+      Value  :        String)
    is
    begin
       Set (Params, Name, To_String_Value (Value));
@@ -421,7 +419,7 @@ package body ZanyBlue.Parameters.Sets is
 
    procedure Set_Time
      (Params : in out Parameter_Set_Type;
-      Name   :        Wide_String;
+      Name   :        String;
       Value  :        Time)
    is
    begin
@@ -434,8 +432,8 @@ package body ZanyBlue.Parameters.Sets is
 
    function Type_Name
      (Params : Parameter_Set_Type;
-      Name   : Wide_String)
-      return Wide_String
+      Name   : String)
+      return String
    is
    begin
       return Get (Params, Name).Type_Name (Name);

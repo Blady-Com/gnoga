@@ -37,9 +37,9 @@ with ZanyBlue.Text.Catalogs;
 separate (ZanyBlue.Test.Text.Formatting.Suites)
 procedure T_0090 (T : in out Test_Case'Class) is
 
-   Test_Name : constant Wide_String := "t_0090";
+   Test_Name : constant String := "t_0090";
    Locale    : constant Locale_Type := Make_Locale ("");
-   Message   : constant Wide_String := "Message: #1={0}, #2={1}";
+   Message   : constant String := "Message: #1={0}, #2={1}";
    Output    : File_Type;
 
    procedure With_Exceptions;

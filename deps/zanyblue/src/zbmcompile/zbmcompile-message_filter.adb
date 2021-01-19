@@ -47,10 +47,10 @@ package body ZBMCompile.Message_Filter is
 
    overriding
    function Is_Filtered (Filter    : Verbose_Filter_Type;
-                         Facility  : Wide_String;
-                         Key       : Wide_String) return Boolean is
+                         Facility  : String;
+                         Key       : String) return Boolean is
       Result        : Boolean := False;
-      Key_Character : Wide_Character;
+      Key_Character : Unicode_Character;
    begin
       if Facility /= ZBMCompile_Facility or Key'Length < 1 then
          --  Non user message or degenerate key, print the message

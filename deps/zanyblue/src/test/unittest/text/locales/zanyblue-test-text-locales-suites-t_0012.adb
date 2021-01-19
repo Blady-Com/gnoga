@@ -35,8 +35,8 @@
 separate (ZanyBlue.Test.Text.Locales.Suites)
 procedure T_0012 (T : in out Test_Case'Class) is
 
-   Locale1 : constant Wide_String := "en_US";
-   Locale2 : constant Wide_String := "fr_FR";
+   Locale1 : constant String := "en_US";
+   Locale2 : constant String := "fr_FR";
 
 begin
    Set_Locale (Locale1);

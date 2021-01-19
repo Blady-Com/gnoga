@@ -34,9 +34,6 @@
 --
 
 with Ada.Directories;
-with Ada.Wide_Text_IO;
-with Ada.Strings.Unbounded;
-with Ada.Strings.Wide_Fixed;
 
 -------------------
 -- Load_Facility --
@@ -44,24 +41,22 @@ with Ada.Strings.Wide_Fixed;
 
 separate (ZanyBlue.Text.Catalogs)
 procedure Load_Facility
-  (Facility           :        Wide_String;
-   Source_Name        :        Wide_String;
+  (Facility           :        String;
+   Source_Name        :        String;
    N_Locales          :    out Natural;
    N_Messages         :    out Natural;
    Handler            : in out Catalog_Handler_Type'Class;
-   Directory          :        Wide_String := ".";
-   Extension          :        Wide_String := Default_Extension;
+   Directory          :        String      := ".";
+   Extension          :        String      := Default_Extension;
    Base_Locale_Only   :        Boolean     := False;
-   Locale_Prefix      :        Wide_String := "";
+   Locale_Prefix      :        String      := "";
    Source_Root_Locale :        Locale_Type := Root_Locale)
 is
 
    use Ada.Directories;
-   use Ada.Strings.Unbounded;
-   use Ada.Strings.Wide_Fixed;
 
    type Property_File is record
-      File_Name : Unbounded_String;
+      File_Name : String;
       Locale    : Locale_Type;
    end record;
    --  The loading of a facility requires scanning directory for propreties
@@ -129,23 +124,21 @@ is
       -----------------
 
       procedure Load_Source (E : Property_File) is
-         L_Name  : constant Wide_String := E.Locale.Locale_Name;
+         L_Name  : constant String := E.Locale.Locale_Name;
          Do_Load : Boolean;
       begin
          if Base_Locale_Only then
             Do_Load := L_Name = "";
          else
-            Do_Load := Head (L_Name, Locale_Prefix'Length) = Locale_Prefix;
+            Do_Load := Head (L_Name, Locale_Prefix.Length) = Locale_Prefix;
          end if;
          if Do_Load then
             if E.Locale = Root_Locale then
                Load_File
-                 (Wide_From_UTF8 (To_String (E.File_Name)), Facility, E.Locale,
-                  Handler, Source_Root_Locale);
+                 (E.File_Name, Facility, E.Locale, Handler,
+                  Source_Root_Locale);
             else
-               Load_File
-                 (Wide_From_UTF8 (To_String (E.File_Name)), Facility, E.Locale,
-                  Handler, E.Locale);
+               Load_File (E.File_Name, Facility, E.Locale, Handler, E.Locale);
             end if;
             N_Locales := N_Locales + 1;
          end if;
@@ -185,10 +178,11 @@ is
          return Locale_Type
       is
 
-         B_Name : constant String      := Base_Name (File_Name);
-         A      : constant Positive := B_Name'First + Simple_Name'Length + 1;
-         B      : constant Positive    := B_Name'Last;
-         L_Name : constant Wide_String := To_Wide_String (B_Name (A .. B));
+         B_Name : constant String :=
+           From_UTF_8 (Base_Name (To_UTF_8 (File_Name)));
+         A      : constant Positive := B_Name.First + Simple_Name.Length + 1;
+         B      : constant Positive    := B_Name.Last;
+         L_Name : constant String      := B_Name.Slice (A, B);
          Locale : constant Locale_Type := Make_Locale (L_Name);
 
       begin
@@ -196,33 +190,36 @@ is
       end File_Locale;
 
       Base_File_Name : constant String :=
-        Compose
-          (Containing_Directory => Wide_To_UTF8 (Directory),
-           Name                 => Wide_To_UTF8 (Source_Name),
-           Extension            => Wide_To_UTF8 (Extension));
-      Base_Full_Name : constant String := Full_Name (Base_File_Name);
+        From_UTF_8
+          (Compose
+             (Containing_Directory => To_UTF_8 (Directory),
+              Name                 => To_UTF_8 (Source_Name),
+              Extension            => To_UTF_8 (Extension)));
+      Base_Full_Name : constant String :=
+        From_UTF_8 (Full_Name (To_UTF_8 (Base_File_Name)));
       Base_Directory : constant String :=
-        Containing_Directory (Base_Full_Name);
+        From_UTF_8 (Containing_Directory (To_UTF_8 (Base_Full_Name)));
       Simple_File_Name : constant String :=
-        Base_Name (Simple_Name (Base_Full_Name));
-      Search_Pattern : constant String :=
-        Wide_To_UTF8 (Source_Name) & "_*." & Wide_To_UTF8 (Extension);
-      File_Search : Search_Type;
-      Item        : Directory_Entry_Type;
-      Filter      : constant Filter_Type :=
+        From_UTF_8 (Base_Name (Simple_Name (To_UTF_8 (Base_Full_Name))));
+      Search_Pattern : constant String      := Source_Name & "_*." & Extension;
+      File_Search    : Search_Type;
+      Item           : Directory_Entry_Type;
+      Filter         : constant Filter_Type :=
         (Ordinary_File => True, others => False);
    begin
       Result.Append
-        (Property_File'
-           (File_Name => To_Unbounded_String (Base_File_Name), Locale => <>));
+        (Property_File'(File_Name => Base_File_Name, Locale => <>));
       Start_Search
-        (File_Search, Base_Directory, Search_Pattern, Filter => Filter);
+        (File_Search, To_UTF_8 (Base_Directory), To_UTF_8 (Search_Pattern),
+         Filter => Filter);
       while More_Entries (File_Search) loop
          Get_Next_Entry (File_Search, Item);
          Result.Append
            (Property_File'
-              (File_Name => To_Unbounded_String (Full_Name (Item)),
-               Locale    => File_Locale (Full_Name (Item), Simple_File_Name)));
+              (File_Name => From_UTF_8 (Full_Name (Item)),
+               Locale    =>
+                 File_Locale
+                   (From_UTF_8 (Full_Name (Item)), Simple_File_Name)));
       end loop;
       End_Search (File_Search);
    end Scan_Properties;

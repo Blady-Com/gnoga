@@ -35,7 +35,7 @@
 separate (ZanyBlue.Test.Text.Metrics.Suites)
 procedure T_0001 (T : in out Test_Case'Class) is
 
-   Test_Name : constant Wide_String := "t_0001";
+   Test_Name : constant String := "t_0001";
    Catalog   : constant Catalog_Type := Create;
    Output    : File_Type;
 

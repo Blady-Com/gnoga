@@ -50,16 +50,16 @@ package body ZanyBlue.Test is
    CL_Initialized : Boolean := False;
    CL_Top_Directory : String_Access := null;
 
-   function Base_Log_Name (Test_Area : Wide_String;
-                           Test_Name : Wide_String) return Wide_String;
-   function Matched (Left : Wide_String; Right : Wide_String) return Boolean;
+   function Base_Log_Name (Test_Area : String;
+                           Test_Name : String) return String;
+   function Matched (Left : String; Right : String) return Boolean;
 
    -------------------
    -- Base_Log_Name --
    -------------------
 
-   function Base_Log_Name (Test_Area : Wide_String;
-                           Test_Name : Wide_String) return Wide_String is
+   function Base_Log_Name (Test_Area : String;
+                           Test_Name : String) return String is
    begin
       return Test_Src_Directory (Test_Area) & "/" & Test_Name;
    end Base_Log_Name;
@@ -69,9 +69,9 @@ package body ZanyBlue.Test is
    --------------------
 
    procedure Check_Log_File (Test    : in out Ahven.Framework.Test_Case'Class;
-                             Test_Area : Wide_String;
-                             Test_Name : Wide_String;
-                             Message   : Wide_String) is
+                             Test_Area : String;
+                             Test_Name : String;
+                             Message   : String) is
    begin
       WAssert (Test, Compare_Log_File (Test_Area, Test_Name), Message);
    end Check_Log_File;
@@ -81,9 +81,9 @@ package body ZanyBlue.Test is
    -----------------
 
    procedure Check_Value (Test      : in out Ahven.Framework.Test_Case'Class;
-                          Generated : Wide_String;
-                          Expected  : Wide_String;
-                          Message   : Wide_String := "Failure") is
+                          Generated : String;
+                          Expected  : String;
+                          Message   : String := "Failure") is
    begin
       WAssert (Test, Generated = Expected,
                Message & ": """ & Generated & """ /= """ & Expected & """");
@@ -93,7 +93,7 @@ package body ZanyBlue.Test is
    -- Compare_Files --
    -------------------
 
-   function Compare_Files (Name_A, Name_B : Wide_String) return Boolean is
+   function Compare_Files (Name_A, Name_B : String) return Boolean is
 
       use Ada.Wide_Text_IO;
 
@@ -121,13 +121,13 @@ package body ZanyBlue.Test is
    -- Compare_Log_File --
    ----------------------
 
-   function Compare_Log_File (Test_Area : Wide_String;
-                              Test_Name : Wide_String) return Boolean is
+   function Compare_Log_File (Test_Area : String;
+                              Test_Name : String) return Boolean is
 
       use ZanyBlue.Wide_Directories;
 
-      RefLog : constant Wide_String := Test_RefLog_Name (Test_Area, Test_Name);
-      GenLog : constant Wide_String := Test_Log_Name (Test_Area, Test_Name);
+      RefLog : constant String := Test_RefLog_Name (Test_Area, Test_Name);
+      GenLog : constant String := Test_Log_Name (Test_Area, Test_Name);
       Result : Boolean;
 
    begin
@@ -144,10 +144,10 @@ package body ZanyBlue.Test is
    ---------------------
 
    procedure Create_Log_File (File      : in out Ada.Wide_Text_IO.File_Type;
-                              Test_Area : Wide_String;
-                              Test_Name : Wide_String) is
+                              Test_Area : String;
+                              Test_Name : String) is
       use Ada.Wide_Text_IO;
-      Base_Name : constant Wide_String := Base_Log_Name (Test_Area, Test_Name);
+      Base_Name : constant String := Base_Log_Name (Test_Area, Test_Name);
    begin
       Wide_Create (File, Base_Name & ".out");
    end Create_Log_File;
@@ -166,7 +166,7 @@ package body ZanyBlue.Test is
    -- Discard --
    -------------
 
-   procedure Discard (Wide_Value : Wide_String) is
+   procedure Discard (Wide_Value : String) is
       pragma Unreferenced (Wide_Value);
    begin
       null;
@@ -251,10 +251,10 @@ package body ZanyBlue.Test is
    -- Matched --
    -------------
 
-   function Matched (Left : Wide_String; Right : Wide_String) return Boolean is
+   function Matched (Left : String; Right : String) return Boolean is
       use GNAT.Regexp;
-      Left_S : constant String := Wide_To_UTF8 (Left);
-      Right_S : constant String := Wide_To_UTF8 (Right);
+      Left_S : constant String := To_UTF_8 (Left);
+      Right_S : constant String := To_UTF_8 (Right);
    begin
       return Left = Right or else Match (Right_S, Compile (Left_S));
    end Matched;
@@ -283,8 +283,8 @@ package body ZanyBlue.Test is
    ----------------
 
    procedure Set_Output (Output    : in out Ada.Wide_Text_IO.File_Type;
-                         Test_Area : Wide_String;
-                         Test_Name : Wide_String) is
+                         Test_Area : String;
+                         Test_Name : String) is
    begin
       Create_Log_File (Output, Test_Area, Test_Name);
       Set_Output (Output);
@@ -294,8 +294,8 @@ package body ZanyBlue.Test is
    -- Test_In_Name --
    ------------------
 
-   function Test_In_Name (Test_Area : Wide_String;
-                          Test_Name : Wide_String) return Wide_String is
+   function Test_In_Name (Test_Area : String;
+                          Test_Name : String) return String is
    begin
       return Base_Log_Name (Test_Area, Test_Name) & ".in";
    end Test_In_Name;
@@ -304,8 +304,8 @@ package body ZanyBlue.Test is
    -- Test_Log_Name --
    -------------------
 
-   function Test_Log_Name (Test_Area : Wide_String;
-                           Test_Name : Wide_String) return Wide_String is
+   function Test_Log_Name (Test_Area : String;
+                           Test_Name : String) return String is
    begin
       return Base_Log_Name (Test_Area, Test_Name) & ".out";
    end Test_Log_Name;
@@ -314,8 +314,8 @@ package body ZanyBlue.Test is
    -- Test_RefLog_Name --
    ----------------------
 
-   function Test_RefLog_Name (Test_Area : Wide_String;
-                              Test_Name : Wide_String) return Wide_String is
+   function Test_RefLog_Name (Test_Area : String;
+                              Test_Name : String) return String is
    begin
       return Base_Log_Name (Test_Area, Test_Name) & ".log";
    end Test_RefLog_Name;
@@ -324,7 +324,7 @@ package body ZanyBlue.Test is
    -- Test_Src_Directory --
    ------------------------
 
-   function Test_Src_Directory (Test_Area : Wide_String) return Wide_String is
+   function Test_Src_Directory (Test_Area : String) return String is
    begin
       return ZanyBlue.Test.Top_Directory & "/src/test/unittest/"
                                          & Test_Area;
@@ -334,7 +334,7 @@ package body ZanyBlue.Test is
    -- Top_Directory --
    -------------------
 
-   function Top_Directory return Wide_String is
+   function Top_Directory return String is
    begin
       Load_Command_Line;
       if CL_Top_Directory = null then
@@ -349,14 +349,14 @@ package body ZanyBlue.Test is
 
    procedure WAssert (Test      : in out Ahven.Framework.Test_Case'Class;
                       Condition : Boolean;
-                      Message : Wide_String) is
+                      Message : String) is
       pragma Unreferenced (Test);
    begin
       --  GNAT AUnit 2010 marks Assert as Obsolete
       --  GNAT AUnit 2011 requires its
       --  Suppress warnings on it use to support AUnit 2010.
       pragma Warnings (Off, Assert);
-      Assert (Condition, Wide_To_UTF8 (Message));
+      Assert (Condition, To_UTF_8 (Message));
    end WAssert;
 
 end ZanyBlue.Test;

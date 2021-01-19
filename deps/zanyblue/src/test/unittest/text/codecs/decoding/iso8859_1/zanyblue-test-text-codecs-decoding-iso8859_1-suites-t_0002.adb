@@ -38,9 +38,9 @@ procedure T_0002 (T : in out Test_Case'Class) is
    pragma Unreferenced (T);
 
    Codecs : constant Codecs_Type := Make_Codecs ("ISO8859-1");
-   W_S : constant Wide_String := "The price is 10¢";
+   W_S : constant String := "The price is 10¢";
    E_S : constant String := "The price is 10" & Character'Val (16#A2#);
-   N_S : constant Wide_String := Codecs.Decode (E_S);
+   N_S : constant String := Codecs.Decode (E_S);
 
 begin
    Assert (N_S = W_S, "ISO8859-1 decode failed");

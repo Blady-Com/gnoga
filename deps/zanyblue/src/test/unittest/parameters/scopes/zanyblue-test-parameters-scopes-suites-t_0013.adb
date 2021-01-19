@@ -38,23 +38,23 @@ procedure T_0013 (T : in out Test_Case'Class) is
    use ZanyBlue.Parameters;
 
    function Check_List1 (L  : List_Type;
-                         V1 : Wide_String) return Boolean;
+                         V1 : String) return Boolean;
 
    function Check_List2 (L  : List_Type;
-                         V1 : Wide_String;
-                         V2 : Wide_String) return Boolean;
+                         V1 : String;
+                         V2 : String) return Boolean;
 
    function Check_List3 (L  : List_Type;
-                         V1 : Wide_String;
-                         V2 : Wide_String;
-                         V3 : Wide_String) return Boolean;
+                         V1 : String;
+                         V2 : String;
+                         V3 : String) return Boolean;
 
    -----------------
    -- Check_List1 --
    -----------------
 
    function Check_List1 (L  : List_Type;
-                         V1 : Wide_String) return Boolean is
+                         V1 : String) return Boolean is
    begin
       if Length (L) /= 1 then
          return False;
@@ -70,8 +70,8 @@ procedure T_0013 (T : in out Test_Case'Class) is
    -----------------
 
    function Check_List2 (L  : List_Type;
-                         V1 : Wide_String;
-                         V2 : Wide_String) return Boolean is
+                         V1 : String;
+                         V2 : String) return Boolean is
    begin
       if Length (L) /= 2 then
          return False;
@@ -90,9 +90,9 @@ procedure T_0013 (T : in out Test_Case'Class) is
    -----------------
 
    function Check_List3 (L  : List_Type;
-                         V1 : Wide_String;
-                         V2 : Wide_String;
-                         V3 : Wide_String) return Boolean is
+                         V1 : String;
+                         V2 : String;
+                         V3 : String) return Boolean is
    begin
       if Length (L) /= 3 then
          return False;

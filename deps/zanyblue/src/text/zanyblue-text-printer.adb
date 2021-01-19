@@ -33,7 +33,7 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Text_IO.Text_Streams;
+with UXStrings.Text_IO.Text_Streams;
 with ZanyBlue.OS;
 with ZanyBlue.Text.Generic_Printer;
 
@@ -47,23 +47,23 @@ package body ZanyBlue.Text.Printer is
 
    overriding procedure Print
      (Printer     : in out Standard_Printer_Type;
-      Destination :        Ada.Text_IO.File_Type;
-      Facility    :        Wide_String;
-      Key         :        Wide_String;
+      Destination :        UXStrings.Text_IO.File_Type;
+      Facility    :        String;
+      Key         :        String;
       Locale      :        Locale_Type;
       Arguments   :        Argument_List;
-      Message     :        Wide_String;
+      Message     :        String;
       With_NL     :        Boolean)
    is
 
       pragma Unreferenced (Printer);
 
-      use Ada.Text_IO.Text_Streams;
+      use UXStrings.Text_IO.Text_Streams;
 
       procedure New_Line (The_Stream : Stream_Access);
       procedure Put
         (The_Stream : Stream_Access;
-         Text       : Wide_String);
+         Text       : String);
 
       The_Stream : constant Stream_Access := Stream (Destination);
 
@@ -89,7 +89,7 @@ package body ZanyBlue.Text.Printer is
 
       procedure Put
         (The_Stream : Stream_Access;
-         Text       : Wide_String)
+         Text       : String)
       is
          Encoded : constant String := Locale.Encode_To_String (Text);
       begin
@@ -104,52 +104,53 @@ package body ZanyBlue.Text.Printer is
    -- Print --
    -----------
 
-   overriding procedure Print
-     (Printer     : in out Standard_Printer_Type;
-      Destination :        Ada.Wide_Text_IO.File_Type;
-      Facility    :        Wide_String;
-      Key         :        Wide_String;
-      Locale      :        Locale_Type;
-      Arguments   :        Argument_List;
-      Message     :        Wide_String;
-      With_NL     :        Boolean)
-   is
-
-      pragma Unreferenced (Printer);
-
-      procedure New_Line (File : Ada.Wide_Text_IO.File_Type);
-      --  procedure Put(File : Ada.Wide_Text_IO.File_Type; Text : Wide_String);
-
-      ----------
-      -- Impl --
-      ----------
-
-      procedure Impl is new ZanyBlue.Text.Generic_Printer
-        (File_Type => Ada.Wide_Text_IO.File_Type, Put => Ada.Wide_Text_IO.Put,
-         New_Line  => New_Line);
-
-      --------------
-      -- New_Line --
-      --------------
-
-      procedure New_Line (File : Ada.Wide_Text_IO.File_Type) is
-      begin
-         Ada.Wide_Text_IO.New_Line (File);
-      end New_Line;
-
-      ---------
-      -- Put --
-      ---------
-
-      --  procedure Put (File : Ada.Wide_Text_IO.File_Type; Text
-      --  : Wide_String) is
-      --  begin
-         --  Ada.Wide_Text_IO.Put (File, Text);
-      --  end Put;
-
-   begin
-      Impl (Destination, Facility, Key, Locale, Arguments, Message, With_NL);
-   end Print;
+--     overriding procedure Print
+--       (Printer     : in out Standard_Printer_Type;
+--        Destination :        UXStrings.Text_IO.File_Type;
+--        Facility    :        String;
+--        Key         :        String;
+--        Locale      :        Locale_Type;
+--        Arguments   :        Argument_List;
+--        Message     :        String;
+--        With_NL     :        Boolean)
+--     is
+--
+--        pragma Unreferenced (Printer);
+--
+--        procedure New_Line (File : UXStrings.Text_IO.File_Type);
+--        --  procedure Put(File : Ada.Wide_Text_IO.File_Type; Text : String);
+--
+--        ----------
+--        -- Impl --
+--        ----------
+--
+--        procedure Impl is new ZanyBlue.Text.Generic_Printer
+--          (File_Type => UXStrings.Text_IO.File_Type,
+--           Put => UXStrings.Text_IO.Put,
+--           New_Line  => New_Line);
+--
+--        --------------
+--        -- New_Line --
+--        --------------
+--
+--        procedure New_Line (File : UXStrings.Text_IO.File_Type) is
+--        begin
+--           UXStrings.Text_IO.New_Line (File);
+--        end New_Line;
+--
+--        ---------
+--        -- Put --
+--        ---------
+--
+--        --  procedure Put (File : Ada.Wide_Text_IO.File_Type; Text
+--        --  : String) is
+--        --  begin
+--           --  Ada.Wide_Text_IO.Put (File, Text);
+--        --  end Put;
+--
+--     begin
+--     Impl (Destination, Facility, Key, Locale, Arguments, Message, With_NL);
+--     end Print;
 
    ----------------------
    -- Standard_Printer --

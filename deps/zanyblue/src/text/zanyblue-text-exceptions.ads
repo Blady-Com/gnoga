@@ -58,10 +58,10 @@ package ZanyBlue.Text.Exceptions is
 
    overriding function Format
      (Value     : Exception_Argument_Type;
-      Type_Name : Wide_String;
-      Template  : Wide_String;
+      Type_Name : String;
+      Template  : String;
       Locale    : Locale_Type)
-      return Wide_String;
+      return String;
    --  Format an individual argument using the Template to direct the
    --  conversion.
 
@@ -70,9 +70,9 @@ private
    type Exception_Argument_Type
      (N_Length : Positive; M_Length : Positive; I_Length : Positive)
    is new Exception_Category_Type with record
-      Name        : Wide_String (1 .. N_Length);
-      Message     : Wide_String (1 .. M_Length);
-      Information : Wide_String (1 .. I_Length);
+      Name        : String;
+      Message     : String;
+      Information : String;
    end record;
 
 end ZanyBlue.Text.Exceptions;

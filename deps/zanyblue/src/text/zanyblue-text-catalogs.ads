@@ -33,8 +33,7 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Text_IO;
-with Ada.Wide_Text_IO;
+with UXStrings.Text_IO;
 
 with ZanyBlue.Text.Pseudo;
 with ZanyBlue.Text.Filter;
@@ -51,7 +50,7 @@ package ZanyBlue.Text.Catalogs is
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Properties_Parser;
 
-   Default_Extension : constant Wide_String := "properties";
+   Default_Extension : constant String := "properties";
    --  Default file extension to use for properties file when loading a
    --  set of localized files for a facility.
 
@@ -101,29 +100,29 @@ package ZanyBlue.Text.Catalogs is
 
    overriding procedure Add_Key_Value
      (Handler       : in out Catalog_Handler_Type;
-      Facility      :        Wide_String;
-      Key           :        Wide_String;
-      Value         :        Wide_String;
+      Facility      :        String;
+      Key           :        String;
+      Value         :        String;
       Locale        :        Locale_Type;
       Source_Locale :        Locale_Type;
-      File_Name     :        Wide_String;
+      File_Name     :        String;
       Line          :        Natural);
    --  Callback to add a key/value pair when parsing a .properties file.
 
    overriding procedure Duplicate_Key
      (Handler       : in out Catalog_Handler_Type;
-      Facility      :        Wide_String;
-      Key           :        Wide_String;
+      Facility      :        String;
+      Key           :        String;
       Locale        :        Locale_Type;
-      File_Name     :        Wide_String;
+      File_Name     :        String;
       Current_Line  :        Natural;
       Previous_Line :        Natural);
    --  Callback to generate an error on a duplicate key in a .properties files.
 
    overriding procedure Invalid_Character
      (Handler      : in out Catalog_Handler_Type;
-      Facility     :        Wide_String;
-      File_Name    :        Wide_String;
+      Facility     :        String;
+      File_Name    :        String;
       Current_Line :        Natural;
       Ch           :        Character);
    --  Call back used to report an invalid character, non-ISO-646, in the
@@ -131,9 +130,9 @@ package ZanyBlue.Text.Catalogs is
 
    overriding procedure Invalid_Definition
      (Handler         : in out Catalog_Handler_Type;
-      Facility        :        Wide_String;
+      Facility        :        String;
       Locale          :        Locale_Type;
-      File_Name       :        Wide_String;
+      File_Name       :        String;
       Current_Line    :        Natural;
       Additional_Info :        String);
    --  Callback to generate an error on an invalid .properties file definition.
@@ -162,11 +161,11 @@ package ZanyBlue.Text.Catalogs is
 
    function Get_Text
      (Catalog        : Catalog_Type;
-      Facility       : Wide_String;
-      Key            : Wide_String;
+      Facility       : String;
+      Key            : String;
       Locale         : Locale_Type;
       Message_Locale : access Locale_Type := null)
-      return Wide_String;
+      return String;
    --  Return the text associated with a (Facility, Key, Locale) triple.
    --  The message returned uses the locale parenting searching to find
    --  a message in set of locales rooted in the argument locale.
@@ -181,25 +180,25 @@ package ZanyBlue.Text.Catalogs is
 
    function Is_Filtered
      (Catalog  : Catalog_Type;
-      Facility : Wide_String;
-      Key      : Wide_String)
+      Facility : String;
+      Key      : String)
       return Boolean;
    --  Should the given message be filtered out, i.e., ignored.
 
    procedure Add_Facility
      (Catalog  : Catalog_Type;
-      Facility : Wide_String);
+      Facility : String);
    --  Add a facility name to the set of known facilities
 
    procedure Add_Facility
      (Catalog  :     Catalog_Type;
-      Facility :     Wide_String;
+      Facility :     String;
       Index    : out Facility_Index_Type);
    --  Add a facility name to the set of known facilities
 
    procedure Add_Key
      (Catalog :     Catalog_Type;
-      Key     :     Wide_String;
+      Key     :     String;
       Index   : out Key_Index_Type);
    --  Add a key name to the set of known keys
 
@@ -216,18 +215,18 @@ package ZanyBlue.Text.Catalogs is
 
    procedure Add
      (Catalog  : Catalog_Type;
-      Facility : Wide_String;
-      Key      : Wide_String;
-      Message  : Wide_String;
+      Facility : String;
+      Key      : String;
+      Message  : String;
       Locale   : Locale_Type);
    --  Add a message for a (Facility, Key, Locale) triple to a Catalog.  The
    --  message text is copied to an internal catatlog buffer.
 
    procedure Add
      (Catalog       : Catalog_Type;
-      Facility      : Wide_String;
-      Key           : Wide_String;
-      Message       : Wide_String;
+      Facility      : String;
+      Key           : String;
+      Message       : String;
       Locale        : Locale_Type;
       Source_Locale : Locale_Type);
    --  Add a message for a (Facility, Key, Locale) triple to a Catalog.  The
@@ -235,19 +234,19 @@ package ZanyBlue.Text.Catalogs is
 
    function Get_Facility_Index
      (Catalog : Catalog_Type;
-      Name    : Wide_String)
+      Name    : String)
       return Facility_Index_Type;
    --  Return the index of a facility name, normally only used by zbmcompile.
 
    function Get_Key_Index
      (Catalog : Catalog_Type;
-      Name    : Wide_String)
+      Name    : String)
       return Key_Index_Type;
    --  Return the index of a key name, normally only used by zbmcompile.
 
    function Get_Locale_Index
      (Catalog : Catalog_Type;
-      Name    : Wide_String)
+      Name    : String)
       return Locale_Index_Type;
    --  Return the index of a key name, normally only used by zbmcompile.
 
@@ -259,8 +258,8 @@ package ZanyBlue.Text.Catalogs is
 
    function Load_File
      (Catalog       : Catalog_Type;
-      File_Name     : Wide_String;
-      Facility      : Wide_String;
+      File_Name     : String;
+      Facility      : String;
       Locale        : Locale_Type;
       Source_Locale : Locale_Type := Root_Locale)
       return Natural;
@@ -268,8 +267,8 @@ package ZanyBlue.Text.Catalogs is
    --  catalog for the given facility and locale.
 
    procedure Load_File
-     (File_Name     :        Wide_String;
-      Facility      :        Wide_String;
+     (File_Name     :        String;
+      Facility      :        String;
       Locale        :        Locale_Type;
       Handler       : in out Catalog_Handler_Type'Class;
       Source_Locale :        Locale_Type := Root_Locale);
@@ -278,14 +277,14 @@ package ZanyBlue.Text.Catalogs is
 
    procedure Load_Facility
      (Catalog            :     Catalog_Type;
-      Facility           :     Wide_String;
-      Source_Name        :     Wide_String;
+      Facility           :     String;
+      Source_Name        :     String;
       N_Locales          : out Natural;
       N_Messages         : out Natural;
-      Directory          :     Wide_String := ".";
-      Extension          :     Wide_String := Default_Extension;
+      Directory          :     String      := ".";
+      Extension          :     String      := Default_Extension;
       Base_Locale_Only   :     Boolean     := False;
-      Locale_Prefix      :     Wide_String := "";
+      Locale_Prefix      :     String      := "";
       Source_Root_Locale :     Locale_Type := Root_Locale);
    --  Load a set of localized files for a facility.  All files matching
    --  The base file name and extension and with locale name matching the
@@ -293,26 +292,26 @@ package ZanyBlue.Text.Catalogs is
    --  and "myapp_fr_FR", etc.
 
    procedure Load_Facility
-     (Facility           :        Wide_String;
-      Source_Name        :        Wide_String;
+     (Facility           :        String;
+      Source_Name        :        String;
       N_Locales          :    out Natural;
       N_Messages         :    out Natural;
       Handler            : in out Catalog_Handler_Type'Class;
-      Directory          :        Wide_String := ".";
-      Extension          :        Wide_String := Default_Extension;
+      Directory          :        String      := ".";
+      Extension          :        String      := Default_Extension;
       Base_Locale_Only   :        Boolean     := False;
-      Locale_Prefix      :        Wide_String := "";
+      Locale_Prefix      :        String      := "";
       Source_Root_Locale :        Locale_Type := Root_Locale);
    --  Load a set of localized files for a facility as per the previous
    --  routine but load to the catalog handler object.
 
    procedure Load_Facility
      (Catalog            :     Catalog_Type;
-      Facility           :     Wide_String;
+      Facility           :     String;
       N_Locales          : out Natural;
       N_Messages         : out Natural;
-      Directory          :     Wide_String := ".";
-      Extension          :     Wide_String := Default_Extension;
+      Directory          :     String      := ".";
+      Extension          :     String      := Default_Extension;
       Source_Root_Locale :     Locale_Type := Root_Locale);
    --  Load a set of localized files for a facility.  All files matching
    --  The base file name and extension with interleaved locale names are
@@ -367,28 +366,28 @@ package ZanyBlue.Text.Catalogs is
       return Boolean;
    --  Are source locales for message argument formatting enabled.
 
-   procedure Print
-     (Catalog     : Catalog_Type;
-      Destination : Ada.Text_IO.File_Type;
-      Facility    : Wide_String;
-      Key         : Wide_String;
-      Locale      : Locale_Type;
-      Arguments   : ZanyBlue.Text.Arguments.Argument_List;
-      Message     : Wide_String;
-      With_NL     : Boolean);
+--     procedure Print
+--       (Catalog     : Catalog_Type;
+--        Destination : Ada.Text_IO.File_Type;
+--        Facility    : String;
+--        Key         : String;
+--        Locale      : Locale_Type;
+--        Arguments   : ZanyBlue.Text.Arguments.Argument_List;
+--        Message     : String;
+--        With_NL     : Boolean);
    --  Print a message to a Character based file.   This is implemented
    --  via the Printer class associated with the catalog.
 
    procedure Print
      (Catalog     : Catalog_Type;
-      Destination : Ada.Wide_Text_IO.File_Type;
-      Facility    : Wide_String;
-      Key         : Wide_String;
+      Destination : UXStrings.Text_IO.File_Type;
+      Facility    : String;
+      Key         : String;
       Locale      : Locale_Type;
       Arguments   : ZanyBlue.Text.Arguments.Argument_List;
-      Message     : Wide_String;
+      Message     : String;
       With_NL     : Boolean);
-   --  Print a message to a Wide_Character based file.   This is implemented
+   --  Print a message to a Unicode_Character based file.   This is implemented
    --  via the Printer class associated with the catalog.
 
    procedure Set_Printer
@@ -402,8 +401,8 @@ package ZanyBlue.Text.Catalogs is
 
    procedure Add
      (Catalog  : Catalog_Type;
-      Facility : Wide_String;
-      Key      : Wide_String;
+      Facility : String;
+      Key      : String;
       Pool     : Static_Message_Pool_Type;
       First    : Positive;
       Last     : Natural;
@@ -413,8 +412,8 @@ package ZanyBlue.Text.Catalogs is
 
    procedure Add
      (Catalog       : Catalog_Type;
-      Facility      : Wide_String;
-      Key           : Wide_String;
+      Facility      : String;
+      Key           : String;
       Pool          : Static_Message_Pool_Type;
       First         : Positive;
       Last          : Natural;
@@ -441,7 +440,7 @@ package ZanyBlue.Text.Catalogs is
    function Get_Facility
      (Catalog : Catalog_Type;
       Index   : Facility_Index_Type)
-      return Wide_String;
+      return String;
    --  Return the name of facility Index, normally used in an iteration from
    --  1 to Number_Of_Facilities.
 
@@ -457,7 +456,7 @@ package ZanyBlue.Text.Catalogs is
    function Get_Key
      (Catalog : Catalog_Type;
       Index   : Key_Index_Type)
-      return Wide_String;
+      return String;
    --  Return the name of key Index, again normally used for an iteration
    --  over 1 .. Number_Of_Keys.
 
@@ -479,7 +478,7 @@ package ZanyBlue.Text.Catalogs is
    function Get_Locale_Name
      (Catalog : Catalog_Type;
       Index   : Locale_Index_Type)
-      return Wide_String;
+      return String;
    --  Return name for the locale numbered Index, again normally used for
    --  an iteration over 1 .. Number_Of_Locales.
 
@@ -491,7 +490,7 @@ package ZanyBlue.Text.Catalogs is
 
    function Get_Pool
      (Catalog : Catalog_Type)
-      return Wide_String;
+      return String;
    --  Return the pool string data associated with a catalog.  The data
    --  returned includes the contents of both the static and dynamic pools.
    --  The data returned can be used as the static pool data for a new
@@ -553,7 +552,7 @@ package ZanyBlue.Text.Catalogs is
          Key           : Key_Index_Type;
          Locale        : Locale_Index_Type;
          Source_Locale : Locale_Index_Type;
-         Message       : Wide_String;
+         Message       : String;
          Count         : Natural));
    --  Iterate over the messages defined in a catalog calling the argument
    --  procedure.
@@ -563,7 +562,7 @@ package ZanyBlue.Text.Catalogs is
       Facility_Index : Facility_Index_Type;
       Key_Index      : Key_Index_Type;
       Locale_Index   : Locale_Index_Type)
-      return Wide_String;
+      return String;
    --  Return the text of a message given the three index values.  This
    --  will raise one of the No_Such_*_Error exceptions if the triple
    --  does not map to a valid message.
@@ -579,7 +578,7 @@ package ZanyBlue.Text.Catalogs is
 
    procedure Dump
      (Catalog   : Catalog_Type;
-      File_Name : Wide_String := "");
+      File_Name : String := "");
    --  Debugging utiltiy to dump the contents of a catalog to a named file.
    --  If the file name is the empty string, dump the contents to the standard
    --  output file.
@@ -603,9 +602,9 @@ package ZanyBlue.Text.Catalogs is
       Facilities      : Constant_String_List;
       Keys            : Constant_String_List;
       Locales         : Constant_String_List;
-      Package_Name    : Wide_String := "";
-      Pool_Length     : Natural     := 0;
-      Expected_Length : Natural     := 0);
+      Package_Name    : String  := "";
+      Pool_Length     : Natural := 0;
+      Expected_Length : Natural := 0);
    --  This supporting procedure Initialize uses this Message_List and
    --  the list of facilities, keys and locales to initialize the messages
    --  associated with a set of facilities.

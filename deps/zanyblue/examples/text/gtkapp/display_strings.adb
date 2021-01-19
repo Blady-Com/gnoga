@@ -53,7 +53,7 @@ procedure Display_Strings (B : access Locale_Button_Record'Class) is
    procedure Add_Line (Dialog : Text_Display.Text_Display;
                        Text : String);
    procedure Add_Message (Dialog : Text_Display.Text_Display;
-                          Key    : Wide_String;
+                          Key    : String;
                           Locale : Locale_Type);
 
    procedure Add_Line (Dialog : Text_Display.Text_Display;
@@ -65,7 +65,7 @@ procedure Display_Strings (B : access Locale_Button_Record'Class) is
    end Add_Line;
 
    procedure Add_Message (Dialog : Text_Display.Text_Display;
-                          Key    : Wide_String;
+                          Key    : String;
                           Locale : Locale_Type) is
    begin
       Add_Line (Dialog, Format ("Jenkins", Key, Locale => Locale));

@@ -39,7 +39,7 @@ package body ZanyBlue.Test.Text.Properties_Parser.Suites is
    use Ahven.Framework;
    use ZanyBlue.Text.Properties_Parser;
 
-   Test_Area : constant Wide_String := "text/properties_parser";
+   Test_Area : constant String := "text/properties_parser";
 
    procedure T_0001 (T : in out Test_Case'Class);
    procedure T_0002 (T : in out Test_Case'Class);

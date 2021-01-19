@@ -63,22 +63,22 @@ package ZBTest.Commands is
    --  Return the number of known commands.  This routine is primarily used
    --  by the "help" command to iterate over available commands.
 
-   function Command_Name (Index : Natural) return Wide_String;
+   function Command_Name (Index : Natural) return String;
    --  Given a command index, return the corresponding command name.  This
    --  routine is primarily used by the "help" command to iterate over
    --  available commands.
 
-   function Find (Name : Wide_String) return Command_Type;
+   function Find (Name : String) return Command_Type;
    --  Given a command name, return the implementation.  Unknown commands
    --  return an implementation that simply raises Unknown_Command_Error.
 
-   procedure Print_Command_Help (Name : Wide_String);
+   procedure Print_Command_Help (Name : String);
    --  Print the help information for a command.
 
-   procedure Print_Command_Usage (Name : Wide_String);
+   procedure Print_Command_Usage (Name : String);
    --  Print the usage message for a command.
 
-   procedure Print_Command_Summary (Name  : Wide_String;
+   procedure Print_Command_Summary (Name  : String;
                                     Index : Positive);
    --  Print the message for the one line summary description associated
    --  with the named command.  The message returned includes a argument

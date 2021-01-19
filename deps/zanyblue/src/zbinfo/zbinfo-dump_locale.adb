@@ -42,7 +42,7 @@ with ZBInfo_Messages.ZBInfo_Prints;
 -----------------
 
 procedure ZBInfo.Dump_Locale (Locale : ZanyBlue.Text.Locales.Locale_Type;
-                              Name   : Wide_String) is
+                              Name   : String) is
 
    use ZanyBlue.Text.Arguments;
    use ZanyBlue.Text.Formatting;

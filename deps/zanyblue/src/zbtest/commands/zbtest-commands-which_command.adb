@@ -65,7 +65,7 @@ procedure Which_Command (State : in out State_Type;
    use Ada.Strings.Wide_Fixed;
 
    procedure Display_Path (State      : State_Type;
-                           Name       : Wide_String;
+                           Name       : String;
                            Executable : Boolean);
    --  Search for a path name and display the result.
 
@@ -74,7 +74,7 @@ procedure Which_Command (State : in out State_Type;
    ------------------
 
    procedure Display_Path (State      : State_Type;
-                           Name       : Wide_String;
+                           Name       : String;
                            Executable : Boolean) is
    begin
       if Executable then

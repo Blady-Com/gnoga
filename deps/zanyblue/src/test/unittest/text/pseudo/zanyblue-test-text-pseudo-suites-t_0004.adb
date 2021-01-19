@@ -35,10 +35,10 @@
 separate (ZanyBlue.Test.Text.Pseudo.Suites)
 procedure T_0004 (T : in out Test_Case'Class) is
 
-   Source   : constant Wide_String := "123456789"
+   Source   : constant String := "123456789"
                                     & "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                     & "abcdefghijklmnopqrstuvwxyz";
-   Target   : constant Wide_String := "①②③④⑤⑥⑦⑧⑨"
+   Target   : constant String := "①②③④⑤⑥⑦⑧⑨"
                                     & "ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ"
                                     & "ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ";
    Mapping  : Pseudo_Map_Type;

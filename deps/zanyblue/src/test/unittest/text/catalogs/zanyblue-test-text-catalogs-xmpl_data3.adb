@@ -42,21 +42,21 @@ package body ZanyBlue.Test.Text.Catalogs.Xmpl_Data3 is
    use ZTF;              -- ZanyBlue.Text.Formatting from specfication
    use ZanyBlue.Text;
 
-   K_1 : aliased constant Wide_String := "01";
-   K_2 : aliased constant Wide_String := "02";
+   K_1 : aliased constant String := "01";
+   K_2 : aliased constant String := "02";
    Keys : constant Constant_String_List := (
               1 => K_1'Access,
               2 => K_2'Access);
 
-   L_1 : aliased constant Wide_String := "";
-   L_2 : aliased constant Wide_String := "fr";
-   L_3 : aliased constant Wide_String := "he";
+   L_1 : aliased constant String := "";
+   L_2 : aliased constant String := "fr";
+   L_3 : aliased constant String := "he";
    Locales : constant Constant_String_List := (
                  1 => L_1'Access,
                  2 => L_2'Access,
                  3 => L_3'Access);
 
-   Pool_Data : aliased constant Wide_String := ""
+   Pool_Data : aliased constant String := ""
       & "This fac1 message 0001This fac1 message 0002This fac1 messa"
       & "ge 0001 (fr)This fac1 message 0002 (fr)This fac2 message 00"
       & "01 (he)This fac2 message 0002 (he)This fac2 message 0001Thi"

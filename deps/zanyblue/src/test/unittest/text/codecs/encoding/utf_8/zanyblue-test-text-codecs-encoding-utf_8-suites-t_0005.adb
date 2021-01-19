@@ -43,8 +43,8 @@ procedure T_0005 (T : in out Test_Case'Class) is
    use ZanyBlue.Text;
 
    Codecs_UTF8 : constant Codecs_Type := Make_Codecs ("UTF-8");
-   W_S : constant Wide_String := "Some Arabic numerals: ٠١٣";
-   N_S : constant String := Wide_To_UTF8 ("Some Arabic numerals: ٠١٣");
+   W_S : constant String := "Some Arabic numerals: ٠١٣";
+   N_S : constant String := To_UTF_8 ("Some Arabic numerals: ٠١٣");
 
 begin
    Assert (Codecs_UTF8.Encode (W_S) = N_S, "UTF-8 encoding failed");

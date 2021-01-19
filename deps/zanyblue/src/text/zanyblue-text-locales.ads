@@ -151,28 +151,28 @@ package ZanyBlue.Text.Locales is
 
    type Text_Layout_Type is (Left_To_Right, Right_To_Left);
 
-   subtype Language_Type is Wide_String (1 .. Max_Language_Length);
+   subtype Language_Type is String;
    --  An ISO language code, e.g., "en ", "zh ".
 
-   subtype Script_Type is Wide_String (1 .. Max_Script_Length);
+   subtype Script_Type is String;
    --  An ISO script code, e.g., "Latn", "Hans".
 
-   subtype Territory_Type is Wide_String (1 .. Max_Territory_Length);
+   subtype Territory_Type is String;
    --  An ISO territory code, e.g., "US ", "001".
 
-   subtype Encoding_Type is Wide_String (1 .. Max_Encoding_Length);
+   subtype Encoding_Type is String;
    --  An ISO Encoding code, e.g., "ISO8859-1".
 
-   Empty_Language : constant Language_Type := (others => ' ');
+   Empty_Language : constant Language_Type := Null_UXString;
    --  Emtpy language code string
 
-   Empty_Script : constant Script_Type := (others => ' ');
+   Empty_Script : constant Script_Type := Null_UXString;
    --  Empty string code string.
 
-   Empty_Territory : constant Territory_Type := (others => ' ');
+   Empty_Territory : constant Territory_Type := Null_UXString;
    --  Empty Territory code string.
 
-   Empty_Encoding : constant Encoding_Type := (others => ' ');
+   Empty_Encoding : constant Encoding_Type := Null_UXString;
    --  Empty Encoding code string.
 
    type Level_Type is range 0 .. Maximum_Level;
@@ -194,13 +194,13 @@ package ZanyBlue.Text.Locales is
    function Date_Format
      (Locale : Locale_Type;
       Style  : Date_Time_Style_Type)
-      return Wide_String;
+      return String;
    --  Localized format string used for dates in various style.
 
    function Date_Time_Format
      (Locale : Locale_Type;
       Style  : Date_Time_Style_Type)
-      return Wide_String;
+      return String;
    --  Localized format string used to combine date times strings in various
    --  styles.
 
@@ -216,32 +216,32 @@ package ZanyBlue.Text.Locales is
    function Day_Period_Name
      (Locale     : Locale_Type;
       Day_Period : Day_Period_Type)
-      return Wide_String;
+      return String;
    --  Localized name of the day period.
 
    function Delocalize_Digits
      (Locale : Locale_Type;
-      Value  : Wide_String)
-      return Wide_String;
+      Value  : String)
+      return String;
    --  Return a copy of the argument string with all localized digits,
    --  with respect to the argument locale, replace with the standard
    --  Latin digits, 0 .. 9.  Non-digit characters are return unchanged.
 
    function Encode_To_String
      (Locale : Locale_Type;
-      Value  : Wide_String)
+      Value  : String)
       return String;
    --  Return wide string converted to a narrow string using the encoding
    --  associated with the locale.
 
    function Encoding
      (Locale : Locale_Type)
-      return Wide_String;
+      return String;
    --  Return the encoding code associated with a locale.
 
    function Encoding_Implementation
      (Locale : Locale_Type)
-      return Wide_String;
+      return String;
    --  Return the name of the underlying encoding associated with the
    --  codecs.  Invalid encodings are normally mapped to UTF-8.  The
    --  result returned by "Encoding" will be the as supplied name.
@@ -253,19 +253,19 @@ package ZanyBlue.Text.Locales is
    function Era_Name
      (Locale : Locale_Type;
       Era    : Era_Type)
-      return Wide_String;
+      return String;
    --  Localized name of the era.
 
    function Full_Day_Name
      (Locale : Locale_Type;
       Day    : Day_Type)
-      return Wide_String;
+      return String;
    --  Full day name for the given locale, e.g., "Sun" -> "Sunday".
 
    function Full_Month_Name
      (Locale : Locale_Type;
       Month  : Month_Type)
-      return Wide_String;
+      return String;
    --  Full month name for the given locale, e.g., "Jan" -> "January".
 
    procedure Get_Locale_Codes
@@ -283,9 +283,9 @@ package ZanyBlue.Text.Locales is
    --  in Ada.Container hash tables.
 
    function Is_Locale_Defined
-     (Language  : Wide_String;
-      Script    : Wide_String;
-      Territory : Wide_String)
+     (Language  : String;
+      Script    : String;
+      Territory : String)
       return Boolean;
    --  Check if the given locale has localized data associated with it.
    --  Note: This check is for direct locale support, if the library
@@ -301,13 +301,13 @@ package ZanyBlue.Text.Locales is
 
    function Language
      (Locale : Locale_Type)
-      return Wide_String;
+      return String;
    --  Return the Language code associated with a locale
 
    function Locale_Digits
      (Locale    : Locale_Type;
       Lowercase : Boolean)
-      return Wide_String;
+      return String;
    --  Return the localized set of digits used to format numbers.  This
    --  is normally "0123456789abcdef".
 
@@ -318,7 +318,7 @@ package ZanyBlue.Text.Locales is
    --  0.
 
    function Make_Locale
-     (Locale_String : Wide_String)
+     (Locale_String : String)
       return Locale_Type;
    --  Construct a locale object based on a string value.  The value
    --  should conform to "ll_TT.extra" where "ll" is a two letter ISO
@@ -336,25 +336,25 @@ package ZanyBlue.Text.Locales is
    --  Utility to create a Locale given a simple narrow string.
 
    function Make_Locale
-     (Language  : Wide_String;
-      Territory : Wide_String)
+     (Language  : String;
+      Territory : String)
       return Locale_Type;
    --  Construct a locale object based on language and territory strings.
    --  Only the initial characters of each string argument is considered.
 
    function Make_Locale
-     (Language  : Wide_String;
-      Script    : Wide_String;
-      Territory : Wide_String)
+     (Language  : String;
+      Script    : String;
+      Territory : String)
       return Locale_Type;
    --  Construct a locale object based on language, script and territory
    --  strings.  Only the initial characters of each string argument is
    --  considered.
 
    function Make_Encoded_Locale
-     (Language  : Wide_String;
-      Territory : Wide_String;
-      Encoding  : Wide_String)
+     (Language  : String;
+      Territory : String;
+      Encoding  : String)
       return Locale_Type;
    --  Construct a locale object based on language, territory, and encoding
    --  strings.  Only the initial characters of each string argument is
@@ -362,10 +362,10 @@ package ZanyBlue.Text.Locales is
    --  Script and Territory Make_Locale version.
 
    function Make_Locale
-     (Language  : Wide_String;
-      Script    : Wide_String;
-      Territory : Wide_String;
-      Encoding  : Wide_String)
+     (Language  : String;
+      Script    : String;
+      Territory : String;
+      Encoding  : String)
       return Locale_Type;
    --  Construct a locale object based on language, script, territory and
    --  encoding strings.  Only the initial characters of each string argument
@@ -373,7 +373,7 @@ package ZanyBlue.Text.Locales is
 
    function Locale_Name
      (Locale : Locale_Type)
-      return Wide_String;
+      return String;
    --  Return the name of the locale.  The name is simply the value
    --  the ZB_LANG environment variable would need to create the locale,
    --  e.g., "en_US".
@@ -382,7 +382,7 @@ package ZanyBlue.Text.Locales is
      (Language  : Language_Type;
       Script    : Script_Type;
       Territory : Territory_Type)
-      return Wide_String;
+      return String;
    --  Locale name based on the individual naming components.
 
    function Number_Of_Defined_Locales return Positive;
@@ -392,13 +392,13 @@ package ZanyBlue.Text.Locales is
    function Numeric_Format
      (Locale : Locale_Type;
       Style  : Numeric_Style_Type)
-      return Wide_String;
+      return String;
    --  Localized formats for numbers in various styles.
 
    function Numeric_Item
      (Locale : Locale_Type;
       Item   : Numeric_Item_Type)
-      return Wide_String;
+      return String;
    --  Localized numeric items, zero character, decimal point, etc.
 
    procedure Parent_Codes
@@ -422,48 +422,48 @@ package ZanyBlue.Text.Locales is
 
    function Script
      (Locale : Locale_Type)
-      return Wide_String;
+      return String;
    --  Return the script code associated with a locale
 
    procedure Set_Locale (Locale : Locale_Type);
    --  Set the locale returned by the Current_Locale function over-riding
    --  the environment defined locale via ZB_LANG/LANG.
 
-   procedure Set_Locale (Name : String);
+--     procedure Set_Locale (Name : String);
    --  Set the locale returned by the Current_Locale function by locale
    --  name.
 
-   procedure Set_Locale (Wide_Name : Wide_String);
+   procedure Set_Locale (Wide_Name : String);
    --  Set the locale returned by the Current_Locale function by locale
    --  name.
 
-   procedure Set_Traits
-     (Locale : in out Locale_Type;
-      Name   :        String);
+--     procedure Set_Traits
+--       (Locale : in out Locale_Type;
+--        Name   :        String);
    --  Set the traits associated with a locale.  E.g., to use UK English
    --  style dates and times for a locale use 'Set_Traits (Locale, "en_GB")'.
 
    procedure Set_Traits
      (Locale    : in out Locale_Type;
-      Wide_Name :        Wide_String);
+      Wide_Name :        String);
    --  Set the traits associated with a locale.  E.g., to use UK English
    --  style dates and times for a locale use 'Set_Traits (Locale, "en_GB")'.
 
    function Short_Day_Name
      (Locale : Locale_Type;
       Day    : Day_Type)
-      return Wide_String;
+      return String;
    --  Abbreviated day name for the given locale, e.g., "Sun" -> "Sun".
 
    function Short_Month_Name
      (Locale : Locale_Type;
       Month  : Month_Type)
-      return Wide_String;
+      return String;
    --  Abbreviated month name for the given locale, e.g., "Jan" -> "Jan".
 
    function Territory
      (Locale : Locale_Type)
-      return Wide_String;
+      return String;
    --  Return the territory code associated with a locale
 
    function Text_Layout
@@ -474,19 +474,19 @@ package ZanyBlue.Text.Locales is
    function Time_Format
      (Locale : Locale_Type;
       Style  : Date_Time_Style_Type)
-      return Wide_String;
+      return String;
    --  Localized format string used for times in various style.
 
    function Traits_Name
      (Locale : Locale_Type)
-      return Wide_String;
+      return String;
    --  Name associated with the locale traits (which defines the day
    --  names, decimal point character, etc), e.g., "en_IE".  Note, this
    --  name need not match the name associated with the locale.
 
    function Traits_Tag
      (Locale : Locale_Type)
-      return Wide_String;
+      return String;
    --  Raw tag associated with the locale traits (which defines the day
    --  names, decimal point character, etc).  This is simply the locale values
    --  formatted as a fixed length string, e.g., "EN LATNUS ".

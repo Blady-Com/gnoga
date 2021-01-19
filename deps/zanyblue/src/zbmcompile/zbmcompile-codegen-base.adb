@@ -54,32 +54,32 @@ package body ZBMCompile.Codegen.Base is
 
    procedure Write_Name_List (File     : in out File_Type;
                               Catalog  : Catalog_Type;
-                              Name     : Wide_String;
-                              Names    : Wide_String;
+                              Name     : String;
+                              Names    : String;
                               N        : Natural;
                               Options  : Parameter_Set_Type;
                               Namer    : access
                                  function (Catalog : Catalog_Type;
                                            I       : Positive)
-                                    return Wide_String);
+                                    return String);
    --  Write a list of names to the generated source file, Keys, Locales, etc.
 
    procedure Write_Query_Decl (File    : in out File_Type;
-                               Name    : Wide_String;
+                               Name    : String;
                                Options : Parameter_Set_Type);
    --  Write the declaration for a generated query function which returns
    --  a facility or key name given an index.
 
    procedure Write_Query_Impl (File       : in out File_Type;
-                               Name       : Wide_String;
-                               Table_Name : Wide_String;
+                               Name       : String;
+                               Table_Name : String;
                                Options    : Parameter_Set_Type);
    --  Write the implementation for a generated query function which returns
    --  a facility or key name given an index.
 
    procedure Write_String (File       : in out File_Type;
-                           Name       : Wide_String;
-                           Value      : Wide_String;
+                           Name       : String;
+                           Value      : String;
                            ASCII      : Boolean;
                            Width      : Positive;
                            Decl_Index : Positive := 1);
@@ -109,7 +109,7 @@ package body ZBMCompile.Codegen.Base is
       --  Add an individual message definition, handling the case where
       --  the message is the last message in the list, i.e., no comma.
 
-      Pool                 : constant Wide_String := Get_Pool (Catalog);
+      Pool                 : constant String := Get_Pool (Catalog);
       N_Messages           : constant Natural := Number_Of_Messages (Catalog);
       First_Last_Message   : Message_Id_Type := "10017";
       Facility_Key_Message : constant Message_Id_Type := "10018";
@@ -170,11 +170,11 @@ package body ZBMCompile.Codegen.Base is
    procedure Create_Root_Body (Catalog          : Catalog_Type;
                                Options          : Parameter_Set_Type) is
 
-      Output_Directory : constant Wide_String
+      Output_Directory : constant String
                               := Options.Get_String ("output_directory");
-      Package_Name : constant Wide_String := Options.Get_String ("package");
-      Pool      : constant Wide_String := Get_Pool (Catalog);
-      File_Name : constant Wide_String := Wide_Compose (
+      Package_Name : constant String := Options.Get_String ("package");
+      Pool      : constant String := Get_Pool (Catalog);
+      File_Name : constant String := Wide_Compose (
                              Output_Directory,
                              Body_File_Name (Package_Name, GNAT_Naming_Style));
       Updated   : Boolean;
@@ -241,10 +241,10 @@ package body ZBMCompile.Codegen.Base is
 
       pragma Unreferenced (Catalog);
 
-      Output_Directory : constant Wide_String
+      Output_Directory : constant String
                               := Options.Get_String ("output_directory");
-      Package_Name : constant Wide_String := Options.Get_String ("package");
-      File_Name : constant Wide_String := Wide_Compose (
+      Package_Name : constant String := Options.Get_String ("package");
+      File_Name : constant String := Wide_Compose (
                              Output_Directory,
                              Spec_File_Name (Package_Name, GNAT_Naming_Style));
       Updated   : Boolean;
@@ -288,14 +288,14 @@ package body ZBMCompile.Codegen.Base is
 
    procedure Write_Name_List (File     : in out File_Type;
                               Catalog  : Catalog_Type;
-                              Name     : Wide_String;
-                              Names    : Wide_String;
+                              Name     : String;
+                              Names    : String;
                               N        : Natural;
                               Options  : Parameter_Set_Type;
                               Namer    : access
                                  function (Catalog : Catalog_Type;
                                            I       : Positive)
-                                    return Wide_String) is
+                                    return String) is
    begin
       for I in 1 .. N loop
          Write_String (File, Name, Namer (Catalog, I),
@@ -335,9 +335,9 @@ package body ZBMCompile.Codegen.Base is
    ----------------------
 
    procedure Write_Query_Decl (File    : in out File_Type;
-                               Name    : Wide_String;
+                               Name    : String;
                                Options : Parameter_Set_Type) is
-      M_String : constant Wide_String := Modes_String (Options);
+      M_String : constant String := Modes_String (Options);
    begin
       Print_Line (File, ZBMBase_Facility, "00007", +Name, +M_String);
       Print_Line (File, ZBMBase_Facility, "00008", +Name);
@@ -348,11 +348,11 @@ package body ZBMCompile.Codegen.Base is
    ----------------------
 
    procedure Write_Query_Impl (File       : in out File_Type;
-                               Name       : Wide_String;
-                               Table_Name : Wide_String;
+                               Name       : String;
+                               Table_Name : String;
                                Options    : Parameter_Set_Type) is
-      M_String : constant Wide_String := Modes_String (Options);
-      Dash     : constant Wide_Character := '-';
+      M_String : constant String := Modes_String (Options);
+      Dash     : constant Unicode_Character := '-';
    begin
       Print_Line (File, ZBMBase_Facility, "10025",
                         +Name, +M_String, +Table_Name, +Dash, +Name'Length);
@@ -365,21 +365,21 @@ package body ZBMCompile.Codegen.Base is
    ------------------
 
    procedure Write_String (File       : in out File_Type;
-                           Name       : Wide_String;
-                           Value      : Wide_String;
+                           Name       : String;
+                           Value      : String;
                            ASCII      : Boolean;
                            Width      : Positive;
                            Decl_Index : Positive := 1) is
 
       use Ada.Wide_Characters.Unicode;
 
-      Buffer           : Wide_String (1 .. Width);
+      Buffer           : String (1 .. Width);
       Current_Position : Natural := Value'First;
 
-      function Current_Character return Wide_Character;
+      function Current_Character return Unicode_Character;
       function Current_Character_Pos return Natural;
       procedure Advance;
-      function Buffered_Data return Wide_String;
+      function Buffered_Data return String;
       function Finished return Boolean;
 
       procedure Advance is
@@ -387,7 +387,7 @@ package body ZBMCompile.Codegen.Base is
          Current_Position := Current_Position + 1;
       end Advance;
 
-      function Buffered_Data return Wide_String is
+      function Buffered_Data return String is
          I : Positive := Buffer'First;
       begin
          while I < Buffer'Last
@@ -405,17 +405,17 @@ package body ZBMCompile.Codegen.Base is
          return Buffer (Buffer'First .. I - 1);
       end Buffered_Data;
 
-      function Current_Character return Wide_Character is
+      function Current_Character return Unicode_Character is
       begin
          if Finished then
-            return Wide_Character'Val (0);
+            return Unicode_Character'Val (0);
          end if;
          return Value (Current_Position);
       end Current_Character;
 
       function Current_Character_Pos return Natural is
       begin
-         return Wide_Character'Pos (Current_Character);
+         return Unicode_Character'Pos (Current_Character);
       end Current_Character_Pos;
 
       function Finished return Boolean is
@@ -428,7 +428,7 @@ package body ZBMCompile.Codegen.Base is
       if ASCII then
          for I in Value'Range loop
             Print_Line (File, ZBMBase_Facility, "10005",
-                        +Wide_Character'Pos (Value (I)));
+                        +Unicode_Character'Pos (Value (I)));
          end loop;
       else
          while not Finished loop

@@ -35,8 +35,8 @@
 
 with Ada.Calendar;
 with Ada.Strings.Wide_Fixed;
-with Ada.Strings.Wide_Maps;
-with Ada.Strings.Wide_Maps.Wide_Constants;
+with Ada.Strings.Wide_Wide_Maps;
+with Ada.Strings.Wide_Wide_Maps.Wide_Constants;
 with ZanyBlue.OS;
 with ZanyBlue.Parameters;
 with ZanyBlue.Text.Locales;
@@ -79,7 +79,7 @@ package body ZBMCompile is
    procedure Summarize (Catalog : Catalog_Type);
    --  Print a summary of the facilities and messages loaded.
 
-   function Update_Stamp_File (File_Name : Wide_String) return Boolean;
+   function Update_Stamp_File (File_Name : String) return Boolean;
    --  Update the contents of the "touch" file.  The file timestamp can
    --  be used to trigger dependency rules via make.  Return True if the
    --  file was successfully created, false on error.
@@ -110,10 +110,10 @@ package body ZBMCompile is
    -- Is_Ada_Identifier_OK --
    --------------------------
 
-   function Is_Ada_Identifier_OK (Name : Wide_String) return Boolean is
+   function Is_Ada_Identifier_OK (Name : String) return Boolean is
       use Ada.Strings.Wide_Fixed;
-      use Ada.Strings.Wide_Maps;
-      use Ada.Strings.Wide_Maps.Wide_Constants;
+      use Ada.Strings.Wide_Wide_Maps;
+      use Ada.Strings.Wide_Wide_Maps.Wide_Constants;
    begin
       return Index (Name, not (Alphanumeric_Set or To_Set ("_"))) = 0;
    end Is_Ada_Identifier_OK;
@@ -128,7 +128,7 @@ package body ZBMCompile is
 
       Directories : constant List_Type := Options.Get_List ("mesg_dirs");
       Facilities  : constant List_Type := Options.Get_List ("facilities");
-      Extension   : constant Wide_String := Options.Get_String ("extension");
+      Extension   : constant String := Options.Get_String ("extension");
       Source_Root_Locale : constant Locale_Type :=
                 Make_Locale (Options.Get_String ("source_root_locale"));
       N_Locales    : Natural := 0;
@@ -186,8 +186,8 @@ package body ZBMCompile is
 
    procedure Print_If (Condition  : Boolean;
                        File       : File_Type;
-                       Facility   : Wide_String;
-                       Key        : Wide_String;
+                       Facility   : String;
+                       Key        : String;
                        Argument0  : Argument_Type'Class := Null_Argument;
                        Argument1  : Argument_Type'Class := Null_Argument;
                        Argument2  : Argument_Type'Class := Null_Argument;
@@ -266,8 +266,8 @@ package body ZBMCompile is
    --------------------
 
    function Select_Message (Condition  : Boolean;
-                            True_Id    : Wide_String;
-                            False_Id   : Wide_String) return Wide_String is
+                            True_Id    : String;
+                            False_Id   : String) return String is
    begin
       if Condition then
          return True_Id;
@@ -298,7 +298,7 @@ package body ZBMCompile is
    -- Update_Stamp_File --
    -----------------------
 
-   function Update_Stamp_File (File_Name : Wide_String) return Boolean is
+   function Update_Stamp_File (File_Name : String) return Boolean is
       use Ada.Calendar;
       Now  : constant Time := Clock;
       File : File_Type;

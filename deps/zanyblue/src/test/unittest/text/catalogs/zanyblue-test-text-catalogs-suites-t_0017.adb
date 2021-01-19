@@ -40,8 +40,8 @@ procedure T_0017 (T : in out Test_Case'Class) is
    use ZanyBlue.Test.Text.Catalogs.Xmpl_Data1;
 
    L_en_US      : constant Locale_Type := Make_Locale ("en_US");
-   Msg1         : constant Wide_String := "This is message 1";
-   Msg2         : constant Wide_String := "This is message 2";
+   Msg1         : constant String := "This is message 1";
+   Msg2         : constant String := "This is message 2";
    Catalog      : Catalog_Type;
 
 begin

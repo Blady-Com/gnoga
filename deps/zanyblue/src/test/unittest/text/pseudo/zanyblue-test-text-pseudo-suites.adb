@@ -41,8 +41,8 @@ package body ZanyBlue.Test.Text.Pseudo.Suites is
 
    procedure Check_Mapping (T : in out Test_Case'Class;
                             Mapping : Pseudo_Map_Type;
-                            Source  : Wide_String;
-                            Target  : Wide_String);
+                            Source  : String;
+                            Target  : String);
 
    procedure T_0001 (T : in out Test_Case'Class);
    procedure T_0002 (T : in out Test_Case'Class);
@@ -51,11 +51,11 @@ package body ZanyBlue.Test.Text.Pseudo.Suites is
 
    procedure Check_Mapping (T : in out Test_Case'Class;
                             Mapping : Pseudo_Map_Type;
-                            Source  : Wide_String;
-                            Target  : Wide_String) is
-      function Expected (Ch : Wide_Character) return Wide_Character;
+                            Source  : String;
+                            Target  : String) is
+      function Expected (Ch : Unicode_Character) return Unicode_Character;
 
-      function Expected (Ch : Wide_Character) return Wide_Character is
+      function Expected (Ch : Unicode_Character) return Unicode_Character is
       begin
          for I in Source'Range loop
             if Source (I) = Ch then
@@ -66,7 +66,7 @@ package body ZanyBlue.Test.Text.Pseudo.Suites is
       end Expected;
 
    begin
-      for Ch in Wide_Character'Range loop
+      for Ch in Unicode_Character'Range loop
          WAssert (T, Map (Mapping, Ch) = Expected (Ch),
                   "Failed to Map (" & Ch & ") to " & Expected (Ch));
       end loop;

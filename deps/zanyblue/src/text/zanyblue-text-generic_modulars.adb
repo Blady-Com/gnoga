@@ -59,10 +59,10 @@ package body ZanyBlue.Text.Generic_Modulars is
 
    overriding function Format
      (Value     : Modular_Argument_Type;
-      Type_Name : Wide_String;
-      Template  : Wide_String;
+      Type_Name : String;
+      Template  : String;
       Locale    : Locale_Type)
-      return Wide_String
+      return String
    is
       pragma Unreferenced (Type_Name);
 
@@ -71,7 +71,7 @@ package body ZanyBlue.Text.Generic_Modulars is
       Formatting : constant Format_Type := Parse (Template, Locale);
       Buffer     : Buffer_Type;
       Lowercase  : Boolean              := True;
-      Digit_Map  : Wide_String (1 .. 16);
+      Digit_Map  : String;
       Base       : Modular_Type'Base range 2 .. 16;
 
       procedure Generate_Number (X : Modular_Type'Base) is

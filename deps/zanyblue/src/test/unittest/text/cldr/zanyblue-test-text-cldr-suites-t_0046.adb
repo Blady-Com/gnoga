@@ -38,9 +38,9 @@ procedure T_0046 (T : in out Test_Case'Class) is
    no : constant Locale_Type := Make_Locale ("no");
    nb : constant Locale_Type := Make_Locale ("nb");
 
-   procedure Check_Territory (Abbreviation : Wide_String);
+   procedure Check_Territory (Abbreviation : String);
 
-   procedure Check_Territory (Abbreviation : Wide_String) is
+   procedure Check_Territory (Abbreviation : String) is
    begin
       Check_Value (T, Territory_Name (Abbreviation, Locale => no),
                       Territory_Name (Abbreviation, Locale => nb),

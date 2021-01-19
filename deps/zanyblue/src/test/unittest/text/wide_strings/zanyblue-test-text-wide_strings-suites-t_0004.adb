@@ -39,7 +39,7 @@ procedure T_0004 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Locales;
 
-   V         : constant Wide_String := "xyz";
+   V         : constant String := "xyz";
    Arg       : constant Wide_String_Argument_Type := Create (V);
 
 begin

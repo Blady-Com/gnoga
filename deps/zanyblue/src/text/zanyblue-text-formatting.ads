@@ -35,10 +35,6 @@
 
 with Ada.Calendar;
 with Ada.Exceptions;
-with Ada.Text_IO;
-with Ada.Wide_Text_IO;
-with Ada.Strings.Unbounded;
-with Ada.Strings.Wide_Unbounded;
 with ZanyBlue.Text.Pseudo;
 with ZanyBlue.Text.Filter;
 with ZanyBlue.Text.Times;
@@ -54,10 +50,7 @@ with ZanyBlue.Text.Exceptions;
 with ZanyBlue.Text.Long_Floats;
 with ZanyBlue.Text.Arguments;
 with ZanyBlue.Text.Null_Object;
-with ZanyBlue.Text.Wide_Strings;
 with ZanyBlue.Text.Wide_Characters;
-with ZanyBlue.Text.Unbounded_Strings;
-with ZanyBlue.Text.Unbounded_Wide_Strings;
 
 pragma Elaborate_All (ZanyBlue.Text.Pseudo);
 pragma Elaborate_All (ZanyBlue.Text.Catalogs);
@@ -73,16 +66,11 @@ pragma Elaborate_All (ZanyBlue.Text.Exceptions);
 pragma Elaborate_All (ZanyBlue.Text.Long_Floats);
 pragma Elaborate_All (ZanyBlue.Text.Arguments);
 pragma Elaborate_All (ZanyBlue.Text.Null_Object);
-pragma Elaborate_All (ZanyBlue.Text.Wide_Strings);
 pragma Elaborate_All (ZanyBlue.Text.Wide_Characters);
-pragma Elaborate_All (ZanyBlue.Text.Unbounded_Strings);
-pragma Elaborate_All (ZanyBlue.Text.Unbounded_Wide_Strings);
 
 package ZanyBlue.Text.Formatting is
 
    use Ada.Exceptions;
-   use Ada.Strings.Unbounded;
-   use Ada.Strings.Wide_Unbounded;
    use ZanyBlue.Text.Pseudo;
    use ZanyBlue.Text.Filter;
    use ZanyBlue.Text.Locales;
@@ -98,20 +86,20 @@ package ZanyBlue.Text.Formatting is
       return ZanyBlue.Text.Strings.String_Argument_Type renames
      ZanyBlue.Text.Strings.Create;
 
-   function "+"
-     (Unbounded_String_Value : Unbounded_String)
-      return ZanyBlue.Text.Strings.String_Argument_Type renames
-     ZanyBlue.Text.Unbounded_Strings.Create;
+--     function "+"
+--       (Unbounded_String_Value : Unbounded_String)
+--        return ZanyBlue.Text.Strings.String_Argument_Type renames
+--       ZanyBlue.Text.Unbounded_Strings.Create;
+--
+--     function "+"
+--       (Unbounded_Wide_String_Value : Unbounded_Wide_String)
+--        return ZanyBlue.Text.Wide_Strings.Wide_String_Argument_Type renames
+--       ZanyBlue.Text.Unbounded_Wide_Strings.Create;
 
-   function "+"
-     (Unbounded_Wide_String_Value : Unbounded_Wide_String)
-      return ZanyBlue.Text.Wide_Strings.Wide_String_Argument_Type renames
-     ZanyBlue.Text.Unbounded_Wide_Strings.Create;
-
-   function "+"
-     (Wide_String_Value : Wide_String)
-      return ZanyBlue.Text.Wide_Strings.Wide_String_Argument_Type renames
-     ZanyBlue.Text.Wide_Strings.Create;
+--     function "+"
+--       (Wide_String_Value : String)
+--        return ZanyBlue.Text.Wide_Strings.Wide_String_Argument_Type renames
+--       ZanyBlue.Text.Wide_Strings.Create;
 
    function "+"
      (Float_Value : Float)
@@ -179,11 +167,11 @@ package ZanyBlue.Text.Formatting is
    procedure Disable_Source_Locales;
    --  Disable usage of source locales for message argument formatting.
 
-   procedure Enable_Wide_IO;
+--     procedure Enable_Wide_IO;
    --  Enable usage of Ada.Wide_Text_IO.Current_Output for Print/Print_Line
    --  when no explicit destination is defined.
 
-   procedure Disable_Wide_IO;
+--     procedure Disable_Wide_IO;
    --  Enable usage of Ada.Text_IO.Current_Output for Print/Print_Line
    --  when no explicit destination is defined.
 
@@ -196,18 +184,18 @@ package ZanyBlue.Text.Formatting is
    --  Set the filter associated with the standard catalog, can be null.
 
    function Format
-     (Facility  : Wide_String;
-      Key       : Wide_String;
+     (Facility  : String;
+      Key       : String;
       Arguments : Argument_List;
       Locale    : Locale_Type  := Current_Locale;
       Catalog   : Catalog_Type := Standard_Catalog)
       return String;
-   --  Format a message with arguments to a Wide_String for display or
+   --  Format a message with arguments to a String for display or
    --  printing.
 
    function Format
-     (Facility  : Wide_String;
-      Key       : Wide_String;
+     (Facility  : String;
+      Key       : String;
       Argument0 : Argument_Type'Class := Null_Argument;
       Argument1 : Argument_Type'Class := Null_Argument;
       Argument2 : Argument_Type'Class := Null_Argument;
@@ -216,19 +204,19 @@ package ZanyBlue.Text.Formatting is
       Locale    : Locale_Type         := Current_Locale;
       Catalog   : Catalog_Type        := Standard_Catalog)
       return String;
-   --  Format a message with 5 possible arguments to a Wide_String for
+   --  Format a message with 5 possible arguments to a String for
    --  display or printing.
 
    function Format
-     (Text      : Wide_String;
+     (Text      : String;
       Arguments : Argument_List;
       Locale    : Locale_Type := Current_Locale)
       return String;
-   --  Format a message with arguments to a Wide_String for display or
+   --  Format a message with arguments to a String for display or
    --  printing.
 
    function Format
-     (Text      : Wide_String;
+     (Text      : String;
       Argument0 : Argument_Type'Class := Null_Argument;
       Argument1 : Argument_Type'Class := Null_Argument;
       Argument2 : Argument_Type'Class := Null_Argument;
@@ -236,72 +224,72 @@ package ZanyBlue.Text.Formatting is
       Argument4 : Argument_Type'Class := Null_Argument;
       Locale    : Locale_Type         := Current_Locale)
       return String;
-   --  Format a message with 5 possible arguments to a Wide_String for
+   --  Format a message with 5 possible arguments to a String for
    --  display or printing.
 
-   function Format
-     (Facility  : Wide_String;
-      Key       : Wide_String;
-      Arguments : Argument_List;
-      Locale    : Locale_Type  := Current_Locale;
-      Catalog   : Catalog_Type := Standard_Catalog)
-      return Wide_String;
-   --  Format a message with arguments to a Wide_String for display or
-   --  printing.
-
-   function Format
-     (Facility  : Wide_String;
-      Key       : Wide_String;
-      Argument0 : Argument_Type'Class := Null_Argument;
-      Argument1 : Argument_Type'Class := Null_Argument;
-      Argument2 : Argument_Type'Class := Null_Argument;
-      Argument3 : Argument_Type'Class := Null_Argument;
-      Argument4 : Argument_Type'Class := Null_Argument;
-      Locale    : Locale_Type         := Current_Locale;
-      Catalog   : Catalog_Type        := Standard_Catalog)
-      return Wide_String;
-   --  Format a message with 5 possible arguments to a Wide_String for
-   --  display or printing.
-
-   function Format
-     (Text      : Wide_String;
-      Arguments : Argument_List;
-      Locale    : Locale_Type := Current_Locale)
-      return Wide_String;
-   --  Format a message with arguments to a Wide_String for display or
-   --  printing.
-
-   function Format
-     (Text      : Wide_String;
-      Argument0 : Argument_Type'Class := Null_Argument;
-      Argument1 : Argument_Type'Class := Null_Argument;
-      Argument2 : Argument_Type'Class := Null_Argument;
-      Argument3 : Argument_Type'Class := Null_Argument;
-      Argument4 : Argument_Type'Class := Null_Argument;
-      Locale    : Locale_Type         := Current_Locale)
-      return Wide_String;
-   --  Format a message with 5 possible arguments to a Wide_String for
-   --  display or printing.
+--     function Format
+--       (Facility  : String;
+--        Key       : String;
+--        Arguments : Argument_List;
+--        Locale    : Locale_Type  := Current_Locale;
+--        Catalog   : Catalog_Type := Standard_Catalog)
+--        return String;
+--     --  Format a message with arguments to a String for display or
+--     --  printing.
+--
+--     function Format
+--       (Facility  : String;
+--        Key       : String;
+--        Argument0 : Argument_Type'Class := Null_Argument;
+--        Argument1 : Argument_Type'Class := Null_Argument;
+--        Argument2 : Argument_Type'Class := Null_Argument;
+--        Argument3 : Argument_Type'Class := Null_Argument;
+--        Argument4 : Argument_Type'Class := Null_Argument;
+--        Locale    : Locale_Type         := Current_Locale;
+--        Catalog   : Catalog_Type        := Standard_Catalog)
+--        return String;
+--     --  Format a message with 5 possible arguments to a String for
+--     --  display or printing.
+--
+--     function Format
+--       (Text      : String;
+--        Arguments : Argument_List;
+--        Locale    : Locale_Type := Current_Locale)
+--        return String;
+--     --  Format a message with arguments to a String for display or
+--     --  printing.
+--
+--     function Format
+--       (Text      : String;
+--        Argument0 : Argument_Type'Class := Null_Argument;
+--        Argument1 : Argument_Type'Class := Null_Argument;
+--        Argument2 : Argument_Type'Class := Null_Argument;
+--        Argument3 : Argument_Type'Class := Null_Argument;
+--        Argument4 : Argument_Type'Class := Null_Argument;
+--        Locale    : Locale_Type         := Current_Locale)
+--        return String;
+--     --  Format a message with 5 possible arguments to a String for
+--     --  display or printing.
 
    procedure Print
-     (Facility  : Wide_String;
-      Key       : Wide_String;
+     (Facility  : String;
+      Key       : String;
       Arguments : Argument_List;
       Locale    : Locale_Type  := Current_Locale;
       Catalog   : Catalog_Type := Standard_Catalog);
    --  Print a message with arguments.
 
    procedure Print_Line
-     (Facility  : Wide_String;
-      Key       : Wide_String;
+     (Facility  : String;
+      Key       : String;
       Arguments : Argument_List;
       Locale    : Locale_Type  := Current_Locale;
       Catalog   : Catalog_Type := Standard_Catalog);
    --  Print a message with arguments.
 
    procedure Print
-     (Facility  : Wide_String;
-      Key       : Wide_String;
+     (Facility  : String;
+      Key       : String;
       Argument0 : Argument_Type'Class := Null_Argument;
       Argument1 : Argument_Type'Class := Null_Argument;
       Argument2 : Argument_Type'Class := Null_Argument;
@@ -312,8 +300,8 @@ package ZanyBlue.Text.Formatting is
    --  Print a message with upto 5 arguments.
 
    procedure Print_Line
-     (Facility  : Wide_String;
-      Key       : Wide_String;
+     (Facility  : String;
+      Key       : String;
       Argument0 : Argument_Type'Class := Null_Argument;
       Argument1 : Argument_Type'Class := Null_Argument;
       Argument2 : Argument_Type'Class := Null_Argument;
@@ -323,46 +311,85 @@ package ZanyBlue.Text.Formatting is
       Catalog   : Catalog_Type        := Standard_Catalog);
    --  Print a message with upto 5 arguments.
 
+--     procedure Print
+--       (Destination : Ada.Wide_Text_IO.File_Type;
+--        Facility    : String;
+--        Key         : String;
+--        Arguments   : Argument_List;
+--        Locale      : Locale_Type  := Current_Locale;
+--        Catalog     : Catalog_Type := Standard_Catalog);
+   --  Print a message with arguments.
+
    procedure Print
-     (Destination : Ada.Wide_Text_IO.File_Type;
-      Facility    : Wide_String;
-      Key         : Wide_String;
+     (Destination : UXStrings.Text_IO.File_Type;
+      Facility    : String;
+      Key         : String;
       Arguments   : Argument_List;
       Locale      : Locale_Type  := Current_Locale;
       Catalog     : Catalog_Type := Standard_Catalog);
    --  Print a message with arguments.
 
-   procedure Print
-     (Destination : Ada.Text_IO.File_Type;
-      Facility    : Wide_String;
-      Key         : Wide_String;
-      Arguments   : Argument_List;
-      Locale      : Locale_Type  := Current_Locale;
-      Catalog     : Catalog_Type := Standard_Catalog);
+--     procedure Print_Line
+--       (Destination : Ada.Wide_Text_IO.File_Type;
+--        Facility    : String;
+--        Key         : String;
+--        Arguments   : Argument_List;
+--        Locale      : Locale_Type  := Current_Locale;
+--        Catalog     : Catalog_Type := Standard_Catalog);
    --  Print a message with arguments.
 
    procedure Print_Line
-     (Destination : Ada.Wide_Text_IO.File_Type;
-      Facility    : Wide_String;
-      Key         : Wide_String;
+     (Destination : UXStrings.Text_IO.File_Type;
+      Facility    : String;
+      Key         : String;
       Arguments   : Argument_List;
       Locale      : Locale_Type  := Current_Locale;
       Catalog     : Catalog_Type := Standard_Catalog);
    --  Print a message with arguments.
 
-   procedure Print_Line
-     (Destination : Ada.Text_IO.File_Type;
-      Facility    : Wide_String;
-      Key         : Wide_String;
-      Arguments   : Argument_List;
-      Locale      : Locale_Type  := Current_Locale;
-      Catalog     : Catalog_Type := Standard_Catalog);
-   --  Print a message with arguments.
+--     procedure Print
+--       (Destination : Ada.Wide_Text_IO.File_Type;
+--        Facility    : String;
+--        Key         : String;
+--        Argument0   : Argument_Type'Class := Null_Argument;
+--        Argument1   : Argument_Type'Class := Null_Argument;
+--        Argument2   : Argument_Type'Class := Null_Argument;
+--        Argument3   : Argument_Type'Class := Null_Argument;
+--        Argument4   : Argument_Type'Class := Null_Argument;
+--        Locale      : Locale_Type         := Current_Locale;
+--        Catalog     : Catalog_Type        := Standard_Catalog);
+   --  Print a message with upto 5 arguments.
 
    procedure Print
-     (Destination : Ada.Wide_Text_IO.File_Type;
-      Facility    : Wide_String;
-      Key         : Wide_String;
+     (Destination : UXStrings.Text_IO.File_Type;
+      Facility    : String;
+      Key         : String;
+      Argument0   : Argument_Type'Class := Null_Argument;
+      Argument1   : Argument_Type'Class := Null_Argument;
+      Argument2   : Argument_Type'Class := Null_Argument;
+      Argument3   : Argument_Type'Class := Null_Argument;
+      Argument4   : Argument_Type'Class := Null_Argument;
+      Locale      : Locale_Type         := Current_Locale;
+      Catalog     : Catalog_Type        := Standard_Catalog);
+   --  Print a message with upto 5 arguments.
+
+--     procedure Print_Line
+--       (Destination : Ada.Wide_Text_IO.File_Type;
+--        Facility    : String;
+--        Key         : String;
+--        Argument0   : Argument_Type'Class := Null_Argument;
+--        Argument1   : Argument_Type'Class := Null_Argument;
+--        Argument2   : Argument_Type'Class := Null_Argument;
+--        Argument3   : Argument_Type'Class := Null_Argument;
+--        Argument4   : Argument_Type'Class := Null_Argument;
+--        Locale      : Locale_Type         := Current_Locale;
+--        Catalog     : Catalog_Type        := Standard_Catalog);
+   --  Print a message with upto 5 arguments.
+
+   procedure Print_Line
+     (Destination : UXStrings.Text_IO.File_Type;
+      Facility    : String;
+      Key         : String;
       Argument0   : Argument_Type'Class := Null_Argument;
       Argument1   : Argument_Type'Class := Null_Argument;
       Argument2   : Argument_Type'Class := Null_Argument;
@@ -373,58 +400,19 @@ package ZanyBlue.Text.Formatting is
    --  Print a message with upto 5 arguments.
 
    procedure Print
-     (Destination : Ada.Text_IO.File_Type;
-      Facility    : Wide_String;
-      Key         : Wide_String;
-      Argument0   : Argument_Type'Class := Null_Argument;
-      Argument1   : Argument_Type'Class := Null_Argument;
-      Argument2   : Argument_Type'Class := Null_Argument;
-      Argument3   : Argument_Type'Class := Null_Argument;
-      Argument4   : Argument_Type'Class := Null_Argument;
-      Locale      : Locale_Type         := Current_Locale;
-      Catalog     : Catalog_Type        := Standard_Catalog);
-   --  Print a message with upto 5 arguments.
-
-   procedure Print_Line
-     (Destination : Ada.Wide_Text_IO.File_Type;
-      Facility    : Wide_String;
-      Key         : Wide_String;
-      Argument0   : Argument_Type'Class := Null_Argument;
-      Argument1   : Argument_Type'Class := Null_Argument;
-      Argument2   : Argument_Type'Class := Null_Argument;
-      Argument3   : Argument_Type'Class := Null_Argument;
-      Argument4   : Argument_Type'Class := Null_Argument;
-      Locale      : Locale_Type         := Current_Locale;
-      Catalog     : Catalog_Type        := Standard_Catalog);
-   --  Print a message with upto 5 arguments.
-
-   procedure Print_Line
-     (Destination : Ada.Text_IO.File_Type;
-      Facility    : Wide_String;
-      Key         : Wide_String;
-      Argument0   : Argument_Type'Class := Null_Argument;
-      Argument1   : Argument_Type'Class := Null_Argument;
-      Argument2   : Argument_Type'Class := Null_Argument;
-      Argument3   : Argument_Type'Class := Null_Argument;
-      Argument4   : Argument_Type'Class := Null_Argument;
-      Locale      : Locale_Type         := Current_Locale;
-      Catalog     : Catalog_Type        := Standard_Catalog);
-   --  Print a message with upto 5 arguments.
-
-   procedure Print
-     (Text      : Wide_String;
+     (Text      : String;
       Arguments : Argument_List;
       Locale    : Locale_Type := Current_Locale);
    --  Print a message with arguments.
 
    procedure Print_Line
-     (Text      : Wide_String;
+     (Text      : String;
       Arguments : Argument_List;
       Locale    : Locale_Type := Current_Locale);
    --  Print a message with arguments.
 
    procedure Print
-     (Text      : Wide_String;
+     (Text      : String;
       Argument0 : Argument_Type'Class := Null_Argument;
       Argument1 : Argument_Type'Class := Null_Argument;
       Argument2 : Argument_Type'Class := Null_Argument;
@@ -434,7 +422,7 @@ package ZanyBlue.Text.Formatting is
    --  Print a message with upto 5 arguments.
 
    procedure Print_Line
-     (Text      : Wide_String;
+     (Text      : String;
       Argument0 : Argument_Type'Class := Null_Argument;
       Argument1 : Argument_Type'Class := Null_Argument;
       Argument2 : Argument_Type'Class := Null_Argument;
@@ -443,37 +431,48 @@ package ZanyBlue.Text.Formatting is
       Locale    : Locale_Type         := Current_Locale);
    --  Print a message with upto 5 arguments.
 
+--     procedure Print
+--       (Destination : Ada.Wide_Text_IO.File_Type;
+--        Text        : String;
+--        Arguments   : Argument_List;
+--        Locale      : Locale_Type := Current_Locale);
+   --  Print a message with arguments.
+
    procedure Print
-     (Destination : Ada.Wide_Text_IO.File_Type;
-      Text        : Wide_String;
+     (Destination : UXStrings.Text_IO.File_Type;
+      Text        : String;
       Arguments   : Argument_List;
       Locale      : Locale_Type := Current_Locale);
    --  Print a message with arguments.
 
-   procedure Print
-     (Destination : Ada.Text_IO.File_Type;
-      Text        : Wide_String;
-      Arguments   : Argument_List;
-      Locale      : Locale_Type := Current_Locale);
+--     procedure Print_Line
+--       (Destination : Ada.Wide_Text_IO.File_Type;
+--        Text        : String;
+--        Arguments   : Argument_List;
+--        Locale      : Locale_Type := Current_Locale);
    --  Print a message with arguments.
 
    procedure Print_Line
-     (Destination : Ada.Wide_Text_IO.File_Type;
-      Text        : Wide_String;
+     (Destination : UXStrings.Text_IO.File_Type;
+      Text        : String;
       Arguments   : Argument_List;
       Locale      : Locale_Type := Current_Locale);
    --  Print a message with arguments.
 
-   procedure Print_Line
-     (Destination : Ada.Text_IO.File_Type;
-      Text        : Wide_String;
-      Arguments   : Argument_List;
-      Locale      : Locale_Type := Current_Locale);
-   --  Print a message with arguments.
+--     procedure Print
+--       (Destination : Ada.Wide_Text_IO.File_Type;
+--        Text        : String;
+--        Argument0   : Argument_Type'Class := Null_Argument;
+--        Argument1   : Argument_Type'Class := Null_Argument;
+--        Argument2   : Argument_Type'Class := Null_Argument;
+--        Argument3   : Argument_Type'Class := Null_Argument;
+--        Argument4   : Argument_Type'Class := Null_Argument;
+--        Locale      : Locale_Type         := Current_Locale);
+   --  Print a message with upto 5 arguments.
 
    procedure Print
-     (Destination : Ada.Wide_Text_IO.File_Type;
-      Text        : Wide_String;
+     (Destination : UXStrings.Text_IO.File_Type;
+      Text        : String;
       Argument0   : Argument_Type'Class := Null_Argument;
       Argument1   : Argument_Type'Class := Null_Argument;
       Argument2   : Argument_Type'Class := Null_Argument;
@@ -482,31 +481,20 @@ package ZanyBlue.Text.Formatting is
       Locale      : Locale_Type         := Current_Locale);
    --  Print a message with upto 5 arguments.
 
-   procedure Print
-     (Destination : Ada.Text_IO.File_Type;
-      Text        : Wide_String;
-      Argument0   : Argument_Type'Class := Null_Argument;
-      Argument1   : Argument_Type'Class := Null_Argument;
-      Argument2   : Argument_Type'Class := Null_Argument;
-      Argument3   : Argument_Type'Class := Null_Argument;
-      Argument4   : Argument_Type'Class := Null_Argument;
-      Locale      : Locale_Type         := Current_Locale);
+--     procedure Print_Line
+--       (Destination : Ada.Wide_Text_IO.File_Type;
+--        Text        : String;
+--        Argument0   : Argument_Type'Class := Null_Argument;
+--        Argument1   : Argument_Type'Class := Null_Argument;
+--        Argument2   : Argument_Type'Class := Null_Argument;
+--        Argument3   : Argument_Type'Class := Null_Argument;
+--        Argument4   : Argument_Type'Class := Null_Argument;
+--        Locale      : Locale_Type         := Current_Locale);
    --  Print a message with upto 5 arguments.
 
    procedure Print_Line
-     (Destination : Ada.Wide_Text_IO.File_Type;
-      Text        : Wide_String;
-      Argument0   : Argument_Type'Class := Null_Argument;
-      Argument1   : Argument_Type'Class := Null_Argument;
-      Argument2   : Argument_Type'Class := Null_Argument;
-      Argument3   : Argument_Type'Class := Null_Argument;
-      Argument4   : Argument_Type'Class := Null_Argument;
-      Locale      : Locale_Type         := Current_Locale);
-   --  Print a message with upto 5 arguments.
-
-   procedure Print_Line
-     (Destination : Ada.Text_IO.File_Type;
-      Text        : Wide_String;
+     (Destination : UXStrings.Text_IO.File_Type;
+      Text        : String;
       Argument0   : Argument_Type'Class := Null_Argument;
       Argument1   : Argument_Type'Class := Null_Argument;
       Argument2   : Argument_Type'Class := Null_Argument;
@@ -517,14 +505,14 @@ package ZanyBlue.Text.Formatting is
 
    procedure Raise_Exception
      (E       : Ada.Exceptions.Exception_Id;
-      Message : Wide_String);
+      Message : String);
    pragma No_Return (Raise_Exception);
    --  Raise an exception with a wide message, encoded as UTF-8
 
    procedure Raise_Exception
      (E         : Ada.Exceptions.Exception_Id;
-      Facility  : Wide_String;
-      Key       : Wide_String;
+      Facility  : String;
+      Key       : String;
       Argument0 : Argument_Type'Class := Null_Argument;
       Argument1 : Argument_Type'Class := Null_Argument;
       Argument2 : Argument_Type'Class := Null_Argument;
@@ -537,8 +525,8 @@ package ZanyBlue.Text.Formatting is
 
    procedure Raise_Exception
      (E         : Ada.Exceptions.Exception_Id;
-      Facility  : Wide_String;
-      Key       : Wide_String;
+      Facility  : String;
+      Key       : String;
       Arguments : Argument_List;
       Locale    : Locale_Type  := Current_Locale;
       Catalog   : Catalog_Type := Standard_Catalog);
@@ -547,7 +535,7 @@ package ZanyBlue.Text.Formatting is
 
    procedure Raise_Exception
      (E         : Ada.Exceptions.Exception_Id;
-      Text      : Wide_String;
+      Text      : String;
       Argument0 : Argument_Type'Class;
       Argument1 : Argument_Type'Class := Null_Argument;
       Argument2 : Argument_Type'Class := Null_Argument;
@@ -562,21 +550,21 @@ package ZanyBlue.Text.Formatting is
       Catalog : Catalog_Type := Standard_Catalog);
    --  Enable pseudo translations for a catalog.
 
-   procedure Write_Message
-     (Destination : Ada.Wide_Text_IO.File_Type;
-      Facility    : Wide_String;
-      Key         : Wide_String;
-      Arguments   : Argument_List;
-      With_NL     : Boolean;
-      Locale      : Locale_Type;
-      Catalog     : Catalog_Type);
+--     procedure Write_Message
+--       (Destination : Ada.Wide_Text_IO.File_Type;
+--        Facility    : String;
+--        Key         : String;
+--        Arguments   : Argument_List;
+--        With_NL     : Boolean;
+--        Locale      : Locale_Type;
+--        Catalog     : Catalog_Type);
    --  If not filtered, format the message and write to the underlying
    --  file.
 
    procedure Write_Message
-     (Destination : Ada.Text_IO.File_Type;
-      Facility    : Wide_String;
-      Key         : Wide_String;
+     (Destination : UXStrings.Text_IO.File_Type;
+      Facility    : String;
+      Key         : String;
       Arguments   : Argument_List;
       With_NL     : Boolean;
       Locale      : Locale_Type;

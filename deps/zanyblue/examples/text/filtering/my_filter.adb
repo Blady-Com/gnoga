@@ -37,8 +37,8 @@ package body My_Filter is
 
    overriding
    function Is_Filtered (Filter   : My_Filter_Type;
-                         Facility : Wide_String;
-                         Key : Wide_String) return Boolean is
+                         Facility : String;
+                         Key : String) return Boolean is
       pragma Unreferenced (Facility);
    begin
       return Key (Key'First) = 'V' and not Filter.Verbose;

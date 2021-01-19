@@ -83,11 +83,11 @@ procedure ZBX_Tomcat is
       end loop;
    end Process_Command_Line;
 
-   Path : constant Wide_String := "../example.dat";
-   Mask : constant Wide_String := "mask";
-   User : constant Wide_String := "mrohan";
-   Resource : constant Wide_String := "resource";
-   Component : constant Wide_String := "component";
+   Path : constant String := "../example.dat";
+   Mask : constant String := "mask";
+   User : constant String := "mrohan";
+   Resource : constant String := "resource";
+   Component : constant String := "component";
 
 begin
    Disable_Wide_IO;

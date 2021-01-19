@@ -57,15 +57,15 @@ package body ZanyBlue.Text.Wide_Characters is
 
    overriding function Format
      (Value     : Wide_Character_Argument_Type;
-      Type_Name : Wide_String;
-      Template  : Wide_String;
+      Type_Name : String;
+      Template  : String;
       Locale    : Locale_Type)
-      return Wide_String
+      return String
    is
       pragma Unreferenced (Type_Name);
 
-      Formatting : constant Format_Type          := Parse (Template, Locale);
-      Buffer     : constant Wide_String (1 .. 1) := (others => Value.Data);
+      Formatting : constant Format_Type := Parse (Template, Locale);
+      Buffer     : constant String      := From_BMP (Value.Data);
 
    begin
       return

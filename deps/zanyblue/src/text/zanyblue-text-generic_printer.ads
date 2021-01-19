@@ -40,13 +40,13 @@ generic
    type File_Type is limited private;
    with procedure Put
      (File : File_Type;
-      Text : Wide_String);
+      Text : String);
    with procedure New_Line (File : File_Type);
 procedure ZanyBlue.Text.Generic_Printer
   (Destination : File_Type;
-   Facility : Wide_String;
-   Key : Wide_String;
+   Facility : String;
+   Key : String;
    Locale : ZanyBlue.Text.Locales.Locale_Type;
    Arguments : ZanyBlue.Text.Arguments.Argument_List;
-   Message : Wide_String;
+   Message : String;
    With_NL : Boolean);

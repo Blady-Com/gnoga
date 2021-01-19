@@ -35,8 +35,8 @@
 separate (ZanyBlue.Test.Text.Formatting.Suites)
 procedure T_0012 (T : in out Test_Case'Class) is
 
-   Test_Name : constant Wide_String := "t_0012";
-   Filename  : constant Wide_String := Test_Log_Name (Test_Area, Test_Name);
+   Test_Name : constant String := "t_0012";
+   Filename  : constant String := Test_Log_Name (Test_Area, Test_Name);
    Output    : File_Type;
 
 begin

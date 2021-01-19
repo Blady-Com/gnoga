@@ -35,13 +35,13 @@
 separate (ZanyBlue.Test.Text.Locales.Suites)
 procedure T_0002 (T : in out Test_Case'Class) is
 
-   procedure Check_Locale (Value              : Wide_String;
-                           Expected_Language  : Wide_String;
-                           Expected_Territory : Wide_String);
+   procedure Check_Locale (Value              : String;
+                           Expected_Language  : String;
+                           Expected_Territory : String);
 
-   procedure Check_Locale (Value              : Wide_String;
-                           Expected_Language  : Wide_String;
-                           Expected_Territory : Wide_String) is
+   procedure Check_Locale (Value              : String;
+                           Expected_Language  : String;
+                           Expected_Territory : String) is
 
       Locale : constant Locale_Type := Make_Locale (Value);
 

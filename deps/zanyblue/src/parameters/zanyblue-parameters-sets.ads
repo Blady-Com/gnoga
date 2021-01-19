@@ -34,8 +34,7 @@
 --
 
 with Ada.Calendar;
-with Ada.Text_IO;
-with Ada.Wide_Text_IO;
+with UXStrings.Text_IO;
 with ZanyBlue.Parameters.Values;
 
 private with ZanyBlue.Text;
@@ -58,163 +57,163 @@ package ZanyBlue.Parameters.Sets is
 
    procedure Append
      (Params : in out Parameter_Set_Type;
-      Name   :        Wide_String;
-      Value  :        Wide_String);
+      Name   :        String;
+      Value  :        String);
    --  Append a string to a list value.  The list value is created if it
    --  doesn't already exist.
 
    procedure Prepend
      (Params : in out Parameter_Set_Type;
-      Name   :        Wide_String;
-      Value  :        Wide_String);
+      Name   :        String;
+      Value  :        String);
    --  Prepend a string to a list value.  The list value is created if it
    --  doesn't already exist.
 
    function Get
      (Params : Parameter_Set_Type;
-      Name   : Wide_String)
+      Name   : String)
       return Value_Type'Class;
    --  General parameter query routine.  This can be used to handle user
    --  defined parameter types.
 
    function Get_Boolean
      (Params : Parameter_Set_Type;
-      Name   : Wide_String)
+      Name   : String)
       return Boolean;
    --  Get the value of boolean parameter.  Both Not_A_Boolean_Error and
    --  Not_Defined_Error can be raised.
 
    function Get_Float
      (Params : Parameter_Set_Type;
-      Name   : Wide_String)
+      Name   : String)
       return Float;
    --  Get the value of floating point parameter.  Both Not_A_Real_Error and
    --  Not_Defined_Error can be raised.
 
    function Get_Integer
      (Params : Parameter_Set_Type;
-      Name   : Wide_String)
+      Name   : String)
       return Integer;
    --  Return the value of an integer parameter.  Both Not_An_Integer and
    --  Not_Defined_Error can be raised.
 
    function Get_List
      (Params : Parameter_Set_Type;
-      Name   : Wide_String)
+      Name   : String)
       return List_Type;
    --  Return the value of a list parameter.  An Not_Defined_Error can be
    --  raised.
 
    function Get_String
      (Params : Parameter_Set_Type;
-      Name   : Wide_String)
-      return Wide_String;
+      Name   : String)
+      return String;
    --  Return the value of a string parameter.  Not_Defined_Error can be
    --  raised.
 
    function Get_Time
      (Params : Parameter_Set_Type;
-      Name   : Wide_String)
+      Name   : String)
       return Time;
    --  Return the value of a time parameter.  Not_Defined_Error can be
    --  raised.
 
    function Get_Name
      (Params : Parameter_Set_Type)
-      return Wide_String;
+      return String;
    --  Return the name associated with the parameter set.  This the empty
    --  string, by default, but can be set using the Set_Name routine.
 
    procedure Increment
      (Params    : in out Parameter_Set_Type;
-      Name      :        Wide_String;
+      Name      :        String;
       By_Amount :        Integer := 1);
    --  Increment the value of an integer parameter.  Both Not_An_Integer and
    --  Not_Defined_Error can be raised.
 
    function Is_Defined
      (Params : Parameter_Set_Type;
-      Name   : Wide_String)
+      Name   : String)
       return Boolean;
    --  Determine if a parameter is defined in the parameter set.
 
    procedure Set_Name
      (Params : in out Parameter_Set_Type;
-      Name   :        Wide_String);
+      Name   :        String);
    --  Set the name associated with a parameter set.
 
    procedure Set
      (Params : in out Parameter_Set_Type;
-      Name   :        Wide_String;
+      Name   :        String;
       Value  :        Value_Type'Class);
    --  General parameter set routine.  This can be used to support user
    --  defined parameter types.
 
    procedure Set_Boolean
      (Params : in out Parameter_Set_Type;
-      Name   :        Wide_String;
+      Name   :        String;
       Value  :        Boolean);
    --  Set a boolean parameter value.
 
    procedure Set_Float
      (Params : in out Parameter_Set_Type;
-      Name   :        Wide_String;
+      Name   :        String;
       Value  :        Float);
    --  Set a floating point parameter value.
 
    procedure Set_Integer
      (Params : in out Parameter_Set_Type;
-      Name   :        Wide_String;
+      Name   :        String;
       Value  :        Integer);
    --  Set an integer parameter value.
 
    procedure Set_Time
      (Params : in out Parameter_Set_Type;
-      Name   :        Wide_String;
+      Name   :        String;
       Value  :        Time);
    --  Set a time parameter value.
 
    procedure Set_String
      (Params : in out Parameter_Set_Type;
-      Name   :        Wide_String;
-      Value  :        Wide_String);
+      Name   :        String;
+      Value  :        String);
    --  Set a string parameter value.
 
    function Type_Name
      (Params : Parameter_Set_Type;
-      Name   : Wide_String)
-      return Wide_String;
+      Name   : String)
+      return String;
    --  Return the type name a parameter.  Not_Defined_Error can be
    --  raised.
 
    procedure Dump
      (Params      : Parameter_Set_Type;
-      Destination : Ada.Text_IO.File_Type;
+      Destination : UXStrings.Text_IO.File_Type;
       Level       : Natural := 0);
    --  Write the set of parameters defined in a parameter set to a file.  This
    --  is a debugging routine.
 
-   procedure Dump
-     (Params      : Parameter_Set_Type;
-      Destination : Ada.Wide_Text_IO.File_Type;
-      Level       : Natural := 0);
+--     procedure Dump
+--       (Params      : Parameter_Set_Type;
+--        Destination : Ada.Wide_Text_IO.File_Type;
+--        Level       : Natural := 0);
    --  Write the set of parameters defined in a parameter set to a file.  This
    --  is a debugging routine.
 
 private
 
    function Equivalent_Keys
-     (Left, Right : Wide_String)
+     (Left, Right : String)
       return Boolean;
    --  Key matching function to support the Hashed_Map data structure.
 
    package Params_Hash_Map is new Ada.Containers.Indefinite_Hashed_Maps
-     (Key_Type => Wide_String, Element_Type => Value_Type'Class,
+     (Key_Type => String, Element_Type => Value_Type'Class,
       Hash     => ZanyBlue.Text.Wide_Hash, Equivalent_Keys => Equivalent_Keys);
    --  Parameters are stored as a simple Hashed_Map.
 
    type Parameter_Set_Type is tagged record
-      Name   : Unbounded_Wide_String;
+      Name   : String;
       Values : Params_Hash_Map.Map;
    end record;
    --  The parameter set is a name and the set of values.

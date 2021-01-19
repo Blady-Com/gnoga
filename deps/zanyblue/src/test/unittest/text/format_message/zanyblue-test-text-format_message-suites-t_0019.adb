@@ -39,13 +39,13 @@ procedure T_0019 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Strings;
 
-   function Format (Text : Wide_String;
+   function Format (Text : String;
                     Arg1 : Argument_Type'Class;
-                    Map  : Pseudo_Map_Access) return Wide_String;
+                    Map  : Pseudo_Map_Access) return String;
 
-   function Format (Text : Wide_String;
+   function Format (Text : String;
                     Arg1 : Argument_Type'Class;
-                    Map  : Pseudo_Map_Access) return Wide_String is
+                    Map  : Pseudo_Map_Access) return String is
       Locale    : constant Locale_Type := Make_Locale ("en_US");
       Arguments : Argument_List;
    begin

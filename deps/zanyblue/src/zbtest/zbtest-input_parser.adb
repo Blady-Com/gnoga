@@ -43,11 +43,11 @@ package body ZBTest.Input_Parser is
    -- Parse_Words --
    -----------------
 
-   function Parse_Words (Line : Wide_String) return List_Type is
+   function Parse_Words (Line : String) return List_Type is
       type State_Type is (Space, Word, String, Comment);
       Result    : List_Type;
       State     : State_Type := Space;
-      End_Quote : Wide_Character := '"';
+      End_Quote : Unicode_Character := '"';
       First     : Positive := Line'First;
    begin
       for I in Line'Range loop

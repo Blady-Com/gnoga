@@ -35,23 +35,22 @@
 
 --
 --  This is a simple wrapper package around the standard Ada.Command_Line
---  package with Wide_String arguments and functions.  The underlying
+--  package with String arguments and functions.  The underlying
 --  Strings from Ada.Command_Line are simply interpreted as UTF-8 encoded
---  strings and are decoded to Wide_Strings.  This, obviously, does not
---  support UTF-8 encoded Wide_Wide_Strings.
+--  strings and are decoded to UXStrings.
 --
 
 package ZanyBlue.Wide_Wide_Command_Line is
 
-   function Wide_Wide_Argument_Count return Natural;
+   function Argument_Count return Natural;
    --  Number of command line arguments.
 
-   function Wide_Wide_Argument
+   function Argument
      (Number : Positive)
-      return Wide_Wide_String;
-   --  Return the Number'th command line argument as a Wide_Wide_String
+      return String;
+   --  Return the Number'th command line argument as a String
 
-   function Wide_Wide_Command_Name return Wide_Wide_String;
-   --  Return the command name as a Wide_String.
+   function Command_Name return String;
+   --  Return the command name as a String.
 
 end ZanyBlue.Wide_Wide_Command_Line;

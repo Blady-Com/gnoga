@@ -40,7 +40,7 @@ package body ZanyBlue.Test.Text.Codecs is
 
    procedure Check_Encoding (T   : in out Test_Case'Class;
                              CS  : Codecs_Type;
-                             WCh : Wide_Character;
+                             WCh : Unicode_Character;
                              Ch  : Character) is
       pragma Warnings (Off);
       Encoded : constant String := CS.Encode ("" & WCh);
@@ -66,7 +66,7 @@ package body ZanyBlue.Test.Text.Codecs is
 
    procedure Check_Encoding (T   : in out Test_Case'Class;
                              CS  : Codecs_Type;
-                             WCh : Wide_Character;
+                             WCh : Unicode_Character;
                              Ch1 : Character;
                              Ch2 : Character) is
       pragma Warnings (Off);
@@ -104,7 +104,7 @@ package body ZanyBlue.Test.Text.Codecs is
                              WCP : Natural;
                              CP  : Natural) is
    begin
-      Check_Encoding (T, CS, Wide_Character'Val (WCP), Character'Val (CP));
+      Check_Encoding (T, CS, Unicode_Character'Val (WCP), Character'Val (CP));
    end Check_Encoding;
 
    --------------------
@@ -117,7 +117,7 @@ package body ZanyBlue.Test.Text.Codecs is
                              CP1 : Natural;
                              CP2 : Natural) is
    begin
-      Check_Encoding (T, CS, Wide_Character'Val (WCP),
+      Check_Encoding (T, CS, Unicode_Character'Val (WCP),
                       Character'Val (CP1), Character'Val (CP2));
    end Check_Encoding;
 
@@ -127,11 +127,11 @@ package body ZanyBlue.Test.Text.Codecs is
 
    procedure Check_Encoding (T   : in out Test_Case'Class;
                              CS  : Codecs_Type;
-                             WCh : Wide_Character;
+                             WCh : Unicode_Character;
                              CP1 : Natural;
                              CP2 : Natural) is
    begin
-      Check_Encoding (T, CS, Wide_Character'Pos (WCh), CP1, CP2);
+      Check_Encoding (T, CS, Unicode_Character'Pos (WCh), CP1, CP2);
    end Check_Encoding;
 
 end ZanyBlue.Test.Text.Codecs;

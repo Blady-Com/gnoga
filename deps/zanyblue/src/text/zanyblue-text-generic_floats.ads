@@ -57,10 +57,10 @@ package ZanyBlue.Text.Generic_Floats is
 
    overriding function Format
      (Value     : Float_Argument_Type;
-      Type_Name : Wide_String;
-      Template  : Wide_String;
+      Type_Name : String;
+      Template  : String;
       Locale    : Locale_Type)
-      return Wide_String;
+      return String;
    --  Apply the formatting rule to generate the printable result.
 
 private

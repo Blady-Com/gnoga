@@ -34,10 +34,7 @@
 --
 
 with Ada.Containers;
-with Ada.Strings.UTF_Encoding.Wide_Strings;
-with Ada.Strings.UTF_Encoding.Wide_Wide_Strings;
-with Ada.Wide_Text_IO;
-with Ada.Characters.Conversions;
+with UXStrings.Text_IO;
 
 package ZanyBlue.Text is
 
@@ -91,7 +88,7 @@ package ZanyBlue.Text is
 
    Unicode_Format_Error : exception;
    --  The exception raised when a Unicode escaped string is converted to
-   --  a Wide_String.
+   --  a String.
 
    Duplicate_Key_Error : exception;
    --  This exception is raised when a duplicate key definition is encountered
@@ -129,74 +126,33 @@ package ZanyBlue.Text is
    Multiple_Pools_Error : exception;
    --  Internal error
 
-   type Constant_String_Access is access constant Wide_String;
+   type Constant_String_Access is access constant String;
 
    type Constant_String_List is
      array (Positive range <>) of Constant_String_Access;
 
-   type Static_Message_Pool_Type is access constant Wide_String;
-
-   function Wide_To_UTF8
-     (Value : Wide_String)
-      return String is
-     (String'(Ada.Strings.UTF_Encoding.Wide_Strings.Encode (Value)));
-   --  Convert a Wide_String to a UTF-8 encoded String.
-
-   function Wide_From_UTF8
-     (Value : String)
-      return Wide_String is
-     (Ada.Strings.UTF_Encoding.Wide_Strings.Decode
-        (Ada.Strings.UTF_Encoding.UTF_8_String'(Value)));
-   --  Convert a UTF-8 encoded String to a Wide_String;
-
-   function Wide_Wide_To_UTF8
-     (Value : Wide_Wide_String)
-      return String is
-     (String'(Ada.Strings.UTF_Encoding.Wide_Wide_Strings.Encode (Value)));
-   --  Convert a Wide_Wide_String to a UTF-8 encoded String.
-
-   function Wide_Wide_From_UTF8
-     (Value : String)
-      return Wide_Wide_String is
-     (Ada.Strings.UTF_Encoding.Wide_Wide_Strings.Decode
-        (Ada.Strings.UTF_Encoding.UTF_8_String'(Value)));
-   --  Convert a UTF-8 encoded String to a Wide_String;
-
-   function To_UTF8
-     (Value : Wide_String)
-      return String renames Wide_To_UTF8;
-   --  Convert a Wide_String to a UTF-8 encoded String (deprecated).
-   pragma Obsolescent
-     (Entity => To_UTF8, Message => "Use Wide_To_UTF8 instead of To_UTF8");
-
-   function From_UTF8
-     (Value : String)
-      return Wide_String renames Wide_From_UTF8;
-   --  Convert a UTF-8 encoded String to a Wide_String (deprecated).
-   pragma Obsolescent
-     (Entity  => From_UTF8,
-      Message => "Use Wide_From_UTF8 instead of From_UTF8");
+   type Static_Message_Pool_Type is access constant String;
 
    function Files_Differ
-     (Left_File_Name  : Wide_String;
-      Right_File_Name : Wide_String)
+     (Left_File_Name  : String;
+      Right_File_Name : String)
       return Boolean;
    --  Determine if the contents of two files differ.
 
    function Wide_Hash
-     (Key : Wide_String)
+     (Key : String)
       return Ada.Containers.Hash_Type;
    --  Return the container hash value for a wide string.  Simply use the
    --  standard String hash function on the UTF8 encoded value.
 
-   function To_Wide_String
-     (S : String)
-      return Wide_String renames Ada.Characters.Conversions.To_Wide_String;
-   --  Utility name to convert a String to Wide_String
+--     function To_Wide_String
+--       (S : String)
+--        return String renames Ada.Characters.Conversions.To_Wide_String;
+--     --  Utility name to convert a String to String
 
    procedure Wide_Create_For_Update
-     (File : in out Ada.Wide_Text_IO.File_Type;
-      Name :        Wide_String);
+     (File : in out UXStrings.Text_IO.File_Type;
+      Name :        String);
    --  Create a file.  The file created is a temporary file that is renamed
    --  to the target file on close using Close_And_Update.  The renaming
    --  only occurs if the file contents have changed.  These routines are
@@ -204,7 +160,7 @@ package ZanyBlue.Text is
    --  if the contents have changed.
 
    procedure Close_And_Update
-     (File    : in out Ada.Wide_Text_IO.File_Type;
+     (File    : in out UXStrings.Text_IO.File_Type;
       Updated :    out Boolean);
    --  Close the file and rename to the base name if the contents of the file
    --  have changed.

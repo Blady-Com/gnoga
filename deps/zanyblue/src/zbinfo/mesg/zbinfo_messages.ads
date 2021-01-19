@@ -17,7 +17,7 @@ package ZBInfo_Messages is
    function Standard_Catalog return ZanyBlue.Text.Catalogs.Catalog_Type
       renames ZanyBlue.Text.Formatting.Standard_Catalog;
 
-   function Facility (Index : Positive) return Wide_String;
+   function Facility (Index : Positive) return String;
    --  The name of the Index'th Facility item compiled.
    --  This routine is normally only used by generated accessor code.
 
@@ -25,7 +25,7 @@ package ZBInfo_Messages is
    --  Numnber of Facility items compiled.
    --  This routine is normally only used by generated accessor code.
 
-   function Key (Index : Positive) return Wide_String;
+   function Key (Index : Positive) return String;
    --  The name of the Index'th Key item compiled.
    --  This routine is normally only used by generated accessor code.
 

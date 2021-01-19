@@ -40,7 +40,7 @@ package body ZanyBlue.Test.Parameters.Values.Suites is
    use ZanyBlue.Parameters;
    use ZanyBlue.Parameters.Values;
 
-   Test_Area : constant Wide_String := "parameters/values";
+   Test_Area : constant String := "parameters/values";
 
    procedure T_0001 (T : in out Test_Case'Class);
    procedure T_0002 (T : in out Test_Case'Class);

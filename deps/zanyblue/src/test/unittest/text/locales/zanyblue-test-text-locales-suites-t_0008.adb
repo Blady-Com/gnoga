@@ -35,9 +35,9 @@
 separate (ZanyBlue.Test.Text.Locales.Suites)
 procedure T_0008 (T : in out Test_Case'Class) is
 
-   procedure Check_Locale (Name : Wide_String);
+   procedure Check_Locale (Name : String);
 
-   procedure Check_Locale (Name : Wide_String) is
+   procedure Check_Locale (Name : String) is
       Locale : constant Locale_Type := Make_Locale (Name);
    begin
       Check_Value (T, Locale_Name (Locale), Name,

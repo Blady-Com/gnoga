@@ -39,11 +39,11 @@ procedure T_0033 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Catalogs;
 
-   Test_Name : constant Wide_String := "t_0033";
+   Test_Name : constant String := "t_0033";
    Locale    : constant Locale_Type := Make_Locale ("");
-   Facility  : constant Wide_String := "fac1";
-   Key       : constant Wide_String := "key1";
-   Message   : constant Wide_String := "Message: #1={0}, #2={1}, "
+   Facility  : constant String := "fac1";
+   Key       : constant String := "key1";
+   Message   : constant String := "Message: #1={0}, #2={1}, "
                                      & "#3={2}, #4={3}";
    Catalog   : constant Catalog_Type := Create;
    Output    : File_Type;

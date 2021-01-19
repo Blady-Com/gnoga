@@ -43,8 +43,8 @@ procedure T_0019 (T : in out Test_Case'Class) is
    use Ada.Wide_Text_IO;
    use ZanyBlue.OS;
 
-   Test_Name  : constant Wide_String := "t_0019";
-   Filename   : constant Wide_String := Test_Log_Name (Test_Area, Test_Name);
+   Test_Name  : constant String := "t_0019";
+   Filename   : constant String := Test_Log_Name (Test_Area, Test_Name);
    T1         : constant Time := Time_Of (2011, 10, 31, Duration (60483));
    T2         : constant Time := Time_Of (2011, 11, 2, Duration (60483));
    Output     : File_Type;

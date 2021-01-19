@@ -42,11 +42,11 @@ procedure Main is
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Formatting;
 
-   procedure Dump_Values (Facility : Wide_String;
+   procedure Dump_Values (Facility : String;
                           Locale   : Locale_Type;
                           Extra    : Boolean);
 
-   procedure Dump_Values (Facility : Wide_String;
+   procedure Dump_Values (Facility : String;
                           Locale   : Locale_Type;
                           Extra    : Boolean) is
    begin

@@ -43,7 +43,7 @@ package body ZanyBlue.Test.Text.Locales.Day_Periods.Suites is
    procedure Check_Day_Period
       (T      : in out Test_Case'Class;
        Period : Day_Period_Type;
-       Expect : Wide_String;
+       Expect : String;
        Locale : Locale_Type);
 
    procedure T_0001 (T : in out Test_Case'Class);
@@ -68,7 +68,7 @@ package body ZanyBlue.Test.Text.Locales.Day_Periods.Suites is
    procedure Check_Day_Period
       (T      : in out Test_Case'Class;
        Period : Day_Period_Type;
-       Expect : Wide_String;
+       Expect : String;
        Locale : Locale_Type)
    is
    begin

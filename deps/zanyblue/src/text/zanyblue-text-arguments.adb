@@ -33,13 +33,12 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Strings.Wide_Fixed;
 with ZanyBlue.Text.Buffer;
 
 package body ZanyBlue.Text.Arguments is
 
-   Missing_Start : constant Wide_Character := '[';
-   Missing_End   : constant Wide_Character := ']';
+   Missing_Start : constant Unicode_Character := '[';
+   Missing_End   : constant Unicode_Character := ']';
 
    type Format_Map_Type is record
       Format_Name   : Constant_String_Access;
@@ -67,9 +66,9 @@ package body ZanyBlue.Text.Arguments is
       (Time_Format_Name'Access, Time_Category_Name'Access));
 
    function Type_Name_Search
-     (Type_Name   : Wide_String;
+     (Type_Name   : String;
       Return_Name : Boolean)
-      return Wide_String;
+      return String;
    --  Search the type name mapping table for a matching prefix name and
    --  return either the name matched or the associated category.
 
@@ -101,30 +100,30 @@ package body ZanyBlue.Text.Arguments is
    function Format
      (List          : Argument_List;
       Position      : Natural;
-      Message       : Wide_String;
-      Format_String : Wide_String;
+      Message       : String;
+      Format_String : String;
       Locale        : Locale_Type;
       Raise_Errors  : Boolean;
       Error_Handler : access Error_Handler_Type'Class :=
         Standard_Error_Handler'Access)
-      return Wide_String
+      return String
    is
 
-      use Ada.Strings.Wide_Fixed;
       use ZanyBlue.Text.Buffer;
 
-      Type_Name : constant Wide_String := Type_Name_Prefix (Format_String);
-      Template_Start : Positive := Format_String'First + Type_Name'Length;
-      Template_End   : Natural              := Format_String'Last;
-      Format_Locale  : Locale_Type          := Locale;
+      Type_Name      : constant String := Type_Name_Prefix (Format_String);
+      Template_Start : Positive := Format_String.First + Type_Name.Length;
+      Template_End   : Natural         := Format_String.Last;
+      Format_Locale  : Locale_Type     := Locale;
       Buffer         : Buffer_Type;
 
    begin
-      if Head (Format_String (Template_Start .. Template_End), 1) = "," then
+      if Head (Format_String.Slice (Template_Start, Template_End), 1) = ","
+      then
          Template_Start := Template_Start + 1;
       end if;
       if Tail (Format_String, 1) = "*" then
-         Template_End  := Format_String'Last - 1;
+         Template_End  := Format_String.Last - 1;
          Format_Locale := Root_Locale;
       end if;
       if Position >= Natural (List.Contents.Length) then
@@ -139,7 +138,7 @@ package body ZanyBlue.Text.Arguments is
       else
          return
            List.Contents.Element (Position).Format
-             (Type_Name, Format_String (Template_Start .. Template_End),
+             (Type_Name, Format_String.Slice (Template_Start, Template_End),
               Format_Locale);
       end if;
    end Format;
@@ -161,8 +160,8 @@ package body ZanyBlue.Text.Arguments is
    ----------------------
 
    function Type_Name_Prefix
-     (Format_String : Wide_String)
-      return Wide_String
+     (Format_String : String)
+      return String
    is
    begin
       return Type_Name_Search (Format_String, True);
@@ -173,11 +172,10 @@ package body ZanyBlue.Text.Arguments is
    ----------------------
 
    function Type_Name_Search
-     (Type_Name   : Wide_String;
+     (Type_Name   : String;
       Return_Name : Boolean)
-      return Wide_String
+      return String
    is
-      use Ada.Strings.Wide_Fixed;
       Left             : Positive := Format_Mappings'First;
       Right            : Positive := Format_Mappings'Last + 1;
       Center           : Positive;
@@ -190,10 +188,10 @@ package body ZanyBlue.Text.Arguments is
       loop
          Center           := Left + (Right - Left) / 2;
          Candidate        := Format_Mappings (Center).Format_Name;
-         Candidate_Length := Candidate.all'Length;
+         Candidate_Length := Candidate.Length;
          if Head (Type_Name, Candidate_Length) = Candidate.all
            and then
-           (Type_Name'Length = Candidate_Length
+           (Type_Name.Length = Candidate_Length
             or else Type_Name (Candidate_Length + 1) = ',')
          then
             if Return_Name then
@@ -218,8 +216,8 @@ package body ZanyBlue.Text.Arguments is
    ---------------------------
 
    function Type_Name_To_Category
-     (Type_Name : Wide_String)
-      return Wide_String
+     (Type_Name : String)
+      return String
    is
    begin
       return Type_Name_Search (Type_Name, False);

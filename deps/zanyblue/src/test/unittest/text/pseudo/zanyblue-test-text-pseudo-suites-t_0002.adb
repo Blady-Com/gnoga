@@ -35,8 +35,8 @@
 separate (ZanyBlue.Test.Text.Pseudo.Suites)
 procedure T_0002 (T : in out Test_Case'Class) is
 
-   Source   : constant Wide_String := "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-   Target   : constant Wide_String := "abcdefghijklmnopqrstuvwxyz";
+   Source   : constant String := "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+   Target   : constant String := "abcdefghijklmnopqrstuvwxyz";
    Mapping  : Pseudo_Map_Type;
 
 begin

@@ -71,8 +71,8 @@ procedure Getenv_Command (State : in out State_Type;
    use Ada.Environment_Variables;
 
    procedure Get_List_Value (State         : in out State_Type;
-                             Source        : Wide_String;
-                             Target        : Wide_String;
+                             Source        : String;
+                             Target        : String;
                              Append_Values : Boolean);
    --  Get an environment variable as a list value.
 
@@ -81,21 +81,21 @@ procedure Getenv_Command (State : in out State_Type;
    --------------------
 
    procedure Get_List_Value (State         : in out State_Type;
-                             Source        : Wide_String;
-                             Target        : Wide_String;
+                             Source        : String;
+                             Target        : String;
                              Append_Values : Boolean) is
 
       procedure Parse_Values (List_Values : in out List_Type;
-                              Definition  : Wide_String);
+                              Definition  : String);
 
       ------------------
       -- Parse_Values --
       ------------------
 
       procedure Parse_Values (List_Values : in out List_Type;
-                              Definition  : Wide_String) is
+                              Definition  : String) is
 
-         PSep   : constant Wide_Character := State.Get_Character ("_pathsep");
+         PSep   : constant Unicode_Character := State.Get_Character ("_pathsep");
          Start  : Positive := Definition'First;
          Next   : Positive := Definition'First;
 
@@ -113,9 +113,9 @@ procedure Getenv_Command (State : in out State_Type;
       List_Values : List_Type;
 
    begin  -- Get_List_Value
-      if Exists (Wide_To_UTF8 (Source)) then
+      if Exists (To_UTF_8 (Source)) then
          Parse_Values (List_Values,
-                       To_Wide_String (Value (Wide_To_UTF8 (Source))));
+                       To_Wide_String (Value (To_UTF_8 (Source))));
          if Append_Values then
             for I in 1 .. Length (List_Values) loop
                State.Append (Target, Value (List_Values, I));
@@ -167,6 +167,6 @@ begin
    else
       State.Set_String (
             Value (Args, Target_Idx),
-            To_Wide_String (Value (Wide_To_UTF8 (Value (Args, Source_Idx)))));
+            To_Wide_String (Value (To_UTF_8 (Value (Args, Source_Idx)))));
    end if;
 end Getenv_Command;

@@ -43,9 +43,9 @@ procedure T_0004 (T : in out Test_Case'Class) is
 
    My_Error : exception;
    Locale    : constant Locale_Type := Make_Locale ("");
-   Facility  : constant Wide_String := "fac1";
-   Key       : constant Wide_String := "key1";
-   Message   : constant Wide_String := "Message: {0}, {1}, {2}";
+   Facility  : constant String := "fac1";
+   Key       : constant String := "key1";
+   Message   : constant String := "Message: {0}, {1}, {2}";
    Catalog   : constant Catalog_Type := Create;
 
 begin
@@ -56,7 +56,7 @@ begin
    WAssert (T, False, "Raise_Exception returned!");
 exception
 when E : My_Error =>
-   Check_Value (T, Wide_From_UTF8 (Exception_Message (E)),
+   Check_Value (T, From_UTF_8 (Exception_Message (E)),
                    "Message: 1, 2, 3",
            "My message not raised");
 end T_0004;

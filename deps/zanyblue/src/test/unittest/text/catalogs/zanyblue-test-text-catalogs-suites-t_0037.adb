@@ -35,17 +35,17 @@
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
 procedure T_0037 (T : in out Test_Case'Class) is
 
-   Facility     : constant Wide_String := "strings";
-   Dir_Name     : constant Wide_String := Test_Src_Directory (Test_Area);
+   Facility     : constant String := "strings";
+   Dir_Name     : constant String := Test_Src_Directory (Test_Area);
    Catalog      : Catalog_Type;
    N_Locales    : Natural;
    N_Messages   : Natural;
 
-   procedure Check (Locale : Wide_String;
-                    Value  : Wide_String);
+   procedure Check (Locale : String;
+                    Value  : String);
 
-   procedure Check (Locale : Wide_String;
-                    Value  : Wide_String) is
+   procedure Check (Locale : String;
+                    Value  : String) is
       L : constant Locale_Type := Make_Locale (Locale);
    begin
       Check_Value (T, Get_Text (Catalog, Facility, "reboot.title", L), Value);

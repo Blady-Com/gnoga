@@ -51,9 +51,9 @@ package ZanyBlue.Test.Text.Formatting.Suites.T_0094_Types is
 
    overriding
    function Format (Value     : T_0094_Argument;
-                    Type_Name : Wide_String;
-                    Template  : Wide_String;
-                    Locale    : Locale_Type) return Wide_String;
+                    Type_Name : String;
+                    Template  : String;
+                    Locale    : Locale_Type) return String;
 
 private
 

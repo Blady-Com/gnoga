@@ -42,48 +42,48 @@ package ZanyBlue.Test is
    --  in a string value but need to generate it, e.g., when we expect
    --  an exception should be raise.
    procedure Discard (Value      : String);
-   procedure Discard (Wide_Value : Wide_String);
+   procedure Discard (Wide_Value : String);
    procedure Discard (Value      : Integer);
    procedure Discard (Value      : Float);
    procedure Discard (Value      : Ada.Calendar.Time);
    procedure Discard (Value      : Boolean);
 
    procedure Check_Value (Test      : in out Ahven.Framework.Test_Case'Class;
-                          Generated : Wide_String;
-                          Expected  : Wide_String;
-                          Message   : Wide_String := "Failure");
+                          Generated : String;
+                          Expected  : String;
+                          Message   : String := "Failure");
 
    procedure WAssert (Test      : in out Ahven.Framework.Test_Case'Class;
                       Condition : Boolean;
-                      Message   : Wide_String);
+                      Message   : String);
 
    procedure Check_Log_File (Test    : in out Ahven.Framework.Test_Case'Class;
-                             Test_Area : Wide_String;
-                             Test_Name : Wide_String;
-                             Message   : Wide_String);
-   function Compare_Files (Name_A, Name_B : Wide_String) return Boolean;
-   function Compare_Log_File (Test_Area : Wide_String;
-                              Test_Name : Wide_String) return Boolean;
+                             Test_Area : String;
+                             Test_Name : String;
+                             Message   : String);
+   function Compare_Files (Name_A, Name_B : String) return Boolean;
+   function Compare_Log_File (Test_Area : String;
+                              Test_Name : String) return Boolean;
    procedure Create_Log_File (File      : in out Ada.Wide_Text_IO.File_Type;
-                              Test_Area : Wide_String;
-                              Test_Name : Wide_String);
-   function Test_Src_Directory (Test_Area : Wide_String) return Wide_String;
-   function Test_RefLog_Name (Test_Area : Wide_String;
-                              Test_Name : Wide_String) return Wide_String;
-   function Test_In_Name (Test_Area : Wide_String;
-                          Test_Name : Wide_String) return Wide_String;
-   function Test_Log_Name (Test_Area : Wide_String;
-                           Test_Name : Wide_String) return Wide_String;
+                              Test_Area : String;
+                              Test_Name : String);
+   function Test_Src_Directory (Test_Area : String) return String;
+   function Test_RefLog_Name (Test_Area : String;
+                              Test_Name : String) return String;
+   function Test_In_Name (Test_Area : String;
+                          Test_Name : String) return String;
+   function Test_Log_Name (Test_Area : String;
+                           Test_Name : String) return String;
    procedure Set_Output (File : Ada.Wide_Text_IO.File_Type)
       renames Ada.Wide_Text_IO.Set_Output;
    procedure Set_Output (Output    : in out Ada.Wide_Text_IO.File_Type;
-                         Test_Area : Wide_String;
-                         Test_Name : Wide_String);
+                         Test_Area : String;
+                         Test_Name : String);
    procedure Restore_Output (Output : in out Ada.Wide_Text_IO.File_Type);
    procedure Restore_Output;
 
    Usage_Error : exception;
 
-   function Top_Directory return Wide_String;
+   function Top_Directory return String;
 
 end ZanyBlue.Test;

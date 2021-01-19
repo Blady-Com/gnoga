@@ -36,12 +36,12 @@ package ZanyBlue.Test.Text.Codecs.Decoding is
 
    procedure Check_Decoding (T   : in out Test_Case'Class;
                              CS  : Codecs_Type;
-                             WCh : Wide_Character;
+                             WCh : Unicode_Character;
                              Ch  : Character);
 
    procedure Check_Decoding (T   : in out Test_Case'Class;
                              CS  : Codecs_Type;
-                             WCh : Wide_Character;
+                             WCh : Unicode_Character;
                              Ch1 : Character;
                              Ch2 : Character);
 
@@ -58,13 +58,13 @@ package ZanyBlue.Test.Text.Codecs.Decoding is
 
    procedure Check_Decoding (T   : in out Test_Case'Class;
                              CS  : Codecs_Type;
-                             WCh : Wide_Character;
+                             WCh : Unicode_Character;
                              CP1 : Natural;
                              CP2 : Natural);
 
    procedure Check_Decoding (T      : in out Test_Case'Class;
                              Codecs : Codecs_Type;
-                             Expect : Wide_String;
+                             Expect : String;
                              Source : String);
 
 end ZanyBlue.Test.Text.Codecs.Decoding;

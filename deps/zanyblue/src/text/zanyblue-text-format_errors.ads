@@ -39,7 +39,7 @@ package ZanyBlue.Text.Format_Errors is
 
    procedure Format_Not_Closed
      (Error_Handler : in out Error_Handler_Type;
-      Message       :        Wide_String;
+      Message       :        String;
       Position      :        Positive;
       Level         :        Natural;
       Raise_Errors  :        Boolean);
@@ -48,9 +48,9 @@ package ZanyBlue.Text.Format_Errors is
 
    procedure Illegal_Character
      (Error_Handler : in out Error_Handler_Type;
-      Message       :        Wide_String;
+      Message       :        String;
       Position      :        Positive;
-      Ch            :        Wide_Character;
+      Ch            :        Unicode_Character;
       Level         :        Natural;
       Raise_Errors  :        Boolean);
    --  Handle an illegal character in a format string, e.g., only digits
@@ -58,9 +58,9 @@ package ZanyBlue.Text.Format_Errors is
 
    procedure Missing_Argument
      (Error_Handler : in out Error_Handler_Type;
-      Message       :        Wide_String;
+      Message       :        String;
       Position      :        Natural;
-      Type_Name     :        Wide_String;
+      Type_Name     :        String;
       Raise_Errors  :        Boolean);
    --  Handle a reference to a missing argument when formatting a message.
 

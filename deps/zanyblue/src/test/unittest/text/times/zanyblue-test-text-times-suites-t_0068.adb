@@ -44,15 +44,15 @@ procedure T_0068 (T : in out Test_Case'Class) is
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Times;
 
-   procedure Check (Format : Wide_String;
-                    Value  : Wide_String);
+   procedure Check (Format : String;
+                    Value  : String);
 
    Locale    : constant Locale_Type := Make_Locale ("zh_Hans");
    V1        : constant Time := Time_Of (1904, 6, 16, Duration (60483));
    Arg1      : constant Time_Argument_Type := Create (V1, 8 * 60);
 
-   procedure Check (Format : Wide_String;
-                    Value  : Wide_String) is
+   procedure Check (Format : String;
+                    Value  : String) is
 
    begin
       Check_Value (T, Arg1.Format ("", Format, Locale), Value,

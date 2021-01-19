@@ -72,13 +72,13 @@ procedure Copy_Command (State : in out State_Type;
    use ZanyBlue.Wide_Directories;
 
    procedure Copy_Directory (State            : in out State_Type;
-                             Source_Name      : Wide_String;
-                             Destination_Name : Wide_String);
+                             Source_Name      : String;
+                             Destination_Name : String);
    --  Recursively copy a directory.
 
    procedure Copy_File (State            : in out State_Type;
-                        Source_Name      : Wide_String;
-                        Destination_Name : Wide_String);
+                        Source_Name      : String;
+                        Destination_Name : String);
    --  Copy a simple file.
 
    --------------------
@@ -86,9 +86,9 @@ procedure Copy_Command (State : in out State_Type;
    --------------------
 
    procedure Copy_Directory (State            : in out State_Type;
-                             Source_Name      : Wide_String;
-                             Destination_Name : Wide_String) is
-      Source_Path : constant Wide_String :=
+                             Source_Name      : String;
+                             Destination_Name : String) is
+      Source_Path : constant String :=
                        State.Locate_Directory (Source_Name);
    begin
       Wide_Copy_Tree (Source_Path, Destination_Name);
@@ -101,9 +101,9 @@ procedure Copy_Command (State : in out State_Type;
    ---------------
 
    procedure Copy_File (State            : in out State_Type;
-                        Source_Name      : Wide_String;
-                        Destination_Name : Wide_String) is
-      Source_Path : constant Wide_String := State.Locate_File (Source_Name);
+                        Source_Name      : String;
+                        Destination_Name : String) is
+      Source_Path : constant String := State.Locate_File (Source_Name);
    begin
       Wide_Copy_File (Source_Path, Destination_Name);
       Print_00011 (+Source_Name, +Destination_Name);

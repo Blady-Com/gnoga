@@ -34,8 +34,7 @@
 --
 
 with Ada.Calendar;
-with Ada.Text_IO;
-with Ada.Wide_Text_IO;
+with UXStrings.Text_IO;
 
 package ZanyBlue.Parameters.Values is
 
@@ -45,73 +44,73 @@ package ZanyBlue.Parameters.Values is
 
    function To_Boolean
      (Value : Value_Type;
-      Name  : Wide_String)
+      Name  : String)
       return Boolean;
    --  Return the value of a parameter as a boolean.  The exception
    --  Not_A_Boolean_Error can be raised.
 
    function To_Float
      (Value : Value_Type;
-      Name  : Wide_String)
+      Name  : String)
       return Float;
    --  Return the value of a floating point parameter.  The exception
    --  Not_A_Real_Error can be raised.
 
    function To_Integer
      (Value : Value_Type;
-      Name  : Wide_String)
+      Name  : String)
       return Integer;
    --  Return the value of an integer parameter.  The exception
    --  Not_An_Integer_Error can be raised.
 
    function To_List
      (Value : Value_Type;
-      Name  : Wide_String)
+      Name  : String)
       return List_Type is abstract;
    --  Return the value of a list parameter.  This will return the value
    --  converted to a list for if necessary.
 
    function To_String
      (Value : Value_Type;
-      Name  : Wide_String)
-      return Wide_String is abstract;
+      Name  : String)
+      return String is abstract;
    --  Return the value of a parameter as a string.  This can be used
    --  for any parameter type.
 
    function To_Time
      (Value : Value_Type;
-      Name  : Wide_String)
+      Name  : String)
       return Time;
    --  Return the value of an time parameter.  The exception
    --  Not_A_Time_Error can be raised.
 
    function Type_Name
      (Value : Value_Type;
-      Name  : Wide_String)
-      return Wide_String is abstract;
+      Name  : String)
+      return String is abstract;
    --  Return the type name for a parameter ("float", "integer", "string" or
    --  "time").
 
    procedure Increment
      (Value     : in out Value_Type;
-      Name      :        Wide_String;
+      Name      :        String;
       By_Amount :        Integer);
    --  Increment a parameter value by the given amount.  The exception
    --  Not_An_Integer_Error can be raised.
 
    procedure Dump
      (Value       : Value_Type'Class;
-      Name        : Wide_String;
-      Destination : Ada.Text_IO.File_Type;
+      Name        : String;
+      Destination : UXStrings.Text_IO.File_Type;
       Level       : Natural := 0);
    --  Write a parameter value definition as an XML definition to the given
    --  file.
 
-   procedure Dump
-     (Value       : Value_Type'Class;
-      Name        : Wide_String;
-      Destination : Ada.Wide_Text_IO.File_Type;
-      Level       : Natural := 0);
+--     procedure Dump
+--       (Value       : Value_Type'Class;
+--        Name        : String;
+--        Destination : Ada.Wide_Text_IO.File_Type;
+--        Level       : Natural := 0);
    --  Write a parameter value definition as an XML definition to the given
    --  file.
 
@@ -136,7 +135,7 @@ package ZanyBlue.Parameters.Values is
    --  Convert a list value to a Value_Type (boxing)
 
    function To_String_Value
-     (Data : Wide_String)
+     (Data : String)
       return Value_Type'Class;
    --  Convert a string value to a Value_Type (boxing)
 

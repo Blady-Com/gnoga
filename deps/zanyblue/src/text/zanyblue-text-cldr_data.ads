@@ -14,7 +14,7 @@ package ZanyBlue.Text.CLDR_Data is
 
    function Facility
      (Index : Positive)
-      return Wide_String;
+      return String;
    --  The name of the Index'th Facility item compiled.
    --  This routine is normally only used by generated accessor code.
 
@@ -24,7 +24,7 @@ package ZanyBlue.Text.CLDR_Data is
 
    function Key
      (Index : Positive)
-      return Wide_String;
+      return String;
    --  The name of the Index'th Key item compiled.
    --  This routine is normally only used by generated accessor code.
 

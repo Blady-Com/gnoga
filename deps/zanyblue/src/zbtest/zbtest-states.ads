@@ -77,25 +77,25 @@ package ZBTest.States is
    --  Execute a single command based on words parsed from an input line.
 
    procedure Execute_Line (State        : in out State_Type;
-                           Input_Line   : Wide_String;
+                           Input_Line   : String;
                            Interactive  : Boolean);
    --  Execute a single line: parse to words and then execute.  The
    --  Line is then executed by the lower level Execute_Line routine.
 
    procedure Execute_Line (State        : in out State_Type;
-                           Input_Line   : Wide_String);
+                           Input_Line   : String);
    --  Low level input line execution, parse and dispatch.
 
    function Locate_Directory (State : State_Type;
-                              Name  : Wide_String) return Wide_String;
+                              Name  : String) return String;
    --  Using the search path parameter, locate a directory.
 
    function Locate_Executable (State : State_Type;
-                               Name  : Wide_String) return Wide_String;
+                               Name  : String) return String;
    --  Using the path parameter, locate an executeable.
 
    function Locate_File (State : State_Type;
-                         Name  : Wide_String) return Wide_String;
+                         Name  : String) return String;
    --  Using the search path parameter, locate a file.
 
    procedure New_Scope (State : in out State_Type);
@@ -111,24 +111,24 @@ package ZBTest.States is
    --  Exit (end) a scrope, normally used when a test script complete.
 
    procedure Initialize_Scope (State          : in out State_Type;
-                               Script_Dir     : Wide_String;
+                               Script_Dir     : String;
                                Implicit_Scope : Boolean := False);
    --  Initialize a new scope on starting a new test script.
 
    procedure Register_Failure (State     : in out State_Type;
-                               Test_Name : Wide_String);
+                               Test_Name : String);
    --  Regisiter a test failure.
 
    procedure Register_Success (State     : in out State_Type;
-                               Test_Name : Wide_String);
+                               Test_Name : String);
    --  Regisiter a test success.
 
-   function Full_Test_Name (State : State_Type) return Wide_String;
+   function Full_Test_Name (State : State_Type) return String;
    --  The full test name for the current test.  This includes the enclosing
    --  tests names to generate a path like name, e.g., "app.area1.subarea2".
 
    function Is_Defined (State     : State_Type;
-                        Name      : Wide_String;
+                        Name      : String;
                         Any_Scope : Boolean := True) return Boolean;
    --  Is a parameter defined, either for the current scope or in one of the
    --  enclosing scopes.  If Any_Scope is False, only the current scope
@@ -143,94 +143,94 @@ package ZBTest.States is
    --
 
    procedure Add_Undo_Action (State  : in out State_Type;
-                              Action : Wide_String);
+                              Action : String);
    --  Add an "undo" action to be performed when a scope is exited.
 
    function Get (State  : State_Type;
-                 Name   : Wide_String) return Value_Type'Class;
+                 Name   : String) return Value_Type'Class;
    --  Get the value, as a generic boxed value.  Can be used to handle
    --  extended types, e.g., XML nodes.
 
    function Get_Boolean (State : State_Type;
-                         Name  : Wide_String) return Boolean;
+                         Name  : String) return Boolean;
    --  Get the value of a Boolean parameter.
 
    function Get_Character (State : State_Type;
-                           Name  : Wide_String) return Wide_Character;
+                           Name  : String) return Unicode_Character;
    --  Get the value of a character parameter.
 
    function Get_Float (State : State_Type;
-                       Name  : Wide_String) return Float;
+                       Name  : String) return Float;
    --  Get the value of a floating point parameter.
 
    function Get_Integer (State : State_Type;
-                         Name  : Wide_String) return Integer;
+                         Name  : String) return Integer;
    --  Get the value of an integer parameter.
 
    function Get_List (State : State_Type;
-                      Name  : Wide_String;
+                      Name  : String;
                       Deep  : Boolean := True) return List_Type;
    --  Get the value of a list parameter.  If Deep is true, then the values
    --  in all enclosing scopes are appended to the result.
 
    function Get_String (State : State_Type;
-                        Name  : Wide_String) return Wide_String;
+                        Name  : String) return String;
    --  Get the value of a string parameter.
 
    function Get_Time (State : State_Type;
-                      Name  : Wide_String) return Ada.Calendar.Time;
+                      Name  : String) return Ada.Calendar.Time;
    --  Get the value of a time parameter.
 
    procedure Append (State  : in out State_Type;
-                     Name   : Wide_String;
-                     Value  : Wide_String);
+                     Name   : String;
+                     Value  : String);
    --  Append a value to a list parameter.
 
    procedure Prepend (State  : in out State_Type;
-                      Name   : Wide_String;
-                      Value  : Wide_String);
+                      Name   : String;
+                      Value  : String);
    --  Prepend a value to a list parameter.
 
    procedure Increment (State     : in out State_Type;
-                        Name      : Wide_String;
+                        Name      : String;
                         By_Amount : Integer := 1;
                         Deep      : Boolean := True);
    --  Increment an integer parameter.  If Deep is true, then instances
    --  of the parmeter in all scopes is incremented.
 
    procedure Set (State  : in out State_Type;
-                  Name   : Wide_String;
+                  Name   : String;
                   Value  : Value_Type'Class);
    --  Set the value, as a generic boxed value.  Can be used to handle
    --  extended types, e.g., XML nodes.
 
    procedure Set_Boolean (State  : in out State_Type;
-                          Name   : Wide_String;
+                          Name   : String;
                           Value  : Boolean);
    --  Set a Boolean value.
 
    procedure Set_Integer (State  : in out State_Type;
-                          Name   : Wide_String;
+                          Name   : String;
                           Value  : Integer);
    --  Set an integer value.
 
    procedure Set_Float (State  : in out State_Type;
-                        Name   : Wide_String;
+                        Name   : String;
                         Value  : Float);
    --  Set a floating point value.
 
    procedure Set_String (State  : in out State_Type;
-                         Name   : Wide_String;
-                         Value  : Wide_String);
+                         Name   : String;
+                         Value  : String);
    --  Set a string value.
 
    procedure Set_Time (State  : in out State_Type;
-                       Name   : Wide_String;
+                       Name   : String;
                        Value  : Ada.Calendar.Time);
    --  Set a time value.
 
    procedure Dump (State       : State_Type;
-                   File_Name   : Wide_String;
+                   File_Name   : String;
                    All_Scopes  : Boolean);
    --  Dump the parameters defined as a simple XML document to the named file.
    --  NOTE: value are not currently XML quoted!

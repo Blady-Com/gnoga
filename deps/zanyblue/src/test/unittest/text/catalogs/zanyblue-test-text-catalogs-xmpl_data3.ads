@@ -45,8 +45,8 @@ package ZanyBlue.Test.Text.Catalogs.Xmpl_Data3 is
    package ZTC renames ZanyBlue.Text.Catalogs;
    package ZTF renames ZanyBlue.Text.Formatting;
 
-   Facility_1 : aliased constant Wide_String := "f1";
-   Facility_2 : aliased constant Wide_String := "f2";
+   Facility_1 : aliased constant String := "f1";
+   Facility_2 : aliased constant String := "f2";
    Facilities : constant ZT.Constant_String_List := (
                    1 => Facility_1'Access,
                    2 => Facility_2'Access);

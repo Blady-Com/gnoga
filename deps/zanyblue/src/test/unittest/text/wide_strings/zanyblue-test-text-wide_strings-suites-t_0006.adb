@@ -41,10 +41,10 @@ procedure T_0006 (T : in out Test_Case'Class) is
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Arguments;
 
-   V1        : constant Wide_String := "";
-   V2        : constant Wide_String := "A";
-   V3        : constant Wide_String := "James Joyce";
-   V4        : constant Wide_String := "Ulysses";
+   V1        : constant String := "";
+   V2        : constant String := "A";
+   V3        : constant String := "James Joyce";
+   V4        : constant String := "Ulysses";
    List      : Argument_List;
 
 begin

@@ -48,7 +48,7 @@ package body ZanyBlue.Test.Text.Formatting.Suites is
    use ZanyBlue.Text.Arguments;
    use ZanyBlue.Text.Formatting;
 
-   Test_Area : constant Wide_String := "text/formatting";
+   Test_Area : constant String := "text/formatting";
 
    procedure T_0001 (T : in out Test_Case'Class);
    procedure T_0002 (T : in out Test_Case'Class);

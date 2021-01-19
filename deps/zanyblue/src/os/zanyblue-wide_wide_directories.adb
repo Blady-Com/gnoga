@@ -35,365 +35,332 @@
 
 --
 --  This is a simple wrapper package around the standard Ada.Directories
---  package with Wide_String arguments and functions.  The underlying
+--  package with String arguments and functions.  The underlying
 --  Strings from Ada.Directories are simply interpreted as UTF-8 encoded
---  strings and are decoded to Wide_Strings.  This, obviously, does not
---  support UTF-8 encoded Wide_Wide_Strings.
+--  strings and are decoded to UXStrings.
 --
-
-with ZanyBlue.Text;
 
 package body ZanyBlue.Wide_Wide_Directories is
 
-   use ZanyBlue.Text;
    use Ada.Directories;
 
-   -------------------------
-   -- Wide_Wide_Base_Name --
-   -------------------------
+   ---------------
+   -- Base_Name --
+   ---------------
 
-   function Wide_Wide_Base_Name
-     (Name : Wide_Wide_String)
-      return Wide_Wide_String
+   function Base_Name
+     (Name : String)
+      return String
    is
    begin
-      return Wide_Wide_From_UTF8 (Base_Name (Wide_Wide_To_UTF8 (Name)));
-   end Wide_Wide_Base_Name;
+      return From_UTF_8 (Base_Name (To_UTF_8 (Name)));
+   end Base_Name;
 
-   -----------------------
-   -- Wide_Wide_Compose --
-   -----------------------
+   -------------
+   -- Compose --
+   -------------
 
-   function Wide_Wide_Compose
-     (Containing_Directory : Wide_Wide_String := "";
-      Name                 : Wide_Wide_String;
-      Extension            : Wide_Wide_String := "")
-      return Wide_Wide_String
+   function Compose
+     (Containing_Directory : String := "";
+      Name                 : String;
+      Extension            : String := "")
+      return String
    is
    begin
       return
-        Wide_Wide_From_UTF8
+        From_UTF_8
           (Compose
-             (Wide_Wide_To_UTF8 (Containing_Directory),
-              Wide_Wide_To_UTF8 (Name), Wide_Wide_To_UTF8 (Extension)));
-   end Wide_Wide_Compose;
+             (To_UTF_8 (Containing_Directory), To_UTF_8 (Name),
+              To_UTF_8 (Extension)));
+   end Compose;
 
-   ------------------------------------
-   -- Wide_Wide_Containing_Directory --
-   ------------------------------------
+   --------------------------
+   -- Containing_Directory --
+   --------------------------
 
-   function Wide_Wide_Containing_Directory
-     (Name : Wide_Wide_String)
-      return Wide_Wide_String
+   function Containing_Directory
+     (Name : String)
+      return String
    is
    begin
-      return
-        Wide_Wide_From_UTF8 (Containing_Directory (Wide_Wide_To_UTF8 (Name)));
-   end Wide_Wide_Containing_Directory;
+      return From_UTF_8 (Containing_Directory (To_UTF_8 (Name)));
+   end Containing_Directory;
 
-   -------------------------
-   -- Wide_Wide_Copy_File --
-   -------------------------
+   ---------------
+   -- Copy_File --
+   ---------------
 
-   procedure Wide_Wide_Copy_File
-     (Source_Name : Wide_Wide_String;
-      Target_Name : Wide_Wide_String;
-      Form        : Wide_Wide_String := "")
+   procedure Copy_File
+     (Source_Name : String;
+      Target_Name : String;
+      Form        : String := "")
    is
    begin
       Copy_File
-        (Wide_Wide_To_UTF8 (Source_Name), Wide_Wide_To_UTF8 (Target_Name),
-         Wide_Wide_To_UTF8 (Form));
-   end Wide_Wide_Copy_File;
-
-   --------------------------------
-   -- Wide_Wide_Create_Directory --
-   --------------------------------
-
-   procedure Wide_Wide_Create_Directory
-     (New_Directory : Wide_Wide_String;
-      Form          : Wide_Wide_String := "")
-   is
-   begin
-      Create_Directory
-        (Wide_Wide_To_UTF8 (New_Directory), Wide_Wide_To_UTF8 (Form));
-   end Wide_Wide_Create_Directory;
-
-   ---------------------------
-   -- Wide_Wide_Create_Path --
-   ---------------------------
-
-   procedure Wide_Wide_Create_Path
-     (New_Directory : Wide_Wide_String;
-      Form          : Wide_Wide_String := "")
-   is
-   begin
-      Create_Path
-        (Wide_Wide_To_UTF8 (New_Directory), Wide_Wide_To_UTF8 (Form));
-   end Wide_Wide_Create_Path;
-
-   ---------------------------------
-   -- Wide_Wide_Current_Directory --
-   ---------------------------------
-
-   function Wide_Wide_Current_Directory return Wide_Wide_String is
-   begin
-      return Wide_Wide_From_UTF8 (Current_Directory);
-   end Wide_Wide_Current_Directory;
-
-   --------------------------------
-   -- Wide_Wide_Delete_Directory --
-   --------------------------------
-
-   procedure Wide_Wide_Delete_Directory (Directory : Wide_Wide_String) is
-   begin
-      Delete_Directory (Wide_Wide_To_UTF8 (Directory));
-   end Wide_Wide_Delete_Directory;
-
-   ---------------------------
-   -- Wide_Wide_Delete_File --
-   ---------------------------
-
-   procedure Wide_Wide_Delete_File (Name : Wide_Wide_String) is
-   begin
-      Delete_File (Wide_Wide_To_UTF8 (Name));
-   end Wide_Wide_Delete_File;
-
-   ---------------------------
-   -- Wide_Wide_Delete_Tree --
-   ---------------------------
-
-   procedure Wide_Wide_Delete_Tree (Directory : Wide_Wide_String) is
-   begin
-      Delete_Tree (Wide_Wide_To_UTF8 (Directory));
-   end Wide_Wide_Delete_Tree;
-
-   --------------------------
-   -- Wide_Wide_End_Search --
-   --------------------------
-
-   procedure Wide_Wide_End_Search (Search : in out Wide_Wide_Search_Type) is
-   begin
-      End_Search (Search);
-   end Wide_Wide_End_Search;
+        (To_UTF_8 (Source_Name), To_UTF_8 (Target_Name), To_UTF_8 (Form));
+   end Copy_File;
 
    ----------------------
-   -- Wide_Wide_Exists --
+   -- Create_Directory --
    ----------------------
 
-   function Wide_Wide_Exists
-     (Name : Wide_Wide_String)
+   procedure Create_Directory
+     (New_Directory : String;
+      Form          : String := "")
+   is
+   begin
+      Create_Directory (To_UTF_8 (New_Directory), To_UTF_8 (Form));
+   end Create_Directory;
+
+   -----------------
+   -- Create_Path --
+   -----------------
+
+   procedure Create_Path
+     (New_Directory : String;
+      Form          : String := "")
+   is
+   begin
+      Create_Path (To_UTF_8 (New_Directory), To_UTF_8 (Form));
+   end Create_Path;
+
+   -----------------------
+   -- Current_Directory --
+   -----------------------
+
+   function Current_Directory return String is
+   begin
+      return From_UTF_8 (Current_Directory);
+   end Current_Directory;
+
+   ----------------------
+   -- Delete_Directory --
+   ----------------------
+
+   procedure Delete_Directory (Directory : String) is
+   begin
+      Delete_Directory (To_UTF_8 (Directory));
+   end Delete_Directory;
+
+   -----------------
+   -- Delete_File --
+   -----------------
+
+   procedure Delete_File (Name : String) is
+   begin
+      Delete_File (To_UTF_8 (Name));
+   end Delete_File;
+
+   -----------------
+   -- Delete_Tree --
+   -----------------
+
+   procedure Delete_Tree (Directory : String) is
+   begin
+      Delete_Tree (To_UTF_8 (Directory));
+   end Delete_Tree;
+
+   ----------------
+   -- End_Search --
+   ----------------
+
+   procedure End_Search (Search : in out Search_Type) renames
+     Ada.Directories.End_Search;
+
+   ------------
+   -- Exists --
+   ------------
+
+   function Exists
+     (Name : String)
       return Boolean
    is
    begin
-      return Exists (Wide_Wide_To_UTF8 (Name));
-   end Wide_Wide_Exists;
+      return Exists (To_UTF_8 (Name));
+   end Exists;
 
-   -------------------------
-   -- Wide_Wide_Extension --
-   -------------------------
+   ---------------
+   -- Extension --
+   ---------------
 
-   function Wide_Wide_Extension
-     (Name : Wide_Wide_String)
-      return Wide_Wide_String
+   function Extension
+     (Name : String)
+      return String
    is
    begin
-      return Wide_Wide_From_UTF8 (Extension (Wide_Wide_To_UTF8 (Name)));
-   end Wide_Wide_Extension;
+      return From_UTF_8 (Extension (To_UTF_8 (Name)));
+   end Extension;
 
-   --------------------
-   -- Wide_Wide_Full_Name --
-   --------------------
+   ---------------
+   -- Full_Name --
+   ---------------
 
-   function Wide_Wide_Full_Name
-     (Name : Wide_Wide_String)
-      return Wide_Wide_String
+   function Full_Name
+     (Name : String)
+      return String
    is
    begin
-      return Wide_Wide_From_UTF8 (Full_Name (Wide_Wide_To_UTF8 (Name)));
-   end Wide_Wide_Full_Name;
+      return From_UTF_8 (Full_Name (To_UTF_8 (Name)));
+   end Full_Name;
 
-   -------------------------
-   -- Wide_Wide_Full_Name --
-   -------------------------
+   ---------------
+   -- Full_Name --
+   ---------------
 
-   function Wide_Wide_Full_Name
-     (Directory_Entry : Wide_Wide_Directory_Entry_Type)
-      return Wide_Wide_String
+   function Full_Name
+     (Directory_Entry : Directory_Entry_Type)
+      return String
    is
    begin
-      return Wide_Wide_From_UTF8 (Full_Name (Directory_Entry));
-   end Wide_Wide_Full_Name;
+      return From_UTF_8 (Full_Name (Directory_Entry));
+   end Full_Name;
 
-   ------------------------------
-   -- Wide_Wide_Get_Next_Entry --
-   ------------------------------
+   --------------------
+   -- Get_Next_Entry --
+   --------------------
 
-   procedure Wide_Wide_Get_Next_Entry
-     (Search          : in out Wide_Wide_Search_Type;
-      Directory_Entry :    out Wide_Wide_Directory_Entry_Type)
+   procedure Get_Next_Entry
+     (Search          : in out Search_Type;
+      Directory_Entry :    out Directory_Entry_Type) renames
+     Ada.Directories.Get_Next_Entry;
+
+   ----------
+   -- Kind --
+   ----------
+
+   function Kind
+     (Name : String)
+      return File_Kind
    is
    begin
-      Get_Next_Entry (Search, Directory_Entry);
-   end Wide_Wide_Get_Next_Entry;
+      return Kind (To_UTF_8 (Name));
+   end Kind;
 
-   --------------------
-   -- Wide_Wide_Kind --
-   --------------------
+   ----------
+   -- Kind --
+   ----------
 
-   function Wide_Wide_Kind
-     (Name : Wide_Wide_String)
-      return Wide_Wide_File_Kind
-   is
-   begin
-      return Kind (Wide_Wide_To_UTF8 (Name));
-   end Wide_Wide_Kind;
+   function Kind
+     (Directory_Entry : Directory_Entry_Type)
+      return File_Kind renames Ada.Directories.Kind;
 
-   --------------------
-   -- Wide_Wide_Kind --
-   --------------------
+   -----------------------
+   -- Modification_Time --
+   -----------------------
 
-   function Wide_Wide_Kind
-     (Directory_Entry : Wide_Wide_Directory_Entry_Type)
-      return Wide_Wide_File_Kind
-   is
-   begin
-      return Kind (Directory_Entry);
-   end Wide_Wide_Kind;
-
-   ---------------------------------
-   -- Wide_Wide_Modification_Time --
-   ---------------------------------
-
-   function Wide_Wide_Modification_Time
-     (Name : Wide_Wide_String)
+   function Modification_Time
+     (Name : String)
       return Ada.Calendar.Time
    is
    begin
-      return Modification_Time (Wide_Wide_To_UTF8 (Name));
-   end Wide_Wide_Modification_Time;
+      return Modification_Time (To_UTF_8 (Name));
+   end Modification_Time;
 
-   ---------------------------------
-   -- Wide_Wide_Modification_Time --
-   ---------------------------------
+   -----------------------
+   -- Modification_Time --
+   -----------------------
 
-   function Wide_Wide_Modification_Time
-     (Directory_Entry : Wide_Wide_Directory_Entry_Type)
-      return Ada.Calendar.Time
-   is
+   function Modification_Time
+     (Directory_Entry : Directory_Entry_Type)
+      return Ada.Calendar.Time renames Ada.Directories.Modification_Time;
+
+   ------------------
+   -- More_Entries --
+   ------------------
+
+   function More_Entries
+     (Search : Search_Type)
+      return Boolean renames Ada.Directories.More_Entries;
+
+   ------------
+   -- Rename --
+   ------------
+
+   procedure Rename (Old_Name, New_Name : String) is
    begin
-      return Modification_Time (Directory_Entry);
-   end Wide_Wide_Modification_Time;
+      Rename (To_UTF_8 (Old_Name), To_UTF_8 (New_Name));
+   end Rename;
 
-   ----------------------------
-   -- Wide_Wide_More_Entries --
-   ----------------------------
+   ------------
+   -- Search --
+   ------------
 
-   function Wide_Wide_More_Entries
-     (Search : Wide_Wide_Search_Type)
-      return Boolean
-   is
-   begin
-      return More_Entries (Search);
-   end Wide_Wide_More_Entries;
-
-   ----------------------
-   -- Wide_Wide_Rename --
-   ----------------------
-
-   procedure Wide_Wide_Rename (Old_Name, New_Name : Wide_Wide_String) is
-   begin
-      Rename (Wide_Wide_To_UTF8 (Old_Name), Wide_Wide_To_UTF8 (New_Name));
-   end Wide_Wide_Rename;
-
-   ----------------------
-   -- Wide_Wide_Search --
-   ----------------------
-
-   procedure Wide_Wide_Search
-     (Directory : Wide_Wide_String;
-      Pattern   : Wide_Wide_String;
-      Filter    : Wide_Wide_Filter_Type := (others => True);
+   procedure Search
+     (Directory : String;
+      Pattern   : String;
+      Filter    : Filter_Type := (others => True);
       Process   : not null access procedure
-        (Directory_Entry : Wide_Wide_Directory_Entry_Type))
+        (Directory_Entry : Directory_Entry_Type))
    is
    begin
-      Search
-        (Wide_Wide_To_UTF8 (Directory), Wide_Wide_To_UTF8 (Pattern), Filter,
-         Process);
-   end Wide_Wide_Search;
+      Search (To_UTF_8 (Directory), To_UTF_8 (Pattern), Filter, Process);
+   end Search;
 
-   -----------------------------
-   -- Wide_Wide_Set_Directory --
-   -----------------------------
+   -------------------
+   -- Set_Directory --
+   -------------------
 
-   procedure Wide_Wide_Set_Directory (Directory : Wide_Wide_String) is
+   procedure Set_Directory (Directory : String) is
    begin
-      Set_Directory (Wide_Wide_To_UTF8 (Directory));
-   end Wide_Wide_Set_Directory;
+      Set_Directory (To_UTF_8 (Directory));
+   end Set_Directory;
 
-   ---------------------------
-   -- Wide_Wide_Simple_Name --
-   ---------------------------
+   -----------------
+   -- Simple_Name --
+   -----------------
 
-   function Wide_Wide_Simple_Name
-     (Name : Wide_Wide_String)
-      return Wide_Wide_String
+   function Simple_Name
+     (Name : String)
+      return String
    is
    begin
-      return Wide_Wide_From_UTF8 (Simple_Name (Wide_Wide_To_UTF8 (Name)));
-   end Wide_Wide_Simple_Name;
+      return From_UTF_8 (Simple_Name (To_UTF_8 (Name)));
+   end Simple_Name;
 
-   ---------------------------
-   -- Wide_Wide_Simple_Name --
-   ---------------------------
+   -----------------
+   -- Simple_Name --
+   -----------------
 
-   function Wide_Wide_Simple_Name
-     (Directory_Entry : Wide_Wide_Directory_Entry_Type)
-      return Wide_Wide_String
+   function Simple_Name
+     (Directory_Entry : Directory_Entry_Type)
+      return String
    is
    begin
-      return Wide_Wide_From_UTF8 (Simple_Name (Directory_Entry));
-   end Wide_Wide_Simple_Name;
+      return From_UTF_8 (Simple_Name (Directory_Entry));
+   end Simple_Name;
 
-   --------------------
-   -- Wide_Wide_Size --
-   --------------------
+   ----------
+   -- Size --
+   ----------
 
-   function Wide_Wide_Size
-     (Name : Wide_Wide_String)
-      return Wide_Wide_File_Size
+   function Size
+     (Name : String)
+      return File_Size
    is
    begin
-      return Size (Wide_Wide_To_UTF8 (Name));
-   end Wide_Wide_Size;
+      return Size (To_UTF_8 (Name));
+   end Size;
 
-   --------------------
-   -- Wide_Wide_Size --
-   --------------------
+   ----------
+   -- Size --
+   ----------
 
-   function Wide_Wide_Size
-     (Directory_Entry : Wide_Wide_Directory_Entry_Type)
-      return Wide_Wide_File_Size
+   function Size
+     (Directory_Entry : Directory_Entry_Type)
+      return File_Size renames Ada.Directories.Size;
+
+   ------------------
+   -- Start_Search --
+   ------------------
+
+   procedure Start_Search
+     (Search    : in out Search_Type;
+      Directory :        String;
+      Pattern   :        String;
+      Filter    :        Filter_Type := (others => True))
    is
    begin
-      return Size (Directory_Entry);
-   end Wide_Wide_Size;
-
-   ----------------------------
-   -- Wide_Wide_Start_Search --
-   ----------------------------
-
-   procedure Wide_Wide_Start_Search
-     (Search    : in out Wide_Wide_Search_Type;
-      Directory :        Wide_Wide_String;
-      Pattern   :        Wide_Wide_String;
-      Filter    :        Wide_Wide_Filter_Type := (others => True))
-   is
-   begin
-      Start_Search
-        (Search, Wide_Wide_To_UTF8 (Directory), Wide_Wide_To_UTF8 (Pattern),
-         Filter);
-   end Wide_Wide_Start_Search;
+      Start_Search (Search, To_UTF_8 (Directory), To_UTF_8 (Pattern), Filter);
+   end Start_Search;
 
 end ZanyBlue.Wide_Wide_Directories;

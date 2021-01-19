@@ -35,31 +35,25 @@
 
 --
 --  This is a simple wrapper package around the GNAT GNAT.Regexp
---  package with Wide_String arguments and functions.  The underlying
+--  package with String arguments and functions.  The underlying
 --  Strings to/from GNAT.Regexp are simply interpreted as UTF-8 encoded
 --  strings.
 --
 
-with ZanyBlue.Text;
-
 package body ZanyBlue.Wide_Wide_Regexp is
-
-   use ZanyBlue.Text;
 
    -------------
    -- Compile --
    -------------
 
    function Compile
-     (Pattern        : Wide_Wide_String;
+     (Pattern        : String;
       Glob           : Boolean := False;
       Case_Sensitive : Boolean := True)
       return Regexp
    is
    begin
-      return
-        GNAT.Regexp.Compile
-          (Wide_Wide_To_UTF8 (Pattern), Glob, Case_Sensitive);
+      return GNAT.Regexp.Compile (To_UTF_8 (Pattern), Glob, Case_Sensitive);
    end Compile;
 
    -----------
@@ -67,12 +61,12 @@ package body ZanyBlue.Wide_Wide_Regexp is
    -----------
 
    function Match
-     (S : Wide_Wide_String;
+     (S : String;
       R : Regexp)
       return Boolean
    is
    begin
-      return GNAT.Regexp.Match (Wide_Wide_To_UTF8 (S), R);
+      return GNAT.Regexp.Match (To_UTF_8 (S), R);
    end Match;
 
 end ZanyBlue.Wide_Wide_Regexp;

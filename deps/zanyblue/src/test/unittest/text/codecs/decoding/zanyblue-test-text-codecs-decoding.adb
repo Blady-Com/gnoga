@@ -42,11 +42,11 @@ package body ZanyBlue.Test.Text.Codecs.Decoding is
 
    procedure Check_Decoding (T   : in out Test_Case'Class;
                              CS  : Codecs_Type;
-                             WCh : Wide_Character;
+                             WCh : Unicode_Character;
                              Ch  : Character) is
       pragma Warnings (Off);
-      Decoded : constant Wide_String := CS.Decode ("" & Ch);
-      ECh : Wide_Character;
+      Decoded : constant String := CS.Decode ("" & Ch);
+      ECh : Unicode_Character;
    begin
       WAssert (T, Decoded'Length = 1,
                CS.Name & " wrong length for single char ("
@@ -56,7 +56,7 @@ package body ZanyBlue.Test.Text.Codecs.Decoding is
       WAssert (T, ECh = WCh,
                CS.Name & " wrong char for single char "
               & " ["
-              & Natural'Wide_Image (Wide_Character'Pos (ECh))
+              & Natural'Wide_Image (Unicode_Character'Pos (ECh))
               & "] /= ["
               & Natural'Wide_Image (Character'Pos (Ch))
               & "]");
@@ -68,12 +68,12 @@ package body ZanyBlue.Test.Text.Codecs.Decoding is
 
    procedure Check_Decoding (T   : in out Test_Case'Class;
                              CS  : Codecs_Type;
-                             WCh : Wide_Character;
+                             WCh : Unicode_Character;
                              Ch1 : Character;
                              Ch2 : Character) is
       pragma Warnings (Off);
-      Decoded : constant Wide_String := CS.Decode ("" & Ch1 & Ch2);
-      ECh : Wide_Character;
+      Decoded : constant String := CS.Decode ("" & Ch1 & Ch2);
+      ECh : Unicode_Character;
    begin
       WAssert (T, Decoded'Length = 1,
                CS.Name & " wrong length for double char ("
@@ -83,9 +83,9 @@ package body ZanyBlue.Test.Text.Codecs.Decoding is
       WAssert (T, ECh = WCh,
                CS.Name & " wrong char for first char "
               & " ["
-              & Natural'Wide_Image (Wide_Character'Pos (ECh))
+              & Natural'Wide_Image (Unicode_Character'Pos (ECh))
               & "] /= ["
-              & Natural'Wide_Image (Wide_Character'Pos (WCh))
+              & Natural'Wide_Image (Unicode_Character'Pos (WCh))
               & "]");
    end Check_Decoding;
 
@@ -98,7 +98,7 @@ package body ZanyBlue.Test.Text.Codecs.Decoding is
                              WCP : Natural;
                              CP  : Natural) is
    begin
-      Check_Decoding (T, CS, Wide_Character'Val (WCP), Character'Val (CP));
+      Check_Decoding (T, CS, Unicode_Character'Val (WCP), Character'Val (CP));
    end Check_Decoding;
 
    --------------------
@@ -111,7 +111,7 @@ package body ZanyBlue.Test.Text.Codecs.Decoding is
                              CP1 : Natural;
                              CP2 : Natural) is
    begin
-      Check_Decoding (T, CS, Wide_Character'Val (WCP),
+      Check_Decoding (T, CS, Unicode_Character'Val (WCP),
                       Character'Val (CP1), Character'Val (CP2));
    end Check_Decoding;
 
@@ -121,11 +121,11 @@ package body ZanyBlue.Test.Text.Codecs.Decoding is
 
    procedure Check_Decoding (T   : in out Test_Case'Class;
                              CS  : Codecs_Type;
-                             WCh : Wide_Character;
+                             WCh : Unicode_Character;
                              CP1 : Natural;
                              CP2 : Natural) is
    begin
-      Check_Decoding (T, CS, Wide_Character'Pos (WCh), CP1, CP2);
+      Check_Decoding (T, CS, Unicode_Character'Pos (WCh), CP1, CP2);
    end Check_Decoding;
 
    --------------------
@@ -134,21 +134,21 @@ package body ZanyBlue.Test.Text.Codecs.Decoding is
 
    procedure Check_Decoding (T      : in out Test_Case'Class;
                              Codecs : Codecs_Type;
-                             Expect : Wide_String;
+                             Expect : String;
                              Source : String) is
 
-      function Get_Char (S     : Wide_String;
-                         Index : Natural) return Wide_Character;
-      function Hex4 (Ch : Wide_Character) return Wide_String;
+      function Get_Char (S     : String;
+                         Index : Natural) return Unicode_Character;
+      function Hex4 (Ch : Unicode_Character) return String;
 
-      Hex_Digits : constant Wide_String := "0123456789ABCDEF";
+      Hex_Digits : constant String := "0123456789ABCDEF";
 
       --------------
       -- Get_Char --
       --------------
 
-      function Get_Char (S     : Wide_String;
-                         Index : Natural) return Wide_Character is
+      function Get_Char (S     : String;
+                         Index : Natural) return Unicode_Character is
       begin
          if Index <= S'Length then
             return S (S'First + Index - 1);
@@ -161,9 +161,9 @@ package body ZanyBlue.Test.Text.Codecs.Decoding is
       -- Hex4 --
       ----------
 
-      function Hex4 (Ch : Wide_Character) return Wide_String is
-         Code_Point : Natural := Wide_Character'Pos (Ch);
-         Result : Wide_String (1 .. 4) := (others => '0');
+      function Hex4 (Ch : Unicode_Character) return String is
+         Code_Point : Natural := Unicode_Character'Pos (Ch);
+         Result : String (1 .. 4) := (others => '0');
       begin
          for I in Result'Range loop
             declare
@@ -177,14 +177,14 @@ package body ZanyBlue.Test.Text.Codecs.Decoding is
       end Hex4;
 
       use Ada.Strings.Wide_Unbounded;
-      Decoded : constant Wide_String := Codecs.Decode (Source);
+      Decoded : constant String := Codecs.Decode (Source);
       Message : Unbounded_Wide_String;
       Printing : Boolean := False;
    begin
       for I in 1 .. Integer'Max (Decoded'Length, Expect'Length) loop
          declare
-            E_Ch : constant Wide_Character := Get_Char (Expect, I);
-            D_Ch : constant Wide_Character := Get_Char (Decoded, I);
+            E_Ch : constant Unicode_Character := Get_Char (Expect, I);
+            D_Ch : constant Unicode_Character := Get_Char (Decoded, I);
          begin
             if E_Ch /= D_Ch then
                Printing := True;

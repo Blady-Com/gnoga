@@ -43,7 +43,7 @@ package ZBMCompile.Messages is
 
    pragma Warnings (Off, ZBMCompile.Messages);
 
-   Facility_1 : constant Wide_String := "zbmcompile";
+   Facility_1 : constant String := "zbmcompile";
 
    procedure Initialize;
 

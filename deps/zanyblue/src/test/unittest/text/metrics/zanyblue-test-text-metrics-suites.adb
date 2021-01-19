@@ -45,7 +45,7 @@ package body ZanyBlue.Test.Text.Metrics.Suites is
    use ZanyBlue.Text.Catalogs;
    use ZanyBlue.Text.Metrics;
 
-   Test_Area : constant Wide_String := "text/metrics";
+   Test_Area : constant String := "text/metrics";
 
    procedure T_0001 (T : in out Test_Case'Class);
    procedure T_0002 (T : in out Test_Case'Class);

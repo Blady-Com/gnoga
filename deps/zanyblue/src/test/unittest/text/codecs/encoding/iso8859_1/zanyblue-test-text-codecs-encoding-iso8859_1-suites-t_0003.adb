@@ -38,7 +38,7 @@ procedure T_0003 (T : in out Test_Case'Class) is
    pragma Unreferenced (T);
 
    Codecs : constant Codecs_Type := Make_Codecs ("ISO8859-1");
-   W_S : constant Wide_String := "Some Arabic numerals: ٠١٣";
+   W_S : constant String := "Some Arabic numerals: ٠١٣";
    N_S : constant String := Codecs.Encode (W_S);
 
 begin

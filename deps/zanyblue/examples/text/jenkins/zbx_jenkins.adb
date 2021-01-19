@@ -55,7 +55,7 @@ procedure ZBX_Jenkins is
    Help_Error  : exception;
    Usage_Error : exception;
 
-   procedure Display (Key : Wide_String;
+   procedure Display (Key : String;
                       Argument0 : Argument_Type'Class := Null_Argument;
                       Argument1 : Argument_Type'Class := Null_Argument;
                       Argument2 : Argument_Type'Class := Null_Argument);
@@ -92,7 +92,7 @@ procedure ZBX_Jenkins is
       end loop;
    end Process_Command_Line;
 
-   procedure Display (Key : Wide_String;
+   procedure Display (Key : String;
                       Argument0 : Argument_Type'Class := Null_Argument;
                       Argument1 : Argument_Type'Class := Null_Argument;
                       Argument2 : Argument_Type'Class := Null_Argument) is

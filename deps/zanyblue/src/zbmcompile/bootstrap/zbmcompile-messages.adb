@@ -50,7 +50,7 @@ package body ZBMCompile.Messages is
    use ZanyBlue.Text.Catalogs;
    use ZanyBlue.Text.Formatting;
 
-   procedure Load (Name : Wide_String);
+   procedure Load (Name : String);
    --  Load a facility from the local "mesg" directory.
 
    ----------------
@@ -68,8 +68,8 @@ package body ZBMCompile.Messages is
    -- Load --
    ----------
 
-   procedure Load (Name : Wide_String) is
-      Filename : constant Wide_String := "mesg/" & Name & ".properties";
+   procedure Load (Name : String) is
+      Filename : constant String := "mesg/" & Name & ".properties";
       Locale   : constant Locale_Type := Make_Locale ("");
       Count    : Natural;
    begin

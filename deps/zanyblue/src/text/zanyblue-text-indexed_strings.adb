@@ -41,7 +41,7 @@ package body ZanyBlue.Text.Indexed_Strings is
 
    procedure Add
      (Indexed_Strings : in out Indexed_Strings_Type;
-      Name            :        Wide_String;
+      Name            :        String;
       Index           :    out Positive)
    is
       use type Name_To_Id_Maps.Cursor;
@@ -64,7 +64,7 @@ package body ZanyBlue.Text.Indexed_Strings is
    function Get
      (Indexed_Strings : Indexed_Strings_Type;
       Index           : Positive)
-      return Wide_String
+      return String
    is
    begin
       if Index <= Indexed_Strings.Length then
@@ -80,7 +80,7 @@ package body ZanyBlue.Text.Indexed_Strings is
 
    function Get
      (Indexed_Strings : Indexed_Strings_Type;
-      Name            : Wide_String;
+      Name            : String;
       Id              : Exception_Id)
       return Positive
    is
@@ -93,7 +93,7 @@ package body ZanyBlue.Text.Indexed_Strings is
       if Position /= Name_To_Id_Maps.No_Element then
          return Name_To_Id_Maps.Element (Position);
       else
-         Raise_Exception (Id, Message => Wide_To_UTF8 (Name));
+         Raise_Exception (Id, Message => To_UTF_8 (Name));
       end if;
    end Get;
 

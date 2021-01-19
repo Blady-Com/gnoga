@@ -81,8 +81,8 @@ procedure Filestat_Command (State : in out State_Type;
    use ZBTest.Commands.File_Type_Arguments;
 
    procedure File_Stat (State     : in out State_Type;
-                        File_Name : Wide_String;
-                        Log_Name  : Wide_String);
+                        File_Name : String;
+                        Log_Name  : String);
    --  Generate the status report on a file.
 
    ---------------
@@ -90,8 +90,8 @@ procedure Filestat_Command (State : in out State_Type;
    ---------------
 
    procedure File_Stat (State     : in out State_Type;
-                        File_Name : Wide_String;
-                        Log_Name  : Wide_String) is
+                        File_Name : String;
+                        Log_Name  : String) is
       pragma Unreferenced (State);
       use type Ada.Directories.File_Kind;
       Log_File : File_Type;

@@ -47,12 +47,12 @@ package body ZBMCompile.Codegen is
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Formatting;
 
-   Continue_Marker : constant Wide_Character := Wide_Character'Val (16#2936#);
+   Continue_Marker : constant Unicode_Character := Unicode_Character'Val (16#2936#);
    --  U+2936 ARROW POINTING DOWNWARDS THEN CURVING LEFTWARDS ('⤶')
    --  Used to indicate lines of the accessor comment that have been split
    --  to ensure the generated output is within 80 column limit.
 
-   Newline_Marker  : constant Wide_Character := Wide_Character'Val (16#23CE#);
+   Newline_Marker  : constant Unicode_Character := Unicode_Character'Val (16#23CE#);
    --  U+23CE RETURN SYMBOL ('⏎'')
    --  Used to indicate lines of the accessor comment that have embedded
    --  new line characters.  To preserve the intended structure, this
@@ -63,7 +63,7 @@ package body ZBMCompile.Codegen is
    -- Modes_String --
    ------------------
 
-   function Modes_String (Options : Parameter_Set_Type) return Wide_String
+   function Modes_String (Options : Parameter_Set_Type) return String
    is
    begin
       if Options.Get_Boolean ("parameter_modes") then
@@ -137,11 +137,11 @@ package body ZBMCompile.Codegen is
       -----------------
 
       procedure Add_Message (Message : Message_Record_Type) is
-         Facility           : constant Wide_String :=
+         Facility           : constant String :=
                                  Get_Facility (Catalog, Message.Facility);
-         Key                : constant Wide_String :=
+         Key                : constant String :=
                                  Get_Key (Catalog, Message.Key);
-         Text               : constant Wide_String :=
+         Text               : constant String :=
                                  Get_Text (Catalog,
                                            Message.Facility,
                                            Message.Key,
@@ -226,7 +226,7 @@ package body ZBMCompile.Codegen is
    -- Sanitize --
    --------------
 
-   function Sanitize (Value : Wide_String) return Wide_String is
+   function Sanitize (Value : String) return String is
       use Ada.Strings.Wide_Unbounded;
       use Ada.Wide_Characters.Unicode;
       Buffer : Unbounded_Wide_String;
@@ -234,20 +234,20 @@ package body ZBMCompile.Codegen is
    begin
       for I in Value'Range loop
          if Is_Non_Graphic (Value (I)) then
-            Code := Wide_Character'Pos (Value (I));
+            Code := Unicode_Character'Pos (Value (I));
             case Code is
             when 0 .. 9 | 11 .. 31 =>
                --  Regular control characters: display as Unicode equivalent
-               Append (Buffer, Wide_Character'Val (16#2400# + Code));
+               Append (Buffer, Unicode_Character'Val (16#2400# + Code));
             when 10 =>
                --  New line characters are OK
                Append (Buffer, Value (I));
             when 127 =>
                --  Delete character, display as the Unicode DEL character
-               Append (Buffer, Wide_Character'Val (16#2421#));
+               Append (Buffer, Unicode_Character'Val (16#2421#));
             when others =>
                --  Some other non-graphic character, display APL question
-               Append (Buffer, Wide_Character'Val (16#2370#));
+               Append (Buffer, Unicode_Character'Val (16#2370#));
             end case;
          else
             Append (Buffer, Value (I));
@@ -261,12 +261,12 @@ package body ZBMCompile.Codegen is
    --------------------------
 
    procedure Write_Commented_Text (File       : File_Type;
-                                   Value      : Wide_String;
+                                   Value      : String;
                                    Block_Size : Positive) is
       use Ada.Strings.Wide_Fixed;
-      NL_String  : constant Wide_String (1 .. 1)
-                              := (others => Wide_Character'Val (10));
-      Safe_Value : constant Wide_String := Sanitize (Value);
+      NL_String  : constant String (1 .. 1)
+                              := (others => Unicode_Character'Val (10));
+      Safe_Value : constant String := Sanitize (Value);
       Last       : constant Natural := Safe_Value'Last;
       Length     : constant Natural := Safe_Value'Length;
       From       : Positive := Safe_Value'First;
@@ -294,7 +294,7 @@ package body ZBMCompile.Codegen is
    -------------------------------
 
    procedure Write_Commented_Text_Line (File       : File_Type;
-                                        Value      : Wide_String;
+                                        Value      : String;
                                         Block_Size : Positive) is
       use Ada.Wide_Characters.Unicode;
       N_Blocks : constant Natural := Value'Length / Block_Size;

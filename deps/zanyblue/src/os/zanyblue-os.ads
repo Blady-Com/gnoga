@@ -38,8 +38,7 @@
 --  function definitions giving version information.
 --
 
-with Ada.Text_IO;
-with Ada.Wide_Text_IO;
+with UXStrings.Text_IO;
 
 --
 --  @summary
@@ -49,8 +48,9 @@ with Ada.Wide_Text_IO;
 --  The "ZanyBlue.OS" package implements routines and functions used to
 --  1) Query environment attributes that are operating system specific, e.g.,
 --  the locale name associated with the current process 2) Implementation of
---  file hanlding for Wide pathnames.
+--  file hanlding for UXString pathnames.
 --
+
 package ZanyBlue.OS is
 
    type OS_Name_Type is (Unix, Windows);
@@ -63,12 +63,7 @@ package ZanyBlue.OS is
    --  the regression tests where the Windows NT LCID table should be verified
    --  it's sorted.
 
-   function OS_Locale_Name return Wide_String;
-   --  Operating system defined locale name, e.g., $LANG on Unix.  On Windows
-   --  systems, the Win API is used to query the LCID associated with the
-   --  process.
-
-   function OS_Locale_Name return Wide_Wide_String;
+   function OS_Locale_Name return String;
    --  Operating system defined locale name, e.g., $LANG on Unix.  On Windows
    --  systems, the Win API is used to query the LCID associated with the
    --  process.
@@ -76,54 +71,40 @@ package ZanyBlue.OS is
    function OS_Name return OS_Name_Type;
    --  Return the name of the build operating system.
 
-   function OS_New_Line return Wide_String;
-   --  Return the sequence of characters used to represent a new line.
-
-   function OS_New_Line return Wide_Wide_String;
+   function OS_New_Line return String;
    --  Return the sequence of characters used to represent a new line.
 
    function UTF8_File_Form return String;
    --  Return the form string used by the compiler to identify an UTF-8 file.
 
-   procedure Wide_Copy_Tree
-     (Source_Name : Wide_String;
-      Target_Name : Wide_String);
+   procedure Copy_Tree
+     (Source_Name : String;
+      Target_Name : String);
    --  Copy a directory tree.
 
-   procedure Wide_Create
-     (File : in out Ada.Text_IO.File_Type;
-      Name :        Wide_String);
+   procedure Create
+     (File : in out UXStrings.Text_IO.File_Type;
+      Name :        String);
    --  Create a text with UTF8 encoding files.
 
-   procedure Wide_Create
-     (File : in out Ada.Wide_Text_IO.File_Type;
-      Name :        Wide_String);
+   procedure Open
+     (File : in out UXStrings.Text_IO.File_Type;
+      Mode :        UXStrings.Text_IO.File_Mode;
+      Name :        String);
    --  Create a text with UTF8 encoding files.
 
-   procedure Wide_Open
-     (File : in out Ada.Wide_Text_IO.File_Type;
-      Mode :        Ada.Wide_Text_IO.File_Mode;
-      Name :        Wide_String);
-   --  Create a text with UTF8 encoding files.
-
-   procedure Wide_Open
-     (File : in out Ada.Text_IO.File_Type;
-      Mode :        Ada.Text_IO.File_Mode;
-      Name :        Wide_String);
-   --  Create a text with UTF8 encoding files.
-
-   function Wide_Is_Directory
-     (Name : Wide_String)
+   function Is_Directory
+     (Name : String)
       return Boolean;
    --  Is the named path a directory?
 
-   function Wide_Is_File
-     (Name : Wide_String)
+   function Is_File
+     (Name : String)
       return Boolean;
    --  Is the named path a file?
 
-   function Wide_Is_Executable_File
-     (Name : Wide_String)
+   function Is_Executable_File
+     (Name : String)
       return Boolean;
    --  Is the named path a file?
 

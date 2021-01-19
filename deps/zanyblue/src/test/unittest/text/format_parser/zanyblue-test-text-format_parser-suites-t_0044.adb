@@ -41,7 +41,7 @@ procedure T_0044 (T : in out Test_Case'Class) is
    use ZanyBlue.Text;
 
    Locale      : constant Locale_Type := Make_Locale ("en_US");
-   Format_Spec : constant Wide_String := "100d";
+   Format_Spec : constant String := "100d";
 
 begin
    Maximum_Field_Width (10);

@@ -36,12 +36,12 @@ package ZanyBlue.Test.Text.Codecs.Encoding is
 
    procedure Check_Encoding (T   : in out Test_Case'Class;
                              CS  : Codecs_Type;
-                             WCh : Wide_Character;
+                             WCh : Unicode_Character;
                              Ch  : Character);
 
    procedure Check_Encoding (T   : in out Test_Case'Class;
                              CS  : Codecs_Type;
-                             WCh : Wide_Character;
+                             WCh : Unicode_Character;
                              Ch1 : Character;
                              Ch2 : Character);
 
@@ -58,7 +58,7 @@ package ZanyBlue.Test.Text.Codecs.Encoding is
 
    procedure Check_Encoding (T   : in out Test_Case'Class;
                              CS  : Codecs_Type;
-                             WCh : Wide_Character;
+                             WCh : Unicode_Character;
                              CP1 : Natural;
                              CP2 : Natural);
 

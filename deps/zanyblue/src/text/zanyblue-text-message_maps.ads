@@ -34,13 +34,11 @@
 --
 
 with Ada.Containers.Hashed_Maps;
-with Ada.Strings.Wide_Unbounded;
 with ZanyBlue.Text.Catalogs;
 
 package ZanyBlue.Text.Message_Maps is
 
    use Ada.Containers;
-   use Ada.Strings.Wide_Unbounded;
    use ZanyBlue.Text.Catalogs;
 
    type Message_Triple is record
@@ -79,7 +77,7 @@ package ZanyBlue.Text.Message_Maps is
 
    function Get_Pool
      (Message_Map : Message_Map_Type)
-      return Wide_String;
+      return String;
    --  Return a copy of a the current pool data.  This is used primarily
    --  by the zbmcompile utility to dump a compiled set of .properties
    --  files.
@@ -87,7 +85,7 @@ package ZanyBlue.Text.Message_Maps is
    function Text
      (Message_Map : Message_Map_Type;
       Message     : Message_Definition)
-      return Wide_String;
+      return String;
    --  Get the message associated with a particular message.  Raises
    --  the exception No_Such_Item if it does not exist.
 
@@ -105,7 +103,7 @@ package ZanyBlue.Text.Message_Maps is
    procedure Add
      (Message_Map   : in out Message_Map_Type;
       Triple        :        Message_Triple;
-      Message       :        Wide_String;
+      Message       :        String;
       Source_Locale :        Locale_Index_Type);
    --  Add a new message to the set.
 
@@ -133,7 +131,7 @@ package ZanyBlue.Text.Message_Maps is
          Key           : Key_Index_Type;
          Locale        : Locale_Index_Type;
          Source_Locale : Locale_Index_Type;
-         Message       : Wide_String;
+         Message       : String;
          Count         : Natural));
 
 private
@@ -149,7 +147,7 @@ private
 
    type Message_Map_Type is tagged record
       Messages : Triple_Maps.Map;
-      Pool     : Unbounded_Wide_String;
+      Pool     : String;
    end record;
 
 end ZanyBlue.Text.Message_Maps;

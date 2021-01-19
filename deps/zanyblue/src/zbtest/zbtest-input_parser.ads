@@ -42,7 +42,7 @@ package ZBTest.Input_Parser is
    Unterminated_String : exception;
    --  Exception raised if an input line contains an unterminated string.
 
-   function Parse_Words (Line : Wide_String) return List_Type;
+   function Parse_Words (Line : String) return List_Type;
    --  Parse a line (simple string) into a list of words.
 
 end ZBTest.Input_Parser;

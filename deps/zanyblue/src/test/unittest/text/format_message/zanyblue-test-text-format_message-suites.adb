@@ -46,7 +46,7 @@ package body ZanyBlue.Test.Text.Format_Message.Suites is
    use ZanyBlue.Text.Arguments;
    use ZanyBlue.Text.Format_Errors;
 
-   function Format_Message (Message      : Wide_String;
+   function Format_Message (Message      : String;
                             Arguments    : Argument_List;
                             Mapping      : Pseudo_Map_Access;
                             Locale       : Locale_Type;
@@ -55,7 +55,7 @@ package body ZanyBlue.Test.Text.Format_Message.Suites is
                             Mark_Arguments : Boolean := True;
                             Error_Handler  : access Error_Handler_Type'Class
                                               := Standard_Error_Handler'Access)
-      return Wide_String
+      return String
       renames ZanyBlue.Text.Format_Message;
 
    procedure T_0001 (T : in out Test_Case'Class);

@@ -36,7 +36,7 @@ package body ZanyBlue.Test.Text.Format_Errors.Handler is
 
    overriding
    procedure Format_Not_Closed (Error_Handler  : in out Test_Handler_Type;
-                                Message        : Wide_String;
+                                Message        : String;
                                 Position       : Positive;
                                 Level          : Natural;
                                 Raise_Errors   : Boolean) is
@@ -51,9 +51,9 @@ package body ZanyBlue.Test.Text.Format_Errors.Handler is
 
    overriding
    procedure Illegal_Character (Error_Handler  : in out Test_Handler_Type;
-                                Message        : Wide_String;
+                                Message        : String;
                                 Position       : Positive;
-                                Ch             : Wide_Character;
+                                Ch             : Unicode_Character;
                                 Level          : Natural;
                                 Raise_Errors   : Boolean) is
       pragma Unreferenced (Message);
@@ -68,9 +68,9 @@ package body ZanyBlue.Test.Text.Format_Errors.Handler is
 
    overriding
    procedure Missing_Argument (Error_Handler  : in out Test_Handler_Type;
-                               Message        : Wide_String;
+                               Message        : String;
                                Position       : Natural;
-                               Type_Name      : Wide_String;
+                               Type_Name      : String;
                                Raise_Errors   : Boolean) is
       pragma Unreferenced (Message);
       pragma Unreferenced (Type_Name);

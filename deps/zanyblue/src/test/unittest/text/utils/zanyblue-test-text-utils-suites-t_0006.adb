@@ -40,14 +40,14 @@ procedure T_0006 (T : in out Test_Case'Class) is
    use Ada.Characters.Conversions;
 
    procedure OK (Source : String; Expected : Character);
-   procedure OK (Source : String; Expected : Wide_String);
+   procedure OK (Source : String; Expected : String);
 
    procedure OK (Source : String; Expected : Character) is
    begin
-      OK (Source, "" & To_Wide_Character (Expected));
+      OK (Source, "" & To_Wide_Wide_Character (Expected));
    end OK;
 
-   procedure OK (Source : String; Expected : Wide_String) is
+   procedure OK (Source : String; Expected : String) is
    begin
       WAssert (T, Unescape_String (Source) = Expected,
               "Unescaped """ & To_Wide_String (Source) & """ failed");

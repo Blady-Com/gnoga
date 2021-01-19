@@ -39,7 +39,7 @@ package body ZanyBlue.Test.Parameters.Scopes.Suites is
    use Ahven.Framework;
    use ZanyBlue.Parameters.Scopes;
 
-   Test_Area : constant Wide_String := "parameters/scopes";
+   Test_Area : constant String := "parameters/scopes";
 
    procedure T_0001 (T : in out Test_Case'Class);
    procedure T_0002 (T : in out Test_Case'Class);

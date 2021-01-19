@@ -175,15 +175,15 @@ package ZanyBlue.Text.Format_Parser is
      (None, 'a', 'b', 'c', 'd', 'e', 'E', 'f', 'F', 'g', 'G', 'n', 'o', 'x',
       'X', '%');
    type Format_Type is record
-      Fill_Defined      : Boolean        := False;
-      Fill              : Wide_Character := ' ';
-      Align             : Align_Type     := None;
-      Sign              : Sign_Type      := None;
-      Include_Base      : Boolean        := False;
-      Width             : Natural        := 0;
-      Precision_Defined : Boolean        := False;
-      Precision         : Natural        := 0;
-      Data              : Data_Type      := None;
+      Fill_Defined      : Boolean           := False;
+      Fill              : Unicode_Character := ' ';
+      Align             : Align_Type        := None;
+      Sign              : Sign_Type         := None;
+      Include_Base      : Boolean           := False;
+      Width             : Natural           := 0;
+      Precision_Defined : Boolean           := False;
+      Precision         : Natural           := 0;
+      Data              : Data_Type         := None;
    end record;
 
    Invalid_Format       : exception;
@@ -191,12 +191,12 @@ package ZanyBlue.Text.Format_Parser is
    Field_Too_Wide_Error : exception;
 
    function Align
-     (Value     : Wide_String;
-      Fill      : Wide_Character;
+     (Value     : String;
+      Fill      : Unicode_Character;
       Width     : Natural;
       Alignment : Align_Type;
-      Prefix    : Wide_String := "")
-      return Wide_String;
+      Prefix    : String := "")
+      return String;
    --  Format a string value within a field width with the given
    --  alignment, e.g., center "XYZ" in 20 spaces padding with spaces.
    --  The Prefix argument is used for numeric formatting allowing the
@@ -204,14 +204,14 @@ package ZanyBlue.Text.Format_Parser is
    --  20 in width of 10, numeric justified.
 
    function Parse
-     (Format : Wide_String;
+     (Format : String;
       Locale : Locale_Type)
       return Format_Type;
    --  Parse a format string to the individual field values.
 
    function To_String
      (Format : Format_Type)
-      return Wide_String;
+      return String;
    --  Generate a string representation for formatting information.
    --  Used for debugging purposes.
 

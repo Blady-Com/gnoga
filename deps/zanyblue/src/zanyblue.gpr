@@ -34,6 +34,7 @@
 --
 
 with "zbcom";
+with "../../uxstrings/lib_uxstrings.gpr";
 
 project ZanyBlue is
 

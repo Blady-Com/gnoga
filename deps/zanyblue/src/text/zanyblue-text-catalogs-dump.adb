@@ -33,7 +33,8 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Wide_Text_IO;
+with UXStrings.Text_IO;
+with UXStrings.Conversions;
 
 ----------
 -- Dump --
@@ -41,10 +42,11 @@ with Ada.Wide_Text_IO;
 separate (ZanyBlue.Text.Catalogs)
 procedure Dump
   (Catalog   : Catalog_Type;
-   File_Name : Wide_String := "")
+   File_Name : String := "")
 is
 
-   use Ada.Wide_Text_IO;
+   use UXStrings.Text_IO;
+   function Image is new UXStrings.Conversions.Integer_Image (Natural);
 
    procedure Dump_Pool
      (File    : File_Type;
@@ -57,11 +59,11 @@ is
 
    procedure Hdr
      (File  : File_Type;
-      Title : Wide_String;
+      Title : String;
       N     : Natural);
    procedure Hdr
      (File  : File_Type;
-      Title : Wide_String;
+      Title : String;
       N     : Natural;
       M     : Natural);
    --  Write the header data about the catalog.
@@ -77,10 +79,10 @@ is
    procedure Dump_Message
      (File     :        File_Type;
       N        : in out Positive;
-      Facility :        Wide_String;
-      Key      :        Wide_String;
+      Facility :        String;
+      Key      :        String;
       Locale   :        Locale_Type;
-      Message  :        Wide_String);
+      Message  :        String);
    --  Dump a message given the text.
 
    ------------------
@@ -90,13 +92,13 @@ is
    procedure Dump_Message
      (File     :        File_Type;
       N        : in out Positive;
-      Facility :        Wide_String;
-      Key      :        Wide_String;
+      Facility :        String;
+      Key      :        String;
       Locale   :        Locale_Type;
-      Message  :        Wide_String)
+      Message  :        String)
    is
    begin
-      Put (File, Positive'Wide_Image (N));
+      Put (File, Image (N));
       Put (File, ": """);
       Put (File, Facility);
       Put (File, """, """);
@@ -135,15 +137,16 @@ is
      (File    : File_Type;
       Catalog : Catalog_Type)
    is
-      Pool  : constant Wide_String := Catalog.C.Messages.Get_Pool;
-      Limit : constant Natural     := Pool_Size (Catalog);
-      Span  : constant Positive    := 75;
-      Start : Positive             := 1;
+      Pool  : constant String   := Catalog.C.Messages.Get_Pool;
+      Limit : constant Natural  := Pool_Size (Catalog);
+      Span  : constant Positive := 75;
+      Start : Positive          := 1;
    begin
       Hdr (File, "Dynmaic Pool", Limit, Logical_Pool_Size (Catalog));
       Put_Line (File, "---START OF STRING POOL---");
-      while Start < Pool'Length loop
-         Put_Line (File, Pool (Start .. Natural'Min (Start + Span, Limit)));
+      while Start < Pool.Length loop
+         Put_Line
+           (File, Pool.Slice (Start, Natural'Min (Start + Span, Limit)));
          Start := Start + Span + 1;
       end loop;
       Put_Line (File, "---END OF STRING POOL---");
@@ -196,14 +199,14 @@ is
 
    procedure Hdr
      (File  : File_Type;
-      Title : Wide_String;
+      Title : String;
       N     : Natural)
    is
    begin
       Put (File, Title);
       Set_Col (File, 25);
       Put (File, ": ");
-      Put (File, Natural'Wide_Image (N));
+      Put (File, Image (N));
       New_Line (File);
    end Hdr;
 
@@ -213,7 +216,7 @@ is
 
    procedure Hdr
      (File  : File_Type;
-      Title : Wide_String;
+      Title : String;
       N     : Natural;
       M     : Natural)
    is
@@ -221,17 +224,17 @@ is
       Put (File, Title);
       Set_Col (File, 25);
       Put (File, ": ");
-      Put (File, Natural'Wide_Image (N));
+      Put (File, Image (N));
       Set_Col (File, 40);
-      Put (File, Natural'Wide_Image (M));
+      Put (File, Image (M));
       New_Line (File);
    end Hdr;
 
    File : File_Type;
 
 begin
-   if File_Name'Length /= 0 then
-      Wide_Create (File, File_Name);
+   if File_Name.Length /= 0 then
+      Create (File, File_Name);
       Dump_To_File (Catalog, File);
       Close (File);
    else

@@ -35,16 +35,16 @@
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
 procedure T_0035 (T : in out Test_Case'Class) is
 
-   Facility     : constant Wide_String := "xmpl";
-   File_Name    : constant Wide_String := Test_Src_Directory (Test_Area)
+   Facility     : constant String := "xmpl";
+   File_Name    : constant String := Test_Src_Directory (Test_Area)
                                    & "/strings.properties";
    L_en_US      : constant Locale_Type := Make_Locale ("en_US");
    Catalog      : Catalog_Type;
    Count        : Natural;
 
-   procedure Check (Key : Wide_String; Message : Wide_String);
+   procedure Check (Key : String; Message : String);
 
-   procedure Check (Key : Wide_String; Message : Wide_String) is
+   procedure Check (Key : String; Message : String) is
    begin
       Check_Value (T, Get_Text (Catalog, Facility, Key, L_en_US), Message);
    end Check;

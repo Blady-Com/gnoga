@@ -35,19 +35,19 @@
 separate (ZanyBlue.Test.Text.Locales.Suites)
 procedure T_0033 (T : in out Test_Case'Class) is
 
-   procedure Check_Locale (L      : Wide_String;
-                           S      : Wide_String;
-                           Terr   : Wide_String;
-                           Name   : Wide_String;
-                           LTag   : Wide_String;
-                           LName  : Wide_String);
+   procedure Check_Locale (L      : String;
+                           S      : String;
+                           Terr   : String;
+                           Name   : String;
+                           LTag   : String;
+                           LName  : String);
 
-   procedure Check_Locale (L      : Wide_String;
-                           S      : Wide_String;
-                           Terr   : Wide_String;
-                           Name   : Wide_String;
-                           LTag   : Wide_String;
-                           LName  : Wide_String) is
+   procedure Check_Locale (L      : String;
+                           S      : String;
+                           Terr   : String;
+                           Name   : String;
+                           LTag   : String;
+                           LName  : String) is
       Locale : constant Locale_Type := Make_Locale (L, S, Terr);
    begin
       Check_Value (T, Locale_Name (Locale), Name,

@@ -44,10 +44,10 @@ procedure T_0070 (T : in out Test_Case'Class) is
 
    Locale    : constant Locale_Type := Make_Locale ("de");
 
-   procedure Check (Value : Wide_String;
+   procedure Check (Value : String;
                     T_Val : Time);
 
-   procedure Check (Value : Wide_String;
+   procedure Check (Value : String;
                     T_Val : Time) is
       Arg1      : constant Time_Argument_Type := Create (T_Val);
    begin

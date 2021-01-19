@@ -37,11 +37,11 @@ procedure T_0031 (T : in out Test_Case'Class) is
 
    he : constant Locale_Type := Make_Locale ("he");
 
-   procedure Check_Language (Abbreviation : Wide_String;
-                             Value        : Wide_String);
+   procedure Check_Language (Abbreviation : String;
+                             Value        : String);
 
-   procedure Check_Language (Abbreviation : Wide_String;
-                             Value        : Wide_String) is
+   procedure Check_Language (Abbreviation : String;
+                             Value        : String) is
    begin
       Check_Value (T, Language_Name (Abbreviation, Locale => he), Value,
                       "Mis-match for " & Abbreviation);

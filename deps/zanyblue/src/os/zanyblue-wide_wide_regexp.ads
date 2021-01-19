@@ -35,7 +35,7 @@
 
 --
 --  This is a simple wrapper package around the GNAT GNAT.Regexp
---  package with Wide_String arguments and functions.  The underlying
+--  package with String arguments and functions.  The underlying
 --  Strings to/from GNAT.Regexp are simply interpreted as UTF-8 encoded
 --  strings.
 --
@@ -47,14 +47,14 @@ package ZanyBlue.Wide_Wide_Regexp is
    subtype Regexp is GNAT.Regexp.Regexp;
 
    function Compile
-     (Pattern        : Wide_Wide_String;
+     (Pattern        : String;
       Glob           : Boolean := False;
       Case_Sensitive : Boolean := True)
       return Regexp;
    --  Compiles a regular expression S.
 
    function Match
-     (S : Wide_Wide_String;
+     (S : String;
       R : Regexp)
       return Boolean;
    --  True if S matches R, otherwise False.

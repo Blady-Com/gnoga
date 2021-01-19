@@ -96,8 +96,8 @@ procedure Set_Command (State : in out State_Type;
    procedure Set_Value (State        : in out State_Type;
                         Undef_Check  : Boolean;
                         Type_Char    : Type_Char_Type;
-                        Name         : Wide_String;
-                        Value        : Wide_String);
+                        Name         : String;
+                        Value        : String);
    --  Set a parameter value.
 
    ---------------
@@ -107,8 +107,8 @@ procedure Set_Command (State : in out State_Type;
    procedure Set_Value (State        : in out State_Type;
                         Undef_Check  : Boolean;
                         Type_Char    : Type_Char_Type;
-                        Name         : Wide_String;
-                        Value        : Wide_String) is
+                        Name         : String;
+                        Value        : String) is
    begin
       if Name (Name'First) = '_' then
          Print_10041 (+Name);

@@ -37,11 +37,11 @@ procedure T_0035 (T : in out Test_Case'Class) is
 
    ar : constant Locale_Type := Make_Locale ("ar");
 
-   procedure Check_Script (Abbreviation : Wide_String;
-                           Value        : Wide_String);
+   procedure Check_Script (Abbreviation : String;
+                           Value        : String);
 
-   procedure Check_Script (Abbreviation : Wide_String;
-                           Value        : Wide_String) is
+   procedure Check_Script (Abbreviation : String;
+                           Value        : String) is
    begin
       Check_Value (T, Script_Name (Abbreviation, Locale => ar), Value,
                       "Unexpected script name for " & Abbreviation);

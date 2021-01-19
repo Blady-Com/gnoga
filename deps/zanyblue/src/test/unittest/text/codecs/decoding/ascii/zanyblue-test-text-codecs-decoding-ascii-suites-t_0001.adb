@@ -39,7 +39,7 @@ procedure T_0001 (T : in out Test_Case'Class) is
 
    Codecs_ASCII : constant Codecs_Type := Make_Codecs ("ASCII");
    W_S : constant String := "An ASCII string";
-   N_S : constant Wide_String := "An ASCII string";
+   N_S : constant String := "An ASCII string";
 
 begin
    Assert (Codecs_ASCII.Decode (W_S) = N_S, "ASCII decoding failed");

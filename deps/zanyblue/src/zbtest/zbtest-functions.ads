@@ -50,7 +50,7 @@ package ZBTest.Functions is
 
    type Function_Type is
       access function (State   : access State_Type;
-                       Args    : List_Type) return Wide_String;
+                       Args    : List_Type) return String;
    --  Functions are implementated via routines that accept a state and the
    --  list of arguments.  A dispatch table is maintained mapping function
    --  names to implementations (this access type).
@@ -59,20 +59,20 @@ package ZBTest.Functions is
    --  Return the number of known functions.  This routine is primarily used
    --  by the "help" command to iterate over available functions.
 
-   function Find (Name : Wide_String) return Function_Type;
+   function Find (Name : String) return Function_Type;
    --  Given a function name, return the implementation.  Unknown functions
    --  return an implementation that simply raises Unknown_Function_Error.
 
-   function Function_Name (Index : Positive) return Wide_String;
+   function Function_Name (Index : Positive) return String;
    --  Return the name of the Index'th function.
 
-   procedure Print_Function_Help (Name : Wide_String);
+   procedure Print_Function_Help (Name : String);
    --  Print help information on the named function.
 
-   procedure Print_Function_Usage (Name : Wide_String);
+   procedure Print_Function_Usage (Name : String);
    --  Print the usage message for a function.
 
-   procedure Print_Function_Summary (Name  : Wide_String;
+   procedure Print_Function_Summary (Name  : String;
                                      Index : Positive);
    --  Print the message for the one line summary description associated
    --  with the named function.  The message returned includes a argument

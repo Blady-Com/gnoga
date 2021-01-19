@@ -36,7 +36,7 @@ separate (ZanyBlue.Test.Text.Format_Parser.Suites)
 procedure T_0043 (T : in out Test_Case'Class) is
 
    Locale      : constant Locale_Type := Make_Locale ("en_US");
-   Format_Spec : constant Wide_String := "100d";
+   Format_Spec : constant String := "100d";
 
 begin
    Maximum_Field_Width (10);

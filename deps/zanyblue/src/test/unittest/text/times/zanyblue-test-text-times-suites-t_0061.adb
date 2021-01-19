@@ -44,13 +44,13 @@ procedure T_0061 (T : in out Test_Case'Class) is
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Times;
 
-   procedure Check (Type_Name : Wide_String;
-                    Template  : Wide_String;
-                    Value     : Wide_String);
+   procedure Check (Type_Name : String;
+                    Template  : String;
+                    Value     : String);
 
-   procedure Check (Type_Name : Wide_String;
-                    Template  : Wide_String;
-                    Value     : Wide_String) is
+   procedure Check (Type_Name : String;
+                    Template  : String;
+                    Value     : String) is
 
       Locale    : constant Locale_Type := Make_Locale ("en_IE");
       V1        : constant Time := Time_Of (1904, 6, 16, Duration (60483));

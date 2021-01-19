@@ -39,7 +39,7 @@ procedure T_0098 (T : in out Test_Case'Class) is
 
    use Ada.Exceptions;
 
-   My_Message : constant Wide_String := "A Message";
+   My_Message : constant String := "A Message";
    My_Error : exception;
 
 begin
@@ -47,6 +47,6 @@ begin
    WAssert (T, False, "Raise_Exception returned!");
 exception
 when E : My_Error =>
-   Check_Value (T, Wide_From_UTF8 (Exception_Message (E)), My_Message,
+   Check_Value (T, From_UTF_8 (Exception_Message (E)), My_Message,
            "My message not raised");
 end T_0098;

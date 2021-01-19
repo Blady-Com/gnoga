@@ -37,10 +37,10 @@ procedure T_0005 (T : in out Test_Case'Class) is
 
    Codecs : constant Codecs_Type := Make_Codecs ("ISO8859-7");
 
-   procedure Check_String (Source : Wide_String;
+   procedure Check_String (Source : String;
                            Expect : String);
 
-   procedure Check_String (Source : Wide_String;
+   procedure Check_String (Source : String;
                            Expect : String) is
       Encoded : constant String := Codecs.Encode (Source);
    begin

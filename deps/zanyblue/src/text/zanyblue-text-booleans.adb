@@ -57,10 +57,10 @@ package body ZanyBlue.Text.Booleans is
 
    overriding function Format
      (Value     : Boolean_Argument_Type;
-      Type_Name : Wide_String;
-      Template  : Wide_String;
+      Type_Name : String;
+      Template  : String;
       Locale    : Locale_Type)
-      return Wide_String
+      return String
    is
       pragma Unreferenced (Type_Name);
       Formatting : constant Format_Type := Parse (Template, Locale);

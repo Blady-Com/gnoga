@@ -43,9 +43,9 @@ procedure T_0006 (T : in out Test_Case'Class) is
    use ZanyBlue.Text;
 
    Codecs : constant Codecs_Type := Make_Codecs ("UTF-8");
-   W_S : constant Wide_String := "Some Arabic numerals: ٠١٣";
-   E_S : constant String := Wide_To_UTF8 (W_S);
-   N_S : constant Wide_String := Codecs.Decode (E_S);
+   W_S : constant String := "Some Arabic numerals: ٠١٣";
+   E_S : constant String := To_UTF_8 (W_S);
+   N_S : constant String := Codecs.Decode (E_S);
 
 begin
    Assert (N_S = W_S, "UTF-8 decode failed");

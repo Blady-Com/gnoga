@@ -55,10 +55,10 @@ package ZanyBlue.Text.Strings is
 
    overriding function Format
      (Value     : String_Argument_Type;
-      Type_Name : Wide_String;
-      Template  : Wide_String;
+      Type_Name : String;
+      Template  : String;
       Locale    : Locale_Type)
-      return Wide_String;
+      return String;
    --  Format an individual argument using the Template to direct the
    --  conversion.
 
@@ -66,7 +66,7 @@ private
 
    type String_Argument_Type (Length : Natural)
    is new String_Category_Type with record
-      Data : Wide_String (1 .. Length);
+      Data : String;
    end record;
 
 end ZanyBlue.Text.Strings;

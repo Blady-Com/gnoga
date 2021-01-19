@@ -79,8 +79,8 @@ package body ZanyBlue.Test.Text.Suites is
    procedure Initialize (T : in out Test) is
    begin
       Set_Name (T, "ZanyBlue.Text");
-      Add_Test_Routine (T, T_0001'Access, "T_0004, To_UTF8 ('')");
-      Add_Test_Routine (T, T_0002'Access, "T_0005, From_UTF8 ('')");
+      Add_Test_Routine (T, T_0001'Access, "T_0004, To_UTF_8 ('')");
+      Add_Test_Routine (T, T_0002'Access, "T_0005, From_UTF_8 ('')");
    end Initialize;
 
    function Suite return Test_Suite is

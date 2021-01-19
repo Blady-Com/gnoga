@@ -38,7 +38,7 @@ procedure T_0005 (T : in out Test_Case'Class) is
    use ZanyBlue.Text;
 
    procedure Invalid (Source : String);
-   procedure OK (Source : String; Expected : Wide_String);
+   procedure OK (Source : String; Expected : String);
 
    procedure Invalid (Source : String) is
    begin
@@ -50,7 +50,7 @@ procedure T_0005 (T : in out Test_Case'Class) is
       WAssert (T, True, "Expected Unicode_Format_Error raised");
    end Invalid;
 
-   procedure OK (Source : String; Expected : Wide_String) is
+   procedure OK (Source : String; Expected : String) is
    begin
       WAssert (T, Unescape_String (Source) = Expected,
               "Unescaped """ & To_Wide_String (Source) & """ failed");

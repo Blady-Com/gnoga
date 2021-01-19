@@ -44,10 +44,10 @@ package ZanyBlue.Text.CLDR is
    --  using any of the other rountines defined in here.
 
    function Language_Name
-     (Code    : Wide_String;
-      Unknown : Wide_String := "";
+     (Code    : String;
+      Unknown : String      := "";
       Locale  : Locale_Type := Current_Locale)
-      return Wide_String;
+      return String;
    --
    --  Return the language name associated with an ISO language code, e.g.,
    --  in an English locale,
@@ -60,10 +60,10 @@ package ZanyBlue.Text.CLDR is
    --
 
    function Script_Name
-     (Code    : Wide_String;
-      Unknown : Wide_String := "";
+     (Code    : String;
+      Unknown : String      := "";
       Locale  : Locale_Type := Current_Locale)
-      return Wide_String;
+      return String;
    --
    --  Return the  name associated with an ISO script code, e.g.,
    --  in an English locale,
@@ -76,10 +76,10 @@ package ZanyBlue.Text.CLDR is
    --
 
    function Territory_Name
-     (Code    : Wide_String;
-      Unknown : Wide_String := "";
+     (Code    : String;
+      Unknown : String      := "";
       Locale  : Locale_Type := Current_Locale)
-      return Wide_String;
+      return String;
    --
    --  Return the territory name associated with an ISO two letter territory
    --  code, e.g., in an English locale,
@@ -94,7 +94,7 @@ package ZanyBlue.Text.CLDR is
    function Full_Locale_Name
      (Value  : Locale_Type;
       Locale : Locale_Type := Current_Locale)
-      return Wide_String;
+      return String;
    --
    --  Return the full locale name, language and territory
    --

@@ -40,15 +40,12 @@
 --  values by name.
 --
 
-with Ada.Strings.Wide_Unbounded;
 with Ada.Containers.Indefinite_Vectors;
 
 package ZanyBlue.Parameters is
 
-   use Ada.Strings.Wide_Unbounded;
-
    package Word_List_Package is new Ada.Containers.Indefinite_Vectors
-     (Index_Type => Positive, Element_Type => Unbounded_Wide_String);
+     (Index_Type => Positive, Element_Type => String);
    subtype List_Type is Word_List_Package.Vector;
    --  The list of strings type for parameters
 
@@ -57,7 +54,7 @@ package ZanyBlue.Parameters is
 
    procedure Append
      (List  : in out List_Type;
-      Value :        Wide_String);
+      Value :        String);
    --  Append a string to a list type.
 
    procedure Append
@@ -73,7 +70,7 @@ package ZanyBlue.Parameters is
    function Value
      (List  : List_Type;
       Index : Positive)
-      return Wide_String;
+      return String;
    --  Return the value at the given index.  Raises Constraint_Error for
    --  out of bound index values.
 

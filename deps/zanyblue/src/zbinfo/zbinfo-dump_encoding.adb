@@ -43,7 +43,7 @@ with ZBInfo_Messages.ZBInfo_Prints;
 -- Dump_Encoding --
 -------------------
 
-procedure ZBInfo.Dump_Encoding (Name            : Wide_String;
+procedure ZBInfo.Dump_Encoding (Name            : String;
                                 Reverse_Mapping : Boolean) is
 
    use Ada.Wide_Text_IO;
@@ -55,12 +55,12 @@ procedure ZBInfo.Dump_Encoding (Name            : Wide_String;
 
    Codecs : constant Codecs_Type := Make_Codecs (Name);
 
-   procedure Dump_Encoding (WCh : Wide_Character;
+   procedure Dump_Encoding (WCh : Unicode_Character;
                             Encoding : String);
    --  Iteration handler to dump the encoding for an individual wide
    --  character (Unicode Code Point order).
 
-   procedure Dump_Decoding (WCh : Wide_Character;
+   procedure Dump_Decoding (WCh : Unicode_Character;
                             Encoding : String);
    --  Iteration handler to dump the encoding for an individual wide
    --  character (Encoded Code Points order).
@@ -69,9 +69,9 @@ procedure ZBInfo.Dump_Encoding (Name            : Wide_String;
    -- Dump_Decoding --
    -------------------
 
-   procedure Dump_Decoding (WCh : Wide_Character;
+   procedure Dump_Decoding (WCh : Unicode_Character;
                             Encoding : String) is
-      Code_Point : constant Natural := Wide_Character'Pos (WCh);
+      Code_Point : constant Natural := Unicode_Character'Pos (WCh);
    begin
       if Encoding'Length = 2 then
          if Is_Graphic (WCh) then
@@ -98,9 +98,9 @@ procedure ZBInfo.Dump_Encoding (Name            : Wide_String;
    -- Dump_Encoding --
    -------------------
 
-   procedure Dump_Encoding (WCh : Wide_Character;
+   procedure Dump_Encoding (WCh : Unicode_Character;
                             Encoding : String) is
-      Code_Point : constant Natural := Wide_Character'Pos (WCh);
+      Code_Point : constant Natural := Unicode_Character'Pos (WCh);
    begin
       if Is_Graphic (WCh) then
          Print_00029 (+Code_Point, +WCh, With_NL => False);

@@ -38,9 +38,9 @@ procedure T_0044 (T : in out Test_Case'Class) is
    no : constant Locale_Type := Make_Locale ("no");
    nb : constant Locale_Type := Make_Locale ("nb");
 
-   procedure Check_Language (Abbreviation : Wide_String);
+   procedure Check_Language (Abbreviation : String);
 
-   procedure Check_Language (Abbreviation : Wide_String) is
+   procedure Check_Language (Abbreviation : String) is
    begin
       Check_Value (T, Language_Name (Abbreviation, Locale => no),
                       Language_Name (Abbreviation, Locale => nb),

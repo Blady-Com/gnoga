@@ -63,13 +63,13 @@ package body ZBMCompile.Codegen.Accessors is
 
    function Argument_Class (Index     : Natural;
                             Arg_Types : String_Vectors.Vector)
-      return Wide_String;
+      return String;
    --  Return the argument class string associated with a argument index.
 
    procedure Create_Key_Descriptors
      (Handler             : ZBMC_Handler_Type;
-      Facility            : Wide_String;
-      Base_Locale         : Wide_String;
+      Facility            : String;
+      Base_Locale         : String;
       Max_Args            : out Natural;
       Key_Descriptors     : in out Key_Descriptor_Vector);
    --  Create the sorted list of descriptors for the keys used in a facility.
@@ -78,28 +78,28 @@ package body ZBMCompile.Codegen.Accessors is
 
    procedure Create_Facility_Accessors
      (Catalog             : Catalog_Type;
-      Facility            : Wide_String;
+      Facility            : String;
       Options             : Parameter_Set_Type;
-      Modes               : Wide_String;
+      Modes               : String;
       Max_Args            : Natural;
       Key_Descriptors     : Key_Descriptor_Vector;
-      Base_Locale         : Wide_String;
-      Accessor_Facility   : Wide_String);
+      Base_Locale         : String;
+      Accessor_Facility   : String);
    --  Create the spec and body for the facility accessors based on the
    --  accessor facility.
 
    procedure Create_Facility_Packages
      (Handler             : ZBMC_Handler_Type;
-      Facility            : Wide_String;
+      Facility            : String;
       Options             : Parameter_Set_Type);
    --  Create the accessor packages for an individual facility.
 
-   procedure Copy_Argument_Types (Base_Locale : Wide_String;
+   procedure Copy_Argument_Types (Base_Locale : String;
                                   Locales     : Locale_Definitions_Map;
                                   N_Args      : Natural;
                                   Arg_Types   : in out String_Vectors.Vector);
 
-   function Message_Arg_Count (Base_Locale : Wide_String;
+   function Message_Arg_Count (Base_Locale : String;
                                Locales     : Locale_Definitions_Map)
       return Natural;
    --  Return the expected number of arguments for a message.  This is the
@@ -108,9 +108,9 @@ package body ZBMCompile.Codegen.Accessors is
 
    procedure Write_Base_Message_Text (File        : File_Type;
                                       Catalog     : Catalog_Type;
-                                      Facility    : Wide_String;
-                                      Key         : Wide_String;
-                                      Base_Locale : Wide_String;
+                                      Facility    : String;
+                                      Key         : String;
+                                      Base_Locale : String;
                                       Block_Size  : Positive);
    --  Write the value associated with the key in the base locale as a
    --  comment after the accessor function/procedure in the spec.  This
@@ -122,10 +122,10 @@ package body ZBMCompile.Codegen.Accessors is
 
    function Argument_Class (Index     : Natural;
                             Arg_Types : String_Vectors.Vector)
-      return Wide_String
+      return String
    is
       use String_Vectors;
-      Result : constant Wide_String := Element (Arg_Types, Index);
+      Result : constant String := Element (Arg_Types, Index);
    begin
       if Result = "" then
          return "Any_Category_Type";
@@ -138,7 +138,7 @@ package body ZBMCompile.Codegen.Accessors is
    -- Copy_Argument_Types --
    -------------------------
 
-   procedure Copy_Argument_Types (Base_Locale : Wide_String;
+   procedure Copy_Argument_Types (Base_Locale : String;
                                   Locales     : Locale_Definitions_Map;
                                   N_Args      : Natural;
                                   Arg_Types   : in out String_Vectors.Vector)
@@ -184,32 +184,32 @@ package body ZBMCompile.Codegen.Accessors is
 
    procedure Create_Facility_Accessors (
       Catalog             : Catalog_Type;
-      Facility            : Wide_String;
+      Facility            : String;
       Options             : Parameter_Set_Type;
-      Modes               : Wide_String;
+      Modes               : String;
       Max_Args            : Natural;
       Key_Descriptors     : Key_Descriptor_Vector;
-      Base_Locale         : Wide_String;
-      Accessor_Facility   : Wide_String)
+      Base_Locale         : String;
+      Accessor_Facility   : String)
    is
 
       use Key_Descriptor_Vectors;
 
       procedure Close_And_Report (File             : in out File_Type;
-                                  File_Name        : Wide_String;
-                                  Facility_Package : Wide_String;
-                                  Updated_Id       : Wide_String;
-                                  Retained_Id      : Wide_String);
+                                  File_Name        : String;
+                                  Facility_Package : String;
+                                  Updated_Id       : String;
+                                  Retained_Id      : String);
 
       procedure Write_Accessor (Spec_File       : File_Type;
                                 Body_File       : File_Type;
                                 Key_Descriptor  : Key_Descriptor_Type);
 
       procedure Close_And_Report (File             : in out File_Type;
-                                  File_Name        : Wide_String;
-                                  Facility_Package : Wide_String;
-                                  Updated_Id       : Wide_String;
-                                  Retained_Id      : Wide_String) is
+                                  File_Name        : String;
+                                  Facility_Package : String;
+                                  Updated_Id       : String;
+                                  Retained_Id      : String) is
          Updated : Boolean;
       begin
          Close_And_Update (File, Updated);
@@ -221,11 +221,11 @@ package body ZBMCompile.Codegen.Accessors is
       procedure Write_Accessor (Spec_File       : File_Type;
                                 Body_File       : File_Type;
                                 Key_Descriptor  : Key_Descriptor_Type) is
-         Local_Arguments : constant Wide_String := "Arguments";
-         Empty_Arguments : constant Wide_String := "Empty_Argument_List";
-         Key  : constant Wide_String := Get_Key (Catalog,
+         Local_Arguments : constant String := "Arguments";
+         Empty_Arguments : constant String := "Empty_Argument_List";
+         Key  : constant String := Get_Key (Catalog,
                                                  Key_Descriptor.Index);
-         Dash : constant Wide_Character := '-';
+         Dash : constant Unicode_Character := '-';
       begin
          Print_Line (Spec_File, Accessor_Facility, "10007",
                      +Key, +Modes);
@@ -273,17 +273,17 @@ package body ZBMCompile.Codegen.Accessors is
          end if;
       end Write_Accessor;
 
-      Output_Directory : constant Wide_String :=
+      Output_Directory : constant String :=
                              Options.Get_String ("output_directory");
-      Package_Name : constant Wide_String := Options.Get_String ("package");
-      Facility_Package : constant Wide_String :=
+      Package_Name : constant String := Options.Get_String ("package");
+      Facility_Package : constant String :=
                            Format (Accessor_Facility, "00000",
                                    +Package_Name, +Facility);
-      Spec_Name : constant Wide_String := Wide_Compose (
+      Spec_Name : constant String := Wide_Compose (
                              Output_Directory,
                              Spec_File_Name (Facility_Package,
                                              GNAT_Naming_Style));
-      Body_Name : constant Wide_String := Wide_Compose (
+      Body_Name : constant String := Wide_Compose (
                              Output_Directory,
                              Body_File_Name (Facility_Package,
                                              GNAT_Naming_Style));
@@ -346,13 +346,13 @@ package body ZBMCompile.Codegen.Accessors is
 
    procedure Create_Facility_Packages
      (Handler             : ZBMC_Handler_Type;
-      Facility            : Wide_String;
+      Facility            : String;
       Options             : Parameter_Set_Type) is
 
       Catalog         : constant Catalog_Type := Get_Catalog (Handler);
-      Base_Locale      : constant Wide_String
+      Base_Locale      : constant String
                               := Options.Get_String ("reference_locale");
-      Modes           : constant Wide_String := Modes_String (Options);
+      Modes           : constant String := Modes_String (Options);
       Key_Descriptors : Key_Descriptor_Vector;
       Max_Args        : Natural;
 
@@ -389,8 +389,8 @@ package body ZBMCompile.Codegen.Accessors is
 
    procedure Create_Key_Descriptors
      (Handler             : ZBMC_Handler_Type;
-      Facility            : Wide_String;
-      Base_Locale         : Wide_String;
+      Facility            : String;
+      Base_Locale         : String;
       Max_Args            : out Natural;
       Key_Descriptors     : in out Key_Descriptor_Vector) is
 
@@ -400,8 +400,8 @@ package body ZBMCompile.Codegen.Accessors is
       --  Compare two key descriptors based on the key text.
 
       procedure Scan_Key (Catalog  : Catalog_Type;
-                          Facility : Wide_String;
-                          Key      : Wide_String;
+                          Facility : String;
+                          Key      : String;
                           Locales  : Locale_Definitions_Map);
       --  Scan the messages generating a mapping from key to expected number
       --  of arguments to the base message.
@@ -416,11 +416,11 @@ package body ZBMCompile.Codegen.Accessors is
       function "<" (Left, Right : Key_Descriptor_Type) return Boolean is
          use Ada.Wide_Characters.Unicode;
 
-         function Norm (Key : Wide_String) return Wide_String;
+         function Norm (Key : String) return String;
          --  Return a normalize value for the key: simply lowercase it
 
-         function Norm (Key : Wide_String) return Wide_String is
-            Result : Wide_String (Key'Range);
+         function Norm (Key : String) return String is
+            Result : String (Key'Range);
          begin
             for I in Key'Range loop
                Result (I) := To_Lower_Case (Key (I));
@@ -428,8 +428,8 @@ package body ZBMCompile.Codegen.Accessors is
             return Result;
          end Norm;
 
-         Left_Key : Wide_String := Norm (Get_Key (Catalog, Left.Index));
-         Right_Key : Wide_String := Norm (Get_Key (Catalog, Right.Index));
+         Left_Key : String := Norm (Get_Key (Catalog, Left.Index));
+         Right_Key : String := Norm (Get_Key (Catalog, Right.Index));
 
       begin
          return Left_Key < Right_Key;
@@ -440,8 +440,8 @@ package body ZBMCompile.Codegen.Accessors is
       --------------
 
       procedure Scan_Key (Catalog  : Catalog_Type;
-                          Facility : Wide_String;
-                          Key      : Wide_String;
+                          Facility : String;
+                          Key      : String;
                           Locales  : Locale_Definitions_Map) is
 
          pragma Unreferenced (Facility);
@@ -474,7 +474,7 @@ package body ZBMCompile.Codegen.Accessors is
    -- Message_Arg_Count --
    -----------------------
 
-   function Message_Arg_Count (Base_Locale : Wide_String;
+   function Message_Arg_Count (Base_Locale : String;
                                Locales     : Locale_Definitions_Map)
       return Natural
    is
@@ -510,9 +510,9 @@ package body ZBMCompile.Codegen.Accessors is
 
    procedure Write_Base_Message_Text (File        : File_Type;
                                       Catalog     : Catalog_Type;
-                                      Facility    : Wide_String;
-                                      Key         : Wide_String;
-                                      Base_Locale : Wide_String;
+                                      Facility    : String;
+                                      Key         : String;
+                                      Base_Locale : String;
                                       Block_Size  : Positive) is
    begin
       Write_Commented_Text (File,

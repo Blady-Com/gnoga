@@ -37,9 +37,9 @@ with Ada.Wide_Text_IO;
 separate (ZanyBlue.Test.OS.Suites)
 procedure T_0003 (T : in out Test_Case'Class) is
 
-   Test_Area : constant Wide_String := "os";
-   Test_Name : constant Wide_String := "t_0003";
-   Filename  : constant Wide_String := Test_Log_Name (Test_Area, Test_Name);
+   Test_Area : constant String := "os";
+   Test_Name : constant String := "t_0003";
+   Filename  : constant String := Test_Log_Name (Test_Area, Test_Name);
    Output    : Ada.Wide_Text_IO.File_Type;
 
 begin

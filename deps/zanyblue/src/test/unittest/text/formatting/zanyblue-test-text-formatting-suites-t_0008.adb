@@ -50,7 +50,7 @@ begin
    WAssert (T, False, "Raise_Exception returned!");
 exception
 when E : My_Error =>
-   Check_Value (T, Wide_From_UTF8 (Exception_Message (E)),
+   Check_Value (T, From_UTF_8 (Exception_Message (E)),
                    "Message: 1, 2",
            "My message not raised");
 end T_0008;

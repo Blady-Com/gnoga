@@ -35,48 +35,45 @@
 
 --
 --  This is a simple wrapper package around the standard Ada.Command_Line
---  package with Wide_String arguments and functions.  The underlying
+--  package with String arguments and functions.  The underlying
 --  Strings from Ada.Command_Line are simply interpreted as UTF-8 encoded
---  strings and are decoded to Wide_Strings.  This, obviously, does not
---  support UTF-8 encoded Wide_Wide_Strings.
+--  strings and are decoded to UXStrings.
 --
 
 with Ada.Command_Line;
-with ZanyBlue.Text;
 
 package body ZanyBlue.Wide_Wide_Command_Line is
 
-   use ZanyBlue.Text;
    use Ada.Command_Line;
 
-   ------------------------
-   -- Wide_Wide_Argument --
-   ------------------------
+   --------------
+   -- Argument --
+   --------------
 
-   function Wide_Wide_Argument
+   function Argument
      (Number : Positive)
-      return Wide_Wide_String
+      return String
    is
    begin
-      return Wide_Wide_From_UTF8 (Argument (Number));
-   end Wide_Wide_Argument;
+      return From_UTF_8 (Argument (Number));
+   end Argument;
 
-   ------------------------------
-   -- Wide_Wide_Argument_Count --
-   ------------------------------
+   --------------------
+   -- Argument_Count --
+   --------------------
 
-   function Wide_Wide_Argument_Count return Natural is
+   function Argument_Count return Natural is
    begin
-      return Argument_Count;
-   end Wide_Wide_Argument_Count;
+      return Ada.Command_Line.Argument_Count;
+   end Argument_Count;
 
-   ----------------------------
-   -- Wide_Wide_Command_Name --
-   ----------------------------
+   ------------------
+   -- Command_Name --
+   ------------------
 
-   function Wide_Wide_Command_Name return Wide_Wide_String is
+   function Command_Name return String is
    begin
-      return Wide_Wide_From_UTF8 (Command_Name);
-   end Wide_Wide_Command_Name;
+      return From_UTF_8 (Command_Name);
+   end Command_Name;
 
 end ZanyBlue.Wide_Wide_Command_Line;

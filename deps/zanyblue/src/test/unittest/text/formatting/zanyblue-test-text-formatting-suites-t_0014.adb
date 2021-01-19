@@ -40,10 +40,10 @@ procedure T_0014 (T : in out Test_Case'Class) is
    use ZanyBlue.Text.Catalogs;
 
    Locale    : constant Locale_Type := Make_Locale ("");
-   Facility  : constant Wide_String := "fac1";
-   Key       : constant Wide_String := "key1";
-   Message   : constant Wide_String := "From {0} to {1} is a long way";
-   Expect    : constant Wide_String := "From 10 to 20 is a long way";
+   Facility  : constant String := "fac1";
+   Key       : constant String := "key1";
+   Message   : constant String := "From {0} to {1} is a long way";
+   Expect    : constant String := "From 10 to 20 is a long way";
    Catalog   : constant Catalog_Type := Create;
    Arguments : Argument_List;
 

@@ -52,7 +52,7 @@ procedure Mkdir_Command (State : in out State_Type;
    use ZanyBlue.Wide_Directories;
 
    procedure Make_Directory (State : in out State_Type;
-                             Name  : Wide_String);
+                             Name  : String);
    --  The make directory helper function.
 
    --------------------
@@ -60,7 +60,7 @@ procedure Mkdir_Command (State : in out State_Type;
    --------------------
 
    procedure Make_Directory (State : in out State_Type;
-                             Name  : Wide_String) is
+                             Name  : String) is
    begin
       Wide_Create_Directory (Name);
       State.Add_Undo_Action (Format ("delete -r {0}", +Name));

@@ -34,22 +34,20 @@
 --
 
 with Ada.Exceptions;
-with Ada.Strings.Hash;
-with Ada.Strings.Unbounded;
 with Ada.Characters.Latin_1;
 with Ada.Characters.Handling;
 with Ada.Containers.Indefinite_Hashed_Maps;
-with Ada.Wide_Text_IO.Text_Streams;
+with UXStrings.Text_IO.Text_Streams;
 with ZanyBlue.OS;
 with ZanyBlue.Text.Utils;
+with UXStrings.Hash;
 
 package body ZanyBlue.Text.Properties_Parser is
 
    use Ada.Exceptions;
-   use Ada.Strings.Unbounded;
    use Ada.Characters.Latin_1;
    use Ada.Characters.Handling;
-   use Ada.Wide_Text_IO.Text_Streams;
+   use UXStrings.Text_IO.Text_Streams;
    use ZanyBlue.OS;
    use ZanyBlue.Text.Utils;
 
@@ -104,8 +102,8 @@ package body ZanyBlue.Text.Properties_Parser is
 
    procedure Parse
      (Handler   : in out Parser_Handler_Type'Class;
-      File_Name :        Wide_String;
-      Facility  :        Wide_String;
+      File_Name :        String;
+      Facility  :        String;
       Locale    :        Locale_Type)
    is
    begin
@@ -118,22 +116,22 @@ package body ZanyBlue.Text.Properties_Parser is
 
    procedure Parse
      (Handler       : in out Parser_Handler_Type'Class;
-      File_Name     :        Wide_String;
-      Facility      :        Wide_String;
+      File_Name     :        String;
+      Facility      :        String;
       Locale        :        Locale_Type;
       Source_Locale :        Locale_Type)
    is
-      Source_File : File_Type;
+      Source_File : UXStrings.Text_IO.File_Type;
       Opened      : Boolean := False;
    begin
-      Wide_Open (Source_File, In_File, File_Name);
+      Open (Source_File, UXStrings.Text_IO.In_File, File_Name);
       Opened := True;
       Parse (Handler, Source_File, File_Name, Facility, Locale, Source_Locale);
-      Close (Source_File);
+      UXStrings.Text_IO.Close (Source_File);
    exception
       when others =>
          if Opened then
-            Close (Source_File);
+            UXStrings.Text_IO.Close (Source_File);
          end if;
          raise;
    end Parse;
@@ -144,9 +142,9 @@ package body ZanyBlue.Text.Properties_Parser is
 
    procedure Parse
      (Handler     : in out Parser_Handler_Type'Class;
-      Source_File : in out File_Type;
-      File_Name   :        Wide_String;
-      Facility    :        Wide_String;
+      Source_File : in out UXStrings.Text_IO.File_Type;
+      File_Name   :        String;
+      Facility    :        String;
       Locale      :        Locale_Type)
    is
    begin
@@ -159,22 +157,22 @@ package body ZanyBlue.Text.Properties_Parser is
 
    procedure Parse
      (Handler       : in out Parser_Handler_Type'Class;
-      Source_File   : in out File_Type;
-      File_Name     :        Wide_String;
-      Facility      :        Wide_String;
+      Source_File   : in out UXStrings.Text_IO.File_Type;
+      File_Name     :        String;
+      Facility      :        String;
       Locale        :        Locale_Type;
       Source_Locale :        Locale_Type)
    is
 
       package Key_To_Line_Maps is new Ada.Containers.Indefinite_Hashed_Maps
         (Key_Type => String, Element_Type => Natural, Equivalent_Keys => "=",
-         Hash     => Ada.Strings.Hash);
+         Hash     => UXStrings.Hash);
 
       Key_Definitions : Key_To_Line_Maps.Map;
       Source_Stream   : Stream_Access;
       Cur_Character   : Character;
-      Cur_Key         : Unbounded_String;
-      Cur_Value       : Unbounded_String;
+      Cur_Key         : String;
+      Cur_Value       : String;
       Cur_Line        : Natural  := 1;
       Def_Line        : Positive := 1;
 
@@ -219,8 +217,8 @@ package body ZanyBlue.Text.Properties_Parser is
 
          use Key_To_Line_Maps;
 
-         Position : constant Cursor      := Find (Key_Definitions, Key);
-         WKey     : constant Wide_String := To_Wide_String (Key);
+         Position : constant Cursor := Find (Key_Definitions, Key);
+         WKey     : constant String := Key;
       begin
          if Position /= No_Element then
             Handler.Increment_Errors;
@@ -244,7 +242,7 @@ package body ZanyBlue.Text.Properties_Parser is
          return Character
       is
       begin
-         if not End_Of_File (Source_File) then
+         if not UXStrings.Text_IO.End_Of_File (Source_File) then
             Character'Read (Source_Stream, Cur_Character);
             if Require_ISO_646 and then not Is_ISO_646 (Cur_Character) then
                Handler.Increment_Errors;
@@ -274,8 +272,8 @@ package body ZanyBlue.Text.Properties_Parser is
          when '#' =>
             goto Comment;
          when others =>
-            Cur_Key   := To_Unbounded_String ("" & Cur_Character);
-            Cur_Value := To_Unbounded_String ("");
+            Cur_Key   := From_Latin_1 (Cur_Character);
+            Cur_Value := "";
             goto Key;
       end case;
 
@@ -291,20 +289,20 @@ package body ZanyBlue.Text.Properties_Parser is
          when ':' | '=' =>
             goto Key_End_2;
          when others =>
-            Append (Cur_Key, Cur_Character);
+            Append (Cur_Key, From_Latin_1 (Cur_Character));
             goto Key;
       end case;
 
       <<Key_Escape>>
       case Next is
          when 'r' =>
-            Append (Cur_Key, CR);
+            Append (Cur_Key, From_Latin_1 (CR));
             goto Key;
          when 'n' =>
-            Append (Cur_Key, LF);
+            Append (Cur_Key, From_Latin_1 (LF));
             goto Key;
          when others =>
-            Append (Cur_Key, Cur_Character);
+            Append (Cur_Key, From_Latin_1 (Cur_Character));
             goto Key;
       end case;
 
@@ -333,7 +331,7 @@ package body ZanyBlue.Text.Properties_Parser is
       end case;
 
       <<Value>>
-      Append (Cur_Value, Cur_Character);
+      Append (Cur_Value, From_Latin_1 (Cur_Character));
       case Next is
          when CR | LF | EOT =>
             goto Finish;
@@ -385,7 +383,7 @@ package body ZanyBlue.Text.Properties_Parser is
       goto Start;
 
       <<Finish>>
-      New_Message (To_String (Cur_Key), To_String (Cur_Value));
+      New_Message (Cur_Key, Cur_Value);
       goto Start;
 
       <<EOF>>
@@ -396,7 +394,8 @@ package body ZanyBlue.Text.Properties_Parser is
       --  Augment the exception with the file name ane line number
          Handler.Increment_Errors;
          Handler.Invalid_Definition
-           (Facility, Locale, File_Name, Def_Line, Exception_Message (Error));
+           (Facility, Locale, File_Name, Def_Line,
+            From_Latin_1 (Exception_Message (Error)));
    end Parse;
 
    ----------------------

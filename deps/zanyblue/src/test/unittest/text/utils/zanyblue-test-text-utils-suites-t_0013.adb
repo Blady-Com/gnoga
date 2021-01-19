@@ -35,7 +35,7 @@
 separate (ZanyBlue.Test.Text.Utils.Suites)
 procedure T_0013 (T : in out Test_Case'Class) is
 
-   Value : Wide_String := "ABC";
+   Value : String := "ABC";
 
 begin
    ASCII_Capitalize (Value);

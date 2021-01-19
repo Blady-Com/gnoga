@@ -34,41 +34,38 @@
 --
 
 with Ada.Text_IO.Text_Streams;
-with Ada.Strings.Wide_Fixed;
 with ZanyBlue.OS;
-with ZanyBlue.Wide_Directories;
+with ZanyBlue.Wide_Wide_Directories;
 
 package body ZanyBlue.Text is
 
    use ZanyBlue.OS;
 
-   Update_Extension : constant Wide_String := ".zbtmp";
+   Update_Extension : constant String := ".zbtmp";
 
    ----------------------
    -- Close_And_Update --
    ----------------------
 
    procedure Close_And_Update
-     (File    : in out Ada.Wide_Text_IO.File_Type;
+     (File    : in out UXStrings.Text_IO.File_Type;
       Updated :    out Boolean)
    is
-      use Ada.Wide_Text_IO;
-      use Ada.Strings.Wide_Fixed;
-      use ZanyBlue.Wide_Directories;
-      Len       : constant Natural     := Update_Extension'Length;
-      File_Name : constant Wide_String := Wide_From_UTF8 (Name (File));
-      Real_Name : constant Wide_String :=
-        Head (File_Name, File_Name'Length - Len);
+      use UXStrings.Text_IO;
+      use ZanyBlue.Wide_Wide_Directories;
+      Len       : constant Natural := Update_Extension.Length;
+      File_Name : constant String  := Name (File);
+      Real_Name : constant String  := Head (File_Name, File_Name.Length - Len);
    begin
       Close (File);
       Updated := Files_Differ (File_Name, Real_Name);
       if Updated then
-         if Wide_Exists (Real_Name) then
-            Wide_Delete_File (Real_Name);
+         if Exists (Real_Name) then
+            Delete_File (Real_Name);
          end if;
-         Wide_Rename (File_Name, Real_Name);
+         Rename (File_Name, Real_Name);
       else
-         Wide_Delete_File (File_Name);
+         Delete_File (File_Name);
       end if;
    end Close_And_Update;
 
@@ -77,8 +74,8 @@ package body ZanyBlue.Text is
    ------------------
 
    function Files_Differ
-     (Left_File_Name  : Wide_String;
-      Right_File_Name : Wide_String)
+     (Left_File_Name  : String;
+      Right_File_Name : String)
       return Boolean
    is
       use Ada.Text_IO;
@@ -94,8 +91,8 @@ package body ZanyBlue.Text is
       Right        : File_Type;
 
    begin
-      Open (Left, In_File, Wide_To_UTF8 (Left_File_Name));
-      Open (Right, In_File, Wide_To_UTF8 (Right_File_Name));
+      Open (Left, In_File, To_UTF_8 (Left_File_Name));
+      Open (Right, In_File, To_UTF_8 (Right_File_Name));
       Left_Stream  := Stream (Left);
       Right_Stream := Stream (Right);
       while not Done loop
@@ -127,12 +124,12 @@ package body ZanyBlue.Text is
    ----------------------------
 
    procedure Wide_Create_For_Update
-     (File : in out Ada.Wide_Text_IO.File_Type;
-      Name :        Wide_String)
+     (File : in out UXStrings.Text_IO.File_Type;
+      Name :        String)
    is
-      use Ada.Wide_Text_IO;
+      use UXStrings.Text_IO;
    begin
-      Wide_Create (File, Name & Update_Extension);
+      Create (File, Name & Update_Extension);
    end Wide_Create_For_Update;
 
    ---------------
@@ -140,7 +137,7 @@ package body ZanyBlue.Text is
    ---------------
 
    function Wide_Hash
-     (Key : Wide_String)
+     (Key : String)
       return Ada.Containers.Hash_Type
    is
 
@@ -156,9 +153,9 @@ package body ZanyBlue.Text is
 
    begin
       H := 0;
-      for J in Key'Range loop
+      for J in Key loop
          H :=
-           Wide_Character'Pos (Key (J)) + Shift_Left (H, 6) +
+           Unicode_Character'Pos (Key (J)) + Shift_Left (H, 6) +
            Shift_Left (H, 16) - H;
       end loop;
       return H;

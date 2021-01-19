@@ -40,7 +40,7 @@ package body ZanyBlue.Test.OS.Suites is
    use Ahven.Framework;
    use ZanyBlue.OS;
 
-   Test_Area : constant Wide_String := "os";
+   Test_Area : constant String := "os";
    pragma Unreferenced (Test_Area);
 
    procedure T_0001 (T : in out Test_Case'Class);

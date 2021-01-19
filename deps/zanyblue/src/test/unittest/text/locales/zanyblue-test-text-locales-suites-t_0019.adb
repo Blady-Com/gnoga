@@ -35,13 +35,13 @@
 separate (ZanyBlue.Test.Text.Locales.Suites)
 procedure T_0019 (T : in out Test_Case'Class) is
 
-   procedure Check_Parent (Child_Name  : Wide_String;
-                           Parent_Name : Wide_String;
-                           Root_Name   : Wide_String);
+   procedure Check_Parent (Child_Name  : String;
+                           Parent_Name : String;
+                           Root_Name   : String);
 
-   procedure Check_Parent (Child_Name  : Wide_String;
-                           Parent_Name : Wide_String;
-                           Root_Name   : Wide_String) is
+   procedure Check_Parent (Child_Name  : String;
+                           Parent_Name : String;
+                           Root_Name   : String) is
 
       Language       : Language_Type;
       Script         : Script_Type;

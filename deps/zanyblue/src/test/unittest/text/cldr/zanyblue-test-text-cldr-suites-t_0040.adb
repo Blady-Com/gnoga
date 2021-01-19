@@ -37,11 +37,11 @@ procedure T_0040 (T : in out Test_Case'Class) is
 
    ar : constant Locale_Type := Make_Locale ("ar");
 
-   procedure Check_Territory (Abbreviation : Wide_String;
-                              Value        : Wide_String);
+   procedure Check_Territory (Abbreviation : String;
+                              Value        : String);
 
-   procedure Check_Territory (Abbreviation : Wide_String;
-                              Value        : Wide_String) is
+   procedure Check_Territory (Abbreviation : String;
+                              Value        : String) is
    begin
       Check_Value (T, Territory_Name (Abbreviation, Locale => ar), Value,
                       "Unexpected name for " & Abbreviation);

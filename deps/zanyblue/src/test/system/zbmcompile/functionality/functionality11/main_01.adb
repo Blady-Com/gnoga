@@ -41,7 +41,7 @@ procedure Main_01 is
    use Xmpl_Messages.Xmpl_Wide_Prints;
 
    C  : constant Character := 's';
-   WC : constant Wide_Character := 'w';
+   WC : constant Unicode_Character := 'w';
 
 begin
    Print_Msg (+C);

@@ -35,8 +35,8 @@
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
 procedure T_0003 (T : in out Test_Case'Class) is
 
-   F          : constant Wide_String := "f";
-   K          : constant Wide_String := "k";
+   F          : constant String := "f";
+   K          : constant String := "k";
    b          : constant Locale_Type := Make_Locale ("");
    en         : constant Locale_Type := Make_Locale ("en");
    en_US      : constant Locale_Type := Make_Locale ("en_US");
@@ -45,16 +45,16 @@ procedure T_0003 (T : in out Test_Case'Class) is
    Catalog    : constant Catalog_Type := Create;
 
    procedure Check (L            : Locale_Type;
-                    V            : Wide_String;
-                    b_M          : Wide_String;
-                    en_M         : Wide_String;
-                    en_US_M      : Wide_String;
-                    en_Latn_M    : Wide_String;
-                    en_Latn_US_M : Wide_String);
-   procedure Check (V : Wide_String;
+                    V            : String;
+                    b_M          : String;
+                    en_M         : String;
+                    en_US_M      : String;
+                    en_Latn_M    : String;
+                    en_Latn_US_M : String);
+   procedure Check (V : String;
                     L : Locale_Type);
 
-   procedure Check (V : Wide_String;
+   procedure Check (V : String;
                     L : Locale_Type) is
    begin
       Check_Value (T, Get_Text (Catalog, F, K, L), V,
@@ -62,12 +62,12 @@ procedure T_0003 (T : in out Test_Case'Class) is
    end Check;
 
    procedure Check (L            : Locale_Type;
-                    V            : Wide_String;
-                    b_M          : Wide_String;
-                    en_M         : Wide_String;
-                    en_US_M      : Wide_String;
-                    en_Latn_M    : Wide_String;
-                    en_Latn_US_M : Wide_String) is
+                    V            : String;
+                    b_M          : String;
+                    en_M         : String;
+                    en_US_M      : String;
+                    en_Latn_M    : String;
+                    en_Latn_US_M : String) is
    begin
       Add (Catalog, F, K, V, L);
       Check (en_Latn_US_M, en_Latn_US);

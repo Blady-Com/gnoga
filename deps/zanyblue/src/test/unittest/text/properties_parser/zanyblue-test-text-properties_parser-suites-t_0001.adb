@@ -41,8 +41,8 @@ procedure T_0001 (T : in out Test_Case'Class) is
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Catalogs;
 
-   Test_Name : constant Wide_String := "t_0001";
-   File_Name : constant Wide_String := Test_In_Name (Test_Area, Test_Name);
+   Test_Name : constant String := "t_0001";
+   File_Name : constant String := Test_In_Name (Test_Area, Test_Name);
    Handler   : Catalog_Handler_Type;
 
 begin

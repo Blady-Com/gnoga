@@ -58,16 +58,16 @@ procedure Rename_Command (State : in out State_Type;
 
    use ZanyBlue.Wide_Directories;
 
-   procedure Rename_File (Old_Name : Wide_String;
-                          New_Name : Wide_String);
+   procedure Rename_File (Old_Name : String;
+                          New_Name : String);
    --  Rename the file.
 
    -----------------
    -- Rename_File --
    -----------------
 
-   procedure Rename_File (Old_Name : Wide_String;
-                          New_Name : Wide_String) is
+   procedure Rename_File (Old_Name : String;
+                          New_Name : String) is
    begin
       Wide_Rename (Old_Name, New_Name);
       Print_00012 (+Old_Name, +New_Name);

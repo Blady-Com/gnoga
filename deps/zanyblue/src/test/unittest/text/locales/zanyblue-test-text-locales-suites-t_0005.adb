@@ -37,10 +37,10 @@ procedure T_0005 (T : in out Test_Case'Class) is
 
    type Op_Type is (EQ, NEQ);
 
-   procedure Check_Locales (Left, Right : Wide_String;
+   procedure Check_Locales (Left, Right : String;
                             Op          : Op_Type);
 
-   procedure Check_Locales (Left, Right : Wide_String;
+   procedure Check_Locales (Left, Right : String;
                             Op          : Op_Type) is
       Left_Locale  : constant Locale_Type := Make_Locale (Left);
       Right_Locale : constant Locale_Type := Make_Locale (Right);

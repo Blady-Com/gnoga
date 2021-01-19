@@ -33,8 +33,7 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Strings.Wide_Unbounded;
-with Ada.Wide_Characters.Unicode;
+with Ada.Wide_Wide_Characters.Unicode;
 with Ada.Containers.Indefinite_Vectors;
 
 ----------------------------------
@@ -42,7 +41,7 @@ with Ada.Containers.Indefinite_Vectors;
 ----------------------------------
 
 function ZanyBlue.Text.Format_Message
-  (Message        : Wide_String;
+  (Message        : String;
    Arguments      : ZanyBlue.Text.Arguments.Argument_List;
    Mapping        : ZanyBlue.Text.Pseudo.Pseudo_Map_Access;
    Locale         : ZanyBlue.Text.Locales.Locale_Type;
@@ -51,11 +50,10 @@ function ZanyBlue.Text.Format_Message
    Mark_Arguments : Boolean                         := True;
    Error_Handler  : access Error_Handler_Type'Class :=
      Standard_Error_Handler'Access)
-   return Wide_String
+   return String
 is
 
-   use Ada.Strings.Wide_Unbounded;
-   use Ada.Wide_Characters.Unicode;
+   use Ada.Wide_Wide_Characters.Unicode;
    use ZanyBlue.Text.Pseudo;
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Arguments;
@@ -64,7 +62,7 @@ is
    --  End of input is signaled by raising the Done exception.
 
    type Source_Buffer (Length : Natural) is record
-      Buffer   : Wide_String (1 .. Length);
+      Buffer   : String;
       Position : Positive := 1;
    end record;
    --  The "stream of characters" being formatted is simply the input
@@ -83,61 +81,61 @@ is
    use Ada.Containers;
    use Source_Stacks;
 
-   Zero : constant Natural := Wide_Character'Pos ('0');
+   Zero : constant Natural := Unicode_Character'Pos ('0');
    --  Offset value when converting a string of decimal digits to an integer.
 
    procedure Add_Argument
-     (Buffer : in out Unbounded_Wide_String;
-      Value  :        Wide_String);
+     (Buffer : in out String;
+      Value  :        String);
    --  Add a formatted argument value to the output buffer.
 
    function Buffered_Next
      (Last_Buffer : Natural)
-      return Wide_Character;
+      return Unicode_Character;
    --  Get the next character.  There are recursive references to
    --  formatted values so a stack is in use to manage them.  This routine
    --  accesses the stack to get the character.
 
    function Character_Mapping
-     (Ch : Wide_Character)
-      return Wide_Character;
+     (Ch : Unicode_Character)
+      return Unicode_Character;
    --  Return the pseudo translation mapping for a given character.  The
    --  same character is returned if pseudo translation is not enabled.
 
-   function Next return Wide_Character;
+   function Next return Unicode_Character;
    --  Return the next character from the format string.  Calls the
    --  Buffered_Next procedure if the stack of sources is in use, i.e.,
    --  recursive references to arguments, e.g., "{0:{1}}"
 
    function Parse_Argument
      (Level : Natural := 0)
-      return Wide_String;
+      return String;
    --  Parse the an argument reference: argument number and format
    --  template.
 
    procedure Pseudo_Append
-     (Buffer  : in out Unbounded_Wide_String;
-      Ch      :        Wide_Character;
+     (Buffer  : in out String;
+      Ch      :        Unicode_Character;
       Enabled :        Boolean);
    --  Append a character to the output buffer if pseudo translation
    --  is enabled, otherwise do nothing.
 
-   procedure Push_Source (Data : Wide_String);
+   procedure Push_Source (Data : String);
    --  Add a new format character source used to handle recursive format
    --  references, e.g., "{0:{1}}"
 
    Source_Stack : Source_Stacks.Vector;
-   Buffer       : Unbounded_Wide_String;
-   Ch           : Wide_Character;
-   I            : Positive := Message'First;
+   Buffer       : String;
+   Ch           : Unicode_Character;
+   I            : Positive := Message.First;
 
    ------------------
    -- Add_Argument --
    ------------------
 
    procedure Add_Argument
-     (Buffer : in out Unbounded_Wide_String;
-      Value  :        Wide_String)
+     (Buffer : in out String;
+      Value  :        String)
    is
    begin
       Pseudo_Append (Buffer, Format_Start, Mark_Arguments);
@@ -151,11 +149,11 @@ is
 
    function Buffered_Next
      (Last_Buffer : Natural)
-      return Wide_Character
+      return Unicode_Character
    is
 
       Found  : Boolean := False;
-      Result : Wide_Character;
+      Result : Unicode_Character;
 
       procedure Get_Character (Buffer : in out Source_Buffer);
       --  Get a character for a buffer source.
@@ -166,7 +164,7 @@ is
 
       procedure Get_Character (Buffer : in out Source_Buffer) is
       begin
-         if Buffer.Position <= Buffer.Buffer'Last then
+         if Buffer.Position <= Buffer.Buffer.Last then
             Result          := Buffer.Buffer (Buffer.Position);
             Buffer.Position := Buffer.Position + 1;
             Found           := True;
@@ -187,8 +185,8 @@ is
    -----------------------
 
    function Character_Mapping
-     (Ch : Wide_Character)
-      return Wide_Character
+     (Ch : Unicode_Character)
+      return Unicode_Character
    is
    begin
       if Mapping /= null then
@@ -202,12 +200,12 @@ is
    -- Next --
    ----------
 
-   function Next return Wide_Character is
+   function Next return Unicode_Character is
       Last_Buffer : constant Natural := Natural (Length (Source_Stack));
-      Result      : Wide_Character;
+      Result      : Unicode_Character;
    begin
       if Last_Buffer = 0 then
-         if I > Message'Last then
+         if I > Message.Last then
             raise Done;
          end if;
          Result := Message (I);
@@ -224,10 +222,10 @@ is
 
    function Parse_Argument
      (Level : Natural := 0)
-      return Wide_String
+      return String
    is
 
-      function Next_Character return Wide_Character;
+      function Next_Character return Unicode_Character;
       --  Return the next format character.  If the character is '{' then
       --  it's a recursive format reference: format the argument value and
       --  add to the stack, then return the next chararacter.
@@ -236,8 +234,8 @@ is
       -- Next_Character --
       --------------------
 
-      function Next_Character return Wide_Character is
-         Result : Wide_Character := Next;
+      function Next_Character return Unicode_Character is
+         Result : Unicode_Character := Next;
       begin
          while Result = '{' loop
             Push_Source (Parse_Argument (Level => Level + 1));
@@ -246,16 +244,16 @@ is
          return Result;
       end Next_Character;
 
-      Template : Unbounded_Wide_String;
+      Template : String;
       Index    : Natural := 0;
-      Ch       : Wide_Character;
+      Ch       : Unicode_Character;
 
    begin
-      Template := Null_Unbounded_Wide_String;
+      Template := Null_UXString;
       Ch       := Next_Character;
       if not Is_Digit (Ch) then
          Error_Handler.Illegal_Character
-           (Message, I - Message'First + 1, Ch,
+           (Message, I - Message.First + 1, Ch,
             Natural (Length (Source_Stack)), Raise_Errors);
          --  If an exception was not raised, skip to next closing brace
          while Ch /= '}' loop
@@ -263,7 +261,7 @@ is
          end loop;
       end if;
       while Is_Digit (Ch) loop
-         Index := Index * 10 + Wide_Character'Pos (Ch) - Zero;
+         Index := Index * 10 + Unicode_Character'Pos (Ch) - Zero;
          Ch    := Next_Character;
       end loop;
       if Ch = ',' or else Ch = ':' then
@@ -275,18 +273,18 @@ is
       else
          if Ch /= '}' then
             Error_Handler.Format_Not_Closed
-              (Message, I - Message'First + 1, Natural (Length (Source_Stack)),
+              (Message, I - Message.First + 1, Natural (Length (Source_Stack)),
                Raise_Errors);
          end if;
       end if;
       return
         Arguments.Format
-          (Index, Message, To_Wide_String (Template), Locale, Raise_Errors,
+          (Index, Message, Template, Locale, Raise_Errors,
            Error_Handler => Error_Handler);
    exception
       when Done =>
          Error_Handler.Format_Not_Closed
-           (Message, I - Message'First + 1, Natural (Length (Source_Stack)),
+           (Message, I - Message.First + 1, Natural (Length (Source_Stack)),
             Raise_Errors);
       --  If the handler decided not to raise an exception, re-raise the Done
       --  exception
@@ -298,8 +296,8 @@ is
    -------------------
 
    procedure Pseudo_Append
-     (Buffer  : in out Unbounded_Wide_String;
-      Ch      :        Wide_Character;
+     (Buffer  : in out String;
+      Ch      :        Unicode_Character;
       Enabled :        Boolean)
    is
    begin
@@ -312,8 +310,8 @@ is
    -- Push_Source --
    -----------------
 
-   procedure Push_Source (Data : Wide_String) is
-      New_Buffer : Source_Buffer (Data'Length);
+   procedure Push_Source (Data : String) is
+      New_Buffer : Source_Buffer (Data.Length);
    begin
       New_Buffer.Buffer := Data;
       Append (Source_Stack, New_Buffer);
@@ -357,5 +355,5 @@ begin
 exception
    when Done =>
       Pseudo_Append (Buffer, Pseudo_End, Mark_Messages);
-      return To_Wide_String (Buffer);
+      return Buffer;
 end ZanyBlue.Text.Format_Message;

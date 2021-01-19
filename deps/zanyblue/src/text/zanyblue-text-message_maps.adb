@@ -62,17 +62,17 @@ package body ZanyBlue.Text.Message_Maps is
    procedure Add
      (Message_Map   : in out Message_Map_Type;
       Triple        :        Message_Triple;
-      Message       :        Wide_String;
+      Message       :        String;
       Source_Locale :        Locale_Index_Type)
    is
       New_Message : Message_Definition;
       First       : Natural := 0;
       Last        : Natural;
    begin
-      if Message'Length > 0 then
+      if Message.Length > 0 then
          --  Attempt to locate the message in the existing pool
          First := Index (Message_Map.Pool, Message);
-         Last  := First + Message'Length - 1;
+         Last  := First + Message.Length - 1;
       end if;
       if First = 0 then
          --  Failed to find it in the existing pool, add it
@@ -146,10 +146,10 @@ package body ZanyBlue.Text.Message_Maps is
 
    function Get_Pool
      (Message_Map : Message_Map_Type)
-      return Wide_String
+      return String
    is
    begin
-      return To_Wide_String (Message_Map.Pool);
+      return Message_Map.Pool;
    end Get_Pool;
 
    -------------
@@ -200,7 +200,7 @@ package body ZanyBlue.Text.Message_Maps is
          Key           : Key_Index_Type;
          Locale        : Locale_Index_Type;
          Source_Locale : Locale_Index_Type;
-         Message       : Wide_String;
+         Message       : String;
          Count         : Natural))
    is
 
@@ -276,11 +276,11 @@ package body ZanyBlue.Text.Message_Maps is
    function Text
      (Message_Map : Message_Map_Type;
       Message     : Message_Definition)
-      return Wide_String
+      return String
    is
    begin
       if Message.Pool /= null then
-         return Message.Pool (Message.First .. Message.Last);
+         return Message.Pool.Slice (Message.First, Message.Last);
       else
          return Slice (Message_Map.Pool, Message.First, Message.Last);
       end if;

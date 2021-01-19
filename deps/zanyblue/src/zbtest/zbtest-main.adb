@@ -79,10 +79,10 @@ procedure ZBTest.Main is
 
    procedure Process_Command_Line (State : in out State_Type) is
 
-      procedure Handle_Argument (Value : Wide_String;
+      procedure Handle_Argument (Value : String;
                                  Index : in out Positive);
 
-      procedure Set_Option_Value (Parameter : Wide_String;
+      procedure Set_Option_Value (Parameter : String;
                                   Index     : in out Positive);
 
       procedure Set_Parameter_Value (Index     : in out Positive);
@@ -91,7 +91,7 @@ procedure ZBTest.Main is
       -- Handle_Argument --
       ---------------------
 
-      procedure Handle_Argument (Value : Wide_String;
+      procedure Handle_Argument (Value : String;
                                  Index : in out Positive) is
          use Ada.Strings.Wide_Fixed;
       begin
@@ -124,7 +124,7 @@ procedure ZBTest.Main is
       -- Set_Option_Value --
       ----------------------
 
-      procedure Set_Option_Value (Parameter : Wide_String;
+      procedure Set_Option_Value (Parameter : String;
                                   Index     : in out Positive) is
       begin
          if Index < Wide_Argument_Count then

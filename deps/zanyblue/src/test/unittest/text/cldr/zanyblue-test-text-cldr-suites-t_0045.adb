@@ -38,12 +38,12 @@ procedure T_0045 (T : in out Test_Case'Class) is
    no : constant Locale_Type := Make_Locale ("no");
    nb : constant Locale_Type := Make_Locale ("nb");
 
-   procedure Check_Script (Abbreviation : Wide_String);
+   procedure Check_Script (Abbreviation : String);
 
-   procedure Check_Script (Abbreviation : Wide_String) is
-      no_Value : constant Wide_String := Script_Name (Abbreviation,
+   procedure Check_Script (Abbreviation : String) is
+      no_Value : constant String := Script_Name (Abbreviation,
                                                       Locale => no);
-      nb_Value : constant Wide_String := Script_Name (Abbreviation,
+      nb_Value : constant String := Script_Name (Abbreviation,
                                                       Locale => nb);
    begin
       Check_Value (T, no_Value, nb_Value, "no/nb script names");

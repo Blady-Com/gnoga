@@ -38,7 +38,7 @@ package ZanyBlue.Test.Text.Catalogs.Xmpl_Data1 is
 
    use ZanyBlue.Text;
 
-   Pool_Data1 : aliased constant Wide_String := ""
+   Pool_Data1 : aliased constant String := ""
       & "abcdefghijklmnopqrstuvwxyz"
       & "";
    Pool1 : constant Static_Message_Pool_Type := Pool_Data1'Access;

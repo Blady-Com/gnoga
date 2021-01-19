@@ -39,7 +39,7 @@ package body ZanyBlue.Test.Utils.Suites is
    use Ahven.Framework;
    use ZanyBlue.Utils;
 
-   Test_Area : constant Wide_String := "utils";
+   Test_Area : constant String := "utils";
    pragma Unreferenced (Test_Area);
 
    procedure T_0001 (T : in out Test_Case'Class);

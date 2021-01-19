@@ -35,22 +35,26 @@
 
 package body ZanyBlue.Text.Pseudo is
 
-   Diamond_With_Left_Half_Black : constant Wide_Character :=
-     Wide_Character'Val (16#2B16#);
+   Diamond_With_Left_Half_Black : constant Unicode_Character :=
+     Unicode_Character'Val (16#2B16#);
    --  ⬖
-   Diamond_With_Right_Half_Black : constant Wide_Character :=
-     Wide_Character'Val (16#2B17#);
+   Diamond_With_Right_Half_Black : constant Unicode_Character :=
+     Unicode_Character'Val (16#2B17#);
    --  ⬗
-   Pseudo_Start_Val : constant Wide_Character := Diamond_With_Left_Half_Black;
-   Pseudo_End_Val   : constant Wide_Character := Diamond_With_Right_Half_Black;
+   Pseudo_Start_Val : constant Unicode_Character :=
+     Diamond_With_Left_Half_Black;
+   Pseudo_End_Val : constant Unicode_Character :=
+     Diamond_With_Right_Half_Black;
 
-   Format_Start_Val : constant Wide_Character := Wide_Character'Val (16#AB#);
+   Format_Start_Val : constant Unicode_Character :=
+     Unicode_Character'Val (16#AB#);
    --  «
-   Format_End_Val : constant Wide_Character := Wide_Character'Val (16#BB#);
+   Format_End_Val : constant Unicode_Character :=
+     Unicode_Character'Val (16#BB#);
    --  »
 
    function Make_Map
-     (Source     : Wide_Character;
+     (Source     : Unicode_Character;
       Code_Point : Natural)
       return Pseudo_Character_Map;
 
@@ -62,8 +66,8 @@ package body ZanyBlue.Text.Pseudo is
      (Pseudo_Map : in out Pseudo_Map_Type;
       Mapping    :        Pseudo_Map_Vector)
    is
-      From : Wide_Character_Set := Null_Set;
-      To   : Wide_Character_Set := Null_Set;
+      From : Wide_Wide_Character_Set := Null_Set;
+      To   : Wide_Wide_Character_Set := Null_Set;
    begin
       for I in Mapping'Range loop
          From := From or To_Set (Mapping (I).Source);
@@ -147,7 +151,7 @@ package body ZanyBlue.Text.Pseudo is
    -- Format_End --
    ----------------
 
-   function Format_End return Wide_Character is
+   function Format_End return Unicode_Character is
    begin
       return Format_End_Val;
    end Format_End;
@@ -156,7 +160,7 @@ package body ZanyBlue.Text.Pseudo is
    -- Format_Start --
    ------------------
 
-   function Format_Start return Wide_Character is
+   function Format_Start return Unicode_Character is
    begin
       return Format_Start_Val;
    end Format_Start;
@@ -307,14 +311,14 @@ package body ZanyBlue.Text.Pseudo is
    --------------
 
    function Make_Map
-     (Source     : Wide_Character;
+     (Source     : Unicode_Character;
       Code_Point : Natural)
       return Pseudo_Character_Map
    is
    begin
       return Result : Pseudo_Character_Map do
          Result.Source := Source;
-         Result.Target := Wide_Character'Val (Code_Point);
+         Result.Target := Unicode_Character'Val (Code_Point);
       end return;
    end Make_Map;
 
@@ -324,8 +328,8 @@ package body ZanyBlue.Text.Pseudo is
 
    function Map
      (Pseudo_Map : Pseudo_Map_Type;
-      Ch         : Wide_Character)
-      return Wide_Character
+      Ch         : Unicode_Character)
+      return Unicode_Character
    is
    begin
       return Value (Pseudo_Map.Mapping, Ch);
@@ -347,7 +351,7 @@ package body ZanyBlue.Text.Pseudo is
    -- Pseudo_End --
    ----------------
 
-   function Pseudo_End return Wide_Character is
+   function Pseudo_End return Unicode_Character is
    begin
       return Pseudo_End_Val;
    end Pseudo_End;
@@ -356,7 +360,7 @@ package body ZanyBlue.Text.Pseudo is
    -- Pseudo_Start --
    ------------------
 
-   function Pseudo_Start return Wide_Character is
+   function Pseudo_Start return Unicode_Character is
    begin
       return Pseudo_Start_Val;
    end Pseudo_Start;

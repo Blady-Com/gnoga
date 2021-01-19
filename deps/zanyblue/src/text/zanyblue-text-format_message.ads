@@ -39,7 +39,7 @@ with ZanyBlue.Text.Arguments;
 with ZanyBlue.Text.Format_Errors; use ZanyBlue.Text.Format_Errors;
 
 function ZanyBlue.Text.Format_Message
-  (Message        : Wide_String;
+  (Message        : String;
    Arguments      : ZanyBlue.Text.Arguments.Argument_List;
    Mapping        : ZanyBlue.Text.Pseudo.Pseudo_Map_Access;
    Locale         : ZanyBlue.Text.Locales.Locale_Type;
@@ -48,7 +48,7 @@ function ZanyBlue.Text.Format_Message
    Mark_Arguments : Boolean                         := True;
    Error_Handler  : access Error_Handler_Type'Class :=
      Standard_Error_Handler'Access)
-   return Wide_String;
+   return String;
 --  Function to format a message text string containing references to
 --  arguments, e.g., "{0}", "{1,10}", with the argument values based on
 --  the argument list, Arguments.  The Mapping argument, if not null,

@@ -35,7 +35,7 @@
 separate (ZanyBlue.Test.Text.Catalogs.Suites)
 procedure T_0044 (T : in out Test_Case'Class) is
 
-   Test_Name : constant Wide_String := "t_0044";
+   Test_Name : constant String := "t_0044";
    Catalog   : constant Catalog_Type := Create;
 
 begin

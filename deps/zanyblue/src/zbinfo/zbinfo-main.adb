@@ -87,7 +87,7 @@ procedure ZBInfo.Main is
                                    Encoding_Name   : out Unbounded_Wide_String;
                                    Reverse_Mapping : out Boolean) is
 
-      procedure Handle_Argument (Value : Wide_String;
+      procedure Handle_Argument (Value : String;
                                  Index : in out Positive);
 
       procedure Set_Option_Value (Target : out Unbounded_Wide_String;
@@ -97,7 +97,7 @@ procedure ZBInfo.Main is
       -- Handle_Argument --
       ---------------------
 
-      procedure Handle_Argument (Value : Wide_String;
+      procedure Handle_Argument (Value : String;
                                  Index : in out Positive) is
       begin
          if Value = "-h" or Value = "--help" then

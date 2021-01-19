@@ -39,7 +39,7 @@ package body ZanyBlue.Test.Root.Suites is
 
    use Ahven.Framework;
 
-   Test_Area : constant Wide_String := "root";
+   Test_Area : constant String := "root";
    pragma Unreferenced (Test_Area);
 
    procedure T_0001 (T : in out Test_Case'Class);

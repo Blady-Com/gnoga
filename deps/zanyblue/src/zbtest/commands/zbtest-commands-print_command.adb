@@ -70,19 +70,19 @@ procedure Print_Command (State : in out State_Type;
    use Ada.Strings.Wide_Fixed;
 
    procedure Handle_Argument (State    : in out State_Type;
-                              Argument : Wide_String;
+                              Argument : String;
                               Scalar   : in out Boolean);
    --  Handle the printing of a value (scalar or list).
 
    procedure Print_List (State : in out State_Type;
-                         Name  : Wide_String);
+                         Name  : String);
 
    ---------------------
    -- Handle_Argument --
    ---------------------
 
    procedure Handle_Argument (State    : in out State_Type;
-                              Argument : Wide_String;
+                              Argument : String;
                               Scalar   : in out Boolean) is
    begin
       if Argument = "-l" then
@@ -106,7 +106,7 @@ procedure Print_Command (State : in out State_Type;
    ----------------
 
    procedure Print_List (State : in out State_Type;
-                         Name  : Wide_String) is
+                         Name  : String) is
       List : constant List_Type := State.Get_List (Name);
       N_Elem : constant Natural := Length (List);
    begin

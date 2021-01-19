@@ -36,9 +36,9 @@
 package body ZanyBlue.Text.Exceptions is
 
    function Create
-     (Name        : Wide_String;
-      Message     : Wide_String;
-      Information : Wide_String)
+     (Name        : String;
+      Message     : String;
+      Information : String)
       return Exception_Argument_Type;
    --  Create argument type based on the exception information converted
    --  from Strings assumed to UTF-8 strings to Wide_Strings.
@@ -54,9 +54,9 @@ package body ZanyBlue.Text.Exceptions is
    begin
       return
         Create
-          (Wide_From_UTF8 (Exception_Name (Value)),
-           Wide_From_UTF8 (Exception_Message (Value)),
-           Wide_From_UTF8 (Exception_Information (Value)));
+          (From_UTF_8 (Exception_Name (Value)),
+           From_UTF_8 (Exception_Message (Value)),
+           From_UTF_8 (Exception_Information (Value)));
    end Create;
 
    ------------
@@ -64,16 +64,16 @@ package body ZanyBlue.Text.Exceptions is
    ------------
 
    function Create
-     (Name        : Wide_String;
-      Message     : Wide_String;
-      Information : Wide_String)
+     (Name        : String;
+      Message     : String;
+      Information : String)
       return Exception_Argument_Type
    is
    begin
       return
         Exception_Argument_Type'
-          (N_Length    => Name'Length, M_Length => Message'Length,
-           I_Length    => Information'Length, Name => Name, Message => Message,
+          (N_Length    => Name.Length, M_Length => Message.Length,
+           I_Length    => Information.Length, Name => Name, Message => Message,
            Information => Information);
    end Create;
 
@@ -83,10 +83,10 @@ package body ZanyBlue.Text.Exceptions is
 
    overriding function Format
      (Value     : Exception_Argument_Type;
-      Type_Name : Wide_String;
-      Template  : Wide_String;
+      Type_Name : String;
+      Template  : String;
       Locale    : Locale_Type)
-      return Wide_String
+      return String
    is
       pragma Unreferenced (Type_Name);
       pragma Unreferenced (Locale);

@@ -59,7 +59,7 @@ package body ZanyBlue.OS is
    pragma Import (Stdcall, GetACP, "GetACP");
    -- Return current code page id
 
-   type String_Access is access constant Wide_String;
+   type String_Access is access constant String;
    type LCID_Map_Type is
       record
          Value : LCID;
@@ -70,407 +70,407 @@ package body ZanyBlue.OS is
    --  CLDR data "docs/design/C-sharp-LocaleNames.htm"
 
    --  العربية
-   L_ar        : aliased constant Wide_String := "ar";
+   L_ar        : aliased constant String := "ar";
    --  العربية (المملكة العربية السعودية)
-   L_ar_SA     : aliased constant Wide_String := "ar_SA";
+   L_ar_SA     : aliased constant String := "ar_SA";
    --  العربية (العراق)
-   L_ar_IQ     : aliased constant Wide_String := "ar_IQ";
+   L_ar_IQ     : aliased constant String := "ar_IQ";
    --  العربية (مصر)
-   L_ar_EG     : aliased constant Wide_String := "ar_EG";
+   L_ar_EG     : aliased constant String := "ar_EG";
    --  العربية (ليبيا)
-   L_ar_LY     : aliased constant Wide_String := "ar_LY";
+   L_ar_LY     : aliased constant String := "ar_LY";
    --  العربية (الجزائر)
-   L_ar_DZ     : aliased constant Wide_String := "ar_DZ";
+   L_ar_DZ     : aliased constant String := "ar_DZ";
    --  العربية (المملكة المغربية)
-   L_ar_MA     : aliased constant Wide_String := "ar_MA";
+   L_ar_MA     : aliased constant String := "ar_MA";
    --  العربية (تونس)
-   L_ar_TN     : aliased constant Wide_String := "ar_TN";
+   L_ar_TN     : aliased constant String := "ar_TN";
    --  العربية (عمان)
-   L_ar_OM     : aliased constant Wide_String := "ar_OM";
+   L_ar_OM     : aliased constant String := "ar_OM";
    --  العربية (اليمن)
-   L_ar_YE     : aliased constant Wide_String := "ar_YE";
+   L_ar_YE     : aliased constant String := "ar_YE";
    --  العربية (سوريا)
-   L_ar_SY     : aliased constant Wide_String := "ar_SY";
+   L_ar_SY     : aliased constant String := "ar_SY";
    --  العربية (الأردن)
-   L_ar_JO     : aliased constant Wide_String := "ar_JO";
+   L_ar_JO     : aliased constant String := "ar_JO";
    --  العربية (لبنان)
-   L_ar_LB     : aliased constant Wide_String := "ar_LB";
+   L_ar_LB     : aliased constant String := "ar_LB";
    --  العربية (الكويت)
-   L_ar_KW     : aliased constant Wide_String := "ar_KW";
+   L_ar_KW     : aliased constant String := "ar_KW";
    --  العربية (الإمارات العربية المتحدة)
-   L_ar_AE     : aliased constant Wide_String := "ar_AE";
+   L_ar_AE     : aliased constant String := "ar_AE";
    --  العربية (البحرين)
-   L_ar_BH     : aliased constant Wide_String := "ar_BH";
+   L_ar_BH     : aliased constant String := "ar_BH";
    --  العربية (قطر)
-   L_ar_QA     : aliased constant Wide_String := "ar_QA";
+   L_ar_QA     : aliased constant String := "ar_QA";
    --  български
-   L_bg        : aliased constant Wide_String := "bg";
+   L_bg        : aliased constant String := "bg";
    --  български (България)
-   L_bg_BG     : aliased constant Wide_String := "bg_BG";
+   L_bg_BG     : aliased constant String := "bg_BG";
    --  català
-   L_ca        : aliased constant Wide_String := "ca";
+   L_ca        : aliased constant String := "ca";
    --  català (català)
-   L_ca_ES     : aliased constant Wide_String := "ca_ES";
+   L_ca_ES     : aliased constant String := "ca_ES";
    --  中文(简体)
-   L_zh_Hans   : aliased constant Wide_String := "zh_Hans";
+   L_zh_Hans   : aliased constant String := "zh_Hans";
    --  中文(繁體) (台灣)
-   L_zh_TW     : aliased constant Wide_String := "zh_TW";
+   L_zh_TW     : aliased constant String := "zh_TW";
    --  中文(简体) (中华人民共和国)
-   L_zh_CN     : aliased constant Wide_String := "zh_CN";
+   L_zh_CN     : aliased constant String := "zh_CN";
    --  中文(繁體) (香港特别行政区)
-   L_zh_HK     : aliased constant Wide_String := "zh_HK";
+   L_zh_HK     : aliased constant String := "zh_HK";
    --  中文(简体) (新加坡)
-   L_zh_SG     : aliased constant Wide_String := "zh_SG";
+   L_zh_SG     : aliased constant String := "zh_SG";
    --  中文(简体) (澳门特别行政区)
-   L_zh_MO     : aliased constant Wide_String := "zh_MO";
+   L_zh_MO     : aliased constant String := "zh_MO";
    --  中文(繁體)
-   L_zh_Hant   : aliased constant Wide_String := "zh_Hant";
+   L_zh_Hant   : aliased constant String := "zh_Hant";
    --  čeština
-   L_cs        : aliased constant Wide_String := "cs";
+   L_cs        : aliased constant String := "cs";
    --  čeština (Česká republika)
-   L_cs_CZ     : aliased constant Wide_String := "cs_CZ";
+   L_cs_CZ     : aliased constant String := "cs_CZ";
    --  dansk
-   L_da        : aliased constant Wide_String := "da";
+   L_da        : aliased constant String := "da";
    --  dansk (Danmark)
-   L_da_DK     : aliased constant Wide_String := "da_DK";
+   L_da_DK     : aliased constant String := "da_DK";
    --  Deutsch
-   L_de        : aliased constant Wide_String := "de";
+   L_de        : aliased constant String := "de";
    --  Deutsch (Deutschland)
-   L_de_DE     : aliased constant Wide_String := "de_DE";
+   L_de_DE     : aliased constant String := "de_DE";
    --  Deutsch (Schweiz)
-   L_de_CH     : aliased constant Wide_String := "de_CH";
+   L_de_CH     : aliased constant String := "de_CH";
    --  Deutsch (Österreich)
-   L_de_AT     : aliased constant Wide_String := "de_AT";
+   L_de_AT     : aliased constant String := "de_AT";
    --  Deutsch (Luxemburg)
-   L_de_LU     : aliased constant Wide_String := "de_LU";
+   L_de_LU     : aliased constant String := "de_LU";
    --  Deutsch (Liechtenstein)
-   L_de_LI     : aliased constant Wide_String := "de_LI";
+   L_de_LI     : aliased constant String := "de_LI";
    --  ελληνικά
-   L_el        : aliased constant Wide_String := "el";
+   L_el        : aliased constant String := "el";
    --  ελληνικά (Ελλάδα)
-   L_el_GR     : aliased constant Wide_String := "el_GR";
+   L_el_GR     : aliased constant String := "el_GR";
    --  English
-   L_en        : aliased constant Wide_String := "en";
+   L_en        : aliased constant String := "en";
    --  English (United States)
-   L_en_US     : aliased constant Wide_String := "en_US";
+   L_en_US     : aliased constant String := "en_US";
    --  English (United Kingdom)
-   L_en_GB     : aliased constant Wide_String := "en_GB";
+   L_en_GB     : aliased constant String := "en_GB";
    --  English (Australia)
-   L_en_AU     : aliased constant Wide_String := "en_AU";
+   L_en_AU     : aliased constant String := "en_AU";
    --  English (Canada)
-   L_en_CA     : aliased constant Wide_String := "en_CA";
+   L_en_CA     : aliased constant String := "en_CA";
    --  English (New Zealand)
-   L_en_NZ     : aliased constant Wide_String := "en_NZ";
+   L_en_NZ     : aliased constant String := "en_NZ";
    --  English (Eire)
-   L_en_IE     : aliased constant Wide_String := "en_IE";
+   L_en_IE     : aliased constant String := "en_IE";
    --  English (South Africa)
-   L_en_ZA     : aliased constant Wide_String := "en_ZA";
+   L_en_ZA     : aliased constant String := "en_ZA";
    --  English (Jamaica)
-   L_en_JM     : aliased constant Wide_String := "en_JM";
+   L_en_JM     : aliased constant String := "en_JM";
    --  English (Caribbean)
-   L_en_CB     : aliased constant Wide_String := "en_CB";
+   L_en_CB     : aliased constant String := "en_CB";
    --  English (Belize)
-   L_en_BZ     : aliased constant Wide_String := "en_BZ";
+   L_en_BZ     : aliased constant String := "en_BZ";
    --  English (Trinidad y Tobago)
-   L_en_TT     : aliased constant Wide_String := "en_TT";
+   L_en_TT     : aliased constant String := "en_TT";
    --  English (Zimbabwe)
-   L_en_ZW     : aliased constant Wide_String := "en_ZW";
+   L_en_ZW     : aliased constant String := "en_ZW";
    --  English (Philippines)
-   L_en_PH     : aliased constant Wide_String := "en_PH";
+   L_en_PH     : aliased constant String := "en_PH";
    --  español
-   L_es        : aliased constant Wide_String := "es";
+   L_es        : aliased constant String := "es";
    --  Español (México)
-   L_es_MX     : aliased constant Wide_String := "es_MX";
+   L_es_MX     : aliased constant String := "es_MX";
    --  español (España)
-   L_es_ES     : aliased constant Wide_String := "es_ES";
+   L_es_ES     : aliased constant String := "es_ES";
    --  Español (Guatemala)
-   L_es_GT     : aliased constant Wide_String := "es_GT";
+   L_es_GT     : aliased constant String := "es_GT";
    --  Español (Costa Rica)
-   L_es_CR     : aliased constant Wide_String := "es_CR";
+   L_es_CR     : aliased constant String := "es_CR";
    --  Español (Panamá)
-   L_es_PA     : aliased constant Wide_String := "es_PA";
+   L_es_PA     : aliased constant String := "es_PA";
    --  Español (República Dominicana)
-   L_es_DO     : aliased constant Wide_String := "es_DO";
+   L_es_DO     : aliased constant String := "es_DO";
    --  Español (Republica Bolivariana de Venezuela)
-   L_es_VE     : aliased constant Wide_String := "es_VE";
+   L_es_VE     : aliased constant String := "es_VE";
    --  Español (Colombia)
-   L_es_CO     : aliased constant Wide_String := "es_CO";
+   L_es_CO     : aliased constant String := "es_CO";
    --  Español (Perú)
-   L_es_PE     : aliased constant Wide_String := "es_PE";
+   L_es_PE     : aliased constant String := "es_PE";
    --  Español (Argentina)
-   L_es_AR     : aliased constant Wide_String := "es_AR";
+   L_es_AR     : aliased constant String := "es_AR";
    --  Español (Ecuador)
-   L_es_EC     : aliased constant Wide_String := "es_EC";
+   L_es_EC     : aliased constant String := "es_EC";
    --  Español (Chile)
-   L_es_CL     : aliased constant Wide_String := "es_CL";
+   L_es_CL     : aliased constant String := "es_CL";
    --  Español (Uruguay)
-   L_es_UY     : aliased constant Wide_String := "es_UY";
+   L_es_UY     : aliased constant String := "es_UY";
    --  Español (Paraguay)
-   L_es_PY     : aliased constant Wide_String := "es_PY";
+   L_es_PY     : aliased constant String := "es_PY";
    --  Español (Bolivia)
-   L_es_BO     : aliased constant Wide_String := "es_BO";
+   L_es_BO     : aliased constant String := "es_BO";
    --  Español (El Salvador)
-   L_es_SV     : aliased constant Wide_String := "es_SV";
+   L_es_SV     : aliased constant String := "es_SV";
    --  Español (Honduras)
-   L_es_HN     : aliased constant Wide_String := "es_HN";
+   L_es_HN     : aliased constant String := "es_HN";
    --  Español (Nicaragua)
-   L_es_NI     : aliased constant Wide_String := "es_NI";
+   L_es_NI     : aliased constant String := "es_NI";
    --  Español (Puerto Rico)
-   L_es_PR     : aliased constant Wide_String := "es_PR";
+   L_es_PR     : aliased constant String := "es_PR";
    --  suomi
-   L_fi        : aliased constant Wide_String := "fi";
+   L_fi        : aliased constant String := "fi";
    --  suomi (Suomi)
-   L_fi_FI     : aliased constant Wide_String := "fi_FI";
+   L_fi_FI     : aliased constant String := "fi_FI";
    --  français
-   L_fr        : aliased constant Wide_String := "fr";
+   L_fr        : aliased constant String := "fr";
    --  français (France)
-   L_fr_FR     : aliased constant Wide_String := "fr_FR";
+   L_fr_FR     : aliased constant String := "fr_FR";
    --  français (Belgique)
-   L_fr_BE     : aliased constant Wide_String := "fr_BE";
+   L_fr_BE     : aliased constant String := "fr_BE";
    --  français (Canada)
-   L_fr_CA     : aliased constant Wide_String := "fr_CA";
+   L_fr_CA     : aliased constant String := "fr_CA";
    --  français (Suisse)
-   L_fr_CH     : aliased constant Wide_String := "fr_CH";
+   L_fr_CH     : aliased constant String := "fr_CH";
    --  français (Luxembourg)
-   L_fr_LU     : aliased constant Wide_String := "fr_LU";
+   L_fr_LU     : aliased constant String := "fr_LU";
    --  français (Principauté de Monaco)
-   L_fr_MC     : aliased constant Wide_String := "fr_MC";
+   L_fr_MC     : aliased constant String := "fr_MC";
    --  עברית
-   L_he        : aliased constant Wide_String := "he";
+   L_he        : aliased constant String := "he";
    --  עברית (ישראל)
-   L_he_IL     : aliased constant Wide_String := "he_IL";
+   L_he_IL     : aliased constant String := "he_IL";
    --  Magyar
-   L_hu        : aliased constant Wide_String := "hu";
+   L_hu        : aliased constant String := "hu";
    --  Magyar (Magyarország)
-   L_hu_HU     : aliased constant Wide_String := "hu_HU";
+   L_hu_HU     : aliased constant String := "hu_HU";
    --  íslenska
-   L_is        : aliased constant Wide_String := "is";
+   L_is        : aliased constant String := "is";
    --  íslenska (Ísland)
-   L_is_IS     : aliased constant Wide_String := "is_IS";
+   L_is_IS     : aliased constant String := "is_IS";
    --  italiano
-   L_it        : aliased constant Wide_String := "it";
+   L_it        : aliased constant String := "it";
    --  italiano (Italia)
-   L_it_IT     : aliased constant Wide_String := "it_IT";
+   L_it_IT     : aliased constant String := "it_IT";
    --  italiano (Svizzera)
-   L_it_CH     : aliased constant Wide_String := "it_CH";
+   L_it_CH     : aliased constant String := "it_CH";
    --  日本語
-   L_ja        : aliased constant Wide_String := "ja";
+   L_ja        : aliased constant String := "ja";
    --  日本語 (日本)
-   L_ja_JP     : aliased constant Wide_String := "ja_JP";
+   L_ja_JP     : aliased constant String := "ja_JP";
    --  한국어
-   L_ko        : aliased constant Wide_String := "ko";
+   L_ko        : aliased constant String := "ko";
    --  한국어 (대한민국)
-   L_ko_KR     : aliased constant Wide_String := "ko_KR";
+   L_ko_KR     : aliased constant String := "ko_KR";
    --  Nederlands
-   L_nl        : aliased constant Wide_String := "nl";
+   L_nl        : aliased constant String := "nl";
    --  Nederlands (Nederland)
-   L_nl_NL     : aliased constant Wide_String := "nl_NL";
+   L_nl_NL     : aliased constant String := "nl_NL";
    --  Nederlands (België)
-   L_nl_BE     : aliased constant Wide_String := "nl_BE";
+   L_nl_BE     : aliased constant String := "nl_BE";
    --  norsk
-   L_no        : aliased constant Wide_String := "no";
+   L_no        : aliased constant String := "no";
    --  norsk (bokmål) (Norge)
-   L_nb_NO     : aliased constant Wide_String := "nb_NO";
+   L_nb_NO     : aliased constant String := "nb_NO";
    --  norsk (nynorsk) (Noreg)
-   L_nn_NO     : aliased constant Wide_String := "nn_NO";
+   L_nn_NO     : aliased constant String := "nn_NO";
    --  polski
-   L_pl        : aliased constant Wide_String := "pl";
+   L_pl        : aliased constant String := "pl";
    --  polski (Polska)
-   L_pl_PL     : aliased constant Wide_String := "pl_PL";
+   L_pl_PL     : aliased constant String := "pl_PL";
    --  Português
-   L_pt        : aliased constant Wide_String := "pt";
+   L_pt        : aliased constant String := "pt";
    --  Português (Brasil)
-   L_pt_BR     : aliased constant Wide_String := "pt_BR";
+   L_pt_BR     : aliased constant String := "pt_BR";
    --  português (Portugal)
-   L_pt_PT     : aliased constant Wide_String := "pt_PT";
+   L_pt_PT     : aliased constant String := "pt_PT";
    --  română
-   L_ro        : aliased constant Wide_String := "ro";
+   L_ro        : aliased constant String := "ro";
    --  română (România)
-   L_ro_RO     : aliased constant Wide_String := "ro_RO";
+   L_ro_RO     : aliased constant String := "ro_RO";
    --  русский
-   L_ru        : aliased constant Wide_String := "ru";
+   L_ru        : aliased constant String := "ru";
    --  русский (Россия)
-   L_ru_RU     : aliased constant Wide_String := "ru_RU";
+   L_ru_RU     : aliased constant String := "ru_RU";
    --  hrvatski
-   L_hr        : aliased constant Wide_String := "hr";
+   L_hr        : aliased constant String := "hr";
    --  hrvatski (Hrvatska)
-   L_hr_HR     : aliased constant Wide_String := "hr_HR";
+   L_hr_HR     : aliased constant String := "hr_HR";
    --  srpski (Srbija)
-   L_sr_Latn_SP : aliased constant Wide_String := "sr_Latn_SP";
+   L_sr_Latn_SP : aliased constant String := "sr_Latn_SP";
    --  српски (Југославија)
-   L_sr_Cyrl_SP : aliased constant Wide_String := "sr_Cyrl_SP";
+   L_sr_Cyrl_SP : aliased constant String := "sr_Cyrl_SP";
    --  slovenčina
-   L_sk        : aliased constant Wide_String := "sk";
+   L_sk        : aliased constant String := "sk";
    --  slovenčina (Slovenská republika)
-   L_sk_SK     : aliased constant Wide_String := "sk_SK";
+   L_sk_SK     : aliased constant String := "sk_SK";
    --  shqipe
-   L_sq        : aliased constant Wide_String := "sq";
+   L_sq        : aliased constant String := "sq";
    --  shqipe (Shqipëria)
-   L_sq_AL     : aliased constant Wide_String := "sq_AL";
+   L_sq_AL     : aliased constant String := "sq_AL";
    --  svenska
-   L_sv        : aliased constant Wide_String := "sv";
+   L_sv        : aliased constant String := "sv";
    --  svenska (Sverige)
-   L_sv_SE     : aliased constant Wide_String := "sv_SE";
+   L_sv_SE     : aliased constant String := "sv_SE";
    --  svenska (Finland)
-   L_sv_FI     : aliased constant Wide_String := "sv_FI";
+   L_sv_FI     : aliased constant String := "sv_FI";
    --  ไทย
-   L_th        : aliased constant Wide_String := "th";
+   L_th        : aliased constant String := "th";
    --  ไทย (ไทย)
-   L_th_TH     : aliased constant Wide_String := "th_TH";
+   L_th_TH     : aliased constant String := "th_TH";
    --  Türkçe
-   L_tr        : aliased constant Wide_String := "tr";
+   L_tr        : aliased constant String := "tr";
    --  Türkçe (Türkiye)
-   L_tr_TR     : aliased constant Wide_String := "tr_TR";
+   L_tr_TR     : aliased constant String := "tr_TR";
    --  ٱردو
-   L_ur        : aliased constant Wide_String := "ur";
+   L_ur        : aliased constant String := "ur";
    --  اُردو (پاکستان)
-   L_ur_PK     : aliased constant Wide_String := "ur_PK";
+   L_ur_PK     : aliased constant String := "ur_PK";
    --  Bahasa Indonesia
-   L_id        : aliased constant Wide_String := "id";
+   L_id        : aliased constant String := "id";
    --  Bahasa Indonesia (Indonesia)
-   L_id_ID     : aliased constant Wide_String := "id_ID";
+   L_id_ID     : aliased constant String := "id_ID";
    --  україньска
-   L_uk        : aliased constant Wide_String := "uk";
+   L_uk        : aliased constant String := "uk";
    --  україньска (Україна)
-   L_uk_UA     : aliased constant Wide_String := "uk_UA";
+   L_uk_UA     : aliased constant String := "uk_UA";
    --  Беларускі
-   L_be        : aliased constant Wide_String := "be";
+   L_be        : aliased constant String := "be";
    --  Беларускі (Беларусь)
-   L_be_BY     : aliased constant Wide_String := "be_BY";
+   L_be_BY     : aliased constant String := "be_BY";
    --  slovenski
-   L_sl        : aliased constant Wide_String := "sl";
+   L_sl        : aliased constant String := "sl";
    --  slovenski (Slovenija)
-   L_sl_SI     : aliased constant Wide_String := "sl_SI";
+   L_sl_SI     : aliased constant String := "sl_SI";
    --  eesti
-   L_et        : aliased constant Wide_String := "et";
+   L_et        : aliased constant String := "et";
    --  eesti (Eesti)
-   L_et_EE     : aliased constant Wide_String := "et_EE";
+   L_et_EE     : aliased constant String := "et_EE";
    --  latviešu
-   L_lv        : aliased constant Wide_String := "lv";
+   L_lv        : aliased constant String := "lv";
    --  latviešu (Latvija)
-   L_lv_LV     : aliased constant Wide_String := "lv_LV";
+   L_lv_LV     : aliased constant String := "lv_LV";
    --  lietuvių
-   L_lt        : aliased constant Wide_String := "lt";
+   L_lt        : aliased constant String := "lt";
    --  lietuvių (Lietuva)
-   L_lt_LT     : aliased constant Wide_String := "lt_LT";
+   L_lt_LT     : aliased constant String := "lt_LT";
    --  فارسى
-   L_fa        : aliased constant Wide_String := "fa";
+   L_fa        : aliased constant String := "fa";
    --  فارسى (ايران)
-   L_fa_IR     : aliased constant Wide_String := "fa_IR";
+   L_fa_IR     : aliased constant String := "fa_IR";
    --  Tiếng Việt Nam
-   L_vi        : aliased constant Wide_String := "vi";
+   L_vi        : aliased constant String := "vi";
    --  Tiếng Việt Nam (Việt Nam)
-   L_vi_VN     : aliased constant Wide_String := "vi_VN";
+   L_vi_VN     : aliased constant String := "vi_VN";
    --  Հայերեն
-   L_hy        : aliased constant Wide_String := "hy";
+   L_hy        : aliased constant String := "hy";
    --  Հայերեն (Հայաստան)
-   L_hy_AM     : aliased constant Wide_String := "hy_AM";
+   L_hy_AM     : aliased constant String := "hy_AM";
    --  Azərbaycan­ılı
-   L_az        : aliased constant Wide_String := "az";
+   L_az        : aliased constant String := "az";
    --  Azərbaycan­ılı (Azərbaycanca)
-   L_az_Latn_AZ : aliased constant Wide_String := "az_Latn_AZ";
+   L_az_Latn_AZ : aliased constant String := "az_Latn_AZ";
    --  Азәрбајҹан (Азәрбајҹан)
-   L_az_Cyrl_AZ : aliased constant Wide_String := "az_Cyrl_AZ";
+   L_az_Cyrl_AZ : aliased constant String := "az_Cyrl_AZ";
    --  euskara
-   L_eu        : aliased constant Wide_String := "eu";
+   L_eu        : aliased constant String := "eu";
    --  euskara (euskara)
-   L_eu_ES     : aliased constant Wide_String := "eu_ES";
+   L_eu_ES     : aliased constant String := "eu_ES";
    --  македонски јазик
-   L_mk        : aliased constant Wide_String := "mk";
+   L_mk        : aliased constant String := "mk";
    --  македонски јазик (Македонија)
-   L_mk_MK     : aliased constant Wide_String := "mk_MK";
+   L_mk_MK     : aliased constant String := "mk_MK";
    --  Afrikaans
-   L_af        : aliased constant Wide_String := "af";
+   L_af        : aliased constant String := "af";
    --  Afrikaans (Suid Afrika)
-   L_af_ZA     : aliased constant Wide_String := "af_ZA";
+   L_af_ZA     : aliased constant String := "af_ZA";
    --  ქართული
-   L_ka        : aliased constant Wide_String := "ka";
+   L_ka        : aliased constant String := "ka";
    --  ქართული (საქართველო)
-   L_ka_GE     : aliased constant Wide_String := "ka_GE";
+   L_ka_GE     : aliased constant String := "ka_GE";
    --  føroyskt
-   L_fo        : aliased constant Wide_String := "fo";
+   L_fo        : aliased constant String := "fo";
    --  føroyskt (Føroyar)
-   L_fo_FO     : aliased constant Wide_String := "fo_FO";
+   L_fo_FO     : aliased constant String := "fo_FO";
    --  हिंदी
-   L_hi        : aliased constant Wide_String := "hi";
+   L_hi        : aliased constant String := "hi";
    --  हिंदी (भारत)
-   L_hi_IN     : aliased constant Wide_String := "hi_IN";
+   L_hi_IN     : aliased constant String := "hi_IN";
    --  Bahasa Malaysia
-   L_ms        : aliased constant Wide_String := "ms";
+   L_ms        : aliased constant String := "ms";
    --  Bahasa Malaysia (Malaysia)
-   L_ms_MY     : aliased constant Wide_String := "ms_MY";
+   L_ms_MY     : aliased constant String := "ms_MY";
    --  Bahasa Malaysia (Brunei Darussalam)
-   L_ms_BN     : aliased constant Wide_String := "ms_BN";
+   L_ms_BN     : aliased constant String := "ms_BN";
    --  Қазащb
-   L_kk        : aliased constant Wide_String := "kk";
+   L_kk        : aliased constant String := "kk";
    --  Қазақ (Қазақстан)
-   L_kk_KZ     : aliased constant Wide_String := "kk_KZ";
+   L_kk_KZ     : aliased constant String := "kk_KZ";
    --  Кыргыз
-   L_ky        : aliased constant Wide_String := "ky";
+   L_ky        : aliased constant String := "ky";
    --  Кыргыз (Кыргызстан)
-   L_ky_KZ     : aliased constant Wide_String := "ky_KZ";
+   L_ky_KZ     : aliased constant String := "ky_KZ";
    --  Kiswahili
-   L_sw        : aliased constant Wide_String := "sw";
+   L_sw        : aliased constant String := "sw";
    --  Kiswahili (Kenya)
-   L_sw_KE     : aliased constant Wide_String := "sw_KE";
+   L_sw_KE     : aliased constant String := "sw_KE";
    --  U'zbek
-   L_uz        : aliased constant Wide_String := "uz";
+   L_uz        : aliased constant String := "uz";
    --  U'zbek (U'zbekiston Respublikasi)
-   L_uz_Latn_UZ : aliased constant Wide_String := "uz_Latn_UZ";
+   L_uz_Latn_UZ : aliased constant String := "uz_Latn_UZ";
    --  Ўзбек (Ўзбекистон)
-   L_uz_Cyrl_UZ : aliased constant Wide_String := "uz_Cyrl_UZ";
+   L_uz_Cyrl_UZ : aliased constant String := "uz_Cyrl_UZ";
    --  Татар
-   L_tt        : aliased constant Wide_String := "tt";
+   L_tt        : aliased constant String := "tt";
    --  Татар
-   L_tt_RU     : aliased constant Wide_String := "tt_RU";
+   L_tt_RU     : aliased constant String := "tt_RU";
    --  ਪੰਜਾਬੀ
-   L_pa        : aliased constant Wide_String := "pa";
+   L_pa        : aliased constant String := "pa";
    --  ਪੰਜਾਬੀ (ਭਾਰਤ)
-   L_pa_IN     : aliased constant Wide_String := "pa_IN";
+   L_pa_IN     : aliased constant String := "pa_IN";
    --  ગુજરાતી
-   L_gu        : aliased constant Wide_String := "gu";
+   L_gu        : aliased constant String := "gu";
    --  ગુજરાતી (ભારત)
-   L_gu_IN     : aliased constant Wide_String := "gu_IN";
+   L_gu_IN     : aliased constant String := "gu_IN";
    --  தமிழ்
-   L_ta        : aliased constant Wide_String := "ta";
+   L_ta        : aliased constant String := "ta";
    --  தமிழ் (இந்தியா)
-   L_ta_IN     : aliased constant Wide_String := "ta_IN";
+   L_ta_IN     : aliased constant String := "ta_IN";
    --  తెలుగు
-   L_te        : aliased constant Wide_String := "te";
+   L_te        : aliased constant String := "te";
    --  తెలుగు (భారత దేశం)
-   L_te_IN     : aliased constant Wide_String := "te_IN";
+   L_te_IN     : aliased constant String := "te_IN";
    --  ಕನ್ನಡ
-   L_kn        : aliased constant Wide_String := "kn";
+   L_kn        : aliased constant String := "kn";
    --  ಕನ್ನಡ (ಭಾರತ)
-   L_kn_IN     : aliased constant Wide_String := "kn_IN";
+   L_kn_IN     : aliased constant String := "kn_IN";
    --  मराठी
-   L_mr        : aliased constant Wide_String := "mr";
+   L_mr        : aliased constant String := "mr";
    --  मराठी (भारत)
-   L_mr_IN     : aliased constant Wide_String := "mr_IN";
+   L_mr_IN     : aliased constant String := "mr_IN";
    --  संस्कृत
-   L_sa        : aliased constant Wide_String := "sa";
+   L_sa        : aliased constant String := "sa";
    --  संस्कृत (भारतम्)
-   L_sa_IN     : aliased constant Wide_String := "sa_IN";
+   L_sa_IN     : aliased constant String := "sa_IN";
    --  Монгол хэл
-   L_mn        : aliased constant Wide_String := "mn";
+   L_mn        : aliased constant String := "mn";
    --  Монгол хэл (Монгол улс)
-   L_mn_MN     : aliased constant Wide_String := "mn_MN";
+   L_mn_MN     : aliased constant String := "mn_MN";
    --  galego
-   L_gl        : aliased constant Wide_String := "gl";
+   L_gl        : aliased constant String := "gl";
    --  galego (galego)
-   L_gl_ES     : aliased constant Wide_String := "gl_ES";
+   L_gl_ES     : aliased constant String := "gl_ES";
    --  कोंकणी
-   L_kok       : aliased constant Wide_String := "kok";
+   L_kok       : aliased constant String := "kok";
    --  कोंकणी (भारत)
-   L_kok_IN    : aliased constant Wide_String := "kok_IN";
+   L_kok_IN    : aliased constant String := "kok_IN";
    --  ܣܘܪܝܝܐ
-   L_syr       : aliased constant Wide_String := "syr";
+   L_syr       : aliased constant String := "syr";
    --  ܣܘܪܝܝܐ (سوريا)
-   L_syr_SY    : aliased constant Wide_String := "syr_SY";
+   L_syr_SY    : aliased constant String := "syr_SY";
    --  ދިވެހިބަސް
-   L_div       : aliased constant Wide_String := "div";
+   L_div       : aliased constant String := "div";
    --  ދިވެހިބަސް (ދިވެހި ރާއްޖެ)
-   L_div_MV    : aliased constant Wide_String := "div_MV";
+   L_div_MV    : aliased constant String := "div_MV";
    --  Table mapping LCID value to name.  This table is sorted by LCID values.
    LCID_Mapping : constant array (Positive range <>) of LCID_Map_Type := (
                      (16#0001#, L_ar'Access),
@@ -675,20 +675,20 @@ package body ZanyBlue.OS is
                      (16#500A#, L_es_PR'Access),
                      (16#7C04#, L_zh_Hant'Access));
 
-   function LCID_To_Locale (Value : LCID) return Wide_String;
+   function LCID_To_Locale (Value : LCID) return String;
    --  Use the LCID_Mapping table to locate the name corresponding to an
    --  LCID value (simple binary search).  If not found, return the empty
    --  string.
 
-   function Code_Page (CP : CPID) return Wide_String;
+   function Code_Page (CP : CPID) return String;
    -- Convert a code page id to a string code page name, e.g. 1252 => "CP1252"
 
    ---------------
    -- Code_Page --
    ---------------
 
-   function Code_Page (CP : CPID) return Wide_String is
-      CP_W : constant Wide_String := CPID'Wide_Image (CP);
+   function Code_Page (CP : CPID) return String is
+      CP_W : constant String := CPID'Wide_Image (CP);
    begin
       return "CP" & CP_W (CP_W'First + 1 .. CP_W'Last);
    end Code_Page;
@@ -716,7 +716,7 @@ package body ZanyBlue.OS is
    -- LCID_To_Locale --
    --------------------
 
-   function LCID_To_Locale (Value : LCID) return Wide_String is
+   function LCID_To_Locale (Value : LCID) return String is
 
       Left      : Positive := LCID_Mapping'First;
       Right     : Positive := LCID_Mapping'Last + 1;
@@ -748,7 +748,7 @@ package body ZanyBlue.OS is
    -- OS_Locale_Name --
    --------------------
 
-   function OS_Locale_Name return Wide_String is
+   function OS_Locale_Name return String is
    begin
       return LCID_To_Locale (GetUserDefaultLCID) & "." & Code_Page (GetACP);
    end OS_Locale_Name;
@@ -776,11 +776,11 @@ package body ZanyBlue.OS is
    -- OS_New_Line --
    -----------------
 
-   function OS_New_Line return Wide_String is
+   function OS_New_Line return String is
    begin
       return ""
-         & Ada.Characters.Conversions.To_Wide_Character (ASCII.CR)
-         & Ada.Characters.Conversions.To_Wide_Character (ASCII.LF);
+         & Ada.Characters.Conversions.To_Wide_Wide_Character (ASCII.CR)
+         & Ada.Characters.Conversions.To_Wide_Wide_Character (ASCII.LF);
    end OS_New_Line;
 
    -----------------
@@ -806,8 +806,8 @@ package body ZanyBlue.OS is
    -- Wide_Copy_Tree --
    --------------------
 
-   procedure Wide_Copy_Tree (Source_Name : Wide_String;
-                             Target_Name : Wide_String) is
+   procedure Wide_Copy_Tree (Source_Name : String;
+                             Target_Name : String) is
 
       procedure Process_Entry (Path : String;
                                Elem : String;
@@ -817,8 +817,8 @@ package body ZanyBlue.OS is
                                Elem : String;
                                Kind : File_Kind) is
 
-         Wide_Elem : constant Wide_String := Wide_From_UTF8 (Elem);
-         Dest_Path : constant Wide_String := Wide_Compose (Target_Name,
+         Wide_Elem : constant String := From_UTF_8 (Elem);
+         Dest_Path : constant String := Wide_Compose (Target_Name,
                                                            Wide_Elem);
       begin
          if Elem'Length = 0 or else Elem (Elem'First) = '.' then
@@ -826,9 +826,9 @@ package body ZanyBlue.OS is
          end if;
          case Kind is
          when Ordinary_File =>
-            Wide_Copy_File (Wide_From_UTF8 (Path), Dest_Path);
+            Wide_Copy_File (From_UTF_8 (Path), Dest_Path);
          when Directory =>
-            Wide_Copy_Tree (Wide_From_UTF8 (Path), Dest_Path);
+            Wide_Copy_Tree (From_UTF_8 (Path), Dest_Path);
          when others =>
             null;
          end case;
@@ -839,7 +839,7 @@ package body ZanyBlue.OS is
 
    begin
       Wide_Create_Directory (Target_Name);
-      Start_Search (Search, Wide_To_UTF8 (Source_Name), "*");
+      Start_Search (Search, To_UTF_8 (Source_Name), "*");
       while More_Entries (Search) loop
          Get_Next_Entry (Search, Item);
          Process_Entry (Full_Name (Item), Simple_Name (Item), Kind (Item));
@@ -852,12 +852,12 @@ package body ZanyBlue.OS is
    -----------------
 
    procedure Wide_Create (File : in out Ada.Text_IO.File_Type;
-                          Name : Wide_String) is
+                          Name : String) is
       use Ada.Text_IO;
    begin
       Create (File,
               Mode => Out_File,
-              Name => Wide_To_UTF8 (Name),
+              Name => To_UTF_8 (Name),
               Form => UTF8_File_Form);
    end Wide_Create;
 
@@ -866,12 +866,12 @@ package body ZanyBlue.OS is
    -----------------
 
    procedure Wide_Create (File : in out Ada.Wide_Text_IO.File_Type;
-                          Name : Wide_String) is
+                          Name : String) is
       use Ada.Wide_Text_IO;
    begin
       Create (File,
               Mode => Out_File,
-              Name => Wide_To_UTF8 (Name),
+              Name => To_UTF_8 (Name),
               Form => UTF8_File_Form);
    end Wide_Create;
 
@@ -879,30 +879,30 @@ package body ZanyBlue.OS is
    -- Wide_Is_Directory --
    -----------------------
 
-   function Wide_Is_Directory (Name : Wide_String) return Boolean is
+   function Wide_Is_Directory (Name : String) return Boolean is
    begin
       return Wide_Exists (Name)
-         and then Kind (Wide_To_UTF8 (Name)) = Directory;
+         and then Kind (To_UTF_8 (Name)) = Directory;
    end Wide_Is_Directory;
 
    -----------------------------
    -- Wide_Is_Executable_File --
    -----------------------------
 
-   function Wide_Is_Executable_File (Name : Wide_String) return Boolean is
+   function Wide_Is_Executable_File (Name : String) return Boolean is
    begin
       return Wide_Is_File (Name)
-             and then GNAT.OS_Lib.Is_Executable_File (Wide_To_UTF8 (Name));
+             and then GNAT.OS_Lib.Is_Executable_File (To_UTF_8 (Name));
    end Wide_Is_Executable_File;
 
    ------------------
    -- Wide_Is_File --
    ------------------
 
-   function Wide_Is_File (Name : Wide_String) return Boolean is
+   function Wide_Is_File (Name : String) return Boolean is
    begin
       return Wide_Exists (Name)
-         and then Kind (Wide_To_UTF8 (Name)) = Ordinary_File;
+         and then Kind (To_UTF_8 (Name)) = Ordinary_File;
    end Wide_Is_File;
 
    ---------------
@@ -911,12 +911,12 @@ package body ZanyBlue.OS is
 
    procedure Wide_Open (File : in out Ada.Text_IO.File_Type;
                         Mode : Ada.Text_IO.File_Mode;
-                        Name : Wide_String) is
+                        Name : String) is
       use Ada.Text_IO;
    begin
       Open (File,
             Mode => Mode,
-            Name => Wide_To_UTF8 (Name),
+            Name => To_UTF_8 (Name),
             Form => UTF8_File_Form);
    end Wide_Open;
 
@@ -926,12 +926,12 @@ package body ZanyBlue.OS is
 
    procedure Wide_Open (File : in out Ada.Wide_Text_IO.File_Type;
                         Mode : Ada.Wide_Text_IO.File_Mode;
-                        Name : Wide_String) is
+                        Name : String) is
       use Ada.Wide_Text_IO;
    begin
       Open (File,
             Mode => Mode,
-            Name => Wide_To_UTF8 (Name),
+            Name => To_UTF_8 (Name),
             Form => UTF8_File_Form);
    end Wide_Open;
 

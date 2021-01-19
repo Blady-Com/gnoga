@@ -39,16 +39,16 @@ procedure T_0096 (T : in out Test_Case'Class) is
 
    use ZanyBlue.Text.Catalogs;
 
-   Test_Name : constant Wide_String := "t_0096";
+   Test_Name : constant String := "t_0096";
    Locale    : constant Locale_Type := Make_Locale ("");
-   Facility  : constant Wide_String := "t_0096f";
-   Key       : constant Wide_String := "t_0096k";
-   Message   : constant Wide_String := "Message: #1={0}, #2={1}";
+   Facility  : constant String := "t_0096f";
+   Key       : constant String := "t_0096k";
+   Message   : constant String := "Message: #1={0}, #2={1}";
 
-   procedure With_Exceptions (Name : Wide_String);
-   procedure Without_Exception (Name : Wide_String);
+   procedure With_Exceptions (Name : String);
+   procedure Without_Exception (Name : String);
 
-   procedure With_Exceptions (Name : Wide_String) is
+   procedure With_Exceptions (Name : String) is
       Output    : File_Type;
    begin
       Enable_Exceptions;
@@ -62,7 +62,7 @@ procedure T_0096 (T : in out Test_Case'Class) is
       WAssert (T, True, "Expected exception raised");
    end With_Exceptions;
 
-   procedure Without_Exception (Name : Wide_String) is
+   procedure Without_Exception (Name : String) is
       Output    : File_Type;
    begin
       Disable_Exceptions;

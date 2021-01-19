@@ -34,18 +34,14 @@
 --
 
 with GNAT.OS_Lib;
-with Ada.Directories;
 with Ada.Characters.Conversions;
 with Ada.Environment_Variables;
-with ZanyBlue.Text;
-with ZanyBlue.Wide_Directories;
+with ZanyBlue.Wide_Wide_Directories;
 
 package body ZanyBlue.OS is
 
-   use Ada.Directories;
    use Ada.Environment_Variables;
-   use ZanyBlue.Text;
-   use ZanyBlue.Wide_Directories;
+   use ZanyBlue.Wide_Wide_Directories;
 
    Lang_Environment_Name : constant String := "LANG";
    --  Name of the environment variable defining the locale.
@@ -64,23 +60,14 @@ package body ZanyBlue.OS is
    -- OS_Locale_Name --
    --------------------
 
-   function OS_Locale_Name return Wide_String is
+   function OS_Locale_Name return String is
    begin
-      if Ada.Environment_Variables.Exists (Lang_Environment_Name) then
-         return To_Wide_String (Value (Lang_Environment_Name));
+      if Ada.Environment_Variables.Exists (To_UTF_8 (Lang_Environment_Name))
+      then
+         return From_UTF_8 (Value (To_UTF_8 (Lang_Environment_Name)));
       else
          return "en_US.UTF-8";
       end if;
-   end OS_Locale_Name;
-
-   --------------------
-   -- OS_Locale_Name --
-   --------------------
-
-   function OS_Locale_Name return Wide_Wide_String is
-      use Ada.Characters.Conversions;
-   begin
-      return To_Wide_Wide_String (OS_Locale_Name);
    end OS_Locale_Name;
 
    -------------
@@ -96,19 +83,9 @@ package body ZanyBlue.OS is
    -- OS_New_Line --
    -----------------
 
-   function OS_New_Line return Wide_String is
+   function OS_New_Line return String is
    begin
-      return "" & Ada.Characters.Conversions.To_Wide_Character (ASCII.LF);
-   end OS_New_Line;
-
-   -----------------
-   -- OS_New_Line --
-   -----------------
-
-   function OS_New_Line return Wide_Wide_String is
-      use Ada.Characters.Conversions;
-   begin
-      return To_Wide_Wide_String (OS_New_Line);
+      return "" & Ada.Characters.Conversions.To_Wide_Wide_Character (ASCII.LF);
    end OS_New_Line;
 
    --------------------
@@ -120,13 +97,13 @@ package body ZanyBlue.OS is
       return "WCEM=8";
    end UTF8_File_Form;
 
-   --------------------
-   -- Wide_Copy_Tree --
-   --------------------
+   ---------------
+   -- Copy_Tree --
+   ---------------
 
-   procedure Wide_Copy_Tree
-     (Source_Name : Wide_String;
-      Target_Name : Wide_String)
+   procedure Copy_Tree
+     (Source_Name : String;
+      Target_Name : String)
    is
 
       procedure Process_Entry
@@ -139,18 +116,17 @@ package body ZanyBlue.OS is
          Elem : String;
          Kind : File_Kind)
       is
-         Wide_Elem : constant Wide_String := Wide_From_UTF8 (Elem);
-         Dest_Path : constant Wide_String :=
-           Wide_Compose (Target_Name, Wide_Elem);
+         Dest_Path : constant String := Compose (Target_Name, Elem);
+         use all type File_Kind;
       begin
-         if Elem'Length = 0 or else Elem (Elem'First) = '.' then
+         if Elem.Length = 0 or else Elem (Elem.First) = '.' then
             return;
          end if;
          case Kind is
             when Ordinary_File =>
-               Wide_Copy_File (Wide_From_UTF8 (Path), Dest_Path);
+               Copy_File (Path, Dest_Path);
             when Directory =>
-               Wide_Copy_Tree (Wide_From_UTF8 (Path), Dest_Path);
+               Copy_Tree (Path, Dest_Path);
             when others =>
                null;
          end case;
@@ -160,115 +136,80 @@ package body ZanyBlue.OS is
       Search : Search_Type;
 
    begin
-      Wide_Create_Directory (Target_Name);
-      Start_Search (Search, Wide_To_UTF8 (Source_Name), "*");
+      Create_Directory (Target_Name);
+      Start_Search (Search, Source_Name, "*");
       while More_Entries (Search) loop
          Get_Next_Entry (Search, Item);
          Process_Entry (Full_Name (Item), Simple_Name (Item), Kind (Item));
       end loop;
       End_Search (Search);
-   end Wide_Copy_Tree;
+   end Copy_Tree;
 
-   -----------------
-   -- Wide_Create --
-   -----------------
+   ------------
+   -- Create --
+   ------------
 
-   procedure Wide_Create
-     (File : in out Ada.Text_IO.File_Type;
-      Name :        Wide_String)
+   procedure Create
+     (File : in out UXStrings.Text_IO.File_Type;
+      Name :        String)
    is
-      use Ada.Text_IO;
+      use UXStrings.Text_IO;
    begin
-      Create
-        (File, Mode => Out_File, Name => Wide_To_UTF8 (Name),
-         Form       => UTF8_File_Form);
-   end Wide_Create;
-
-   -----------------
-   -- Wide_Create --
-   -----------------
-
-   procedure Wide_Create
-     (File : in out Ada.Wide_Text_IO.File_Type;
-      Name :        Wide_String)
-   is
-      use Ada.Wide_Text_IO;
-   begin
-      Create
-        (File, Mode => Out_File, Name => Wide_To_UTF8 (Name),
-         Form       => UTF8_File_Form);
-   end Wide_Create;
-
-   -----------------------
-   -- Wide_Is_Directory --
-   -----------------------
-
-   function Wide_Is_Directory
-     (Name : Wide_String)
-      return Boolean
-   is
-   begin
-      return
-        Wide_Exists (Name) and then Kind (Wide_To_UTF8 (Name)) = Directory;
-   end Wide_Is_Directory;
-
-   -----------------------------
-   -- Wide_Is_Executable_File --
-   -----------------------------
-
-   function Wide_Is_Executable_File
-     (Name : Wide_String)
-      return Boolean
-   is
-   begin
-      return
-        Wide_Is_File (Name)
-        and then GNAT.OS_Lib.Is_Executable_File (Wide_To_UTF8 (Name));
-   end Wide_Is_Executable_File;
+      Create (File, Mode => Out_File, Name => Name, Scheme => UTF_8);
+   end Create;
 
    ------------------
-   -- Wide_Is_File --
+   -- Is_Directory --
    ------------------
 
-   function Wide_Is_File
-     (Name : Wide_String)
+   function Is_Directory
+     (Name : String)
+      return Boolean
+   is
+      use all type File_Kind;
+   begin
+      return Exists (Name) and then Kind (Name) = Directory;
+   end Is_Directory;
+
+   ------------------------
+   -- Is_Executable_File --
+   ------------------------
+
+   function Is_Executable_File
+     (Name : String)
       return Boolean
    is
    begin
       return
-        Wide_Exists (Name) and then Kind (Wide_To_UTF8 (Name)) = Ordinary_File;
-   end Wide_Is_File;
+        Is_File (Name)
+        and then GNAT.OS_Lib.Is_Executable_File (To_UTF_8 (Name));
+   end Is_Executable_File;
 
-   ---------------
-   -- Wide_Open --
-   ---------------
+   -------------
+   -- Is_File --
+   -------------
 
-   procedure Wide_Open
-     (File : in out Ada.Text_IO.File_Type;
-      Mode :        Ada.Text_IO.File_Mode;
-      Name :        Wide_String)
+   function Is_File
+     (Name : String)
+      return Boolean
    is
-      use Ada.Text_IO;
+      use all type File_Kind;
    begin
-      Open
-        (File, Mode => Mode, Name => Wide_To_UTF8 (Name),
-         Form       => UTF8_File_Form);
-   end Wide_Open;
+      return Exists (Name) and then Kind (Name) = Ordinary_File;
+   end Is_File;
 
-   ---------------
-   -- Wide_Open --
-   ---------------
+   ----------
+   -- Open --
+   ----------
 
-   procedure Wide_Open
-     (File : in out Ada.Wide_Text_IO.File_Type;
-      Mode :        Ada.Wide_Text_IO.File_Mode;
-      Name :        Wide_String)
+   procedure Open
+     (File : in out UXStrings.Text_IO.File_Type;
+      Mode :        UXStrings.Text_IO.File_Mode;
+      Name :        String)
    is
-      use Ada.Wide_Text_IO;
+      use UXStrings.Text_IO;
    begin
-      Open
-        (File, Mode => Mode, Name => Wide_To_UTF8 (Name),
-         Form       => UTF8_File_Form);
-   end Wide_Open;
+      Open (File, Mode => Mode, Name => Name, Scheme => UTF_8);
+   end Open;
 
 end ZanyBlue.OS;

@@ -35,7 +35,7 @@
 separate (ZanyBlue.Test.Text.Format_Errors.Suites)
 procedure T_0004 (T : in out Test_Case'Class) is
 
-   Message   : constant Wide_String := "Message {0} {1}";
+   Message   : constant String := "Message {0} {1}";
    Handler   : aliased Test_Handler_Type;
    Arguments : Argument_List;
 

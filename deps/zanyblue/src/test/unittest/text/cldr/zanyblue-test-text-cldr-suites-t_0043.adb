@@ -37,11 +37,11 @@ procedure T_0043 (T : in out Test_Case'Class) is
 
    zh : constant Locale_Type := Make_Locale ("zh");
 
-   procedure Check_Territory (Abbreviation : Wide_String;
-                              Value        : Wide_String);
+   procedure Check_Territory (Abbreviation : String;
+                              Value        : String);
 
-   procedure Check_Territory (Abbreviation : Wide_String;
-                              Value        : Wide_String) is
+   procedure Check_Territory (Abbreviation : String;
+                              Value        : String) is
    begin
       Check_Value (T, Territory_Name (Abbreviation, Locale => zh), Value,
                       "Mis-match for " & Abbreviation);

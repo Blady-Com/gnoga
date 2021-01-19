@@ -36,7 +36,7 @@ separate (ZanyBlue.Test.Text.Format_Parser.Suites)
 procedure T_0035 (T : in out Test_Case'Class) is
 
    Locale      : constant Locale_Type := Make_Locale ("en_US");
-   Format_Spec : constant Wide_String := "*^#11.8D";
+   Format_Spec : constant String := "*^#11.8D";
 
 begin
    Check_Value (T, To_String (Parse (Format_Spec, Locale)),

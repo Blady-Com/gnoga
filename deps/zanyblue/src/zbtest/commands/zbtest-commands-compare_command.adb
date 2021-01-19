@@ -59,13 +59,13 @@ procedure Compare_Command (State : in out State_Type;
    use ZanyBlue.Wide_Directories;
 
    procedure Compare (State    : in out State_Type;
-                      Log_Name : Wide_String;
-                      Ref_Name : Wide_String);
+                      Log_Name : String;
+                      Ref_Name : String);
    --  Compare two files.  This should really try to do a context diff.
 
    procedure Match_Lines (Status_File : in out Ada.Wide_Text_IO.File_Type;
-                          Ref_Line    : Wide_String;
-                          Gen_Line    : Wide_String;
+                          Ref_Line    : String;
+                          Gen_Line    : String;
                           Matched     : out Boolean);
    --  Match two lines from two files being compared.  If the lines don't
    --  match exactly as strings, try using the reference line as a regex and
@@ -77,7 +77,7 @@ procedure Compare_Command (State : in out State_Type;
    --  expression.
 
    function Status_File_Name (State    : State_Type;
-                              Log_Name : Wide_String) return Wide_String;
+                              Log_Name : String) return String;
    --  Name of the comparsion log file.
 
    -------------
@@ -85,8 +85,8 @@ procedure Compare_Command (State : in out State_Type;
    -------------
 
    procedure Compare (State    : in out State_Type;
-                      Log_Name : Wide_String;
-                      Ref_Name : Wide_String) is
+                      Log_Name : String;
+                      Ref_Name : String) is
 
       type File_Names is (Status_File, Ref_File, Log_File);
       type File_List is array (File_Names) of Ada.Wide_Text_IO.File_Type;
@@ -95,12 +95,12 @@ procedure Compare_Command (State : in out State_Type;
 
       procedure Open_File (Status : in out Ada.Wide_Text_IO.File_Type;
                            File   : in out Ada.Wide_Text_IO.File_Type;
-                           Name   : Wide_String);
+                           Name   : String);
       --  Open a file.  An error message is printed if the open fails and
       --  the exception Open_Failed is raised.
 
       procedure Wrap_Up (Files       : in out File_List;
-                         Status_Name : Wide_String;
+                         Status_Name : String;
                          Fail        : Boolean);
       --  Wrap up the comparsion by closing any open files and registering
       --  the comparsion result: failure or success.
@@ -111,7 +111,7 @@ procedure Compare_Command (State : in out State_Type;
 
       procedure Open_File (Status : in out Ada.Wide_Text_IO.File_Type;
                            File   : in out Ada.Wide_Text_IO.File_Type;
-                           Name   : Wide_String) is
+                           Name   : String) is
       begin
          Wide_Open (File, Ada.Wide_Text_IO.In_File, Name);
       exception
@@ -126,7 +126,7 @@ procedure Compare_Command (State : in out State_Type;
       -------------
 
       procedure Wrap_Up (Files       : in out File_List;
-                         Status_Name : Wide_String;
+                         Status_Name : String;
                          Fail        : Boolean) is
       begin
          for I in Files'Range loop
@@ -141,7 +141,7 @@ procedure Compare_Command (State : in out State_Type;
          end if;
       end Wrap_Up;
 
-      Status_Name : constant Wide_String := Status_File_Name (State, Log_Name);
+      Status_Name : constant String := Status_File_Name (State, Log_Name);
       Files       : File_List;
       Matched     : Boolean := True;
       Fail        : Boolean := False;
@@ -193,13 +193,13 @@ procedure Compare_Command (State : in out State_Type;
    -----------------
 
    procedure Match_Lines (Status_File : in out Ada.Wide_Text_IO.File_Type;
-                          Ref_Line    : Wide_String;
-                          Gen_Line    : Wide_String;
+                          Ref_Line    : String;
+                          Gen_Line    : String;
                           Matched     : out Boolean) is
    begin
       Matched := Ref_Line = Gen_Line
-         or else Regex_Match (Wide_To_UTF8 (Gen_Line),
-                              Wide_To_UTF8 (Ref_Line));
+         or else Regex_Match (To_UTF_8 (Gen_Line),
+                              To_UTF_8 (Ref_Line));
       if not Matched then
          Ada.Wide_Text_IO.Put (Status_File, ">");
          Ada.Wide_Text_IO.Put_Line (Status_File, Ref_Line);
@@ -230,9 +230,9 @@ procedure Compare_Command (State : in out State_Type;
    ----------------------
 
    function Status_File_Name (State    : State_Type;
-                              Log_Name : Wide_String) return Wide_String is
-      Test_Name : constant Wide_String := State.Full_Test_Name;
-      Base_Name : constant Wide_String := Wide_Base_Name (Log_Name);
+                              Log_Name : String) return String is
+      Test_Name : constant String := State.Full_Test_Name;
+      Base_Name : constant String := Wide_Base_Name (Log_Name);
       Buffer    : Unbounded_Wide_String;
    begin
       Append (Buffer, Test_Name);

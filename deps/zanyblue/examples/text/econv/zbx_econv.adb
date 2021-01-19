@@ -71,17 +71,17 @@ procedure ZBX_Econv is
    function Read_File (File_Name : Unbounded_Wide_String) return String;
    procedure Write_File (File_Name : Unbounded_Wide_String;
                          Data      : String);
-   function Get_Opt_Value (Index : Positive; Option : Wide_String)
+   function Get_Opt_Value (Index : Positive; Option : String)
       return Unbounded_Wide_String;
-   function Get_Opt_Value (Index : Positive; Option : Wide_String)
-      return Wide_String;
+   function Get_Opt_Value (Index : Positive; Option : String)
+      return String;
 
    -------------------
    -- Get_Opt_Value --
    -------------------
 
-   function Get_Opt_Value (Index : Positive; Option : Wide_String)
-      return Wide_String is
+   function Get_Opt_Value (Index : Positive; Option : String)
+      return String is
    begin
       return To_Wide_String (Get_Opt_Value (Index, Option));
    end Get_Opt_Value;
@@ -90,7 +90,7 @@ procedure ZBX_Econv is
    -- Get_Opt_Value --
    -------------------
 
-   function Get_Opt_Value (Index : Positive; Option : Wide_String)
+   function Get_Opt_Value (Index : Positive; Option : String)
       return Unbounded_Wide_String
    is
    begin
@@ -110,7 +110,7 @@ procedure ZBX_Econv is
    begin
       while Index <= Wide_Argument_Count loop
          declare
-            Option : constant Wide_String := Wide_Argument (Index);
+            Option : constant String := Wide_Argument (Index);
          begin
             if Option = "-f" then
                Index := Index + 1;
@@ -145,7 +145,7 @@ procedure ZBX_Econv is
    ---------------
 
    function Read_File (File_Name : Unbounded_Wide_String) return String is
-      File_Name_S : constant String := To_UTF8 (To_Wide_String (File_Name));
+      File_Name_S : constant String := To_UTF_8 (To_Wide_String (File_Name));
       File_Size : constant Natural := Natural (Size (File_Name_S));
       subtype Element_Type is String (1 .. File_Size);
       package File_IO is new Ada.Direct_IO (Element_Type);
@@ -164,7 +164,7 @@ procedure ZBX_Econv is
 
    procedure Write_File (File_Name : Unbounded_Wide_String;
                          Data      : String) is
-      File_Name_S : constant String := To_UTF8 (To_Wide_String (File_Name));
+      File_Name_S : constant String := To_UTF_8 (To_Wide_String (File_Name));
       subtype Element_Type is String (Data'Range);
       package File_IO is new Ada.Direct_IO (Element_Type);
       Output : File_IO.File_Type;

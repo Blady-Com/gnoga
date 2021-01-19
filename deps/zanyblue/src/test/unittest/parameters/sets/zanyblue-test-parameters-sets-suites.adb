@@ -38,7 +38,7 @@ package body ZanyBlue.Test.Parameters.Sets.Suites is
 
    use ZanyBlue.Parameters.Sets;
 
-   Test_Area : constant Wide_String := "parameters/sets";
+   Test_Area : constant String := "parameters/sets";
 
    procedure T_0001 (T : in out Test_Case'Class);
    procedure T_0002 (T : in out Test_Case'Class);

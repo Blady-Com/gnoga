@@ -57,10 +57,10 @@ package ZanyBlue.Text.Generic_Fixed is
 
    overriding function Format
      (Value     : Fixed_Argument_Type;
-      Type_Name : Wide_String;
-      Template  : Wide_String;
+      Type_Name : String;
+      Template  : String;
       Locale    : Locale_Type)
-      return Wide_String;
+      return String;
    --  Format an enumeration value for printing.
 
 private

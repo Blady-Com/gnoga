@@ -50,14 +50,14 @@ package body ZanyBlue.Test.Text.Generic_Floats.GDTOA.Suites is
 
    procedure Check_Float (T      : in out Test_Case'Class;
                           Value  : Float;
-                          Expect : Wide_String);
+                          Expect : String);
    procedure Check_LFloat (T      : in out Test_Case'Class;
                            Value  : Long_Float;
-                           Expect : Wide_String);
+                           Expect : String);
 
    procedure Check_Float (T      : in out Test_Case'Class;
                           Value  : Float;
-                          Expect : Wide_String) is
+                          Expect : String) is
       use Floats;
       A : constant Float_Argument_Type := Create (Value);
    begin
@@ -66,7 +66,7 @@ package body ZanyBlue.Test.Text.Generic_Floats.GDTOA.Suites is
 
    procedure Check_LFloat (T      : in out Test_Case'Class;
                            Value  : Long_Float;
-                           Expect : Wide_String) is
+                           Expect : String) is
       use Long_Floats;
       A : constant Float_Argument_Type := Create (Value);
    begin

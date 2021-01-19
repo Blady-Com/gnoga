@@ -43,8 +43,8 @@ package body ZanyBlue.Test.Text.Locales.Localized_Digits.Suites is
    procedure Check_Delocalization
       (T        : in out Test_Case'Class;
        Locale   : Locale_Type;
-       Value    : Wide_String;
-       Expected : Wide_String);
+       Value    : String;
+       Expected : String);
 
    procedure T_0001 (T : in out Test_Case'Class);
    procedure T_0002 (T : in out Test_Case'Class);
@@ -62,8 +62,8 @@ package body ZanyBlue.Test.Text.Locales.Localized_Digits.Suites is
    procedure Check_Delocalization
       (T        : in out Test_Case'Class;
        Locale   : Locale_Type;
-       Value    : Wide_String;
-       Expected : Wide_String)
+       Value    : String;
+       Expected : String)
    is
    begin
       Check_Value (T, Delocalize_Digits (Locale, Value), Expected,

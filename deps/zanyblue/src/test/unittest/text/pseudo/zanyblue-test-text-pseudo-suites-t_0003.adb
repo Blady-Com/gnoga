@@ -35,14 +35,14 @@
 separate (ZanyBlue.Test.Text.Pseudo.Suites)
 procedure T_0003 (T : in out Test_Case'Class) is
 
-   Source   : constant Wide_String := " !""#$%&'()*+,-./"
+   Source   : constant String := " !""#$%&'()*+,-./"
                                     & "0123456789"
                                     & ":;<=>?@"
                                     & "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                     & "[\]^_`"
                                     & "abcdefghijklmnopqrstuvwxyz"
                                     & "{|}~";
-   Target   : constant Wide_String := " ！＂＃＄％＆＇（）＊＋，－．／"
+   Target   : constant String := " ！＂＃＄％＆＇（）＊＋，－．／"
                                     & "０１２３４５６７８９"
                                     & "：；＜＝＞？＠"
                                     & "ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ"

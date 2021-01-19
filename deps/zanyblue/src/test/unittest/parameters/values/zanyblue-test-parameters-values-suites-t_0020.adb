@@ -41,8 +41,8 @@ procedure T_0020 (T : in out Test_Case'Class) is
    use Ada.Wide_Text_IO;
    use ZanyBlue.OS;
 
-   Test_Name  : constant Wide_String := "t_0020";
-   Filename   : constant Wide_String := Test_Log_Name (Test_Area, Test_Name);
+   Test_Name  : constant String := "t_0020";
+   Filename   : constant String := Test_Log_Name (Test_Area, Test_Name);
    Value      : constant Value_Type'Class := To_Float_Value (1.0);
    Output     : File_Type;
 

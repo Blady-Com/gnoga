@@ -35,7 +35,7 @@
 separate (ZanyBlue.Test.Text.Format_Errors.Suites)
 procedure T_0002 (T : in out Test_Case'Class) is
 
-   Message   : constant Wide_String := "Message with unclosed {0";
+   Message   : constant String := "Message with unclosed {0";
    Handler   : aliased Test_Handler_Type;
    Arguments : Argument_List;
 

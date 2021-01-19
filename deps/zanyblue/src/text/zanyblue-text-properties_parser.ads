@@ -33,41 +33,40 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Wide_Text_IO;
+with UXStrings.Text_IO;
 with ZanyBlue.Text.Locales;
 
 package ZanyBlue.Text.Properties_Parser is
 
-   use Ada.Wide_Text_IO;
    use ZanyBlue.Text.Locales;
 
    type Parser_Handler_Type is abstract tagged private;
 
    procedure Add_Key_Value
      (Handler       : in out Parser_Handler_Type;
-      Facility      :        Wide_String;
-      Key           :        Wide_String;
-      Value         :        Wide_String;
+      Facility      :        String;
+      Key           :        String;
+      Value         :        String;
       Locale        :        Locale_Type;
       Source_Locale :        Locale_Type;
-      File_Name     :        Wide_String;
+      File_Name     :        String;
       Line          :        Natural) is abstract;
    --  Call back to handle the definition of a key/value pair.
 
    procedure Duplicate_Key
      (Handler       : in out Parser_Handler_Type;
-      Facility      :        Wide_String;
-      Key           :        Wide_String;
+      Facility      :        String;
+      Key           :        String;
       Locale        :        Locale_Type;
-      File_Name     :        Wide_String;
+      File_Name     :        String;
       Current_Line  :        Natural;
       Previous_Line :        Natural) is abstract;
    --  Call back used to report a duplicate key error.
 
    procedure Invalid_Character
      (Handler      : in out Parser_Handler_Type;
-      Facility     :        Wide_String;
-      File_Name    :        Wide_String;
+      Facility     :        String;
+      File_Name    :        String;
       Current_Line :        Natural;
       Ch           :        Character) is abstract;
    --  Call back used to report an invalid character, non-ISO-646, in the
@@ -75,9 +74,9 @@ package ZanyBlue.Text.Properties_Parser is
 
    procedure Invalid_Definition
      (Handler         : in out Parser_Handler_Type;
-      Facility        :        Wide_String;
+      Facility        :        String;
       Locale          :        Locale_Type;
-      File_Name       :        Wide_String;
+      File_Name       :        String;
       Current_Line    :        Natural;
       Additional_Info :        String) is abstract;
    --  Call back used to report an invalid definition.
@@ -103,15 +102,15 @@ package ZanyBlue.Text.Properties_Parser is
 
    procedure Parse
      (Handler   : in out Parser_Handler_Type'Class;
-      File_Name :        Wide_String;
-      Facility  :        Wide_String;
+      File_Name :        String;
+      Facility  :        String;
       Locale    :        Locale_Type);
    --  Parse a properties file using the calling back via the Handler.
 
    procedure Parse
      (Handler       : in out Parser_Handler_Type'Class;
-      File_Name     :        Wide_String;
-      Facility      :        Wide_String;
+      File_Name     :        String;
+      Facility      :        String;
       Locale        :        Locale_Type;
       Source_Locale :        Locale_Type);
    --  Parse a properties file using the calling back via the Handler to
@@ -120,17 +119,17 @@ package ZanyBlue.Text.Properties_Parser is
 
    procedure Parse
      (Handler     : in out Parser_Handler_Type'Class;
-      Source_File : in out File_Type;
-      File_Name   :        Wide_String;
-      Facility    :        Wide_String;
+      Source_File : in out UXStrings.Text_IO.File_Type;
+      File_Name   :        String;
+      Facility    :        String;
       Locale      :        Locale_Type);
    --  Same as Parse but on an already open file handle.
 
    procedure Parse
      (Handler       : in out Parser_Handler_Type'Class;
-      Source_File   : in out File_Type;
-      File_Name     :        Wide_String;
-      Facility      :        Wide_String;
+      Source_File   : in out UXStrings.Text_IO.File_Type;
+      File_Name     :        String;
+      Facility      :        String;
       Locale        :        Locale_Type;
       Source_Locale :        Locale_Type);
    --  Same as Parse but on an already open file handle.

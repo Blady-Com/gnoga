@@ -42,7 +42,7 @@ package body ZanyBlue.Test.Text.Catalogs.Suites is
    use ZanyBlue.Text.Catalogs;
    use ZanyBlue.Text.Locales;
 
-   Test_Area : constant Wide_String := "text/catalogs";
+   Test_Area : constant String := "text/catalogs";
 
    procedure T_0001 (T : in out Test_Case'Class);
    procedure T_0002 (T : in out Test_Case'Class);

@@ -79,39 +79,39 @@ package body ZBTest.Functions is
    type Function_List is array (Positive range <>) of Function_Definition;
    --  List of known functions.
 
-   function Find_Index (Name : Wide_String) return Positive;
+   function Find_Index (Name : String) return Positive;
    --  Return the index in the function table for the named command.  If the
    --  function is not found, 0 is returned.
 
    function Dirname_Function (State   : access State_Type;
-                              Args    : List_Type) return Wide_String;
+                              Args    : List_Type) return String;
    function Joinpaths_Function (State   : access State_Type;
-                                Args    : List_Type) return Wide_String;
+                                Args    : List_Type) return String;
    function Nextlog_Function (State   : access State_Type;
-                              Args    : List_Type) return Wide_String;
+                              Args    : List_Type) return String;
    function Which_Function (State   : access State_Type;
-                            Args    : List_Type) return Wide_String;
+                            Args    : List_Type) return String;
 
    Function_Table : constant Function_List := (
-                 (Name           => new Wide_String'("dirname"),
+                 (Name           => new String'("dirname"),
                   Implementation => Dirname_Function'Access,
                   Usage          => Print_Dirname_Usage'Access,
                   Summary        => Print_Dirname_Summary'Access,
                   Help           => Print_Dirname_Docstring'Access),
 
-                 (Name           => new Wide_String'("joinpaths"),
+                 (Name           => new String'("joinpaths"),
                   Implementation => Joinpaths_Function'Access,
                   Usage          => Print_Joinpaths_Usage'Access,
                   Summary        => Print_Joinpaths_Summary'Access,
                   Help           => Print_Joinpaths_Docstring'Access),
 
-                 (Name           => new Wide_String'("nextlog"),
+                 (Name           => new String'("nextlog"),
                   Implementation => Nextlog_Function'Access,
                   Usage          => Print_Nextlog_Usage'Access,
                   Summary        => Print_Nextlog_Summary'Access,
                   Help           => Print_Nextlog_Docstring'Access),
 
-                 (Name           => new Wide_String'("which"),
+                 (Name           => new String'("which"),
                   Implementation => Which_Function'Access,
                   Usage          => Print_Which_Usage'Access,
                   Summary        => Print_Which_Summary'Access,
@@ -122,14 +122,14 @@ package body ZBTest.Functions is
    ----------------------
 
    function Dirname_Function (State   : access State_Type;
-                              Args    : List_Type) return Wide_String is
+                              Args    : List_Type) return String is
       separate;
 
    ----------
    -- Find --
    ----------
 
-   function Find (Name : Wide_String) return Function_Type is
+   function Find (Name : String) return Function_Type is
    begin
       return Function_Table (Find_Index (Name)).Implementation;
    end Find;
@@ -138,7 +138,7 @@ package body ZBTest.Functions is
    -- Find_Index --
    ----------------
 
-   function Find_Index (Name : Wide_String) return Positive is
+   function Find_Index (Name : String) return Positive is
    begin
       for I in 1 .. Function_Table'Last loop
          if Name = Function_Table (I).Name.all then
@@ -152,7 +152,7 @@ package body ZBTest.Functions is
    -- Function_Name --
    -------------------
 
-   function Function_Name (Index : Positive) return Wide_String is
+   function Function_Name (Index : Positive) return String is
    begin
       return Function_Table (Index).Name.all;
    end Function_Name;
@@ -162,7 +162,7 @@ package body ZBTest.Functions is
    ------------------------
 
    function Joinpaths_Function (State   : access State_Type;
-                                Args    : List_Type) return Wide_String is
+                                Args    : List_Type) return String is
       separate;
 
    ----------------------
@@ -170,7 +170,7 @@ package body ZBTest.Functions is
    ----------------------
 
    function Nextlog_Function (State   : access State_Type;
-                              Args    : List_Type) return Wide_String is
+                              Args    : List_Type) return String is
       separate;
 
    -------------------------
@@ -186,7 +186,7 @@ package body ZBTest.Functions is
    -- Print_Function_Help --
    -------------------------
 
-   procedure Print_Function_Help (Name : Wide_String) is
+   procedure Print_Function_Help (Name : String) is
    begin
       Function_Table (Find_Index (Name)).Help.all;
    exception
@@ -198,7 +198,7 @@ package body ZBTest.Functions is
    -- Print_Function_Summary --
    ----------------------------
 
-   procedure Print_Function_Summary (Name  : Wide_String;
+   procedure Print_Function_Summary (Name  : String;
                                      Index : Positive) is
    begin
       Function_Table (Find_Index (Name)).Summary.all (+Index);
@@ -208,7 +208,7 @@ package body ZBTest.Functions is
    -- Print_Function_Usage --
    --------------------------
 
-   procedure Print_Function_Usage (Name : Wide_String) is
+   procedure Print_Function_Usage (Name : String) is
    begin
       Function_Table (Find_Index (Name)).Usage.all;
    end Print_Function_Usage;
@@ -218,7 +218,7 @@ package body ZBTest.Functions is
    --------------------
 
    function Which_Function (State   : access State_Type;
-                            Args    : List_Type) return Wide_String is
+                            Args    : List_Type) return String is
       separate;
 
 end ZBTest.Functions;

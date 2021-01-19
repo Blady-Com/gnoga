@@ -86,23 +86,23 @@ procedure ZBMCompile.Main is
 
       function Get_Option_Value (Ch : Character) return Natural;
 
-      function Get_Option_Value (Ch : Character) return Wide_String;
+      function Get_Option_Value (Ch : Character) return String;
 
-      procedure Set_Accessor_Type (Type_Name : Wide_String;
+      procedure Set_Accessor_Type (Type_Name : String;
                                    On_Off    : Boolean);
 
       ----------------------
       -- Get_Option_Value --
       ----------------------
 
-      function Get_Option_Value (Ch : Character) return Wide_String is
+      function Get_Option_Value (Ch : Character) return String is
       begin
          Index := Index + 1;
          if Index > Argument_Count then
             Raise_Exception (Usage'Identity, ZBMCompile_Facility, "E00001",
                              Argument0 => +Ch);
          end if;
-         return Wide_From_UTF8 (Argument (Index));
+         return From_UTF_8 (Argument (Index));
       end Get_Option_Value;
 
       ----------------------
@@ -110,7 +110,7 @@ procedure ZBMCompile.Main is
       ----------------------
 
       function Get_Option_Value (Ch : Character) return Natural is
-         Buffer : constant Wide_String := Get_Option_Value (Ch);
+         Buffer : constant String := Get_Option_Value (Ch);
       begin
          return Natural'Wide_Value (Buffer);
       exception
@@ -119,7 +119,7 @@ procedure ZBMCompile.Main is
                           Argument0 => +Buffer);
       end Get_Option_Value;
 
-      procedure Set_Accessor_Type (Type_Name : Wide_String;
+      procedure Set_Accessor_Type (Type_Name : String;
                                    On_Off    : Boolean) is
       begin
          for I in Accessor_Types'Range loop
@@ -225,7 +225,7 @@ procedure ZBMCompile.Main is
                Options.Set_String ("stamp_file", Get_Option_Value ('S'));
             elsif Value = "-T" then
                declare
-                  Target : constant Wide_String := Get_Option_Value ('T');
+                  Target : constant String := Get_Option_Value ('T');
                begin
                   if not Options.Is_Defined (Target & "_size") then
                      Raise_Exception (Usage'Identity,
@@ -244,7 +244,7 @@ procedure ZBMCompile.Main is
                Options.Set_String ("export_name", Get_Option_Value ('x'));
             elsif Value = "-X" then
                declare
-                  Handling : constant Wide_String := Get_Option_Value ('X');
+                  Handling : constant String := Get_Option_Value ('X');
                begin
                   if Handling = "ignore" then
                      Options.Set_String ("invalid_ada_key_handler", "ignore");
@@ -262,10 +262,10 @@ procedure ZBMCompile.Main is
                Raise_Exception (Usage'Identity, ZBMCompile_Facility, "E00020",
                                 Argument0 => +Value);
             elsif not Options.Is_Defined ("package") then
-               Options.Set_String ("package", Wide_From_UTF8 (Value));
+               Options.Set_String ("package", From_UTF_8 (Value));
             else
                Options.Append ("mesg_dirs", Options.Get_String ("cur_dir"));
-               Options.Append ("facilities", Wide_From_UTF8 (Value));
+               Options.Append ("facilities", From_UTF_8 (Value));
                Options.Increment ("n_facilities");
             end if;
          end;

@@ -83,27 +83,27 @@ with Ada.Strings.Wide_Fixed;
 
 separate (ZBTest.Functions)
 function Nextlog_Function (State : access State_Type;
-                           Args  : List_Type) return Wide_String is
+                           Args  : List_Type) return String is
 
    use Ada.Strings.Wide_Fixed;
 
    function Counter_Log_Name (State        : access State_Type;
-                              Counter_Name : Wide_String;
-                              With_Undo    : Boolean) return Wide_String;
+                              Counter_Name : String;
+                              With_Undo    : Boolean) return String;
 
    function Log_Name (State     : access State_Type;
-                      Base_Name : Wide_String;
+                      Base_Name : String;
                       Log_Num   : Positive;
-                      With_Undo : Boolean) return Wide_String;
+                      With_Undo : Boolean) return String;
 
    ----------------------
    -- Counter_Log_Name --
    ----------------------
 
    function Counter_Log_Name (State        : access State_Type;
-                              Counter_Name : Wide_String;
-                              With_Undo    : Boolean) return Wide_String is
-      Test_Name : constant Wide_String := State.Get_String ("_testname");
+                              Counter_Name : String;
+                              With_Undo    : Boolean) return String is
+      Test_Name : constant String := State.Get_String ("_testname");
    begin
       if Counter_Name'Length = 0 or else Head (Counter_Name, 1) = "_" then
          raise Function_Usage_Error;
@@ -121,11 +121,11 @@ function Nextlog_Function (State : access State_Type;
    --------------
 
    function Log_Name (State     : access State_Type;
-                      Base_Name : Wide_String;
+                      Base_Name : String;
                       Log_Num   : Positive;
-                      With_Undo : Boolean) return Wide_String is
+                      With_Undo : Boolean) return String is
 
-      Result : constant Wide_String := Format ("{0}-{1,=2}.log",
+      Result : constant String := Format ("{0}-{1,=2}.log",
                                                +Base_Name, +Log_Num);
    begin
       if With_Undo then

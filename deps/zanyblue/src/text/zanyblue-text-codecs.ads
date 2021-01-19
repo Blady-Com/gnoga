@@ -103,7 +103,7 @@ package ZanyBlue.Text.Codecs is
    --  (an "Action" value of "Raise_Exception").
 
    function Make_Codecs
-     (Encoding : Wide_String)
+     (Encoding : String)
       return Codecs_Type;
    --  Create a Codecs object given an encoding name.   Depending on the
    --  "Action" selected by "Set_Unsupported_Encoding_Action", this routine
@@ -112,7 +112,7 @@ package ZanyBlue.Text.Codecs is
 
    function Name
      (Codecs : Codecs_Type)
-      return Wide_String;
+      return String;
    --  Return the encoding name associated with a Codecs objects.  If the
    --  "Action" selected by "Set_Unsupported_Encoding_Action" is "Use_UTF8",
    --  (the default) this routine might return a name different from the
@@ -126,7 +126,7 @@ package ZanyBlue.Text.Codecs is
 
    function Encode
      (Codecs : Codecs_Type;
-      Value  : Wide_String)
+      Value  : String)
       return String;
    --  Encode the Unicode string using the encoding associated with the
    --  Codecs objects.  This could raise the exception "Unicode_Encode_Error"
@@ -137,7 +137,7 @@ package ZanyBlue.Text.Codecs is
    function Decode
      (Codecs : Codecs_Type;
       Value  : String)
-      return Wide_String;
+      return String;
    --  Decode the encoded argument string using the encoding associated with
    --  the Codecs object.  The exception "Unicode_Decode_Error" can be raised
    --  depending on the setting selected by "Set_Unicode_Decode_Action", the
@@ -145,8 +145,8 @@ package ZanyBlue.Text.Codecs is
    --  character '?'.
 
    function Encode
-     (Encoding : Wide_String;
-      Value    : Wide_String)
+     (Encoding : String;
+      Value    : String)
       return String;
    --  Encode the Unicode string using the named encoding.  This could raise
    --  the exception "Unicode_Encode_Error" if requested via the routine
@@ -154,9 +154,9 @@ package ZanyBlue.Text.Codecs is
    --  un-encodeable character with the ASCII character '?'.
 
    function Decode
-     (Encoding : Wide_String;
+     (Encoding : String;
       Value    : String)
-      return Wide_String;
+      return String;
    --  Decode the encoded argument string using the named encoding.  The
    --  exception "Unicode_Decode_Error" can be raised depending on the setting
    --  selected by "Set_Unicode_Decode_Action", the default is to simply
@@ -167,14 +167,14 @@ package ZanyBlue.Text.Codecs is
 
    function Name
      (Encoding_Index : Positive)
-      return Wide_String;
+      return String;
    --  Return the name of the I'th encoding.  This routine will raise
    --  Constraint_Error if there is no corresponding encoding.
 
    procedure Iterate_Decodings
      (Codecs  : Codecs_Type;
       Handler : not null access procedure
-        (WCh      : Wide_Character;
+        (WCh      : Unicode_Character;
          Encoding : String));
    --  Iterate over the encoding mappings for a Codecs.  The iteration is
    --  ordered by encoded character sequence.
@@ -182,7 +182,7 @@ package ZanyBlue.Text.Codecs is
    procedure Iterate_Encodings
      (Codecs  : Codecs_Type;
       Handler : not null access procedure
-        (WCh      : Wide_Character;
+        (WCh      : Unicode_Character;
          Encoding : String));
    --  Iterate over the encoding mappings for a Codecs.  The iteration is
    --  ordered by Unicode code point associated with the mapping.

@@ -42,15 +42,15 @@ package body ZBMCompile.Parser_Handler is
    use ZanyBlue.Text.Format_Errors;
    use ZanyBlue.Text.Formatting;
 
-   procedure Discard (Value : Wide_String);
+   procedure Discard (Value : String);
    --  Simply discard the generated wide string value.
 
    procedure Add_Definition (Handler     : in out ZBMC_Handler_Type;
                              Catalog     : Catalog_Type;
-                             Facility    : Wide_String;
-                             Key         : Wide_String;
+                             Facility    : String;
+                             Key         : String;
                              Locale      : Locale_Type;
-                             File_Name   : Wide_String;
+                             File_Name   : String;
                              Line_Number : Natural;
                              Arg_Types   : String_Vectors.Vector);
    --  Add a message definition to the summary data structure used to support
@@ -92,23 +92,23 @@ package body ZBMCompile.Parser_Handler is
 
    procedure Add_Definition (Handler     : in out ZBMC_Handler_Type;
                              Catalog     : Catalog_Type;
-                             Facility    : Wide_String;
-                             Key         : Wide_String;
+                             Facility    : String;
+                             Key         : String;
                              Locale      : Locale_Type;
-                             File_Name   : Wide_String;
+                             File_Name   : String;
                              Line_Number : Natural;
                              Arg_Types   : String_Vectors.Vector) is
 
       pragma Unreferenced (Catalog);
       pragma Unreferenced (File_Name);
 
-      procedure Update_Key_Info (Facility : Wide_String;
+      procedure Update_Key_Info (Facility : String;
                                  FD       : in out Facility_Descriptor_Type);
 
-      procedure Update_Locale_Info (Key   : Wide_String;
+      procedure Update_Locale_Info (Key   : String;
                                     LI    : in out Locale_Definitions_Map);
 
-      procedure Update_Key_Info (Facility : Wide_String;
+      procedure Update_Key_Info (Facility : String;
                                  FD       : in out Facility_Descriptor_Type) is
          pragma Unreferenced (Facility);
 
@@ -124,7 +124,7 @@ package body ZBMCompile.Parser_Handler is
          FD.Locales.Include (Locale_Name (Locale));
       end Update_Key_Info;
 
-      procedure Update_Locale_Info (Key   : Wide_String;
+      procedure Update_Locale_Info (Key   : String;
                                     LI    : in out Locale_Definitions_Map) is
          pragma Unreferenced (Key);
 
@@ -159,12 +159,12 @@ package body ZBMCompile.Parser_Handler is
 
    overriding
    procedure Add_Key_Value (Handler       : in out ZBMC_Handler_Type;
-                            Facility      : Wide_String;
-                            Key           : Wide_String;
-                            Value         : Wide_String;
+                            Facility      : String;
+                            Key           : String;
+                            Value         : String;
                             Locale        : Locale_Type;
                             Source_Locale : Locale_Type;
-                            File_Name     : Wide_String;
+                            File_Name     : String;
                             Line_Number   : Natural) is
 
       type Verify_Handler_Type is new Error_Handler_Type with
@@ -179,7 +179,7 @@ package body ZBMCompile.Parser_Handler is
 
       overriding
       procedure Format_Not_Closed (V_Handler    : in out Verify_Handler_Type;
-                                   Message      : Wide_String;
+                                   Message      : String;
                                    Position     : Positive;
                                    Level        : Natural;
                                    Raise_Errors : Boolean);
@@ -187,18 +187,18 @@ package body ZBMCompile.Parser_Handler is
 
       overriding
       procedure Illegal_Character (V_Handler    : in out Verify_Handler_Type;
-                                   Message      : Wide_String;
+                                   Message      : String;
                                    Position     : Positive;
-                                   Ch           : Wide_Character;
+                                   Ch           : Unicode_Character;
                                    Level        : Natural;
                                    Raise_Errors : Boolean);
       --  Report an illegal format character error in a message.
 
       overriding
       procedure Missing_Argument (V_Handler    : in out Verify_Handler_Type;
-                                  Message      : Wide_String;
+                                  Message      : String;
                                   Position     : Natural;
-                                  Type_Name    : Wide_String;
+                                  Type_Name    : String;
                                   Raise_Errors : Boolean);
       --  Report a missing argument reference, used to count the number of
       --  such references in a message.
@@ -209,7 +209,7 @@ package body ZBMCompile.Parser_Handler is
 
       overriding
       procedure Format_Not_Closed (V_Handler    : in out Verify_Handler_Type;
-                                   Message      : Wide_String;
+                                   Message      : String;
                                    Position     : Positive;
                                    Level        : Natural;
                                    Raise_Errors : Boolean) is
@@ -233,9 +233,9 @@ package body ZBMCompile.Parser_Handler is
 
       overriding
       procedure Illegal_Character (V_Handler    : in out Verify_Handler_Type;
-                                   Message      : Wide_String;
+                                   Message      : String;
                                    Position     : Positive;
-                                   Ch           : Wide_Character;
+                                   Ch           : Unicode_Character;
                                    Level        : Natural;
                                    Raise_Errors : Boolean) is
 
@@ -261,16 +261,16 @@ package body ZBMCompile.Parser_Handler is
 
       overriding
       procedure Missing_Argument (V_Handler    : in out Verify_Handler_Type;
-                                  Message      : Wide_String;
+                                  Message      : String;
                                   Position     : Natural;
-                                  Type_Name    : Wide_String;
+                                  Type_Name    : String;
                                   Raise_Errors : Boolean) is
          pragma Unreferenced (Message);
          pragma Unreferenced (Raise_Errors);
 
          use String_Vectors;
 
-         Type_Category : constant Wide_String :=
+         Type_Category : constant String :=
                              Type_Name_To_Category (Type_Name);
          Extra : constant Integer := Position + 1
                                       - Natural (Length (V_Handler.Arg_Types));
@@ -313,7 +313,7 @@ package body ZBMCompile.Parser_Handler is
    -- Discard --
    -------------
 
-   procedure Discard (Value : Wide_String) is
+   procedure Discard (Value : String) is
       pragma Unreferenced (Value);
    begin
       null;
@@ -325,10 +325,10 @@ package body ZBMCompile.Parser_Handler is
 
    overriding
    procedure Duplicate_Key (Handler       : in out ZBMC_Handler_Type;
-                            Facility      : Wide_String;
-                            Key           : Wide_String;
+                            Facility      : String;
+                            Key           : String;
                             Locale        : Locale_Type;
-                            File_Name     : Wide_String;
+                            File_Name     : String;
                             Current_Line  : Natural;
                             Previous_Line : Natural) is
       pragma Unreferenced (Handler);
@@ -344,13 +344,13 @@ package body ZBMCompile.Parser_Handler is
    -----------------------------
 
    function Facility_Defines_Locale (Handler  : ZBMC_Handler_Type;
-                                     Facility : Wide_String;
-                                     Locale   : Wide_String) return Boolean
+                                     Facility : String;
+                                     Locale   : String) return Boolean
    is
 
       Result         : Boolean := True;
 
-      procedure Query_Facility (Facility_Name : Wide_String;
+      procedure Query_Facility (Facility_Name : String;
                                 FI            : Facility_Descriptor_Type);
       --  Helper procedure to access the stored data on a facility.
 
@@ -358,7 +358,7 @@ package body ZBMCompile.Parser_Handler is
       -- Query_Facility --
       --------------------
 
-      procedure Query_Facility (Facility_Name : Wide_String;
+      procedure Query_Facility (Facility_Name : String;
                                 FI            : Facility_Descriptor_Type) is
          pragma Unreferenced (Facility_Name);
          use Locale_Sets;
@@ -388,8 +388,8 @@ package body ZBMCompile.Parser_Handler is
 
    overriding
    procedure Invalid_Character (Handler         : in out ZBMC_Handler_Type;
-                                Facility        : Wide_String;
-                                File_Name       : Wide_String;
+                                Facility        : String;
+                                File_Name       : String;
                                 Current_Line    : Natural;
                                 Ch              : Character) is
       pragma Unreferenced (Handler);
@@ -407,9 +407,9 @@ package body ZBMCompile.Parser_Handler is
 
    overriding
    procedure Invalid_Definition (Handler         : in out ZBMC_Handler_Type;
-                                 Facility        : Wide_String;
+                                 Facility        : String;
                                  Locale          : Locale_Type;
-                                 File_Name       : Wide_String;
+                                 File_Name       : String;
                                  Current_Line    : Natural;
                                  Additional_Info : String) is
 
@@ -430,22 +430,22 @@ package body ZBMCompile.Parser_Handler is
 
    procedure Message_Iterate (
       Handler  : ZBMC_Handler_Type;
-      Facility : Wide_String;
+      Facility : String;
       Callback : not null access procedure
                                     (Catalog  : Catalog_Type;
-                                     Facility : Wide_String;
-                                     Key      : Wide_String;
+                                     Facility : String;
+                                     Key      : String;
                                      Locales  : Locale_Definitions_Map))
    is
 
       Catalog : constant Catalog_Type := Get_Catalog (Handler);
 
-      procedure Read_Facility (Facility_Name : Wide_String;
+      procedure Read_Facility (Facility_Name : String;
                                Facility_Data : Facility_Descriptor_Type);
       --  Read the data associated with the facility and call the callback
       --  routine.
 
-      procedure Read_Facility (Facility_Name : Wide_String;
+      procedure Read_Facility (Facility_Name : String;
                                Facility_Data : Facility_Descriptor_Type) is
 
          use Key_Definitions_Package;

@@ -35,51 +35,51 @@
 
 package ZanyBlue.Text.Utils is
 
-   procedure ASCII_Capitalize (S : in out Wide_String);
+   procedure ASCII_Capitalize (S : in out String);
    --  Convert a string to capitalize (in place).
 
-   procedure ASCII_Lowercase (S : in out Wide_String);
+   procedure ASCII_Lowercase (S : in out String);
    --  Convert a wide string to lowercase (in place).
 
-   procedure ASCII_Uppercase (S : in out Wide_String);
+   procedure ASCII_Uppercase (S : in out String);
    --  Convert a wide string to uppercase (in place).
 
    function ASCII_Uppercase
-     (C : Wide_Character)
-      return Wide_Character;
+     (C : Unicode_Character)
+      return Unicode_Character;
    --  Convert a wide character to uppercase.
 
    function ASCII_Lowercase
-     (C : Wide_Character)
-      return Wide_Character;
+     (C : Unicode_Character)
+      return Unicode_Character;
    --  Convert a wide character to lowercase.
 
    function Escape_String
-     (Source : Wide_String)
+     (Source : String)
       return String;
-   --  Return the String value associated with a Wide_String containing
+   --  Return the String value associated with a String containing
    --  Java style \u escape sequences, e.g.,
    --
    --  "This is (PI)" => "This is \u03c0"
 
    function Non_Blank_Prefix
-     (S : Wide_String)
-      return Wide_String;
+     (S : String)
+      return String;
    --  Return a non-blank prefix of a string.  E.g., "ar " returns "ar".
    --  This is a helper function for the codes for languages, scripts and
    --  territories.
 
    function Starts_With
-     (S      : Wide_String;
+     (S      : String;
       Start  : Positive;
-      Prefix : Wide_String)
+      Prefix : String)
       return Boolean;
    --  Determine if a string begins with the Prefix starting at Start.
 
    function Unescape_String
      (Source : String)
-      return Wide_String;
-   --  Return the Wide_String value associated with a simple String containing
+      return String;
+   --  Return the String value associated with a simple String containing
    --  Java style \u escape sequences, e.g.,
    --
    --  "This is \u03c0" => "This is (PI)"

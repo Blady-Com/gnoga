@@ -48,9 +48,7 @@ package body ZanyBlue.Text.Strings is
       return String_Argument_Type
    is
    begin
-      return
-        String_Argument_Type'
-          (Length => Value'Length, Data => To_Wide_String (Value));
+      return String_Argument_Type'(Length => Value.Length, Data => Value);
    end Create;
 
    ------------
@@ -59,10 +57,10 @@ package body ZanyBlue.Text.Strings is
 
    overriding function Format
      (Value     : String_Argument_Type;
-      Type_Name : Wide_String;
-      Template  : Wide_String;
+      Type_Name : String;
+      Template  : String;
       Locale    : Locale_Type)
-      return Wide_String
+      return String
    is
       pragma Unreferenced (Type_Name);
 

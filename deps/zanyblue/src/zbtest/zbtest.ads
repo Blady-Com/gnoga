@@ -35,18 +35,18 @@
 
 package ZBTest is
 
-   type Wide_String_Access is access Wide_String;
+   type Wide_String_Access is access String;
    --  Normal access to a string type to allow including strings in a static
    --  table.
 
-   subtype Message_Id_Type is Wide_String (1 .. 5);
+   subtype Message_Id_Type is String (1 .. 5);
    --  ZBTest uses the convention of numeric style (5 digit) message keys
 
-   ZBTest_Init_Name : constant Wide_String := "_startup_";
+   ZBTest_Init_Name : constant String := "_startup_";
    --  Name of the per directory initialization script.  The extension
    --  ZBTest_Extension is appended to this.
 
-   ZBTest_Extension : constant Wide_String := "zbt";
+   ZBTest_Extension : constant String := "zbt";
    --  The extension for ZBtest scripts, e.g., xmpl.zbt
 
 end ZBTest;

@@ -36,11 +36,11 @@ separate (ZanyBlue.Test.Text.Format_Parser.Suites)
 procedure T_0033 (T : in out Test_Case'Class) is
 
    Locale      : constant Locale_Type := Make_Locale ("en_US");
-   Format_Spec : constant Wide_String := "*^#11.8odf";
+   Format_Spec : constant String := "*^#11.8odf";
 
 begin
    declare
-      Format_Rep  : constant Wide_String := To_String (Parse (Format_Spec,
+      Format_Rep  : constant String := To_String (Parse (Format_Spec,
                                                               Locale));
    begin
       WAssert (T, False,

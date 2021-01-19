@@ -35,7 +35,7 @@
 separate (ZanyBlue.Test.Text.Formatting.Suites)
 procedure T_0080 (T : in out Test_Case'Class) is
 
-   Test_Name : constant Wide_String := "t_0080";
+   Test_Name : constant String := "t_0080";
    Locale    : constant Locale_Type := Make_Locale ("");
    Output    : File_Type;
 

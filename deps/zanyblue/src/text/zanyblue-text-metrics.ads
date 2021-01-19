@@ -33,18 +33,18 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Wide_Text_IO;
+with UXStrings.Text_IO;
 with ZanyBlue.Text.Catalogs;
 with ZanyBlue.Text.Formatting;
 
 package ZanyBlue.Text.Metrics is
 
-   use Ada.Wide_Text_IO;
+   use UXStrings.Text_IO;
    use ZanyBlue.Text.Catalogs;
    use ZanyBlue.Text.Formatting;
 
    procedure Write_Usage
-     (Destination : Ada.Wide_Text_IO.File_Type;
+     (Destination : UXStrings.Text_IO.File_Type;
       Catalog     : Catalog_Type := Standard_Catalog);
    --  Write a summary of the usage of each message in the catalog to the
    --  given file as an XML document.  This should be call after the
@@ -60,13 +60,13 @@ package ZanyBlue.Text.Metrics is
    --
 
    procedure Write_Usage
-     (File_Name : Wide_String;
+     (File_Name : String;
       Catalog   : Catalog_Type := Standard_Catalog);
    --  Write the message usage summary to the named file.
 
-   procedure Write_Usage
-     (File_Name : String;
-      Catalog   : Catalog_Type := Standard_Catalog);
+--     procedure Write_Usage
+--       (File_Name : String;
+--        Catalog   : Catalog_Type := Standard_Catalog);
    --  Write the message usage summary to the named file.
 
 end ZanyBlue.Text.Metrics;

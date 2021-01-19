@@ -47,34 +47,41 @@ package ZanyBlue.Text.Times is
 
    type Time_Argument_Type is new Calendar_Category_Type with private;
 
-   function Create (Time_Value : Time) return Time_Argument_Type;
+   function Create
+     (Time_Value : Time)
+      return Time_Argument_Type;
    --  Create a "boxed" instance of a time type.
 
-   function Create (Time_Value : Time;
-                    TZ_Offset  : Time_Offset) return Time_Argument_Type;
+   function Create
+     (Time_Value : Time;
+      TZ_Offset  : Time_Offset)
+      return Time_Argument_Type;
    --  Create a "boxed" instance of a time type with time zone offset.
 
-   function "+" (Time_Value : Time) return Time_Argument_Type
-      renames Create;
+   function "+"
+     (Time_Value : Time)
+      return Time_Argument_Type renames Create;
    --  Utility renaming of the "Create" function.
 
-   overriding
-   function Format (Value     : Time_Argument_Type;
-                    Type_Name : Wide_String;
-                    Template  : Wide_String;
-                    Locale    : Locale_Type) return Wide_String;
+   overriding function Format
+     (Value     : Time_Argument_Type;
+      Type_Name : Wide_String;
+      Template  : Wide_String;
+      Locale    : Locale_Type)
+      return Wide_String;
    --  Format a time value according to the Template.
 
-   function Day_In_Week (Day   : Day_Number;
-                         Month : Month_Number;
-                         Year  : Year_Number) return Day_Type;
+   function Day_In_Week
+     (Day   : Day_Number;
+      Month : Month_Number;
+      Year  : Year_Number)
+      return Day_Type;
    --  Return the day of the week given a particular date.  This is
    --  a utility routine exposed here mainly for testing purposes.
 
 private
 
-   type Time_Argument_Type is new Calendar_Category_Type with
-   record
+   type Time_Argument_Type is new Calendar_Category_Type with record
       Data      : Ada.Calendar.Time;
       TZ_Offset : Time_Offset;
    end record;

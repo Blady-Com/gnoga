@@ -36,6 +36,5 @@
 with ZanyBlue.Text.Generic_Buffer;
 pragma Elaborate_All (ZanyBlue.Text.Generic_Buffer);
 
-package ZanyBlue.Text.Buffer is
-   new ZanyBlue.Text.Generic_Buffer (
-           Integer_Type => Integer);
+package ZanyBlue.Text.Buffer is new ZanyBlue.Text.Generic_Buffer
+  (Integer_Type => Integer);

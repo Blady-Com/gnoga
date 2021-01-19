@@ -43,16 +43,20 @@ package body ZanyBlue.Parameters.Scopes is
    use ZanyBlue.Text.Formatting;
    use Parameter_Set_Vectors;
 
-   function Top_Index (Param_Stack : Parameter_Stack_Type) return Natural;
+   function Top_Index
+     (Param_Stack : Parameter_Stack_Type)
+      return Natural;
    --  Return the index of the top of the parameter stack.
 
    ------------
    -- Append --
    ------------
 
-   procedure Append (Param_Stack : in out Parameter_Stack_Type;
-                     Name        : Wide_String;
-                     Value       : Wide_String) is
+   procedure Append
+     (Param_Stack : in out Parameter_Stack_Type;
+      Name        :        Wide_String;
+      Value       :        Wide_String)
+   is
 
       procedure Append_Value (Params : in out Parameter_Set_Type);
       --  Helper routine to append the value.
@@ -79,9 +83,11 @@ package body ZanyBlue.Parameters.Scopes is
    -- Dump --
    ----------
 
-   procedure Dump (Param_Stack : Parameter_Stack_Type;
-                   Destination : Ada.Text_IO.File_Type;
-                   All_Scopes  : Boolean) is
+   procedure Dump
+     (Param_Stack : Parameter_Stack_Type;
+      Destination : Ada.Text_IO.File_Type;
+      All_Scopes  : Boolean)
+   is
 
       use Ada.Text_IO;
 
@@ -104,15 +110,12 @@ package body ZanyBlue.Parameters.Scopes is
          Level := 1;
          Put_Line (Destination, "<parameter-stack>");
          for Index in 1 .. Top_Index (Param_Stack) loop
-            Query_Element (Param_Stack.Values,
-                           Index,
-                           Dump_Set'Access);
+            Query_Element (Param_Stack.Values, Index, Dump_Set'Access);
          end loop;
          Put_Line (Destination, "</parameter-stack>");
       else
-         Query_Element (Param_Stack.Values,
-                        Top_Index (Param_Stack),
-                        Dump_Set'Access);
+         Query_Element
+           (Param_Stack.Values, Top_Index (Param_Stack), Dump_Set'Access);
       end if;
    end Dump;
 
@@ -120,9 +123,11 @@ package body ZanyBlue.Parameters.Scopes is
    -- Dump --
    ----------
 
-   procedure Dump (Param_Stack : Parameter_Stack_Type;
-                   Destination : Ada.Wide_Text_IO.File_Type;
-                   All_Scopes  : Boolean) is
+   procedure Dump
+     (Param_Stack : Parameter_Stack_Type;
+      Destination : Ada.Wide_Text_IO.File_Type;
+      All_Scopes  : Boolean)
+   is
 
       use Ada.Wide_Text_IO;
 
@@ -145,15 +150,12 @@ package body ZanyBlue.Parameters.Scopes is
          Level := 1;
          Put_Line (Destination, "<parameter-stack>");
          for Index in 1 .. Top_Index (Param_Stack) loop
-            Query_Element (Param_Stack.Values,
-                           Index,
-                           Dump_Set'Access);
+            Query_Element (Param_Stack.Values, Index, Dump_Set'Access);
          end loop;
          Put_Line (Destination, "</parameter-stack>");
       else
-         Query_Element (Param_Stack.Values,
-                        Top_Index (Param_Stack),
-                        Dump_Set'Access);
+         Query_Element
+           (Param_Stack.Values, Top_Index (Param_Stack), Dump_Set'Access);
       end if;
    end Dump;
 
@@ -174,8 +176,11 @@ package body ZanyBlue.Parameters.Scopes is
    -- Get --
    ---------
 
-   function Get (Param_Stack : Parameter_Stack_Type;
-                 Name        : Wide_String) return Value_Type'Class is
+   function Get
+     (Param_Stack : Parameter_Stack_Type;
+      Name        : Wide_String)
+      return Value_Type'Class
+   is
       Params : Parameter_Set_Type;
    begin
       for I in reverse 1 .. Top_Index (Param_Stack) loop
@@ -191,8 +196,11 @@ package body ZanyBlue.Parameters.Scopes is
    -- Get_Boolean --
    -----------------
 
-   function Get_Boolean (Param_Stack : Parameter_Stack_Type;
-                         Name        : Wide_String) return Boolean is
+   function Get_Boolean
+     (Param_Stack : Parameter_Stack_Type;
+      Name        : Wide_String)
+      return Boolean
+   is
    begin
       return Get (Param_Stack, Name).To_Boolean (Name);
    end Get_Boolean;
@@ -201,8 +209,11 @@ package body ZanyBlue.Parameters.Scopes is
    -- Get_Float --
    ---------------
 
-   function Get_Float (Param_Stack : Parameter_Stack_Type;
-                       Name        : Wide_String) return Float is
+   function Get_Float
+     (Param_Stack : Parameter_Stack_Type;
+      Name        : Wide_String)
+      return Float
+   is
    begin
       return Get (Param_Stack, Name).To_Float (Name);
    end Get_Float;
@@ -211,8 +222,11 @@ package body ZanyBlue.Parameters.Scopes is
    -- Get_Integer --
    -----------------
 
-   function Get_Integer (Param_Stack : Parameter_Stack_Type;
-                         Name        : Wide_String) return Integer is
+   function Get_Integer
+     (Param_Stack : Parameter_Stack_Type;
+      Name        : Wide_String)
+      return Integer
+   is
    begin
       return Get (Param_Stack, Name).To_Integer (Name);
    end Get_Integer;
@@ -221,16 +235,19 @@ package body ZanyBlue.Parameters.Scopes is
    -- Get_List --
    --------------
 
-   function Get_List (Param_Stack : Parameter_Stack_Type;
-                      Name        : Wide_String;
-                      Deep        : Boolean) return List_Type is
+   function Get_List
+     (Param_Stack : Parameter_Stack_Type;
+      Name        : Wide_String;
+      Deep        : Boolean)
+      return List_Type
+   is
 
       procedure Accumulate (Params : Parameter_Set_Type);
       --  Helper routine to accumulate the list of values from various
       --  scopes.
 
       Lower_Index : Natural := Top_Index (Param_Stack);
-      Result : List_Type;
+      Result      : List_Type;
 
       ----------------
       -- Accumulate --
@@ -257,8 +274,11 @@ package body ZanyBlue.Parameters.Scopes is
    -- Get_String --
    ----------------
 
-   function Get_String (Param_Stack : Parameter_Stack_Type;
-                        Name        : Wide_String) return Wide_String is
+   function Get_String
+     (Param_Stack : Parameter_Stack_Type;
+      Name        : Wide_String)
+      return Wide_String
+   is
    begin
       return Get (Param_Stack, Name).To_String (Name);
    end Get_String;
@@ -267,8 +287,11 @@ package body ZanyBlue.Parameters.Scopes is
    -- Get_Time --
    --------------
 
-   function Get_Time (Param_Stack : Parameter_Stack_Type;
-                      Name        : Wide_String) return Time is
+   function Get_Time
+     (Param_Stack : Parameter_Stack_Type;
+      Name        : Wide_String)
+      return Time
+   is
    begin
       return Get (Param_Stack, Name).To_Time (Name);
    end Get_Time;
@@ -277,10 +300,12 @@ package body ZanyBlue.Parameters.Scopes is
    -- Increment --
    ---------------
 
-   procedure Increment (Param_Stack : in out Parameter_Stack_Type;
-                        Name        : Wide_String;
-                        By_Amount   : Integer := 1;
-                        Deep        : Boolean := True) is
+   procedure Increment
+     (Param_Stack : in out Parameter_Stack_Type;
+      Name        :        Wide_String;
+      By_Amount   :        Integer := 1;
+      Deep        :        Boolean := True)
+   is
 
       procedure Increment_Value (Params : in out Parameter_Set_Type);
       --  Helper routine to do the incrementing.
@@ -312,10 +337,13 @@ package body ZanyBlue.Parameters.Scopes is
    -- Is_Defined --
    ----------------
 
-   function Is_Defined (Param_Stack : Parameter_Stack_Type;
-                        Name        : Wide_String;
-                        Any_Scope   : Boolean := True) return Boolean is
-      Params : Parameter_Set_Type;
+   function Is_Defined
+     (Param_Stack : Parameter_Stack_Type;
+      Name        : Wide_String;
+      Any_Scope   : Boolean := True)
+      return Boolean
+   is
+      Params       : Parameter_Set_Type;
       Lowest_Scope : Positive := 1;
    begin
       if not Any_Scope then
@@ -347,9 +375,11 @@ package body ZanyBlue.Parameters.Scopes is
    -- Prepend --
    -------------
 
-   procedure Prepend (Param_Stack : in out Parameter_Stack_Type;
-                      Name        : Wide_String;
-                      Value       : Wide_String) is
+   procedure Prepend
+     (Param_Stack : in out Parameter_Stack_Type;
+      Name        :        Wide_String;
+      Value       :        Wide_String)
+   is
 
       procedure Prepend_Value (Params : in out Parameter_Set_Type);
       --  Helper routine to do the actual prepending
@@ -376,9 +406,11 @@ package body ZanyBlue.Parameters.Scopes is
    -- Set --
    ---------
 
-   procedure Set (Param_Stack : in out Parameter_Stack_Type;
-                  Name        : Wide_String;
-                  Value       : Value_Type'Class) is
+   procedure Set
+     (Param_Stack : in out Parameter_Stack_Type;
+      Name        :        Wide_String;
+      Value       :        Value_Type'Class)
+   is
 
       procedure Set_Value (Params : in out Parameter_Set_Type);
       --  Helper routine to do the value set in a parameter set.
@@ -405,9 +437,11 @@ package body ZanyBlue.Parameters.Scopes is
    -- Set_Boolean --
    -----------------
 
-   procedure Set_Boolean (Param_Stack : in out Parameter_Stack_Type;
-                          Name        : Wide_String;
-                          Value       : Boolean) is
+   procedure Set_Boolean
+     (Param_Stack : in out Parameter_Stack_Type;
+      Name        :        Wide_String;
+      Value       :        Boolean)
+   is
    begin
       Set (Param_Stack, Name, To_Boolean_Value (Value));
    end Set_Boolean;
@@ -416,9 +450,11 @@ package body ZanyBlue.Parameters.Scopes is
    -- Set_Float --
    ---------------
 
-   procedure Set_Float (Param_Stack : in out Parameter_Stack_Type;
-                        Name        : Wide_String;
-                        Value       : Float) is
+   procedure Set_Float
+     (Param_Stack : in out Parameter_Stack_Type;
+      Name        :        Wide_String;
+      Value       :        Float)
+   is
    begin
       Set (Param_Stack, Name, To_Float_Value (Value));
    end Set_Float;
@@ -427,9 +463,11 @@ package body ZanyBlue.Parameters.Scopes is
    -- Set_Integer --
    -----------------
 
-   procedure Set_Integer (Param_Stack : in out Parameter_Stack_Type;
-                          Name        : Wide_String;
-                          Value       : Integer) is
+   procedure Set_Integer
+     (Param_Stack : in out Parameter_Stack_Type;
+      Name        :        Wide_String;
+      Value       :        Integer)
+   is
    begin
       Set (Param_Stack, Name, To_Integer_Value (Value));
    end Set_Integer;
@@ -438,9 +476,11 @@ package body ZanyBlue.Parameters.Scopes is
    -- Set_String --
    ----------------
 
-   procedure Set_String (Param_Stack : in out Parameter_Stack_Type;
-                         Name        : Wide_String;
-                         Value       : Wide_String) is
+   procedure Set_String
+     (Param_Stack : in out Parameter_Stack_Type;
+      Name        :        Wide_String;
+      Value       :        Wide_String)
+   is
    begin
       Set (Param_Stack, Name, To_String_Value (Value));
    end Set_String;
@@ -449,9 +489,11 @@ package body ZanyBlue.Parameters.Scopes is
    -- Set_Time --
    --------------
 
-   procedure Set_Time (Param_Stack : in out Parameter_Stack_Type;
-                       Name        : Wide_String;
-                       Value       : Time) is
+   procedure Set_Time
+     (Param_Stack : in out Parameter_Stack_Type;
+      Name        :        Wide_String;
+      Value       :        Time)
+   is
    begin
       Set (Param_Stack, Name, To_Time_Value (Value));
    end Set_Time;
@@ -460,7 +502,10 @@ package body ZanyBlue.Parameters.Scopes is
    -- Top_Index --
    ---------------
 
-   function Top_Index (Param_Stack : Parameter_Stack_Type) return Natural is
+   function Top_Index
+     (Param_Stack : Parameter_Stack_Type)
+      return Natural
+   is
    begin
       return Natural (Length (Param_Stack.Values));
    end Top_Index;

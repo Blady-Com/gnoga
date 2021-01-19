@@ -56,10 +56,10 @@ package ZanyBlue is
    Revision : constant Wide_String := "3144";
    --  The Subversion revision number for the build.
 
-   Copyright_Year : constant Positive := 2020;
+   Copyright_Year : constant Positive := 2_020;
    --  The copyright year for the build.
 
-   Max_Float_Precision : constant := 5000;
+   Max_Float_Precision : constant := 5_000;
    --  Maximum precision supported for floating point formatting (number of
    --  digits printed after the decimal point.  Requests to format floating
    --  point numbers with a precision greater than this will be truncated to

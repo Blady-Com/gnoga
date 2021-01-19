@@ -41,16 +41,19 @@ package body ZanyBlue.Text.Durations is
    use ZanyBlue.Text.Buffer;
    use ZanyBlue.Text.Format_Parser;
 
-   procedure Remainder_And_Scale (Value     : in out Natural;
-                                  Remainder : out Natural;
-                                  Scale     : Positive);
+   procedure Remainder_And_Scale
+     (Value     : in out Natural;
+      Remainder :    out Natural;
+      Scale     :        Positive);
    --  Assign (Value rem Scale) to Remainder and then scale Value by Scale.
 
    ------------
    -- Create --
    ------------
 
-   function Create (Duration_Value : Duration) return Duration_Argument_Type
+   function Create
+     (Duration_Value : Duration)
+      return Duration_Argument_Type
    is
    begin
       return Duration_Argument_Type'(Data => Duration_Value);
@@ -60,50 +63,51 @@ package body ZanyBlue.Text.Durations is
    -- Format --
    ------------
 
-   overriding
-   function Format (Value     : Duration_Argument_Type;
-                    Type_Name : Wide_String;
-                    Template  : Wide_String;
-                    Locale    : Locale_Type) return Wide_String is
+   overriding function Format
+     (Value     : Duration_Argument_Type;
+      Type_Name : Wide_String;
+      Template  : Wide_String;
+      Locale    : Locale_Type)
+      return Wide_String
+   is
       pragma Unreferenced (Type_Name);
 
       Formatting : constant Format_Type := Parse (Template, Locale);
-      Buffer     : Buffer_Type;
-      X          : Natural := Natural (Value.Data * 1000.0);
+      Buffer                                      : Buffer_Type;
+      X : Natural              := Natural (Value.Data * 1_000.0);
       Milliseconds, Seconds, Minutes, Hours, Days : Natural;
 
    begin
-      Remainder_And_Scale (X, Milliseconds, 1000);
+      Remainder_And_Scale (X, Milliseconds, 1_000);
       Remainder_And_Scale (X, Seconds, 60);
       Remainder_And_Scale (X, Minutes, 60);
       Remainder_And_Scale (X, Hours, 24);
       Days := X;
       if Days > 0 then
-         Accumulate (Buffer, Days, Locale,
-                          Width => 0);
+         Accumulate (Buffer, Days, Locale, Width => 0);
          Add (Buffer, " ");
       end if;
-      Accumulate (Buffer, Hours, Locale,
-                  Width => 1);
+      Accumulate (Buffer, Hours, Locale, Width => 1);
       Add (Buffer, ":");
-      Accumulate (Buffer, Minutes, Locale,
-                  Width => 2);
+      Accumulate (Buffer, Minutes, Locale, Width => 2);
       Add (Buffer, ":");
-      Accumulate (Buffer, Seconds, Locale,
-                  Width => 2);
+      Accumulate (Buffer, Seconds, Locale, Width => 2);
       Add (Buffer, ".");
-      Accumulate (Buffer, Milliseconds, Locale,
-                  Width => 3);
-      return Align (To_String (Buffer),
-                    Formatting.Fill, Formatting.Width, Formatting.Align);
+      Accumulate (Buffer, Milliseconds, Locale, Width => 3);
+      return
+        Align
+          (To_String (Buffer), Formatting.Fill, Formatting.Width,
+           Formatting.Align);
    end Format;
 
-   procedure Remainder_And_Scale (Value     : in out Natural;
-                                  Remainder : out Natural;
-                                  Scale     : Positive) is
+   procedure Remainder_And_Scale
+     (Value     : in out Natural;
+      Remainder :    out Natural;
+      Scale     :        Positive)
+   is
    begin
       Remainder := Value rem Scale;
-      Value := Value / Scale;
+      Value     := Value / Scale;
    end Remainder_And_Scale;
 
 end ZanyBlue.Text.Durations;

@@ -37,13 +37,15 @@ package ZanyBlue.Utils is
 
    type Source_Naming_Style_Type is (GNAT_Naming_Style);
 
-   function Body_File_Name (Package_Name : Wide_String;
-                            Style        : Source_Naming_Style_Type)
+   function Body_File_Name
+     (Package_Name : Wide_String;
+      Style        : Source_Naming_Style_Type)
       return Wide_String;
    --  Return the file name the compiler expects for a body file.
 
-   function Spec_File_Name (Package_Name : Wide_String;
-                            Style        : Source_Naming_Style_Type)
+   function Spec_File_Name
+     (Package_Name : Wide_String;
+      Style        : Source_Naming_Style_Type)
       return Wide_String;
    --  Return the file name the compiler expects for a spec file.
 

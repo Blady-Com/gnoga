@@ -42,30 +42,31 @@ package ZanyBlue.Text.Wide_Strings is
    use ZanyBlue.Text.Arguments;
 
    type Wide_String_Argument_Type (<>) is
-      new String_Category_Type with private;
+     new String_Category_Type with private;
 
-   function Create (Wide_String_Value : Wide_String)
+   function Create
+     (Wide_String_Value : Wide_String)
       return Wide_String_Argument_Type;
    --  Create a "boxed" instance of a Wide String.
 
-   function "+" (Wide_String_Value : Wide_String)
-      return Wide_String_Argument_Type
-      renames Create;
+   function "+"
+     (Wide_String_Value : Wide_String)
+      return Wide_String_Argument_Type renames Create;
    --  Utility renaming of the "Create" function.
 
-   overriding
-   function Format (Value     : Wide_String_Argument_Type;
-                    Type_Name : Wide_String;
-                    Template  : Wide_String;
-                    Locale    : Locale_Type) return Wide_String;
+   overriding function Format
+     (Value     : Wide_String_Argument_Type;
+      Type_Name : Wide_String;
+      Template  : Wide_String;
+      Locale    : Locale_Type)
+      return Wide_String;
    --  Format an individual argument using the Template to direct the
    --  conversion.
 
 private
 
-   type Wide_String_Argument_Type (Length : Natural) is
-      new String_Category_Type with
-   record
+   type Wide_String_Argument_Type (Length : Natural)
+   is new String_Category_Type with record
       Data : Wide_String (1 .. Length);
    end record;
 

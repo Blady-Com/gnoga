@@ -46,47 +46,47 @@ package ZanyBlue.Text.Printer is
    type Printer_Type is abstract tagged private;
    type Printer_Access is not null access all Printer_Type'Class;
 
-   procedure Print (Printer     : in out Printer_Type;
-                    Destination : Ada.Text_IO.File_Type;
-                    Facility    : Wide_String;
-                    Key         : Wide_String;
-                    Locale      : Locale_Type;
-                    Arguments   : Argument_List;
-                    Message     : Wide_String;
-                    With_NL     : Boolean) is
-      abstract;
+   procedure Print
+     (Printer     : in out Printer_Type;
+      Destination :        Ada.Text_IO.File_Type;
+      Facility    :        Wide_String;
+      Key         :        Wide_String;
+      Locale      :        Locale_Type;
+      Arguments   :        Argument_List;
+      Message     :        Wide_String;
+      With_NL     :        Boolean) is abstract;
 
-   procedure Print (Printer     : in out Printer_Type;
-                    Destination : Ada.Wide_Text_IO.File_Type;
-                    Facility    : Wide_String;
-                    Key         : Wide_String;
-                    Locale      : Locale_Type;
-                    Arguments   : Argument_List;
-                    Message     : Wide_String;
-                    With_NL     : Boolean) is
-      abstract;
+   procedure Print
+     (Printer     : in out Printer_Type;
+      Destination :        Ada.Wide_Text_IO.File_Type;
+      Facility    :        Wide_String;
+      Key         :        Wide_String;
+      Locale      :        Locale_Type;
+      Arguments   :        Argument_List;
+      Message     :        Wide_String;
+      With_NL     :        Boolean) is abstract;
 
    type Standard_Printer_Type is new Printer_Type with private;
 
-   overriding
-   procedure Print (Printer     : in out Standard_Printer_Type;
-                    Destination : Ada.Text_IO.File_Type;
-                    Facility    : Wide_String;
-                    Key         : Wide_String;
-                    Locale      : Locale_Type;
-                    Arguments   : Argument_List;
-                    Message     : Wide_String;
-                    With_NL     : Boolean);
+   overriding procedure Print
+     (Printer     : in out Standard_Printer_Type;
+      Destination :        Ada.Text_IO.File_Type;
+      Facility    :        Wide_String;
+      Key         :        Wide_String;
+      Locale      :        Locale_Type;
+      Arguments   :        Argument_List;
+      Message     :        Wide_String;
+      With_NL     :        Boolean);
 
-   overriding
-   procedure Print (Printer     : in out Standard_Printer_Type;
-                    Destination : Ada.Wide_Text_IO.File_Type;
-                    Facility    : Wide_String;
-                    Key         : Wide_String;
-                    Locale      : Locale_Type;
-                    Arguments   : Argument_List;
-                    Message     : Wide_String;
-                    With_NL     : Boolean);
+   overriding procedure Print
+     (Printer     : in out Standard_Printer_Type;
+      Destination :        Ada.Wide_Text_IO.File_Type;
+      Facility    :        Wide_String;
+      Key         :        Wide_String;
+      Locale      :        Locale_Type;
+      Arguments   :        Argument_List;
+      Message     :        Wide_String;
+      With_NL     :        Boolean);
 
    function Standard_Printer return Printer_Access;
 

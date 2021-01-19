@@ -46,43 +46,46 @@ private package ZanyBlue.Text.Indexed_Strings is
 
    type Indexed_Strings_Type is tagged private;
 
-   function Length (Indexed_Strings : Indexed_Strings_Type) return Natural;
+   function Length
+     (Indexed_Strings : Indexed_Strings_Type)
+      return Natural;
    --  Return the number of items currently stored in the indexed map.
 
-   function Get (Indexed_Strings : Indexed_Strings_Type;
-                 Index           : Positive) return Wide_String;
+   function Get
+     (Indexed_Strings : Indexed_Strings_Type;
+      Index           : Positive)
+      return Wide_String;
    --  Get the name associated with a particular index.  Raises the
    --  exception No_Such_Item if the index does not exist.
 
-   function Get (Indexed_Strings : Indexed_Strings_Type;
-                 Name            : Wide_String;
-                 Id              : Exception_Id) return Positive;
+   function Get
+     (Indexed_Strings : Indexed_Strings_Type;
+      Name            : Wide_String;
+      Id              : Exception_Id)
+      return Positive;
    --  Find index associated with a particular name.  If not present,
    --  the argument exception is raised.
 
-   procedure Add (Indexed_Strings : in out Indexed_Strings_Type;
-                  Name            : Wide_String;
-                  Index           : out Positive);
+   procedure Add
+     (Indexed_Strings : in out Indexed_Strings_Type;
+      Name            :        Wide_String;
+      Index           :    out Positive);
    --  Add a new name to the set.  The name is associated with the next
    --  index value, i.e., Length + 1.  This is a noop if the name already
    --  exists in the set.
 
 private
 
-   package Id_To_Name_Vectors is
-      new Indefinite_Vectors (Index_Type   => Positive,
-                              Element_Type => Wide_String);
+   package Id_To_Name_Vectors is new Indefinite_Vectors
+     (Index_Type => Positive, Element_Type => Wide_String);
 
-   package Name_To_Id_Maps is
-      new Indefinite_Hashed_Maps (Key_Type        => Wide_String,
-                                  Element_Type    => Positive,
-                                  Hash            => ZanyBlue.Text.Wide_Hash,
-                                  Equivalent_Keys => "=");
+   package Name_To_Id_Maps is new Indefinite_Hashed_Maps
+     (Key_Type => Wide_String, Element_Type => Positive,
+      Hash     => ZanyBlue.Text.Wide_Hash, Equivalent_Keys => "=");
 
-   type Indexed_Strings_Type is tagged
-      record
-         Name_To_Id : Name_To_Id_Maps.Map;
-         Id_To_Name : Id_To_Name_Vectors.Vector;
-      end record;
+   type Indexed_Strings_Type is tagged record
+      Name_To_Id : Name_To_Id_Maps.Map;
+      Id_To_Name : Id_To_Name_Vectors.Vector;
+   end record;
 
 end ZanyBlue.Text.Indexed_Strings;

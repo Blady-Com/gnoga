@@ -46,7 +46,9 @@ package ZanyBlue.Wide_Command_Line is
    function Wide_Argument_Count return Natural;
    --  Number of command line arguments.
 
-   function Wide_Argument (Number : Positive) return Wide_String;
+   function Wide_Argument
+     (Number : Positive)
+      return Wide_String;
    --  Return the Number'th command line argument as a Wide_String
 
    function Wide_Command_Name return Wide_String;

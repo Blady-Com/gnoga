@@ -45,18 +45,21 @@ package body ZanyBlue.Text.Format_Errors is
    -- Format_Not_Closed --
    -----------------------
 
-   procedure Format_Not_Closed (Error_Handler  : in out Error_Handler_Type;
-                                Message        : Wide_String;
-                                Position       : Positive;
-                                Level          : Natural;
-                                Raise_Errors   : Boolean) is
+   procedure Format_Not_Closed
+     (Error_Handler : in out Error_Handler_Type;
+      Message       :        Wide_String;
+      Position      :        Positive;
+      Level         :        Natural;
+      Raise_Errors  :        Boolean)
+   is
       pragma Unreferenced (Error_Handler);
       pragma Unreferenced (Message);
       pragma Unreferenced (Level);
    begin
       if Raise_Errors then
-         Raise_Exception (Invalid_Format_Error'Identity,
-                          Message => "NOTCLOSED:" & Positive'Image (Position));
+         Raise_Exception
+           (Invalid_Format_Error'Identity,
+            Message => "NOTCLOSED:" & Positive'Image (Position));
       end if;
    end Format_Not_Closed;
 
@@ -64,22 +67,24 @@ package body ZanyBlue.Text.Format_Errors is
    -- Illegal_Character --
    -----------------------
 
-   procedure Illegal_Character (Error_Handler  : in out Error_Handler_Type;
-                                Message        : Wide_String;
-                                Position       : Positive;
-                                Ch             : Wide_Character;
-                                Level          : Natural;
-                                Raise_Errors   : Boolean) is
+   procedure Illegal_Character
+     (Error_Handler : in out Error_Handler_Type;
+      Message       :        Wide_String;
+      Position      :        Positive;
+      Ch            :        Wide_Character;
+      Level         :        Natural;
+      Raise_Errors  :        Boolean)
+   is
       pragma Unreferenced (Error_Handler);
       pragma Unreferenced (Message);
       pragma Unreferenced (Level);
    begin
       if Raise_Errors then
-         Raise_Exception (Invalid_Format_Error'Identity,
-                          Message => "ILLCHAR:"
-                                   & Positive'Image (Position)
-                                   & ":"
-                                   & To_Character (Ch, Substitute => '?'));
+         Raise_Exception
+           (Invalid_Format_Error'Identity,
+            Message =>
+              "ILLCHAR:" & Positive'Image (Position) & ":" &
+              To_Character (Ch, Substitute => '?'));
       end if;
    end Illegal_Character;
 
@@ -87,18 +92,21 @@ package body ZanyBlue.Text.Format_Errors is
    -- Missing_Argument --
    ----------------------
 
-   procedure Missing_Argument (Error_Handler  : in out Error_Handler_Type;
-                               Message        : Wide_String;
-                               Position       : Natural;
-                               Type_Name      : Wide_String;
-                               Raise_Errors   : Boolean) is
+   procedure Missing_Argument
+     (Error_Handler : in out Error_Handler_Type;
+      Message       :        Wide_String;
+      Position      :        Natural;
+      Type_Name     :        Wide_String;
+      Raise_Errors  :        Boolean)
+   is
       pragma Unreferenced (Error_Handler);
       pragma Unreferenced (Message);
       pragma Unreferenced (Type_Name);
    begin
       if Raise_Errors then
-         Raise_Exception (No_Such_Argument_Error'Identity,
-                          Message => Positive'Image (Position));
+         Raise_Exception
+           (No_Such_Argument_Error'Identity,
+            Message => Positive'Image (Position));
       end if;
    end Missing_Argument;
 

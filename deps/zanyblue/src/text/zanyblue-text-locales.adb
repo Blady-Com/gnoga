@@ -37,17 +37,16 @@ with Ada.Strings.Wide_Fixed;
 with Ada.Environment_Variables;
 with ZanyBlue.OS;
 with ZanyBlue.Text.Utils;
-pragma Elaborate_All (Zanyblue.OS);
-pragma Elaborate_All (Zanyblue.Text.Utils);
+pragma Elaborate_All (ZanyBlue.OS);
+pragma Elaborate_All (ZanyBlue.Text.Utils);
 
 package body ZanyBlue.Text.Locales is
 
    use Ada.Strings.Wide_Fixed;
    use ZanyBlue.Text.Utils;
 
-   Max_Tag_Length : constant := Max_Language_Length
-                              + Max_Script_Length
-                              + Max_Territory_Length;
+   Max_Tag_Length : constant :=
+     Max_Language_Length + Max_Script_Length + Max_Territory_Length;
    --  Maximum length of the internal locale name, it's simply a concatenation
    --  of the language, script and territory names, uppercased.
 
@@ -62,15 +61,14 @@ package body ZanyBlue.Text.Locales is
    --  available CLDR locales generates a pool with ~6500 strings.  This
    --  range should be sufficient for definitions for quite some time.
 
-   type String_Address_Type is
-      record
-         First : Positive;
-         Last  : Natural;
-      end record;
+   type String_Address_Type is record
+      First : Positive;
+      Last  : Natural;
+   end record;
    --  Start and end of a string with the pool
 
    type String_Addresses_Type is
-       array (String_Index_Type range <>) of String_Address_Type;
+     array (String_Index_Type range <>) of String_Address_Type;
    --  The collection of strings defined for all locales accessed by index.
 
    type Month_Names_Type is array (Month_Type) of String_Index_Type;
@@ -89,7 +87,7 @@ package body ZanyBlue.Text.Locales is
    --  List of strings (by index) for era names in a locale.
 
    type Date_Time_Styles_Type is
-      array (Date_Time_Style_Type) of String_Index_Type;
+     array (Date_Time_Style_Type) of String_Index_Type;
    --  List of strings (by index) for various time/date formats in a locale.
 
    type Numeric_Items_Type is array (Numeric_Item_Type) of String_Index_Type;
@@ -98,30 +96,29 @@ package body ZanyBlue.Text.Locales is
    type Numeric_Format_Type is array (Numeric_Style_Type) of String_Index_Type;
    --  List of strings (by index) for various numeric formats in a locale.
 
-   type Locale_Traits_Type is
-      record
-         Tag                : Tag_Type;
-         Level              : Level_Type;
-         Name               : String_Index_Type;
-         Text_Layout        : Text_Layout_Type;
-         Short_Month_Names  : Month_Names_Type;
-         Full_Month_Names   : Month_Names_Type;
-         Short_Day_Names    : Day_Names_Type;
-         Full_Day_Names     : Day_Names_Type;
-         Day_Period_Names   : Day_Period_Names_Type;
-         Exact_Day_Periods  : Day_Period_Map_Type;
-         Within_Day_Periods : Day_Period_Map_Type;
-         Era_Names          : Era_Names_Type;
-         Date_Formats       : Date_Time_Styles_Type;
-         Time_Formats       : Date_Time_Styles_Type;
-         Date_Time_Formats  : Date_Time_Styles_Type;
-         Numeric_Items      : Numeric_Items_Type;
-         Numeric_Formats    : Numeric_Format_Type;
-      end record;
+   type Locale_Traits_Type is record
+      Tag                : Tag_Type;
+      Level              : Level_Type;
+      Name               : String_Index_Type;
+      Text_Layout        : Text_Layout_Type;
+      Short_Month_Names  : Month_Names_Type;
+      Full_Month_Names   : Month_Names_Type;
+      Short_Day_Names    : Day_Names_Type;
+      Full_Day_Names     : Day_Names_Type;
+      Day_Period_Names   : Day_Period_Names_Type;
+      Exact_Day_Periods  : Day_Period_Map_Type;
+      Within_Day_Periods : Day_Period_Map_Type;
+      Era_Names          : Era_Names_Type;
+      Date_Formats       : Date_Time_Styles_Type;
+      Time_Formats       : Date_Time_Styles_Type;
+      Date_Time_Formats  : Date_Time_Styles_Type;
+      Numeric_Items      : Numeric_Items_Type;
+      Numeric_Formats    : Numeric_Format_Type;
+   end record;
    --  Collection of strings used for each locale.
 
    type Trait_Array_Type is
-      array (Trait_Index_Type range <>) of Locale_Traits_Type;
+     array (Trait_Index_Type range <>) of Locale_Traits_Type;
    --  List of predefined traits
 
    Current_Locale_Value : Locale_Type;
@@ -141,54 +138,67 @@ package body ZanyBlue.Text.Locales is
    --  Initialize the current locale based on the ZB_LANG/LANG environment
    --  variables.
 
-   procedure Decompose_Name (Name      : Wide_String;
-                             Language  : out Language_Type;
-                             Script    : out Script_Type;
-                             Territory : out Territory_Type;
-                             Encoding  : out Encoding_Type);
+   procedure Decompose_Name
+     (Name      :     Wide_String;
+      Language  : out Language_Type;
+      Script    : out Script_Type;
+      Territory : out Territory_Type;
+      Encoding  : out Encoding_Type);
    --  Decompose a locale name, e.g., "en", "en_Latn_US.UTF8", etc. into it's
    --  component language, script and territory values.
 
-   function Find_Traits (Language  : Wide_String;
-                         Script    : Wide_String;
-                         Territory : Wide_String) return Trait_Index_Type;
+   function Find_Traits
+     (Language  : Wide_String;
+      Script    : Wide_String;
+      Territory : Wide_String)
+      return Trait_Index_Type;
    --  Locate the traits entry "matching" the given locale data (matching
    --  attempts locale resolution, i.e., "fr_FR" => "fr", etc.
 
-   function Latin_Digit (Ch   : Wide_Character;
-                         Zero : Wide_Character) return Wide_Character;
+   function Latin_Digit
+     (Ch   : Wide_Character;
+      Zero : Wide_Character)
+      return Wide_Character;
    --  Convert a localized digit character to the corresponding Latin (ASCII)
    --  digit.  The Zero character gives the zero character for the localized
    --  digits.  E.g., for Arabic Latin_Digit ('٣', '٠') => '3'
 
-   procedure Lookup_Traits (Language  : Wide_String;
-                            Script    : Wide_String;
-                            Territory : Wide_String;
-                            Index     : out Trait_Index_Type;
-                            Found     : out Boolean);
+   procedure Lookup_Traits
+     (Language  :     Wide_String;
+      Script    :     Wide_String;
+      Territory :     Wide_String;
+      Index     : out Trait_Index_Type;
+      Found     : out Boolean);
    --  Binary search lookup of a traits by tag value.
 
-   function To_String (Index : String_Index_Type) return Wide_String;
+   function To_String
+     (Index : String_Index_Type)
+      return Wide_String;
    --  Convert a string index of a pooled string to a string value.
 
    ---------
    -- "=" --
    ---------
 
-   overriding
-   function "=" (Left, Right : Locale_Type) return Boolean
+   overriding function "="
+     (Left, Right : Locale_Type)
+      return Boolean
    is
    begin
-      return      Left.Language_Code  = Right.Language_Code
-         and then Left.Script_Code    = Right.Script_Code
-         and then Left.Territory_Code = Right.Territory_Code;
+      return
+        Left.Language_Code = Right.Language_Code
+        and then Left.Script_Code = Right.Script_Code
+        and then Left.Territory_Code = Right.Territory_Code;
    end "=";
 
    ------------
    -- Codecs --
    ------------
 
-   function Codecs (Locale : Locale_Type) return Codecs_Type is
+   function Codecs
+     (Locale : Locale_Type)
+      return Codecs_Type
+   is
    begin
       return Locale.Codecs;
    end Codecs;
@@ -206,8 +216,10 @@ package body ZanyBlue.Text.Locales is
    -- Date_Format --
    -----------------
 
-   function Date_Format (Locale : Locale_Type;
-                         Style  : Date_Time_Style_Type) return Wide_String
+   function Date_Format
+     (Locale : Locale_Type;
+      Style  : Date_Time_Style_Type)
+      return Wide_String
    is
       Index : constant Trait_Index_Type := Locale.Traits_Index;
    begin
@@ -218,8 +230,9 @@ package body ZanyBlue.Text.Locales is
    -- Date_Time_Format --
    ----------------------
 
-   function Date_Time_Format (Locale : Locale_Type;
-                              Style  : Date_Time_Style_Type)
+   function Date_Time_Format
+     (Locale : Locale_Type;
+      Style  : Date_Time_Style_Type)
       return Wide_String
    is
       Index : constant Trait_Index_Type := Locale.Traits_Index;
@@ -231,10 +244,11 @@ package body ZanyBlue.Text.Locales is
    -- Day_Period_For_Time --
    -------------------------
 
-   function Day_Period_For_Time (Locale : Locale_Type;
-                                 Hour   : Hour_Type;
-                                 Minute : Minute_Type;
-                                 Second : Second_Type)
+   function Day_Period_For_Time
+     (Locale : Locale_Type;
+      Hour   : Hour_Type;
+      Minute : Minute_Type;
+      Second : Second_Type)
       return Day_Period_Type
    is
       Index : constant Trait_Index_Type := Locale.Traits_Index;
@@ -250,8 +264,9 @@ package body ZanyBlue.Text.Locales is
    -- Day_Period_Name --
    ---------------------
 
-   function Day_Period_Name (Locale     : Locale_Type;
-                             Day_Period : Day_Period_Type)
+   function Day_Period_Name
+     (Locale     : Locale_Type;
+      Day_Period : Day_Period_Type)
       return Wide_String
    is
       Index : constant Trait_Index_Type := Locale.Traits_Index;
@@ -263,34 +278,38 @@ package body ZanyBlue.Text.Locales is
    -- Decompose_Name --
    --------------------
 
-   procedure Decompose_Name (Name      : Wide_String;
-                             Language  : out Language_Type;
-                             Script    : out Script_Type;
-                             Territory : out Territory_Type;
-                             Encoding  : out Encoding_Type)
+   procedure Decompose_Name
+     (Name      :     Wide_String;
+      Language  : out Language_Type;
+      Script    : out Script_Type;
+      Territory : out Territory_Type;
+      Encoding  : out Encoding_Type)
    is
 
       Separator : Wide_Character := '_';
-      First     : Positive := Name'First;
-      Last      : Natural := 0;
+      First     : Positive       := Name'First;
+      Last      : Natural        := 0;
 
-      procedure Get_Separated_Item (Result : out Wide_String;
-                                    From   : in out Positive;
-                                    Last   : Natural);
+      procedure Get_Separated_Item
+        (Result :    out Wide_String;
+         From   : in out Positive;
+         Last   :        Natural);
 
-      procedure Get_Separated_Item (Result : out Wide_String;
-                                    From   : in out Positive;
-                                    Last   : Natural)
+      procedure Get_Separated_Item
+        (Result :    out Wide_String;
+         From   : in out Positive;
+         Last   :        Natural)
       is
 
          First    : constant Positive := From;
-         Position : Natural := First;
+         Position : Natural           := First;
 
       begin
-         Find_Separator : loop
+         Find_Separator :
+         loop
             Position := Position + 1;
             exit Find_Separator when Position >= Last
-                             or else Name (Position) = Separator;
+              or else Name (Position) = Separator;
          end loop Find_Separator;
          From := Position + 1;
          if Position >= Last then
@@ -304,14 +323,16 @@ package body ZanyBlue.Text.Locales is
    begin
       --  Get any encoding info, e.g., "en_US.utf8"
       Encoding := Empty_Encoding;
-      Last := Index (Name, ".", First);
+      Last     := Index (Name, ".", First);
       if Last = 0 then
          Last := Name'Last;
       else
          Last := Last - 1;
          Encoding (1 .. Natural'Min (Name'Last - Last - 1, Encoding'Last)) :=
-           Name (Last + 2 .. Natural'Min (Name'Last - Last - 1,
-                 Encoding'Last) + Last + 1);
+           Name
+             (Last + 2 ..
+                  Natural'Min (Name'Last - Last - 1, Encoding'Last) + Last +
+                  1);
       end if;
       --  If strings contains dashes, assume it's the separator, e.g., "en-us"
       if Index (Name (First .. Last), "-", First) /= 0 then
@@ -323,7 +344,7 @@ package body ZanyBlue.Text.Locales is
       if Script (Script'Last) = ' ' then
          --  Fix up, the script is really the territory
          Territory := Script (Territory'Range);
-         Script := Empty_Script;
+         Script    := Empty_Script;
       end if;
    end Decompose_Name;
 
@@ -331,15 +352,16 @@ package body ZanyBlue.Text.Locales is
    -- Delocalize_Digits --
    -----------------------
 
-   function Delocalize_Digits (Locale : Locale_Type;
-                               Value  : Wide_String) return Wide_String
+   function Delocalize_Digits
+     (Locale : Locale_Type;
+      Value  : Wide_String)
+      return Wide_String
    is
-      Digit_Str : constant Wide_String := Numeric_Item (
-                                             Locale,
-                                             Decimal_Digits_String);
-      Zero      : constant Wide_Character := Digit_Str (Digit_Str'First);
-      Result    : Wide_String (Value'Range) := Value;
-      Offset    : Integer;
+      Digit_Str : constant Wide_String :=
+        Numeric_Item (Locale, Decimal_Digits_String);
+      Zero   : constant Wide_Character   := Digit_Str (Digit_Str'First);
+      Result : Wide_String (Value'Range) := Value;
+      Offset : Integer;
    begin
       for I in Value'Range loop
          Offset := Wide_Character'Pos (Value (I)) - Wide_Character'Pos (Zero);
@@ -354,8 +376,11 @@ package body ZanyBlue.Text.Locales is
    -- Encode_To_String --
    ----------------------
 
-   function Encode_To_String (Locale : Locale_Type;
-                              Value  : Wide_String) return String is
+   function Encode_To_String
+     (Locale : Locale_Type;
+      Value  : Wide_String)
+      return String
+   is
    begin
       return Locale.Codecs.Encode (Value);
    end Encode_To_String;
@@ -364,7 +389,10 @@ package body ZanyBlue.Text.Locales is
    -- Encoding --
    --------------
 
-   function Encoding (Locale : Locale_Type) return Wide_String is
+   function Encoding
+     (Locale : Locale_Type)
+      return Wide_String
+   is
    begin
       return Non_Blank_Prefix (Locale.Encoding_Code);
    end Encoding;
@@ -373,7 +401,9 @@ package body ZanyBlue.Text.Locales is
    -- Encoding_Implementation --
    -----------------------------
 
-   function Encoding_Implementation (Locale : Locale_Type) return Wide_String
+   function Encoding_Implementation
+     (Locale : Locale_Type)
+      return Wide_String
    is
    begin
       return Locale.Codecs.Name;
@@ -401,8 +431,10 @@ package body ZanyBlue.Text.Locales is
    -- Era_Name --
    --------------
 
-   function Era_Name (Locale : Locale_Type;
-                      Era    : Era_Type) return Wide_String
+   function Era_Name
+     (Locale : Locale_Type;
+      Era    : Era_Type)
+      return Wide_String
    is
       Index : constant Trait_Index_Type := Locale.Traits_Index;
    begin
@@ -413,12 +445,14 @@ package body ZanyBlue.Text.Locales is
    -- Find_Traits --
    -----------------
 
-   function Find_Traits (Language  : Wide_String;
-                         Script    : Wide_String;
-                         Territory : Wide_String) return Trait_Index_Type
+   function Find_Traits
+     (Language  : Wide_String;
+      Script    : Wide_String;
+      Territory : Wide_String)
+      return Trait_Index_Type
    is
       Result : Trait_Index_Type := 1;
-      Found  : Boolean := False;
+      Found  : Boolean          := False;
    begin
       Lookup_Traits (Language, Script, Territory, Result, Found);
       if Found then
@@ -444,8 +478,10 @@ package body ZanyBlue.Text.Locales is
    -- Full_Day_Name --
    -------------------
 
-   function Full_Day_Name (Locale : Locale_Type;
-                           Day    : Day_Type) return Wide_String
+   function Full_Day_Name
+     (Locale : Locale_Type;
+      Day    : Day_Type)
+      return Wide_String
    is
       Index : constant Trait_Index_Type := Locale.Traits_Index;
    begin
@@ -456,8 +492,10 @@ package body ZanyBlue.Text.Locales is
    -- Full_Month_Name --
    ---------------------
 
-   function Full_Month_Name (Locale : Locale_Type;
-                             Month  : Month_Type) return Wide_String
+   function Full_Month_Name
+     (Locale : Locale_Type;
+      Month  : Month_Type)
+      return Wide_String
    is
       Index : constant Trait_Index_Type := Locale.Traits_Index;
    begin
@@ -468,14 +506,15 @@ package body ZanyBlue.Text.Locales is
    -- Get_Locale_Codes --
    ----------------------
 
-   procedure Get_Locale_Codes (Locale    : Locale_Type;
-                               Language  : in out Language_Type;
-                               Script    : in out Script_Type;
-                               Territory : in out Territory_Type)
+   procedure Get_Locale_Codes
+     (Locale    :        Locale_Type;
+      Language  : in out Language_Type;
+      Script    : in out Script_Type;
+      Territory : in out Territory_Type)
    is
    begin
-      Language := Locale.Language_Code;
-      Script := Locale.Script_Code;
+      Language  := Locale.Language_Code;
+      Script    := Locale.Script_Code;
       Territory := Locale.Territory_Code;
    end Get_Locale_Codes;
 
@@ -483,7 +522,9 @@ package body ZanyBlue.Text.Locales is
    -- Hash --
    ----------
 
-   function Hash (Key : Locale_Type) return Ada.Containers.Hash_Type
+   function Hash
+     (Key : Locale_Type)
+      return Ada.Containers.Hash_Type
    is
    begin
       return Wide_Hash (Locale_Name (Key));
@@ -493,9 +534,11 @@ package body ZanyBlue.Text.Locales is
    -- Is_Locale_Defined --
    -----------------------
 
-   function Is_Locale_Defined (Language  : Wide_String;
-                               Script    : Wide_String;
-                               Territory : Wide_String) return Boolean
+   function Is_Locale_Defined
+     (Language  : Wide_String;
+      Script    : Wide_String;
+      Territory : Wide_String)
+      return Boolean
    is
       Index : Trait_Index_Type;
       Found : Boolean;
@@ -508,19 +551,24 @@ package body ZanyBlue.Text.Locales is
    -- Is_Root_Locale --
    --------------------
 
-   function Is_Root_Locale (Locale : Locale_Type) return Boolean
+   function Is_Root_Locale
+     (Locale : Locale_Type)
+      return Boolean
    is
    begin
-      return      Locale.Language_Code  = Empty_Language
-         and then Locale.Script_Code    = Empty_Script
-         and then Locale.Territory_Code = Empty_Territory;
+      return
+        Locale.Language_Code = Empty_Language
+        and then Locale.Script_Code = Empty_Script
+        and then Locale.Territory_Code = Empty_Territory;
    end Is_Root_Locale;
 
    --------------
    -- Language --
    --------------
 
-   function Language (Locale : Locale_Type) return Wide_String
+   function Language
+     (Locale : Locale_Type)
+      return Wide_String
    is
    begin
       return Non_Blank_Prefix (Locale.Language_Code);
@@ -530,15 +578,19 @@ package body ZanyBlue.Text.Locales is
    -- Latin_Digit --
    -----------------
 
-   function Latin_Digit (Ch   : Wide_Character;
-                         Zero : Wide_Character) return Wide_Character
+   function Latin_Digit
+     (Ch   : Wide_Character;
+      Zero : Wide_Character)
+      return Wide_Character
    is
       Result : Wide_Character := Ch;
    begin
       --  Quick check, might already a Latin digit
       if Zero /= '0' then
-         Result := Wide_Character'Val (Wide_Character'Pos ('0')
-                     + (Wide_Character'Pos (Ch) - Wide_Character'Pos (Zero)));
+         Result :=
+           Wide_Character'Val
+             (Wide_Character'Pos ('0') +
+              (Wide_Character'Pos (Ch) - Wide_Character'Pos (Zero)));
       end if;
       return Result;
    end Latin_Digit;
@@ -547,21 +599,21 @@ package body ZanyBlue.Text.Locales is
    -- Locale_Data --
    -----------------
 
-   function Locale_Data return Trait_Array_Type is
-      separate;
+   function Locale_Data return Trait_Array_Type is separate;
 
    -------------------
    -- Locale_Digits --
    -------------------
 
-   function Locale_Digits (Locale    : Locale_Type;
-                           Lowercase : Boolean) return Wide_String
+   function Locale_Digits
+     (Locale    : Locale_Type;
+      Lowercase : Boolean)
+      return Wide_String
    is
-      Result      : Wide_String (1 .. 16);
+      Result : Wide_String (1 .. 16);
    begin
-      Result (1 .. 10) := Head (Numeric_Item (Locale,
-                                              Decimal_Digits_String),
-                                10);
+      Result (1 .. 10) :=
+        Head (Numeric_Item (Locale, Decimal_Digits_String), 10);
       if Lowercase then
          Result (11 .. 16) := "abcdef";
       else
@@ -574,7 +626,9 @@ package body ZanyBlue.Text.Locales is
    -- Locale_Level --
    ------------------
 
-   function Locale_Level (Locale : Locale_Type) return Level_Type
+   function Locale_Level
+     (Locale : Locale_Type)
+      return Level_Type
    is
       Index : constant Trait_Index_Type := Locale.Traits_Index;
    begin
@@ -585,33 +639,39 @@ package body ZanyBlue.Text.Locales is
    -- Locale_Name --
    -----------------
 
-   function Locale_Name (Language       : Language_Type;
-                         Script         : Script_Type;
-                         Territory      : Territory_Type) return Wide_String
+   function Locale_Name
+     (Language  : Language_Type;
+      Script    : Script_Type;
+      Territory : Territory_Type)
+      return Wide_String
    is
 
-      procedure Append (Result     : in out Wide_String;
-                        Position   : in out Natural;
-                        Value      : Wide_Character);
+      procedure Append
+        (Result   : in out Wide_String;
+         Position : in out Natural;
+         Value    :        Wide_Character);
 
-      procedure Append (Result     : in out Wide_String;
-                        Position   : in out Natural;
-                        Value      : Wide_String;
-                        Include_UC : Boolean := True);
+      procedure Append
+        (Result     : in out Wide_String;
+         Position   : in out Natural;
+         Value      :        Wide_String;
+         Include_UC :        Boolean := True);
 
-      procedure Append (Result     : in out Wide_String;
-                        Position   : in out Natural;
-                        Value      : Wide_Character)
+      procedure Append
+        (Result   : in out Wide_String;
+         Position : in out Natural;
+         Value    :        Wide_Character)
       is
       begin
-         Position := Position + 1;
+         Position          := Position + 1;
          Result (Position) := Value;
       end Append;
 
-      procedure Append (Result     : in out Wide_String;
-                        Position   : in out Natural;
-                        Value      : Wide_String;
-                        Include_UC : Boolean := True)
+      procedure Append
+        (Result     : in out Wide_String;
+         Position   : in out Natural;
+         Value      :        Wide_String;
+         Include_UC :        Boolean := True)
       is
       begin
          if Value (Value'First) = ' ' then
@@ -632,8 +692,7 @@ package body ZanyBlue.Text.Locales is
 
    begin
       if Language (Language'First) /= ' ' then
-         Append (Result, Position, Language,
-                 Include_UC => False);
+         Append (Result, Position, Language, Include_UC => False);
          Append (Result, Position, Script);
          Append (Result, Position, Territory);
       end if;
@@ -644,10 +703,13 @@ package body ZanyBlue.Text.Locales is
    -- Locale_Name --
    -----------------
 
-   function Locale_Name (Locale : Locale_Type) return Wide_String is
-      Result : constant Wide_String := Locale_Name (Locale.Language_Code,
-                                                    Locale.Script_Code,
-                                                    Locale.Territory_Code);
+   function Locale_Name
+     (Locale : Locale_Type)
+      return Wide_String
+   is
+      Result : constant Wide_String :=
+        Locale_Name
+          (Locale.Language_Code, Locale.Script_Code, Locale.Territory_Code);
       Encoding_Name : constant Wide_String := Encoding (Locale);
    begin
       if Encoding_Name'Length > 0 then
@@ -661,16 +723,18 @@ package body ZanyBlue.Text.Locales is
    -- Lookup_Traits --
    -------------------
 
-   procedure Lookup_Traits (Language  : Wide_String;
-                            Script    : Wide_String;
-                            Territory : Wide_String;
-                            Index     : out Trait_Index_Type;
-                            Found     : out Boolean)
+   procedure Lookup_Traits
+     (Language  :     Wide_String;
+      Script    :     Wide_String;
+      Territory :     Wide_String;
+      Index     : out Trait_Index_Type;
+      Found     : out Boolean)
    is
 
-      Key : Tag_Type := Head (Language, Max_Language_Length)
-                      & Head (Script, Max_Script_Length)
-                      & Head (Territory, Max_Territory_Length);
+      Key : Tag_Type :=
+        Head (Language, Max_Language_Length) &
+        Head (Script, Max_Script_Length) &
+        Head (Territory, Max_Territory_Length);
 
       Left      : Trait_Index_Type := Locale_Data'First;
       Right     : Trait_Index_Type := Locale_Data'Last + 1;
@@ -684,7 +748,7 @@ package body ZanyBlue.Text.Locales is
          return;
       end if;
       loop
-         Center := Left + (Right - Left) / 2;
+         Center    := Left + (Right - Left) / 2;
          Candidate := Locale_Data (Center).Tag;
          if Key = Candidate then
             Index := Center;
@@ -706,9 +770,12 @@ package body ZanyBlue.Text.Locales is
    -- Make_Encoded_Locale --
    -------------------------
 
-   function Make_Encoded_Locale (Language  : Wide_String;
-                                 Territory : Wide_String;
-                                 Encoding  : Wide_String) return Locale_Type is
+   function Make_Encoded_Locale
+     (Language  : Wide_String;
+      Territory : Wide_String;
+      Encoding  : Wide_String)
+      return Locale_Type
+   is
    begin
       return Make_Locale (Language, "", Territory, Encoding);
    end Make_Encoded_Locale;
@@ -717,7 +784,9 @@ package body ZanyBlue.Text.Locales is
    -- Make_Locale --
    -----------------
 
-   function Make_Locale (Locale_String  : Wide_String) return Locale_Type
+   function Make_Locale
+     (Locale_String : Wide_String)
+      return Locale_Type
    is
 
       Language  : Language_Type;
@@ -734,8 +803,11 @@ package body ZanyBlue.Text.Locales is
    -- Make_Locale --
    -----------------
 
-   function Make_Locale (Language  : Wide_String;
-                         Territory : Wide_String) return Locale_Type is
+   function Make_Locale
+     (Language  : Wide_String;
+      Territory : Wide_String)
+      return Locale_Type
+   is
    begin
       return Make_Locale (Language, "", Territory, "");
    end Make_Locale;
@@ -744,9 +816,12 @@ package body ZanyBlue.Text.Locales is
    -- Make_Locale --
    -----------------
 
-   function Make_Locale (Language  : Wide_String;
-                         Script    : Wide_String;
-                         Territory : Wide_String) return Locale_Type is
+   function Make_Locale
+     (Language  : Wide_String;
+      Script    : Wide_String;
+      Territory : Wide_String)
+      return Locale_Type
+   is
    begin
       return Make_Locale (Language, Script, Territory, "");
    end Make_Locale;
@@ -755,23 +830,26 @@ package body ZanyBlue.Text.Locales is
    -- Make_Locale --
    -----------------
 
-   function Make_Locale (Language  : Wide_String;
-                         Script    : Wide_String;
-                         Territory : Wide_String;
-                         Encoding  : Wide_String) return Locale_Type is
+   function Make_Locale
+     (Language  : Wide_String;
+      Script    : Wide_String;
+      Territory : Wide_String;
+      Encoding  : Wide_String)
+      return Locale_Type
+   is
    begin
       return Result : Locale_Type do
-         Result.Language_Code := Head (Language, Max_Language_Length);
-         Result.Script_Code := Head (Script, Max_Script_Length);
+         Result.Language_Code  := Head (Language, Max_Language_Length);
+         Result.Script_Code    := Head (Script, Max_Script_Length);
          Result.Territory_Code := Head (Territory, Max_Territory_Length);
-         Result.Encoding_Code := Head (Encoding, Max_Encoding_Length);
+         Result.Encoding_Code  := Head (Encoding, Max_Encoding_Length);
          ASCII_Lowercase (Result.Language_Code);
          ASCII_Capitalize (Result.Script_Code);
          ASCII_Uppercase (Result.Territory_Code);
          ASCII_Uppercase (Result.Encoding_Code);
-         Result.Traits_Index := Find_Traits (Result.Language_Code,
-                                             Result.Script_Code,
-                                             Result.Territory_Code);
+         Result.Traits_Index :=
+           Find_Traits
+             (Result.Language_Code, Result.Script_Code, Result.Territory_Code);
          Result.Codecs := Make_Codecs (Non_Blank_Prefix (Encoding));
       end return;
    end Make_Locale;
@@ -780,7 +858,10 @@ package body ZanyBlue.Text.Locales is
    -- Make_Locale_Narrow --
    ------------------------
 
-   function Make_Locale_Narrow (Locale_String : String) return Locale_Type is
+   function Make_Locale_Narrow
+     (Locale_String : String)
+      return Locale_Type
+   is
    begin
       return Make_Locale (To_Wide_String (Locale_String));
    end Make_Locale_Narrow;
@@ -798,8 +879,10 @@ package body ZanyBlue.Text.Locales is
    -- Numeric_Format --
    --------------------
 
-   function Numeric_Format (Locale : Locale_Type;
-                            Style  : Numeric_Style_Type) return Wide_String
+   function Numeric_Format
+     (Locale : Locale_Type;
+      Style  : Numeric_Style_Type)
+      return Wide_String
    is
       Index : constant Trait_Index_Type := Locale.Traits_Index;
    begin
@@ -810,8 +893,10 @@ package body ZanyBlue.Text.Locales is
    -- Numeric_Item --
    ------------------
 
-   function Numeric_Item (Locale : Locale_Type;
-                          Item   : Numeric_Item_Type) return Wide_String
+   function Numeric_Item
+     (Locale : Locale_Type;
+      Item   : Numeric_Item_Type)
+      return Wide_String
    is
       Index : constant Trait_Index_Type := Locale.Traits_Index;
    begin
@@ -822,58 +907,48 @@ package body ZanyBlue.Text.Locales is
    -- Parent_Codes --
    ------------------
 
-   procedure Parent_Codes (
-      Language       : in out Language_Type;
+   procedure Parent_Codes
+     (Language       : in out Language_Type;
       Script         : in out Script_Type;
       Territory      : in out Territory_Type;
-      Base_Territory : Territory_Type := Empty_Territory)
+      Base_Territory :        Territory_Type := Empty_Territory)
    is
 
-      Language_P     : constant Boolean := Language (1) /= ' ';
-      Script_P       : constant Boolean := Script (1) /= ' ';
-      Territory_P    : constant Boolean := Territory (1) /= ' ';
-      B_Territory_P  : constant Boolean := Base_Territory (1) /= ' ';
+      Language_P    : constant Boolean := Language (1) /= ' ';
+      Script_P      : constant Boolean := Script (1) /= ' ';
+      Territory_P   : constant Boolean := Territory (1) /= ' ';
+      B_Territory_P : constant Boolean := Base_Territory (1) /= ' ';
 
    begin
-      if Language_P
-           and then Script_P
-           and then Territory_P
-      then
+      if Language_P and then Script_P and then Territory_P then
          Territory := Empty_Territory;
          return;
       end if;
 
-      if Language_P
-           and then Script_P
-           and then not Territory_P
-           and then B_Territory_P
+      if Language_P and then Script_P and then not Territory_P
+        and then B_Territory_P
       then
-         Script := Empty_Script;
+         Script    := Empty_Script;
          Territory := Base_Territory;
          return;
       end if;
 
-      if Language_P
-           and then Script_P
-           and then not Territory_P
-           and then not B_Territory_P
+      if Language_P and then Script_P and then not Territory_P
+        and then not B_Territory_P
       then
-         Script := Empty_Script;
+         Script    := Empty_Script;
          Territory := Empty_Territory;
          return;
       end if;
 
-      if Language_P
-           and then not Script_P
-           and then Territory_P
-      then
-         Script := Empty_Script;
+      if Language_P and then not Script_P and then Territory_P then
+         Script    := Empty_Script;
          Territory := Empty_Territory;
          return;
       end if;
 
-      Language := Empty_Language;
-      Script := Empty_Script;
+      Language  := Empty_Language;
+      Script    := Empty_Script;
       Territory := Empty_Territory;
    end Parent_Codes;
 
@@ -881,14 +956,15 @@ package body ZanyBlue.Text.Locales is
    -- Pool --
    ----------
 
-   function Pool return Wide_String is
-      separate;
+   function Pool return Wide_String is separate;
 
    ------------
    -- Script --
    ------------
 
-   function Script (Locale : Locale_Type) return Wide_String
+   function Script
+     (Locale : Locale_Type)
+      return Wide_String
    is
    begin
       return Non_Blank_Prefix (Locale.Script_Code);
@@ -898,8 +974,7 @@ package body ZanyBlue.Text.Locales is
    -- Set_Locale --
    ----------------
 
-   procedure Set_Locale (Locale : Locale_Type)
-   is
+   procedure Set_Locale (Locale : Locale_Type) is
    begin
       Current_Locale_Value := Locale;
    end Set_Locale;
@@ -917,8 +992,7 @@ package body ZanyBlue.Text.Locales is
    -- Set_Locale --
    ----------------
 
-   procedure Set_Locale (Wide_Name : Wide_String)
-   is
+   procedure Set_Locale (Wide_Name : Wide_String) is
    begin
       Set_Locale (Make_Locale (Wide_Name));
    end Set_Locale;
@@ -927,8 +1001,9 @@ package body ZanyBlue.Text.Locales is
    -- Set_Traits --
    ----------------
 
-   procedure Set_Traits (Locale : in out Locale_Type;
-                         Name   : String)
+   procedure Set_Traits
+     (Locale : in out Locale_Type;
+      Name   :        String)
    is
    begin
       Set_Traits (Locale, To_Wide_String (Name));
@@ -938,8 +1013,9 @@ package body ZanyBlue.Text.Locales is
    -- Set_Traits --
    ----------------
 
-   procedure Set_Traits (Locale    : in out Locale_Type;
-                         Wide_Name : Wide_String)
+   procedure Set_Traits
+     (Locale    : in out Locale_Type;
+      Wide_Name :        Wide_String)
    is
       Language  : Language_Type;
       Script    : Script_Type;
@@ -954,8 +1030,10 @@ package body ZanyBlue.Text.Locales is
    -- Short_Day_Name --
    --------------------
 
-   function Short_Day_Name (Locale : Locale_Type;
-                            Day    : Day_Type) return Wide_String
+   function Short_Day_Name
+     (Locale : Locale_Type;
+      Day    : Day_Type)
+      return Wide_String
    is
       Index : constant Trait_Index_Type := Locale.Traits_Index;
    begin
@@ -966,8 +1044,10 @@ package body ZanyBlue.Text.Locales is
    -- Short_Month_Name --
    ----------------------
 
-   function Short_Month_Name (Locale : Locale_Type;
-                              Month  : Month_Type) return Wide_String
+   function Short_Month_Name
+     (Locale : Locale_Type;
+      Month  : Month_Type)
+      return Wide_String
    is
       Index : constant Trait_Index_Type := Locale.Traits_Index;
    begin
@@ -978,14 +1058,15 @@ package body ZanyBlue.Text.Locales is
    -- String_Addresses --
    ----------------------
 
-   function String_Addresses return String_Addresses_Type is
-      separate;
+   function String_Addresses return String_Addresses_Type is separate;
 
    ---------------
    -- Territory --
    ---------------
 
-   function Territory (Locale : Locale_Type) return Wide_String
+   function Territory
+     (Locale : Locale_Type)
+      return Wide_String
    is
    begin
       return Non_Blank_Prefix (Locale.Territory_Code);
@@ -995,7 +1076,9 @@ package body ZanyBlue.Text.Locales is
    -- Text_Layout --
    -----------------
 
-   function Text_Layout (Locale : Locale_Type) return Text_Layout_Type
+   function Text_Layout
+     (Locale : Locale_Type)
+      return Text_Layout_Type
    is
       Index : constant Trait_Index_Type := Locale.Traits_Index;
    begin
@@ -1006,8 +1089,10 @@ package body ZanyBlue.Text.Locales is
    -- Time_Format --
    -----------------
 
-   function Time_Format (Locale : Locale_Type;
-                         Style  : Date_Time_Style_Type) return Wide_String
+   function Time_Format
+     (Locale : Locale_Type;
+      Style  : Date_Time_Style_Type)
+      return Wide_String
    is
       Index : constant Trait_Index_Type := Locale.Traits_Index;
    begin
@@ -1018,7 +1103,9 @@ package body ZanyBlue.Text.Locales is
    -- To_String --
    ---------------
 
-   function To_String (Index : String_Index_Type) return Wide_String
+   function To_String
+     (Index : String_Index_Type)
+      return Wide_String
    is
       Address : constant String_Address_Type := String_Addresses (Index);
    begin
@@ -1029,7 +1116,9 @@ package body ZanyBlue.Text.Locales is
    -- Traits_Name --
    -----------------
 
-   function Traits_Name (Locale : Locale_Type) return Wide_String
+   function Traits_Name
+     (Locale : Locale_Type)
+      return Wide_String
    is
       Index : constant Trait_Index_Type := Locale.Traits_Index;
    begin
@@ -1040,7 +1129,9 @@ package body ZanyBlue.Text.Locales is
    -- Traits_Tag --
    ----------------
 
-   function Traits_Tag (Locale : Locale_Type) return Wide_String
+   function Traits_Tag
+     (Locale : Locale_Type)
+      return Wide_String
    is
       Index : constant Trait_Index_Type := Locale.Traits_Index;
    begin
@@ -1051,8 +1142,9 @@ package body ZanyBlue.Text.Locales is
    -- Transfer_Locale_Data --
    --------------------------
 
-   function Transfer_Locale_Data (Source_Locale : Locale_Type;
-                                  Extra_Data    : Locale_Type)
+   function Transfer_Locale_Data
+     (Source_Locale : Locale_Type;
+      Extra_Data    : Locale_Type)
       return Locale_Type
    is
       S_L, E_L : Language_Type;

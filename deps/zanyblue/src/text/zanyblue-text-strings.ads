@@ -43,26 +43,29 @@ package ZanyBlue.Text.Strings is
 
    type String_Argument_Type (<>) is new String_Category_Type with private;
 
-   function Create (Value : String) return String_Argument_Type;
+   function Create
+     (Value : String)
+      return String_Argument_Type;
    --  Create a "boxed" instance of a string type.
 
-   function "+" (Value : String) return String_Argument_Type
-      renames Create;
+   function "+"
+     (Value : String)
+      return String_Argument_Type renames Create;
    --  Utility renaming of the "Create" function.
 
-   overriding
-   function Format (Value     : String_Argument_Type;
-                    Type_Name : Wide_String;
-                    Template  : Wide_String;
-                    Locale    : Locale_Type) return Wide_String;
+   overriding function Format
+     (Value     : String_Argument_Type;
+      Type_Name : Wide_String;
+      Template  : Wide_String;
+      Locale    : Locale_Type)
+      return Wide_String;
    --  Format an individual argument using the Template to direct the
    --  conversion.
 
 private
 
-   type String_Argument_Type (Length : Natural) is
-      new String_Category_Type with
-   record
+   type String_Argument_Type (Length : Natural)
+   is new String_Category_Type with record
       Data : Wide_String (1 .. Length);
    end record;
 

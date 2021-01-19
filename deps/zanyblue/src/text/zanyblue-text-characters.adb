@@ -45,31 +45,34 @@ package body ZanyBlue.Text.Characters is
    -- Create --
    ------------
 
-   function Create (Character_Value : Character)
+   function Create
+     (Character_Value : Character)
       return Character_Argument_Type
    is
    begin
-      return Character_Argument_Type'(
-                Data => To_Wide_Character (Character_Value));
+      return
+        Character_Argument_Type'(Data => To_Wide_Character (Character_Value));
    end Create;
 
    ------------
    -- Format --
    ------------
 
-   overriding
-   function Format (Value     : Character_Argument_Type;
-                    Type_Name : Wide_String;
-                    Template  : Wide_String;
-                    Locale    : Locale_Type) return Wide_String is
+   overriding function Format
+     (Value     : Character_Argument_Type;
+      Type_Name : Wide_String;
+      Template  : Wide_String;
+      Locale    : Locale_Type)
+      return Wide_String
+   is
       pragma Unreferenced (Type_Name);
 
-      Formatting : constant Format_Type := Parse (Template, Locale);
+      Formatting : constant Format_Type          := Parse (Template, Locale);
       Buffer     : constant Wide_String (1 .. 1) := (others => Value.Data);
 
    begin
-      return Align (Buffer,
-                    Formatting.Fill, Formatting.Width, Formatting.Align);
+      return
+        Align (Buffer, Formatting.Fill, Formatting.Width, Formatting.Align);
    end Format;
 
 end ZanyBlue.Text.Characters;

@@ -42,28 +42,29 @@ package ZanyBlue.Text.Wide_Characters is
    use ZanyBlue.Text.Arguments;
 
    type Wide_Character_Argument_Type is
-      new Character_Category_Type with private;
+     new Character_Category_Type with private;
 
-   function Create (Wide_Character_Value : Wide_Character)
+   function Create
+     (Wide_Character_Value : Wide_Character)
       return Wide_Character_Argument_Type;
    --  Create a "boxed" instance of a string type.
 
-   function "+" (Wide_Character_Value : Wide_Character)
-      return Wide_Character_Argument_Type
-      renames Create;
+   function "+"
+     (Wide_Character_Value : Wide_Character)
+      return Wide_Character_Argument_Type renames Create;
    --  Utility renaming of the Create function.
 
-   overriding
-   function Format (Value     : Wide_Character_Argument_Type;
-                    Type_Name : Wide_String;
-                    Template  : Wide_String;
-                    Locale    : Locale_Type) return Wide_String;
+   overriding function Format
+     (Value     : Wide_Character_Argument_Type;
+      Type_Name : Wide_String;
+      Template  : Wide_String;
+      Locale    : Locale_Type)
+      return Wide_String;
    --  Format a string for printing.
 
 private
 
-   type Wide_Character_Argument_Type is new Character_Category_Type with
-   record
+   type Wide_Character_Argument_Type is new Character_Category_Type with record
       Data : Wide_Character;
    end record;
 

@@ -41,11 +41,14 @@ package ZanyBlue.Text.Unbounded_Strings is
    use Ada.Strings.Unbounded;
    use ZanyBlue.Text.Strings;
 
-   function Create (Value : Unbounded_String) return String_Argument_Type;
+   function Create
+     (Value : Unbounded_String)
+      return String_Argument_Type;
    --  Create a "boxed" instance of a string type.
 
-   function "+" (Value : Unbounded_String) return String_Argument_Type
-      renames Create;
+   function "+"
+     (Value : Unbounded_String)
+      return String_Argument_Type renames Create;
    --  Utility renaming of the "Create" function.
 
 end ZanyBlue.Text.Unbounded_Strings;

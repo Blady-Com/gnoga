@@ -43,7 +43,10 @@ package body ZanyBlue.Text.Generic_Fixed is
    -- Create --
    ------------
 
-   function Create (Fixed_Value : Fixed_Type) return Fixed_Argument_Type is
+   function Create
+     (Fixed_Value : Fixed_Type)
+      return Fixed_Argument_Type
+   is
    begin
       return Fixed_Argument_Type'(Data => Fixed_Value);
    end Create;
@@ -52,16 +55,20 @@ package body ZanyBlue.Text.Generic_Fixed is
    -- Format --
    ------------
 
-   overriding
-   function Format (Value     : Fixed_Argument_Type;
-                    Type_Name : Wide_String;
-                    Template  : Wide_String;
-                    Locale    : Locale_Type) return Wide_String is
+   overriding function Format
+     (Value     : Fixed_Argument_Type;
+      Type_Name : Wide_String;
+      Template  : Wide_String;
+      Locale    : Locale_Type)
+      return Wide_String
+   is
       pragma Unreferenced (Type_Name);
       Formatting : constant Format_Type := Parse (Template, Locale);
    begin
-      return Align (Fixed_Type'Wide_Image (Value.Data),
-                    Formatting.Fill, Formatting.Width, Formatting.Align);
+      return
+        Align
+          (Fixed_Type'Wide_Image (Value.Data), Formatting.Fill,
+           Formatting.Width, Formatting.Align);
    end Format;
 
 end ZanyBlue.Text.Generic_Fixed;

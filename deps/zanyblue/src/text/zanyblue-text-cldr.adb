@@ -45,10 +45,12 @@ package body ZanyBlue.Text.CLDR is
 
    CLDR_Catalog : Catalog_Type;
 
-   function Lookup (Facility : Wide_String;
-                    Key      : Wide_String;
-                    Unknown  : Wide_String;
-                    Locale   : Locale_Type) return Wide_String;
+   function Lookup
+     (Facility : Wide_String;
+      Key      : Wide_String;
+      Unknown  : Wide_String;
+      Locale   : Locale_Type)
+      return Wide_String;
    --  Use the CLDR catalog to locate a key for a locale.  If the key is not
    --  present, simply return the Unknown value rather than raising an
    --  exception.
@@ -57,15 +59,18 @@ package body ZanyBlue.Text.CLDR is
    -- Full_Locale_Name --
    ----------------------
 
-   function Full_Locale_Name (Value  : Locale_Type;
-                              Locale : Locale_Type := Current_Locale)
-      return Wide_String is
+   function Full_Locale_Name
+     (Value  : Locale_Type;
+      Locale : Locale_Type := Current_Locale)
+      return Wide_String
+   is
    begin
       if Territory (Value) = "" then
          return Language_Name (Language (Value), Locale => Locale);
       end if;
-      return Language_Name (Language (Value), Locale => Locale) & " ("
-           & Territory_Name (Territory (Value), Locale => Locale) & ")";
+      return
+        Language_Name (Language (Value), Locale => Locale) & " (" &
+        Territory_Name (Territory (Value), Locale => Locale) & ")";
    end Full_Locale_Name;
 
    ----------------
@@ -84,10 +89,12 @@ package body ZanyBlue.Text.CLDR is
    -- Language_Name --
    -------------------
 
-   function Language_Name (Code    : Wide_String;
-                           Unknown : Wide_String := "";
-                           Locale  : Locale_Type := Current_Locale)
-      return Wide_String is
+   function Language_Name
+     (Code    : Wide_String;
+      Unknown : Wide_String := "";
+      Locale  : Locale_Type := Current_Locale)
+      return Wide_String
+   is
    begin
       if Code = "" then
          return Lookup ("l", "root", Unknown, Locale);
@@ -100,30 +107,35 @@ package body ZanyBlue.Text.CLDR is
    -- Lookup --
    ------------
 
-   function Lookup (Facility : Wide_String;
-                    Key      : Wide_String;
-                    Unknown  : Wide_String;
-                    Locale   : Locale_Type) return Wide_String is
+   function Lookup
+     (Facility : Wide_String;
+      Key      : Wide_String;
+      Unknown  : Wide_String;
+      Locale   : Locale_Type)
+      return Wide_String
+   is
    begin
       if not Is_Valid (CLDR_Catalog) then
-         Raise_Exception (
-            Program_Error'Identity,
+         Raise_Exception
+           (Program_Error'Identity,
             Message => "ZanyBlue.Text.CLDR.Initialize not called");
       end if;
       return Get_Text (CLDR_Catalog, Facility, Key, Locale);
    exception
-   when No_Such_Key_Error =>
-      return Unknown;
+      when No_Such_Key_Error =>
+         return Unknown;
    end Lookup;
 
    -----------------
    -- Script_Name --
    -----------------
 
-   function Script_Name (Code    : Wide_String;
-                         Unknown : Wide_String := "";
-                         Locale  : Locale_Type := Current_Locale)
-      return Wide_String is
+   function Script_Name
+     (Code    : Wide_String;
+      Unknown : Wide_String := "";
+      Locale  : Locale_Type := Current_Locale)
+      return Wide_String
+   is
    begin
       return Lookup ("s", Code, Unknown, Locale);
    end Script_Name;
@@ -132,10 +144,12 @@ package body ZanyBlue.Text.CLDR is
    -- Territory_Name --
    --------------------
 
-   function Territory_Name (Code    : Wide_String;
-                            Unknown : Wide_String := "";
-                            Locale  : Locale_Type := Current_Locale)
-      return Wide_String is
+   function Territory_Name
+     (Code    : Wide_String;
+      Unknown : Wide_String := "";
+      Locale  : Locale_Type := Current_Locale)
+      return Wide_String
+   is
    begin
       return Lookup ("t", Code, Unknown, Locale);
    end Territory_Name;

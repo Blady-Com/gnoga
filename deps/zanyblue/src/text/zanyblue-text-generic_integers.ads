@@ -45,24 +45,27 @@ package ZanyBlue.Text.Generic_Integers is
 
    type Integer_Argument_Type is new Integer_Category_Type with private;
 
-   function Create (Value : Integer_Type) return Integer_Argument_Type;
+   function Create
+     (Value : Integer_Type)
+      return Integer_Argument_Type;
    --  Create a "boxed" instances of an integer value.
 
-   function "+" (Value : Integer_Type) return Integer_Argument_Type
-      renames Create;
+   function "+"
+     (Value : Integer_Type)
+      return Integer_Argument_Type renames Create;
    --  Utility renaming of the "Create" function.
 
-   overriding
-   function Format (Value     : Integer_Argument_Type;
-                    Type_Name : Wide_String;
-                    Template  : Wide_String;
-                    Locale    : Locale_Type) return Wide_String;
+   overriding function Format
+     (Value     : Integer_Argument_Type;
+      Type_Name : Wide_String;
+      Template  : Wide_String;
+      Locale    : Locale_Type)
+      return Wide_String;
    --  Format an argument value using the Template to direct the convesion.
 
 private
 
-   type Integer_Argument_Type is new Integer_Category_Type with
-   record
+   type Integer_Argument_Type is new Integer_Category_Type with record
       Data : Integer_Type;
    end record;
 

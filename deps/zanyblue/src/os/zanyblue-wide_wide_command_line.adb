@@ -53,7 +53,10 @@ package body ZanyBlue.Wide_Wide_Command_Line is
    -- Wide_Wide_Argument --
    ------------------------
 
-   function Wide_Wide_Argument (Number : Positive) return Wide_Wide_String is
+   function Wide_Wide_Argument
+     (Number : Positive)
+      return Wide_Wide_String
+   is
    begin
       return Wide_Wide_From_UTF8 (Argument (Number));
    end Wide_Wide_Argument;

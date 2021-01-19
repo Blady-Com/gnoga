@@ -41,150 +41,166 @@ package body ZanyBlue.Parameters.Values is
    use Ada.Characters.Handling;
    use ZanyBlue.Text.Formatting;
 
-   type Boolean_Value_Type is new Value_Type with
-   record
+   type Boolean_Value_Type is new Value_Type with record
       Data : Boolean;
    end record;
 
-   overriding
-   function To_Boolean (Value : Boolean_Value_Type;
-                        Name  : Wide_String) return Boolean;
+   overriding function To_Boolean
+     (Value : Boolean_Value_Type;
+      Name  : Wide_String)
+      return Boolean;
    --  Extract the Boolean value from a boxed Boolean value.
 
-   overriding
-   function To_List (Value : Boolean_Value_Type;
-                     Name  : Wide_String) return List_Type;
+   overriding function To_List
+     (Value : Boolean_Value_Type;
+      Name  : Wide_String)
+      return List_Type;
    --  Extract the Boolean value from a boxed value as a list.
 
-   overriding
-   function To_String (Value : Boolean_Value_Type;
-                       Name  : Wide_String) return Wide_String;
+   overriding function To_String
+     (Value : Boolean_Value_Type;
+      Name  : Wide_String)
+      return Wide_String;
    --  Extract the Boolean value as a formatted string.
 
-   overriding
-   function Type_Name (Value : Boolean_Value_Type;
-                       Name  : Wide_String) return Wide_String;
+   overriding function Type_Name
+     (Value : Boolean_Value_Type;
+      Name  : Wide_String)
+      return Wide_String;
    --  Return the type name string for the boxed Boolean value.
 
-   type Float_Value_Type is new Value_Type with
-   record
+   type Float_Value_Type is new Value_Type with record
       Data : Float;
    end record;
 
-   overriding
-   function To_Float (Value : Float_Value_Type;
-                      Name  : Wide_String) return Float;
+   overriding function To_Float
+     (Value : Float_Value_Type;
+      Name  : Wide_String)
+      return Float;
    --  Extract the floating point value from a boxed value.
 
-   overriding
-   function To_List (Value : Float_Value_Type;
-                     Name  : Wide_String) return List_Type;
+   overriding function To_List
+     (Value : Float_Value_Type;
+      Name  : Wide_String)
+      return List_Type;
    --  Extract the floating point value from a boxed value as a list.
 
-   overriding
-   function To_String (Value : Float_Value_Type;
-                       Name  : Wide_String) return Wide_String;
+   overriding function To_String
+     (Value : Float_Value_Type;
+      Name  : Wide_String)
+      return Wide_String;
    --  Extract the floating point value as a formatted string.
 
-   overriding
-   function Type_Name (Value : Float_Value_Type;
-                       Name  : Wide_String) return Wide_String;
+   overriding function Type_Name
+     (Value : Float_Value_Type;
+      Name  : Wide_String)
+      return Wide_String;
    --  Return the type name string for the boxed floating point value.
 
-   type Integer_Value_Type is new Value_Type with
-   record
+   type Integer_Value_Type is new Value_Type with record
       Data : Integer;
    end record;
 
-   overriding
-   procedure Increment (Value     : in out Integer_Value_Type;
-                        Name      : Wide_String;
-                        By_Amount : Integer);
+   overriding procedure Increment
+     (Value     : in out Integer_Value_Type;
+      Name      :        Wide_String;
+      By_Amount :        Integer);
    --  Increment an integer parameter value.
 
-   overriding
-   function To_Integer (Value : Integer_Value_Type;
-                        Name  : Wide_String) return Integer;
+   overriding function To_Integer
+     (Value : Integer_Value_Type;
+      Name  : Wide_String)
+      return Integer;
    --  Extract the integer value as a formatted string.
 
-   overriding
-   function To_List (Value : Integer_Value_Type;
-                     Name  : Wide_String) return List_Type;
+   overriding function To_List
+     (Value : Integer_Value_Type;
+      Name  : Wide_String)
+      return List_Type;
    --  Extract the integer value from a boxed value as a list.
 
-   overriding
-   function To_String (Value : Integer_Value_Type;
-                       Name  : Wide_String) return Wide_String;
+   overriding function To_String
+     (Value : Integer_Value_Type;
+      Name  : Wide_String)
+      return Wide_String;
    --  Extract the integer value as a formatted string.
 
-   overriding
-   function Type_Name (Value : Integer_Value_Type;
-                       Name  : Wide_String) return Wide_String;
+   overriding function Type_Name
+     (Value : Integer_Value_Type;
+      Name  : Wide_String)
+      return Wide_String;
    --  Return the type name string for the boxed integer value.
 
-   type List_Value_Type is new Value_Type with
-   record
+   type List_Value_Type is new Value_Type with record
       Data : List_Type;
    end record;
 
-   overriding
-   function To_List (Value : List_Value_Type;
-                     Name  : Wide_String) return List_Type;
+   overriding function To_List
+     (Value : List_Value_Type;
+      Name  : Wide_String)
+      return List_Type;
    --  Extract the list value from a boxed value.
 
-   overriding
-   function To_String (Value : List_Value_Type;
-                       Name  : Wide_String) return Wide_String;
+   overriding function To_String
+     (Value : List_Value_Type;
+      Name  : Wide_String)
+      return Wide_String;
    --  Extract the list value as a formatted string.
 
-   overriding
-   function Type_Name (Value : List_Value_Type;
-                       Name  : Wide_String) return Wide_String;
+   overriding function Type_Name
+     (Value : List_Value_Type;
+      Name  : Wide_String)
+      return Wide_String;
    --  Return the type name string for the boxed list value.
 
-   type String_Value_Type (Length : Natural) is new Value_Type with
-   record
+   type String_Value_Type (Length : Natural) is new Value_Type with record
       Data : Wide_String (1 .. Length);
    end record;
 
-   overriding
-   function To_List (Value : String_Value_Type;
-                     Name  : Wide_String) return List_Type;
+   overriding function To_List
+     (Value : String_Value_Type;
+      Name  : Wide_String)
+      return List_Type;
    --  Extract the floating point value from a boxed value as a list.
 
-   overriding
-   function To_String (Value : String_Value_Type;
-                       Name  : Wide_String) return Wide_String;
+   overriding function To_String
+     (Value : String_Value_Type;
+      Name  : Wide_String)
+      return Wide_String;
    --  Extract the string value from a boxed value.
 
-   overriding
-   function Type_Name (Value : String_Value_Type;
-                       Name  : Wide_String) return Wide_String;
+   overriding function Type_Name
+     (Value : String_Value_Type;
+      Name  : Wide_String)
+      return Wide_String;
    --  Return the type name string for the boxed string value.
 
-   type Time_Value_Type is new Value_Type with
-   record
+   type Time_Value_Type is new Value_Type with record
       Data : Time;
    end record;
 
-   overriding
-   function To_List (Value : Time_Value_Type;
-                     Name  : Wide_String) return List_Type;
+   overriding function To_List
+     (Value : Time_Value_Type;
+      Name  : Wide_String)
+      return List_Type;
    --  Extract the floating point value from a boxed value as a list.
 
-   overriding
-   function To_String (Value : Time_Value_Type;
-                       Name  : Wide_String) return Wide_String;
+   overriding function To_String
+     (Value : Time_Value_Type;
+      Name  : Wide_String)
+      return Wide_String;
    --  Extract the time value as a formatted string.
 
-   overriding
-   function To_Time (Value : Time_Value_Type;
-                     Name  : Wide_String) return Time;
+   overriding function To_Time
+     (Value : Time_Value_Type;
+      Name  : Wide_String)
+      return Time;
    --  Extract the time value from a boxed value.
 
-   overriding
-   function Type_Name (Value : Time_Value_Type;
-                       Name  : Wide_String) return Wide_String;
+   overriding function Type_Name
+     (Value : Time_Value_Type;
+      Name  : Wide_String)
+      return Wide_String;
    --  Return the type name string for the boxed time value.
 
    -------------------------------------------------------------------------
@@ -193,29 +209,32 @@ package body ZanyBlue.Parameters.Values is
    -- Dump --
    ----------
 
-   procedure Dump (Value       : Value_Type'Class;
-                   Name        : Wide_String;
-                   Destination : Ada.Text_IO.File_Type;
-                   Level       : Natural := 0) is
+   procedure Dump
+     (Value       : Value_Type'Class;
+      Name        : Wide_String;
+      Destination : Ada.Text_IO.File_Type;
+      Level       : Natural := 0)
+   is
 
       Indentation : constant Wide_String (1 .. 2 * Level) := (others => ' ');
       List        : List_Type;
 
    begin
-      Print (Destination, "{0}  <parameter name=""{1}"" type=""{2}""",
-                          +Indentation, +Name, +Value.Type_Name (Name));
+      Print
+        (Destination, "{0}  <parameter name=""{1}"" type=""{2}""",
+         +Indentation, +Name, +Value.Type_Name (Name));
       if Value in List_Value_Type then
          List := List_Value_Type (Value).Data;
          Print_Line (Destination, ">");
          for I in 1 .. Length (List) loop
-            Print_Line (Destination, "{0}    <value>{1}</value>",
-                                     +Indentation, +List.Element (I));
+            Print_Line
+              (Destination, "{0}    <value>{1}</value>", +Indentation,
+               +List.Element (I));
          end loop;
-         Print_Line (Destination, "{0}  </parameter>",
-                                  +Indentation);
+         Print_Line (Destination, "{0}  </parameter>", +Indentation);
       else
-         Print_Line (Destination, " value=""{0}"" />",
-                                  +Value.To_String (Name));
+         Print_Line
+           (Destination, " value=""{0}"" />", +Value.To_String (Name));
       end if;
    end Dump;
 
@@ -223,29 +242,32 @@ package body ZanyBlue.Parameters.Values is
    -- Dump --
    ----------
 
-   procedure Dump (Value       : Value_Type'Class;
-                   Name        : Wide_String;
-                   Destination : Ada.Wide_Text_IO.File_Type;
-                   Level       : Natural := 0) is
+   procedure Dump
+     (Value       : Value_Type'Class;
+      Name        : Wide_String;
+      Destination : Ada.Wide_Text_IO.File_Type;
+      Level       : Natural := 0)
+   is
 
       Indentation : constant Wide_String (1 .. 2 * Level) := (others => ' ');
       List        : List_Type;
 
    begin
-      Print (Destination, "{0}  <parameter name=""{1}"" type=""{2}""",
-                          +Indentation, +Name, +Value.Type_Name (Name));
+      Print
+        (Destination, "{0}  <parameter name=""{1}"" type=""{2}""",
+         +Indentation, +Name, +Value.Type_Name (Name));
       if Value in List_Value_Type then
          List := List_Value_Type (Value).Data;
          Print_Line (Destination, ">");
          for I in 1 .. Length (List) loop
-            Print_Line (Destination, "{0}    <value>{1}</value>",
-                                     +Indentation, +List.Element (I));
+            Print_Line
+              (Destination, "{0}    <value>{1}</value>", +Indentation,
+               +List.Element (I));
          end loop;
-         Print_Line (Destination, "{0}  </parameter>",
-                                  +Indentation);
+         Print_Line (Destination, "{0}  </parameter>", +Indentation);
       else
-         Print_Line (Destination, " value=""{0}"" />",
-                                  +Value.To_String (Name));
+         Print_Line
+           (Destination, " value=""{0}"" />", +Value.To_String (Name));
       end if;
    end Dump;
 
@@ -253,9 +275,11 @@ package body ZanyBlue.Parameters.Values is
    -- Increment --
    ---------------
 
-   procedure Increment (Value     : in out Value_Type;
-                        Name      : Wide_String;
-                        By_Amount : Integer) is
+   procedure Increment
+     (Value     : in out Value_Type;
+      Name      :        Wide_String;
+      By_Amount :        Integer)
+   is
       pragma Unreferenced (Value);
       pragma Unreferenced (By_Amount);
    begin
@@ -266,10 +290,11 @@ package body ZanyBlue.Parameters.Values is
    -- Increment --
    ---------------
 
-   overriding
-   procedure Increment (Value     : in out Integer_Value_Type;
-                        Name      : Wide_String;
-                        By_Amount : Integer) is
+   overriding procedure Increment
+     (Value     : in out Integer_Value_Type;
+      Name      :        Wide_String;
+      By_Amount :        Integer)
+   is
       pragma Unreferenced (Name);
    begin
       Value.Data := Value.Data + By_Amount;
@@ -279,8 +304,11 @@ package body ZanyBlue.Parameters.Values is
    -- To_Boolean --
    ----------------
 
-   function To_Boolean (Value : Value_Type;
-                        Name  : Wide_String) return Boolean is
+   function To_Boolean
+     (Value : Value_Type;
+      Name  : Wide_String)
+      return Boolean
+   is
       pragma Unreferenced (Value);
    begin
       raise Not_A_Boolean_Error with To_String (Name);
@@ -291,9 +319,11 @@ package body ZanyBlue.Parameters.Values is
    -- To_Boolean --
    ----------------
 
-   overriding
-   function To_Boolean (Value : Boolean_Value_Type;
-                        Name  : Wide_String) return Boolean is
+   overriding function To_Boolean
+     (Value : Boolean_Value_Type;
+      Name  : Wide_String)
+      return Boolean
+   is
       pragma Unreferenced (Name);
    begin
       return Value.Data;
@@ -303,7 +333,10 @@ package body ZanyBlue.Parameters.Values is
    -- To_Boolean_Value --
    ----------------------
 
-   function To_Boolean_Value (Data : Boolean) return Value_Type'Class is
+   function To_Boolean_Value
+     (Data : Boolean)
+      return Value_Type'Class
+   is
    begin
       return Boolean_Value_Type'(Data => Data);
    end To_Boolean_Value;
@@ -312,8 +345,11 @@ package body ZanyBlue.Parameters.Values is
    -- To_Float --
    --------------
 
-   function To_Float (Value : Value_Type;
-                      Name  : Wide_String) return Float is
+   function To_Float
+     (Value : Value_Type;
+      Name  : Wide_String)
+      return Float
+   is
       pragma Unreferenced (Value);
    begin
       raise Not_A_Real_Error with To_String (Name);
@@ -324,9 +360,11 @@ package body ZanyBlue.Parameters.Values is
    -- To_Float --
    --------------
 
-   overriding
-   function To_Float (Value : Float_Value_Type;
-                      Name  : Wide_String) return Float is
+   overriding function To_Float
+     (Value : Float_Value_Type;
+      Name  : Wide_String)
+      return Float
+   is
       pragma Unreferenced (Name);
    begin
       return Value.Data;
@@ -336,7 +374,10 @@ package body ZanyBlue.Parameters.Values is
    -- To_Float_Value --
    --------------------
 
-   function To_Float_Value (Data : Float) return Value_Type'Class is
+   function To_Float_Value
+     (Data : Float)
+      return Value_Type'Class
+   is
    begin
       return Float_Value_Type'(Data => Data);
    end To_Float_Value;
@@ -345,8 +386,11 @@ package body ZanyBlue.Parameters.Values is
    -- To_Integer --
    ----------------
 
-   function To_Integer (Value : Value_Type;
-                        Name  : Wide_String) return Integer is
+   function To_Integer
+     (Value : Value_Type;
+      Name  : Wide_String)
+      return Integer
+   is
       pragma Unreferenced (Value);
    begin
       raise Not_An_Integer_Error with To_String (Name);
@@ -357,9 +401,11 @@ package body ZanyBlue.Parameters.Values is
    -- To_Integer --
    ----------------
 
-   overriding
-   function To_Integer (Value : Integer_Value_Type;
-                        Name  : Wide_String) return Integer is
+   overriding function To_Integer
+     (Value : Integer_Value_Type;
+      Name  : Wide_String)
+      return Integer
+   is
       pragma Unreferenced (Name);
    begin
       return Value.Data;
@@ -369,7 +415,10 @@ package body ZanyBlue.Parameters.Values is
    -- To_Integer_Value --
    ----------------------
 
-   function To_Integer_Value (Data : Integer) return Value_Type'Class is
+   function To_Integer_Value
+     (Data : Integer)
+      return Value_Type'Class
+   is
    begin
       return Integer_Value_Type'(Data => Data);
    end To_Integer_Value;
@@ -378,9 +427,11 @@ package body ZanyBlue.Parameters.Values is
    -- To_List --
    -------------
 
-   overriding
-   function To_List (Value : Boolean_Value_Type;
-                     Name  : Wide_String) return List_Type is
+   overriding function To_List
+     (Value : Boolean_Value_Type;
+      Name  : Wide_String)
+      return List_Type
+   is
       Result : List_Type;
    begin
       Append (Result, Value.To_String (Name));
@@ -391,9 +442,11 @@ package body ZanyBlue.Parameters.Values is
    -- To_List --
    -------------
 
-   overriding
-   function To_List (Value : Float_Value_Type;
-                     Name  : Wide_String) return List_Type is
+   overriding function To_List
+     (Value : Float_Value_Type;
+      Name  : Wide_String)
+      return List_Type
+   is
       Result : List_Type;
    begin
       Append (Result, Value.To_String (Name));
@@ -404,9 +457,11 @@ package body ZanyBlue.Parameters.Values is
    -- To_List --
    -------------
 
-   overriding
-   function To_List (Value : Integer_Value_Type;
-                     Name  : Wide_String) return List_Type is
+   overriding function To_List
+     (Value : Integer_Value_Type;
+      Name  : Wide_String)
+      return List_Type
+   is
       Result : List_Type;
    begin
       Append (Result, Value.To_String (Name));
@@ -417,9 +472,11 @@ package body ZanyBlue.Parameters.Values is
    -- To_List --
    -------------
 
-   overriding
-   function To_List (Value : List_Value_Type;
-                     Name  : Wide_String) return List_Type is
+   overriding function To_List
+     (Value : List_Value_Type;
+      Name  : Wide_String)
+      return List_Type
+   is
       pragma Unreferenced (Name);
    begin
       return Value.Data;
@@ -429,9 +486,11 @@ package body ZanyBlue.Parameters.Values is
    -- To_List --
    -------------
 
-   overriding
-   function To_List (Value : String_Value_Type;
-                     Name  : Wide_String) return List_Type is
+   overriding function To_List
+     (Value : String_Value_Type;
+      Name  : Wide_String)
+      return List_Type
+   is
       Result : List_Type;
    begin
       Append (Result, Value.To_String (Name));
@@ -442,9 +501,11 @@ package body ZanyBlue.Parameters.Values is
    -- To_List --
    -------------
 
-   overriding
-   function To_List (Value : Time_Value_Type;
-                     Name  : Wide_String) return List_Type is
+   overriding function To_List
+     (Value : Time_Value_Type;
+      Name  : Wide_String)
+      return List_Type
+   is
       Result : List_Type;
    begin
       Append (Result, Value.To_String (Name));
@@ -455,7 +516,10 @@ package body ZanyBlue.Parameters.Values is
    -- To_List_Value --
    -------------------
 
-   function To_List_Value (Data : List_Type) return Value_Type'Class is
+   function To_List_Value
+     (Data : List_Type)
+      return Value_Type'Class
+   is
    begin
       return List_Value_Type'(Data => Data);
    end To_List_Value;
@@ -464,9 +528,11 @@ package body ZanyBlue.Parameters.Values is
    -- To_String --
    ---------------
 
-   overriding
-   function To_String (Value : Boolean_Value_Type;
-                       Name  : Wide_String) return Wide_String is
+   overriding function To_String
+     (Value : Boolean_Value_Type;
+      Name  : Wide_String)
+      return Wide_String
+   is
       pragma Unreferenced (Name);
    begin
       return Format ("{0}", Argument0 => +Value.Data);
@@ -476,9 +542,11 @@ package body ZanyBlue.Parameters.Values is
    -- To_String --
    ---------------
 
-   overriding
-   function To_String (Value : Float_Value_Type;
-                       Name  : Wide_String) return Wide_String is
+   overriding function To_String
+     (Value : Float_Value_Type;
+      Name  : Wide_String)
+      return Wide_String
+   is
       pragma Unreferenced (Name);
    begin
       return Format ("{0}", Argument0 => +Value.Data);
@@ -488,9 +556,11 @@ package body ZanyBlue.Parameters.Values is
    -- To_String --
    ---------------
 
-   overriding
-   function To_String (Value : Integer_Value_Type;
-                       Name  : Wide_String) return Wide_String is
+   overriding function To_String
+     (Value : Integer_Value_Type;
+      Name  : Wide_String)
+      return Wide_String
+   is
       pragma Unreferenced (Name);
    begin
       return Format ("{0}", Argument0 => +Value.Data);
@@ -500,9 +570,11 @@ package body ZanyBlue.Parameters.Values is
    -- To_String --
    ---------------
 
-   overriding
-   function To_String (Value : List_Value_Type;
-                       Name  : Wide_String) return Wide_String is
+   overriding function To_String
+     (Value : List_Value_Type;
+      Name  : Wide_String)
+      return Wide_String
+   is
       pragma Unreferenced (Name);
       List_Length : constant Natural := Length (Value.Data);
       Buffer      : Unbounded_Wide_String;
@@ -522,9 +594,11 @@ package body ZanyBlue.Parameters.Values is
    -- To_String --
    ---------------
 
-   overriding
-   function To_String (Value : String_Value_Type;
-                       Name  : Wide_String) return Wide_String is
+   overriding function To_String
+     (Value : String_Value_Type;
+      Name  : Wide_String)
+      return Wide_String
+   is
       pragma Unreferenced (Name);
    begin
       return Value.Data;
@@ -534,9 +608,11 @@ package body ZanyBlue.Parameters.Values is
    -- To_String --
    ---------------
 
-   overriding
-   function To_String (Value : Time_Value_Type;
-                       Name  : Wide_String) return Wide_String is
+   overriding function To_String
+     (Value : Time_Value_Type;
+      Name  : Wide_String)
+      return Wide_String
+   is
       pragma Unreferenced (Name);
    begin
       return Format ("{0}", Argument0 => +Value.Data);
@@ -546,7 +622,10 @@ package body ZanyBlue.Parameters.Values is
    -- To_String_Value --
    ---------------------
 
-   function To_String_Value (Data : Wide_String) return Value_Type'Class is
+   function To_String_Value
+     (Data : Wide_String)
+      return Value_Type'Class
+   is
    begin
       return String_Value_Type'(Length => Data'Length, Data => Data);
    end To_String_Value;
@@ -555,9 +634,11 @@ package body ZanyBlue.Parameters.Values is
    -- To_Time --
    -------------
 
-   overriding
-   function To_Time (Value : Time_Value_Type;
-                     Name  : Wide_String) return Time is
+   overriding function To_Time
+     (Value : Time_Value_Type;
+      Name  : Wide_String)
+      return Time
+   is
       pragma Unreferenced (Name);
    begin
       return Value.Data;
@@ -567,8 +648,11 @@ package body ZanyBlue.Parameters.Values is
    -- To_Time --
    -------------
 
-   function To_Time (Value : Value_Type;
-                     Name  : Wide_String) return Time is
+   function To_Time
+     (Value : Value_Type;
+      Name  : Wide_String)
+      return Time
+   is
       pragma Unreferenced (Value);
    begin
       raise Not_A_Time_Error with To_String (Name);
@@ -579,7 +663,10 @@ package body ZanyBlue.Parameters.Values is
    -- To_Time_Value --
    -------------------
 
-   function To_Time_Value (Data : Time) return Value_Type'Class is
+   function To_Time_Value
+     (Data : Time)
+      return Value_Type'Class
+   is
    begin
       return Time_Value_Type'(Data => Data);
    end To_Time_Value;
@@ -588,9 +675,11 @@ package body ZanyBlue.Parameters.Values is
    -- Type_Name --
    ---------------
 
-   overriding
-   function Type_Name (Value : Boolean_Value_Type;
-                       Name  : Wide_String) return Wide_String is
+   overriding function Type_Name
+     (Value : Boolean_Value_Type;
+      Name  : Wide_String)
+      return Wide_String
+   is
       pragma Unreferenced (Value);
       pragma Unreferenced (Name);
    begin
@@ -601,9 +690,11 @@ package body ZanyBlue.Parameters.Values is
    -- Type_Name --
    ---------------
 
-   overriding
-   function Type_Name (Value : Float_Value_Type;
-                       Name  : Wide_String) return Wide_String is
+   overriding function Type_Name
+     (Value : Float_Value_Type;
+      Name  : Wide_String)
+      return Wide_String
+   is
       pragma Unreferenced (Value);
       pragma Unreferenced (Name);
    begin
@@ -614,9 +705,11 @@ package body ZanyBlue.Parameters.Values is
    -- Type_Name --
    ---------------
 
-   overriding
-   function Type_Name (Value : Integer_Value_Type;
-                       Name  : Wide_String) return Wide_String is
+   overriding function Type_Name
+     (Value : Integer_Value_Type;
+      Name  : Wide_String)
+      return Wide_String
+   is
       pragma Unreferenced (Value);
       pragma Unreferenced (Name);
    begin
@@ -627,9 +720,11 @@ package body ZanyBlue.Parameters.Values is
    -- Type_Name --
    ---------------
 
-   overriding
-   function Type_Name (Value : List_Value_Type;
-                       Name  : Wide_String) return Wide_String is
+   overriding function Type_Name
+     (Value : List_Value_Type;
+      Name  : Wide_String)
+      return Wide_String
+   is
       pragma Unreferenced (Value);
       pragma Unreferenced (Name);
    begin
@@ -640,9 +735,11 @@ package body ZanyBlue.Parameters.Values is
    -- Type_Name --
    ---------------
 
-   overriding
-   function Type_Name (Value : String_Value_Type;
-                       Name  : Wide_String) return Wide_String is
+   overriding function Type_Name
+     (Value : String_Value_Type;
+      Name  : Wide_String)
+      return Wide_String
+   is
       pragma Unreferenced (Value);
       pragma Unreferenced (Name);
    begin
@@ -653,9 +750,11 @@ package body ZanyBlue.Parameters.Values is
    -- Type_Name --
    ---------------
 
-   overriding
-   function Type_Name (Value : Time_Value_Type;
-                       Name  : Wide_String) return Wide_String is
+   overriding function Type_Name
+     (Value : Time_Value_Type;
+      Name  : Wide_String)
+      return Wide_String
+   is
       pragma Unreferenced (Value);
       pragma Unreferenced (Name);
    begin

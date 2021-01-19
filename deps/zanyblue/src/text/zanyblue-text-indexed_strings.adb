@@ -39,12 +39,14 @@ package body ZanyBlue.Text.Indexed_Strings is
    -- Add --
    ---------
 
-   procedure Add (Indexed_Strings : in out Indexed_Strings_Type;
-                  Name            : Wide_String;
-                  Index           : out Positive) is
+   procedure Add
+     (Indexed_Strings : in out Indexed_Strings_Type;
+      Name            :        Wide_String;
+      Index           :    out Positive)
+   is
       use type Name_To_Id_Maps.Cursor;
       Position : constant Name_To_Id_Maps.Cursor :=
-                             Indexed_Strings.Name_To_Id.Find (Name);
+        Indexed_Strings.Name_To_Id.Find (Name);
    begin
       if Position = Name_To_Id_Maps.No_Element then
          Indexed_Strings.Id_To_Name.Append (Name);
@@ -59,8 +61,11 @@ package body ZanyBlue.Text.Indexed_Strings is
    -- Get --
    ---------
 
-   function Get (Indexed_Strings : Indexed_Strings_Type;
-                 Index           : Positive) return Wide_String is
+   function Get
+     (Indexed_Strings : Indexed_Strings_Type;
+      Index           : Positive)
+      return Wide_String
+   is
    begin
       if Index <= Indexed_Strings.Length then
          return Indexed_Strings.Id_To_Name.Element (Index);
@@ -73,13 +78,16 @@ package body ZanyBlue.Text.Indexed_Strings is
    -- Get --
    ---------
 
-   function Get (Indexed_Strings : Indexed_Strings_Type;
-                 Name            : Wide_String;
-                 Id              : Exception_Id) return Positive is
+   function Get
+     (Indexed_Strings : Indexed_Strings_Type;
+      Name            : Wide_String;
+      Id              : Exception_Id)
+      return Positive
+   is
 
       use type Name_To_Id_Maps.Cursor;
       Position : constant Name_To_Id_Maps.Cursor :=
-                             Indexed_Strings.Name_To_Id.Find (Name);
+        Indexed_Strings.Name_To_Id.Find (Name);
 
    begin
       if Position /= Name_To_Id_Maps.No_Element then
@@ -93,8 +101,10 @@ package body ZanyBlue.Text.Indexed_Strings is
    -- Length --
    ------------
 
-   function Length (Indexed_Strings : Indexed_Strings_Type)
-      return Natural is
+   function Length
+     (Indexed_Strings : Indexed_Strings_Type)
+      return Natural
+   is
    begin
       --  ASSERT: Id_To_Name.Length = Name_To_Id.Length
       return Natural (Indexed_Strings.Id_To_Name.Length);

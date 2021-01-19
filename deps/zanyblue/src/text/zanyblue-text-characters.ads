@@ -41,29 +41,29 @@ package ZanyBlue.Text.Characters is
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Arguments;
 
-   type Character_Argument_Type is
-      new Character_Category_Type with private;
+   type Character_Argument_Type is new Character_Category_Type with private;
 
-   function Create (Character_Value : Character)
+   function Create
+     (Character_Value : Character)
       return Character_Argument_Type;
    --  Create a "boxed" instance of a character value.
 
-   function "+" (Character_Value : Character)
-      return Character_Argument_Type
-      renames Create;
+   function "+"
+     (Character_Value : Character)
+      return Character_Argument_Type renames Create;
    --  Utility renaming of the "Create" function.
 
-   overriding
-   function Format (Value     : Character_Argument_Type;
-                    Type_Name : Wide_String;
-                    Template  : Wide_String;
-                    Locale    : Locale_Type) return Wide_String;
+   overriding function Format
+     (Value     : Character_Argument_Type;
+      Type_Name : Wide_String;
+      Template  : Wide_String;
+      Locale    : Locale_Type)
+      return Wide_String;
    --  Format a character value for printing.
 
 private
 
-   type Character_Argument_Type is new Character_Category_Type with
-   record
+   type Character_Argument_Type is new Character_Category_Type with record
       Data : Wide_Character;
    end record;
 

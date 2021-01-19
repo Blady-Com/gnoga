@@ -38,14 +38,15 @@ with ZanyBlue.Text.Locales;
 
 generic
    type File_Type is limited private;
-   with procedure Put (File : File_Type;
-                       Text : Wide_String);
+   with procedure Put
+     (File : File_Type;
+      Text : Wide_String);
    with procedure New_Line (File : File_Type);
-procedure ZanyBlue.Text.Generic_Printer (
-             Destination : File_Type;
-             Facility    : Wide_String;
-             Key         : Wide_String;
-             Locale      : ZanyBlue.Text.Locales.Locale_Type;
-             Arguments   : ZanyBlue.Text.Arguments.Argument_List;
-             Message     : Wide_String;
-             With_NL     : Boolean);
+procedure ZanyBlue.Text.Generic_Printer
+  (Destination : File_Type;
+   Facility : Wide_String;
+   Key : Wide_String;
+   Locale : ZanyBlue.Text.Locales.Locale_Type;
+   Arguments : ZanyBlue.Text.Arguments.Argument_List;
+   Message : Wide_String;
+   With_NL : Boolean);

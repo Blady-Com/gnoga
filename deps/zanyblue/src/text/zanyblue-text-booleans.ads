@@ -46,25 +46,27 @@ package ZanyBlue.Text.Booleans is
 
    type Boolean_Argument_Type is new Boolean_Category_Type with private;
 
-   function Create (Boolean_Value : Boolean) return Boolean_Argument_Type;
+   function Create
+     (Boolean_Value : Boolean)
+      return Boolean_Argument_Type;
    --  Create a "boxed" instance of an enumeration value.
 
-   function "+" (Boolean_Value : Boolean)
-      return Boolean_Argument_Type
-      renames Create;
+   function "+"
+     (Boolean_Value : Boolean)
+      return Boolean_Argument_Type renames Create;
    --  Utility renaming of the "Create" function.
 
-   overriding
-   function Format (Value     : Boolean_Argument_Type;
-                    Type_Name : Wide_String;
-                    Template  : Wide_String;
-                    Locale    : Locale_Type) return Wide_String;
+   overriding function Format
+     (Value     : Boolean_Argument_Type;
+      Type_Name : Wide_String;
+      Template  : Wide_String;
+      Locale    : Locale_Type)
+      return Wide_String;
    --  Format an enumeration value for printing.
 
 private
 
-   type Boolean_Argument_Type is new Boolean_Category_Type with
-   record
+   type Boolean_Argument_Type is new Boolean_Category_Type with record
       Data : Boolean;
    end record;
 

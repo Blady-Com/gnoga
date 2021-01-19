@@ -48,15 +48,17 @@ package body ZanyBlue.Text is
    -- Close_And_Update --
    ----------------------
 
-   procedure Close_And_Update (File    : in out Ada.Wide_Text_IO.File_Type;
-                               Updated : out Boolean) is
+   procedure Close_And_Update
+     (File    : in out Ada.Wide_Text_IO.File_Type;
+      Updated :    out Boolean)
+   is
       use Ada.Wide_Text_IO;
       use Ada.Strings.Wide_Fixed;
       use ZanyBlue.Wide_Directories;
-      Len       : constant Natural := Update_Extension'Length;
+      Len       : constant Natural     := Update_Extension'Length;
       File_Name : constant Wide_String := Wide_From_UTF8 (Name (File));
-      Real_Name : constant Wide_String := Head (File_Name,
-                                                File_Name'Length - Len);
+      Real_Name : constant Wide_String :=
+        Head (File_Name, File_Name'Length - Len);
    begin
       Close (File);
       Updated := Files_Differ (File_Name, Real_Name);
@@ -74,8 +76,11 @@ package body ZanyBlue.Text is
    -- Files_Differ --
    ------------------
 
-   function Files_Differ (Left_File_Name  : Wide_String;
-                          Right_File_Name : Wide_String) return Boolean is
+   function Files_Differ
+     (Left_File_Name  : Wide_String;
+      Right_File_Name : Wide_String)
+      return Boolean
+   is
       use Ada.Text_IO;
       use Ada.Text_IO.Text_Streams;
 
@@ -99,7 +104,7 @@ package body ZanyBlue.Text is
             Character'Read (Left_Stream, Left_Ch);
             Character'Read (Right_Stream, Right_Ch);
             Result := Left_Ch /= Right_Ch;
-            Done := Result;
+            Done   := Result;
          end if;
       end loop;
       Result := Result or else (End_Of_File (Left) xor End_Of_File (Right));
@@ -107,22 +112,24 @@ package body ZanyBlue.Text is
       Close (Right);
       return Result;
    exception
-   when Name_Error =>
-      if Is_Open (Left) then
-         Close (Left);
-      end if;
-      if Is_Open (Right) then
-         Close (Right);
-      end if;
-      return True;
+      when Name_Error =>
+         if Is_Open (Left) then
+            Close (Left);
+         end if;
+         if Is_Open (Right) then
+            Close (Right);
+         end if;
+         return True;
    end Files_Differ;
 
    ----------------------------
    -- Wide_Create_For_Update --
    ----------------------------
 
-   procedure Wide_Create_For_Update (File : in out Ada.Wide_Text_IO.File_Type;
-                                     Name : Wide_String) is
+   procedure Wide_Create_For_Update
+     (File : in out Ada.Wide_Text_IO.File_Type;
+      Name :        Wide_String)
+   is
       use Ada.Wide_Text_IO;
    begin
       Wide_Create (File, Name & Update_Extension);
@@ -132,13 +139,17 @@ package body ZanyBlue.Text is
    -- Wide_Hash --
    ---------------
 
-   function Wide_Hash (Key : Wide_String) return Ada.Containers.Hash_Type is
+   function Wide_Hash
+     (Key : Wide_String)
+      return Ada.Containers.Hash_Type
+   is
 
       use Ada.Containers;
 
       function Shift_Left
         (Value  : Hash_Type;
-         Amount : Natural) return Hash_Type;
+         Amount : Natural)
+         return Hash_Type;
       pragma Import (Intrinsic, Shift_Left);
 
       H : Hash_Type;
@@ -146,8 +157,9 @@ package body ZanyBlue.Text is
    begin
       H := 0;
       for J in Key'Range loop
-         H := Wide_Character'Pos (Key (J))
-                + Shift_Left (H, 6) + Shift_Left (H, 16) - H;
+         H :=
+           Wide_Character'Pos (Key (J)) + Shift_Left (H, 6) +
+           Shift_Left (H, 16) - H;
       end loop;
       return H;
    end Wide_Hash;

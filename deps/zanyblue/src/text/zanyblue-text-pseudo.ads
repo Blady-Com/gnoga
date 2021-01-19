@@ -42,20 +42,22 @@ package ZanyBlue.Text.Pseudo is
    type Pseudo_Map_Type is tagged private;
    type Pseudo_Map_Access is access Pseudo_Map_Type;
 
-   type Pseudo_Character_Map is
-      record
-         Source : Wide_Character;
-         Target : Wide_Character;
-      end record;
+   type Pseudo_Character_Map is record
+      Source : Wide_Character;
+      Target : Wide_Character;
+   end record;
 
    type Pseudo_Map_Vector is array (Positive range <>) of Pseudo_Character_Map;
 
-   procedure Add_Mapping (Pseudo_Map : in out Pseudo_Map_Type;
-                          Mapping    : Pseudo_Map_Vector);
+   procedure Add_Mapping
+     (Pseudo_Map : in out Pseudo_Map_Type;
+      Mapping    :        Pseudo_Map_Vector);
    --  Add vector of character mappings to the pseudo map.
 
-   function Map (Pseudo_Map : Pseudo_Map_Type;
-                 Ch         : Wide_Character) return Wide_Character;
+   function Map
+     (Pseudo_Map : Pseudo_Map_Type;
+      Ch         : Wide_Character)
+      return Wide_Character;
    --  Return the mapping for a character wrt a pseudo map.
 
    function Pseudo_Start return Wide_Character;
@@ -75,9 +77,8 @@ package ZanyBlue.Text.Pseudo is
 
 private
 
-   type Pseudo_Map_Type is tagged
-      record
-         Mapping : Wide_Character_Mapping;
-      end record;
+   type Pseudo_Map_Type is tagged record
+      Mapping : Wide_Character_Mapping;
+   end record;
 
 end ZanyBlue.Text.Pseudo;

@@ -39,11 +39,13 @@ package body ZanyBlue.Text.Null_Object is
    -- Format --
    ------------
 
-   overriding
-   function Format (Value     : Null_Argument_Type;
-                    Type_Name : Wide_String;
-                    Template  : Wide_String;
-                    Locale    : Locale_Type) return Wide_String is
+   overriding function Format
+     (Value     : Null_Argument_Type;
+      Type_Name : Wide_String;
+      Template  : Wide_String;
+      Locale    : Locale_Type)
+      return Wide_String
+   is
 
       pragma Unreferenced (Value);
       pragma Unreferenced (Type_Name);

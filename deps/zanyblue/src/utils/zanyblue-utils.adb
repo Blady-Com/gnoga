@@ -41,12 +41,12 @@ package body ZanyBlue.Utils is
    use Ada.Strings.Wide_Maps;
    use Ada.Strings.Wide_Fixed;
 
-   Mapping : constant Wide_Character_Mapping := To_Mapping (
-                                           "ABCDEFGHIJKLMNOPQRSTUVWXYZ.",
-                                           "abcdefghijklmnopqrstuvwxyz-");
+   Mapping : constant Wide_Character_Mapping :=
+     To_Mapping ("ABCDEFGHIJKLMNOPQRSTUVWXYZ.", "abcdefghijklmnopqrstuvwxyz-");
    --  Lower case alpha characters, map '.' to '-' for GNAT style naming
 
-   function Gnat_Source_Name (Package_Name : Wide_String)
+   function Gnat_Source_Name
+     (Package_Name : Wide_String)
       return Wide_String;
    --  Return the GNAT externally formatted (file name) for a package.
 
@@ -54,14 +54,15 @@ package body ZanyBlue.Utils is
    -- Body_File_Name --
    --------------------
 
-   function Body_File_Name (Package_Name : Wide_String;
-                            Style        : Source_Naming_Style_Type)
+   function Body_File_Name
+     (Package_Name : Wide_String;
+      Style        : Source_Naming_Style_Type)
       return Wide_String
    is
    begin
       case Style is
-      when GNAT_Naming_Style =>
-         return Gnat_Source_Name (Package_Name) & ".adb";
+         when GNAT_Naming_Style =>
+            return Gnat_Source_Name (Package_Name) & ".adb";
       end case;
    end Body_File_Name;
 
@@ -69,7 +70,9 @@ package body ZanyBlue.Utils is
    -- Gnat_Source_Name --
    ----------------------
 
-   function Gnat_Source_Name (Package_Name : Wide_String) return Wide_String
+   function Gnat_Source_Name
+     (Package_Name : Wide_String)
+      return Wide_String
    is
    begin
       --  Lowercase the package name and replace periods with dashes.
@@ -80,14 +83,15 @@ package body ZanyBlue.Utils is
    -- Spec_File_Name --
    --------------------
 
-   function Spec_File_Name (Package_Name : Wide_String;
-                            Style        : Source_Naming_Style_Type)
+   function Spec_File_Name
+     (Package_Name : Wide_String;
+      Style        : Source_Naming_Style_Type)
       return Wide_String
    is
    begin
       case Style is
-      when GNAT_Naming_Style =>
-         return Gnat_Source_Name (Package_Name) & ".ads";
+         when GNAT_Naming_Style =>
+            return Gnat_Source_Name (Package_Name) & ".ads";
       end case;
    end Spec_File_Name;
 

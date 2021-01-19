@@ -52,8 +52,10 @@ package body ZanyBlue.Wide_Wide_Directories is
    -- Wide_Wide_Base_Name --
    -------------------------
 
-   function Wide_Wide_Base_Name (Name : Wide_Wide_String)
-      return Wide_Wide_String is
+   function Wide_Wide_Base_Name
+     (Name : Wide_Wide_String)
+      return Wide_Wide_String
+   is
    begin
       return Wide_Wide_From_UTF8 (Base_Name (Wide_Wide_To_UTF8 (Name)));
    end Wide_Wide_Base_Name;
@@ -65,13 +67,15 @@ package body ZanyBlue.Wide_Wide_Directories is
    function Wide_Wide_Compose
      (Containing_Directory : Wide_Wide_String := "";
       Name                 : Wide_Wide_String;
-      Extension            : Wide_Wide_String := "") return Wide_Wide_String is
+      Extension            : Wide_Wide_String := "")
+      return Wide_Wide_String
+   is
    begin
-      return Wide_Wide_From_UTF8 (
-         Compose (
-            Wide_Wide_To_UTF8 (Containing_Directory),
-            Wide_Wide_To_UTF8 (Name),
-            Wide_Wide_To_UTF8 (Extension)));
+      return
+        Wide_Wide_From_UTF8
+          (Compose
+             (Wide_Wide_To_UTF8 (Containing_Directory),
+              Wide_Wide_To_UTF8 (Name), Wide_Wide_To_UTF8 (Extension)));
    end Wide_Wide_Compose;
 
    ------------------------------------
@@ -79,10 +83,12 @@ package body ZanyBlue.Wide_Wide_Directories is
    ------------------------------------
 
    function Wide_Wide_Containing_Directory
-      (Name : Wide_Wide_String) return Wide_Wide_String is
+     (Name : Wide_Wide_String)
+      return Wide_Wide_String
+   is
    begin
-      return Wide_Wide_From_UTF8 (
-         Containing_Directory (Wide_Wide_To_UTF8 (Name)));
+      return
+        Wide_Wide_From_UTF8 (Containing_Directory (Wide_Wide_To_UTF8 (Name)));
    end Wide_Wide_Containing_Directory;
 
    -------------------------
@@ -90,13 +96,14 @@ package body ZanyBlue.Wide_Wide_Directories is
    -------------------------
 
    procedure Wide_Wide_Copy_File
-     (Source_Name   : Wide_Wide_String;
-      Target_Name   : Wide_Wide_String;
-      Form          : Wide_Wide_String := "") is
+     (Source_Name : Wide_Wide_String;
+      Target_Name : Wide_Wide_String;
+      Form        : Wide_Wide_String := "")
+   is
    begin
-      Copy_File (Wide_Wide_To_UTF8 (Source_Name),
-                 Wide_Wide_To_UTF8 (Target_Name),
-                 Wide_Wide_To_UTF8 (Form));
+      Copy_File
+        (Wide_Wide_To_UTF8 (Source_Name), Wide_Wide_To_UTF8 (Target_Name),
+         Wide_Wide_To_UTF8 (Form));
    end Wide_Wide_Copy_File;
 
    --------------------------------
@@ -105,10 +112,11 @@ package body ZanyBlue.Wide_Wide_Directories is
 
    procedure Wide_Wide_Create_Directory
      (New_Directory : Wide_Wide_String;
-      Form          : Wide_Wide_String := "") is
+      Form          : Wide_Wide_String := "")
+   is
    begin
-      Create_Directory (Wide_Wide_To_UTF8 (New_Directory),
-                        Wide_Wide_To_UTF8 (Form));
+      Create_Directory
+        (Wide_Wide_To_UTF8 (New_Directory), Wide_Wide_To_UTF8 (Form));
    end Wide_Wide_Create_Directory;
 
    ---------------------------
@@ -117,10 +125,11 @@ package body ZanyBlue.Wide_Wide_Directories is
 
    procedure Wide_Wide_Create_Path
      (New_Directory : Wide_Wide_String;
-      Form          : Wide_Wide_String := "") is
+      Form          : Wide_Wide_String := "")
+   is
    begin
-      Create_Path (Wide_Wide_To_UTF8 (New_Directory),
-                   Wide_Wide_To_UTF8 (Form));
+      Create_Path
+        (Wide_Wide_To_UTF8 (New_Directory), Wide_Wide_To_UTF8 (Form));
    end Wide_Wide_Create_Path;
 
    ---------------------------------
@@ -172,7 +181,10 @@ package body ZanyBlue.Wide_Wide_Directories is
    -- Wide_Wide_Exists --
    ----------------------
 
-   function Wide_Wide_Exists (Name : Wide_Wide_String) return Boolean is
+   function Wide_Wide_Exists
+     (Name : Wide_Wide_String)
+      return Boolean
+   is
    begin
       return Exists (Wide_Wide_To_UTF8 (Name));
    end Wide_Wide_Exists;
@@ -181,8 +193,10 @@ package body ZanyBlue.Wide_Wide_Directories is
    -- Wide_Wide_Extension --
    -------------------------
 
-   function Wide_Wide_Extension (Name : Wide_Wide_String)
-      return Wide_Wide_String is
+   function Wide_Wide_Extension
+     (Name : Wide_Wide_String)
+      return Wide_Wide_String
+   is
    begin
       return Wide_Wide_From_UTF8 (Extension (Wide_Wide_To_UTF8 (Name)));
    end Wide_Wide_Extension;
@@ -191,8 +205,10 @@ package body ZanyBlue.Wide_Wide_Directories is
    -- Wide_Wide_Full_Name --
    --------------------
 
-   function Wide_Wide_Full_Name (Name : Wide_Wide_String)
-      return Wide_Wide_String is
+   function Wide_Wide_Full_Name
+     (Name : Wide_Wide_String)
+      return Wide_Wide_String
+   is
    begin
       return Wide_Wide_From_UTF8 (Full_Name (Wide_Wide_To_UTF8 (Name)));
    end Wide_Wide_Full_Name;
@@ -202,8 +218,9 @@ package body ZanyBlue.Wide_Wide_Directories is
    -------------------------
 
    function Wide_Wide_Full_Name
-      (Directory_Entry : Wide_Wide_Directory_Entry_Type)
-      return Wide_Wide_String is
+     (Directory_Entry : Wide_Wide_Directory_Entry_Type)
+      return Wide_Wide_String
+   is
    begin
       return Wide_Wide_From_UTF8 (Full_Name (Directory_Entry));
    end Wide_Wide_Full_Name;
@@ -214,7 +231,8 @@ package body ZanyBlue.Wide_Wide_Directories is
 
    procedure Wide_Wide_Get_Next_Entry
      (Search          : in out Wide_Wide_Search_Type;
-      Directory_Entry : out Wide_Wide_Directory_Entry_Type) is
+      Directory_Entry :    out Wide_Wide_Directory_Entry_Type)
+   is
    begin
       Get_Next_Entry (Search, Directory_Entry);
    end Wide_Wide_Get_Next_Entry;
@@ -223,8 +241,10 @@ package body ZanyBlue.Wide_Wide_Directories is
    -- Wide_Wide_Kind --
    --------------------
 
-   function Wide_Wide_Kind (Name : Wide_Wide_String)
-      return Wide_Wide_File_Kind is
+   function Wide_Wide_Kind
+     (Name : Wide_Wide_String)
+      return Wide_Wide_File_Kind
+   is
    begin
       return Kind (Wide_Wide_To_UTF8 (Name));
    end Wide_Wide_Kind;
@@ -234,8 +254,9 @@ package body ZanyBlue.Wide_Wide_Directories is
    --------------------
 
    function Wide_Wide_Kind
-      (Directory_Entry : Wide_Wide_Directory_Entry_Type)
-      return Wide_Wide_File_Kind is
+     (Directory_Entry : Wide_Wide_Directory_Entry_Type)
+      return Wide_Wide_File_Kind
+   is
    begin
       return Kind (Directory_Entry);
    end Wide_Wide_Kind;
@@ -245,7 +266,9 @@ package body ZanyBlue.Wide_Wide_Directories is
    ---------------------------------
 
    function Wide_Wide_Modification_Time
-      (Name : Wide_Wide_String) return Ada.Calendar.Time is
+     (Name : Wide_Wide_String)
+      return Ada.Calendar.Time
+   is
    begin
       return Modification_Time (Wide_Wide_To_UTF8 (Name));
    end Wide_Wide_Modification_Time;
@@ -255,8 +278,9 @@ package body ZanyBlue.Wide_Wide_Directories is
    ---------------------------------
 
    function Wide_Wide_Modification_Time
-      (Directory_Entry : Wide_Wide_Directory_Entry_Type)
-      return Ada.Calendar.Time is
+     (Directory_Entry : Wide_Wide_Directory_Entry_Type)
+      return Ada.Calendar.Time
+   is
    begin
       return Modification_Time (Directory_Entry);
    end Wide_Wide_Modification_Time;
@@ -265,8 +289,10 @@ package body ZanyBlue.Wide_Wide_Directories is
    -- Wide_Wide_More_Entries --
    ----------------------------
 
-   function Wide_Wide_More_Entries (Search : Wide_Wide_Search_Type)
-      return Boolean is
+   function Wide_Wide_More_Entries
+     (Search : Wide_Wide_Search_Type)
+      return Boolean
+   is
    begin
       return More_Entries (Search);
    end Wide_Wide_More_Entries;
@@ -289,13 +315,12 @@ package body ZanyBlue.Wide_Wide_Directories is
       Pattern   : Wide_Wide_String;
       Filter    : Wide_Wide_Filter_Type := (others => True);
       Process   : not null access procedure
-                            (Directory_Entry : Wide_Wide_Directory_Entry_Type))
+        (Directory_Entry : Wide_Wide_Directory_Entry_Type))
    is
    begin
-      Search (Wide_Wide_To_UTF8 (Directory),
-              Wide_Wide_To_UTF8 (Pattern),
-              Filter,
-              Process);
+      Search
+        (Wide_Wide_To_UTF8 (Directory), Wide_Wide_To_UTF8 (Pattern), Filter,
+         Process);
    end Wide_Wide_Search;
 
    -----------------------------
@@ -311,8 +336,10 @@ package body ZanyBlue.Wide_Wide_Directories is
    -- Wide_Wide_Simple_Name --
    ---------------------------
 
-   function Wide_Wide_Simple_Name (Name : Wide_Wide_String)
-      return Wide_Wide_String is
+   function Wide_Wide_Simple_Name
+     (Name : Wide_Wide_String)
+      return Wide_Wide_String
+   is
    begin
       return Wide_Wide_From_UTF8 (Simple_Name (Wide_Wide_To_UTF8 (Name)));
    end Wide_Wide_Simple_Name;
@@ -322,8 +349,9 @@ package body ZanyBlue.Wide_Wide_Directories is
    ---------------------------
 
    function Wide_Wide_Simple_Name
-      (Directory_Entry : Wide_Wide_Directory_Entry_Type)
-      return Wide_Wide_String is
+     (Directory_Entry : Wide_Wide_Directory_Entry_Type)
+      return Wide_Wide_String
+   is
    begin
       return Wide_Wide_From_UTF8 (Simple_Name (Directory_Entry));
    end Wide_Wide_Simple_Name;
@@ -332,8 +360,10 @@ package body ZanyBlue.Wide_Wide_Directories is
    -- Wide_Wide_Size --
    --------------------
 
-   function Wide_Wide_Size (Name : Wide_Wide_String)
-      return Wide_Wide_File_Size is
+   function Wide_Wide_Size
+     (Name : Wide_Wide_String)
+      return Wide_Wide_File_Size
+   is
    begin
       return Size (Wide_Wide_To_UTF8 (Name));
    end Wide_Wide_Size;
@@ -343,8 +373,9 @@ package body ZanyBlue.Wide_Wide_Directories is
    --------------------
 
    function Wide_Wide_Size
-      (Directory_Entry : Wide_Wide_Directory_Entry_Type)
-      return Wide_Wide_File_Size is
+     (Directory_Entry : Wide_Wide_Directory_Entry_Type)
+      return Wide_Wide_File_Size
+   is
    begin
       return Size (Directory_Entry);
    end Wide_Wide_Size;
@@ -355,14 +386,14 @@ package body ZanyBlue.Wide_Wide_Directories is
 
    procedure Wide_Wide_Start_Search
      (Search    : in out Wide_Wide_Search_Type;
-      Directory : Wide_Wide_String;
-      Pattern   : Wide_Wide_String;
-      Filter    : Wide_Wide_Filter_Type := (others => True)) is
+      Directory :        Wide_Wide_String;
+      Pattern   :        Wide_Wide_String;
+      Filter    :        Wide_Wide_Filter_Type := (others => True))
+   is
    begin
-      Start_Search (Search,
-                    Wide_Wide_To_UTF8 (Directory),
-                    Wide_Wide_To_UTF8 (Pattern),
-                    Filter);
+      Start_Search
+        (Search, Wide_Wide_To_UTF8 (Directory), Wide_Wide_To_UTF8 (Pattern),
+         Filter);
    end Wide_Wide_Start_Search;
 
 end ZanyBlue.Wide_Wide_Directories;

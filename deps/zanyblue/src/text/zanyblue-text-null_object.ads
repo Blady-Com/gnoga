@@ -43,11 +43,12 @@ package ZanyBlue.Text.Null_Object is
 
    type Null_Argument_Type is new Argument_Type with null record;
 
-   overriding
-   function Format (Value     : Null_Argument_Type;
-                    Type_Name : Wide_String;
-                    Template  : Wide_String;
-                    Locale    : Locale_Type) return Wide_String;
+   overriding function Format
+     (Value     : Null_Argument_Type;
+      Type_Name : Wide_String;
+      Template  : Wide_String;
+      Locale    : Locale_Type)
+      return Wide_String;
    --  Format a null value, simply the empty string.
 
    Null_Argument : constant Null_Argument_Type := (null record);

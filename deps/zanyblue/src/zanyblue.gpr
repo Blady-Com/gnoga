@@ -75,4 +75,6 @@ project ZanyBlue is
       for Artifacts ("share/examples/zanyblue") use ("../examples/");
    end Install;
 
+   package Pretty_Printer renames zbcom.Pretty_Printer;
+
 end ZanyBlue;

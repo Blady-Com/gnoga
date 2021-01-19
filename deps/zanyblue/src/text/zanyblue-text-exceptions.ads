@@ -44,32 +44,32 @@ package ZanyBlue.Text.Exceptions is
    use ZanyBlue.Text.Arguments;
 
    type Exception_Argument_Type (<>) is
-      new Exception_Category_Type with private;
+     new Exception_Category_Type with private;
 
-   function Create (Value : Exception_Occurrence)
+   function Create
+     (Value : Exception_Occurrence)
       return Exception_Argument_Type;
    --  Create a "boxed" instance of a string type.
 
-   function "+" (Value : Exception_Occurrence)
-      return Exception_Argument_Type
-      renames Create;
+   function "+"
+     (Value : Exception_Occurrence)
+      return Exception_Argument_Type renames Create;
    --  Utility renaming of the "Create" function.
 
-   overriding
-   function Format (Value     : Exception_Argument_Type;
-                    Type_Name : Wide_String;
-                    Template  : Wide_String;
-                    Locale    : Locale_Type) return Wide_String;
+   overriding function Format
+     (Value     : Exception_Argument_Type;
+      Type_Name : Wide_String;
+      Template  : Wide_String;
+      Locale    : Locale_Type)
+      return Wide_String;
    --  Format an individual argument using the Template to direct the
    --  conversion.
 
 private
 
-   type Exception_Argument_Type (N_Length : Positive;
-                                 M_Length : Positive;
-                                 I_Length : Positive) is
-      new Exception_Category_Type with
-   record
+   type Exception_Argument_Type
+     (N_Length : Positive; M_Length : Positive; I_Length : Positive)
+   is new Exception_Category_Type with record
       Name        : Wide_String (1 .. N_Length);
       Message     : Wide_String (1 .. M_Length);
       Information : Wide_String (1 .. I_Length);

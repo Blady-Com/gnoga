@@ -35,9 +35,10 @@
 
 package body ZanyBlue.Text.Exceptions is
 
-   function Create (Name        : Wide_String;
-                    Message     : Wide_String;
-                    Information : Wide_String)
+   function Create
+     (Name        : Wide_String;
+      Message     : Wide_String;
+      Information : Wide_String)
       return Exception_Argument_Type;
    --  Create argument type based on the exception information converted
    --  from Strings assumed to UTF-8 strings to Wide_Strings.
@@ -46,43 +47,47 @@ package body ZanyBlue.Text.Exceptions is
    -- Create --
    ------------
 
-   function Create (Value : Exception_Occurrence)
+   function Create
+     (Value : Exception_Occurrence)
       return Exception_Argument_Type
    is
    begin
-      return Create (Wide_From_UTF8 (Exception_Name (Value)),
-                     Wide_From_UTF8 (Exception_Message (Value)),
-                     Wide_From_UTF8 (Exception_Information (Value)));
+      return
+        Create
+          (Wide_From_UTF8 (Exception_Name (Value)),
+           Wide_From_UTF8 (Exception_Message (Value)),
+           Wide_From_UTF8 (Exception_Information (Value)));
    end Create;
 
    ------------
    -- Create --
    ------------
 
-   function Create (Name        : Wide_String;
-                    Message     : Wide_String;
-                    Information : Wide_String)
+   function Create
+     (Name        : Wide_String;
+      Message     : Wide_String;
+      Information : Wide_String)
       return Exception_Argument_Type
    is
    begin
-      return Exception_Argument_Type'(
-                N_Length    => Name'Length,
-                M_Length    => Message'Length,
-                I_Length    => Information'Length,
-                Name        => Name,
-                Message     => Message,
-                Information => Information);
+      return
+        Exception_Argument_Type'
+          (N_Length    => Name'Length, M_Length => Message'Length,
+           I_Length    => Information'Length, Name => Name, Message => Message,
+           Information => Information);
    end Create;
 
    ------------
    -- Format --
    ------------
 
-   overriding
-   function Format (Value     : Exception_Argument_Type;
-                    Type_Name : Wide_String;
-                    Template  : Wide_String;
-                    Locale    : Locale_Type) return Wide_String is
+   overriding function Format
+     (Value     : Exception_Argument_Type;
+      Type_Name : Wide_String;
+      Template  : Wide_String;
+      Locale    : Locale_Type)
+      return Wide_String
+   is
       pragma Unreferenced (Type_Name);
       pragma Unreferenced (Locale);
    begin

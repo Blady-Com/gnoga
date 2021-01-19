@@ -171,41 +171,47 @@ package ZanyBlue.Text.Format_Parser is
 
    type Align_Type is (None, Left, Right, Numeric, Center);
    type Sign_Type is (None, Plus, Minus, Space);
-   type Data_Type is (None, 'a', 'b', 'c', 'd', 'e', 'E', 'f', 'F',
-                      'g', 'G', 'n', 'o', 'x', 'X', '%');
-   type Format_Type is
-      record
-         Fill_Defined      : Boolean := False;
-         Fill              : Wide_Character := ' ';
-         Align             : Align_Type := None;
-         Sign              : Sign_Type := None;
-         Include_Base      : Boolean := False;
-         Width             : Natural := 0;
-         Precision_Defined : Boolean := False;
-         Precision         : Natural := 0;
-         Data              : Data_Type := None;
-      end record;
+   type Data_Type is
+     (None, 'a', 'b', 'c', 'd', 'e', 'E', 'f', 'F', 'g', 'G', 'n', 'o', 'x',
+      'X', '%');
+   type Format_Type is record
+      Fill_Defined      : Boolean        := False;
+      Fill              : Wide_Character := ' ';
+      Align             : Align_Type     := None;
+      Sign              : Sign_Type      := None;
+      Include_Base      : Boolean        := False;
+      Width             : Natural        := 0;
+      Precision_Defined : Boolean        := False;
+      Precision         : Natural        := 0;
+      Data              : Data_Type      := None;
+   end record;
 
    Invalid_Format       : exception;
    Internal_Error       : exception;
    Field_Too_Wide_Error : exception;
 
-   function Align (Value     : Wide_String;
-                   Fill      : Wide_Character;
-                   Width     : Natural;
-                   Alignment : Align_Type;
-                   Prefix    : Wide_String := "") return Wide_String;
+   function Align
+     (Value     : Wide_String;
+      Fill      : Wide_Character;
+      Width     : Natural;
+      Alignment : Align_Type;
+      Prefix    : Wide_String := "")
+      return Wide_String;
    --  Format a string value within a field width with the given
    --  alignment, e.g., center "XYZ" in 20 spaces padding with spaces.
    --  The Prefix argument is used for numeric formatting allowing the
    --  the padding to occur after the sign, e.g., "+*******20" to format
    --  20 in width of 10, numeric justified.
 
-   function Parse (Format            : Wide_String;
-                   Locale            : Locale_Type) return Format_Type;
+   function Parse
+     (Format : Wide_String;
+      Locale : Locale_Type)
+      return Format_Type;
    --  Parse a format string to the individual field values.
 
-   function To_String (Format : Format_Type) return Wide_String;
+   function To_String
+     (Format : Format_Type)
+      return Wide_String;
    --  Generate a string representation for formatting information.
    --  Used for debugging purposes.
 

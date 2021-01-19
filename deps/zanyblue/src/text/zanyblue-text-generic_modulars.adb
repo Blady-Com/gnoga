@@ -45,7 +45,10 @@ package body ZanyBlue.Text.Generic_Modulars is
    -- Create --
    ------------
 
-   function Create (Value : Modular_Type) return Modular_Argument_Type is
+   function Create
+     (Value : Modular_Type)
+      return Modular_Argument_Type
+   is
    begin
       return Modular_Argument_Type'(Data => Value);
    end Create;
@@ -54,18 +57,20 @@ package body ZanyBlue.Text.Generic_Modulars is
    -- Format --
    ------------
 
-   overriding
-   function Format (Value     : Modular_Argument_Type;
-                    Type_Name : Wide_String;
-                    Template  : Wide_String;
-                    Locale    : Locale_Type) return Wide_String is
+   overriding function Format
+     (Value     : Modular_Argument_Type;
+      Type_Name : Wide_String;
+      Template  : Wide_String;
+      Locale    : Locale_Type)
+      return Wide_String
+   is
       pragma Unreferenced (Type_Name);
 
       procedure Generate_Number (X : Modular_Type'Base);
 
       Formatting : constant Format_Type := Parse (Template, Locale);
       Buffer     : Buffer_Type;
-      Lowercase  : Boolean := True;
+      Lowercase  : Boolean              := True;
       Digit_Map  : Wide_String (1 .. 16);
       Base       : Modular_Type'Base range 2 .. 16;
 
@@ -80,11 +85,15 @@ package body ZanyBlue.Text.Generic_Modulars is
    begin
       --  Use the data type to determine the base to use
       case Formatting.Data is
-         when 'b' =>       Base := 2;
-         when 'o' =>       Base := 8;
-         when 'x' | 'X' => Base := 16;
-                           Lowercase := Formatting.Data = 'x';
-         when others =>    Base := 10;
+         when 'b' =>
+            Base := 2;
+         when 'o' =>
+            Base := 8;
+         when 'x' | 'X' =>
+            Base      := 16;
+            Lowercase := Formatting.Data = 'x';
+         when others =>
+            Base := 10;
       end case;
       Digit_Map := Locale_Digits (Locale, Lowercase);
       --  Positive add '+' or ' ', if user requested, negative not possible!
@@ -99,10 +108,14 @@ package body ZanyBlue.Text.Generic_Modulars is
       if Formatting.Include_Base and then Base /= 10 then
          --  Decorator with base information if base /= 10 and user requested
          case Base is
-            when 2 =>      Add (Buffer, "2#");
-            when 8 =>      Add (Buffer, "8#");
-            when 16 =>     Add (Buffer, "16#");
-            when others => null;
+            when 2 =>
+               Add (Buffer, "2#");
+            when 8 =>
+               Add (Buffer, "8#");
+            when 16 =>
+               Add (Buffer, "16#");
+            when others =>
+               null;
          end case;
       end if;
       Generate_Number (Value.Data);
@@ -111,8 +124,10 @@ package body ZanyBlue.Text.Generic_Modulars is
          Add (Buffer, '#');
       end if;
       --  Apply alignment and return
-      return Align (To_String (Buffer),
-                    Formatting.Fill, Formatting.Width, Formatting.Align);
+      return
+        Align
+          (To_String (Buffer), Formatting.Fill, Formatting.Width,
+           Formatting.Align);
    end Format;
 
 end ZanyBlue.Text.Generic_Modulars;

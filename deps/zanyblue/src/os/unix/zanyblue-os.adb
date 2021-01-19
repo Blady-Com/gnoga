@@ -124,30 +124,35 @@ package body ZanyBlue.OS is
    -- Wide_Copy_Tree --
    --------------------
 
-   procedure Wide_Copy_Tree (Source_Name : Wide_String;
-                             Target_Name : Wide_String) is
+   procedure Wide_Copy_Tree
+     (Source_Name : Wide_String;
+      Target_Name : Wide_String)
+   is
 
-      procedure Process_Entry (Path : String;
-                               Elem : String;
-                               Kind : File_Kind);
+      procedure Process_Entry
+        (Path : String;
+         Elem : String;
+         Kind : File_Kind);
 
-      procedure Process_Entry (Path : String;
-                               Elem : String;
-                               Kind : File_Kind) is
+      procedure Process_Entry
+        (Path : String;
+         Elem : String;
+         Kind : File_Kind)
+      is
          Wide_Elem : constant Wide_String := Wide_From_UTF8 (Elem);
-         Dest_Path : constant Wide_String := Wide_Compose (Target_Name,
-                                                           Wide_Elem);
+         Dest_Path : constant Wide_String :=
+           Wide_Compose (Target_Name, Wide_Elem);
       begin
          if Elem'Length = 0 or else Elem (Elem'First) = '.' then
             return;
          end if;
          case Kind is
-         when Ordinary_File =>
-            Wide_Copy_File (Wide_From_UTF8 (Path), Dest_Path);
-         when Directory =>
-            Wide_Copy_Tree (Wide_From_UTF8 (Path), Dest_Path);
-         when others =>
-            null;
+            when Ordinary_File =>
+               Wide_Copy_File (Wide_From_UTF8 (Path), Dest_Path);
+            when Directory =>
+               Wide_Copy_Tree (Wide_From_UTF8 (Path), Dest_Path);
+            when others =>
+               null;
          end case;
       end Process_Entry;
 
@@ -168,88 +173,102 @@ package body ZanyBlue.OS is
    -- Wide_Create --
    -----------------
 
-   procedure Wide_Create (File : in out Ada.Text_IO.File_Type;
-                          Name : Wide_String) is
+   procedure Wide_Create
+     (File : in out Ada.Text_IO.File_Type;
+      Name :        Wide_String)
+   is
       use Ada.Text_IO;
    begin
-      Create (File,
-              Mode => Out_File,
-              Name => Wide_To_UTF8 (Name),
-              Form => UTF8_File_Form);
+      Create
+        (File, Mode => Out_File, Name => Wide_To_UTF8 (Name),
+         Form       => UTF8_File_Form);
    end Wide_Create;
 
    -----------------
    -- Wide_Create --
    -----------------
 
-   procedure Wide_Create (File : in out Ada.Wide_Text_IO.File_Type;
-                          Name : Wide_String) is
+   procedure Wide_Create
+     (File : in out Ada.Wide_Text_IO.File_Type;
+      Name :        Wide_String)
+   is
       use Ada.Wide_Text_IO;
    begin
-      Create (File,
-              Mode => Out_File,
-              Name => Wide_To_UTF8 (Name),
-              Form => UTF8_File_Form);
+      Create
+        (File, Mode => Out_File, Name => Wide_To_UTF8 (Name),
+         Form       => UTF8_File_Form);
    end Wide_Create;
 
    -----------------------
    -- Wide_Is_Directory --
    -----------------------
 
-   function Wide_Is_Directory (Name : Wide_String) return Boolean is
+   function Wide_Is_Directory
+     (Name : Wide_String)
+      return Boolean
+   is
    begin
-      return Wide_Exists (Name)
-         and then Kind (Wide_To_UTF8 (Name)) = Directory;
+      return
+        Wide_Exists (Name) and then Kind (Wide_To_UTF8 (Name)) = Directory;
    end Wide_Is_Directory;
 
    -----------------------------
    -- Wide_Is_Executable_File --
    -----------------------------
 
-   function Wide_Is_Executable_File (Name : Wide_String) return Boolean is
+   function Wide_Is_Executable_File
+     (Name : Wide_String)
+      return Boolean
+   is
    begin
-      return Wide_Is_File (Name)
-             and then GNAT.OS_Lib.Is_Executable_File (Wide_To_UTF8 (Name));
+      return
+        Wide_Is_File (Name)
+        and then GNAT.OS_Lib.Is_Executable_File (Wide_To_UTF8 (Name));
    end Wide_Is_Executable_File;
 
    ------------------
    -- Wide_Is_File --
    ------------------
 
-   function Wide_Is_File (Name : Wide_String) return Boolean is
+   function Wide_Is_File
+     (Name : Wide_String)
+      return Boolean
+   is
    begin
-      return Wide_Exists (Name)
-         and then Kind (Wide_To_UTF8 (Name)) = Ordinary_File;
+      return
+        Wide_Exists (Name) and then Kind (Wide_To_UTF8 (Name)) = Ordinary_File;
    end Wide_Is_File;
 
    ---------------
    -- Wide_Open --
    ---------------
 
-   procedure Wide_Open (File : in out Ada.Text_IO.File_Type;
-                        Mode : Ada.Text_IO.File_Mode;
-                        Name : Wide_String) is
+   procedure Wide_Open
+     (File : in out Ada.Text_IO.File_Type;
+      Mode :        Ada.Text_IO.File_Mode;
+      Name :        Wide_String)
+   is
       use Ada.Text_IO;
    begin
-      Open (File,
-            Mode => Mode,
-            Name => Wide_To_UTF8 (Name),
-            Form => UTF8_File_Form);
+      Open
+        (File, Mode => Mode, Name => Wide_To_UTF8 (Name),
+         Form       => UTF8_File_Form);
    end Wide_Open;
 
    ---------------
    -- Wide_Open --
    ---------------
 
-   procedure Wide_Open (File : in out Ada.Wide_Text_IO.File_Type;
-                        Mode : Ada.Wide_Text_IO.File_Mode;
-                        Name : Wide_String) is
+   procedure Wide_Open
+     (File : in out Ada.Wide_Text_IO.File_Type;
+      Mode :        Ada.Wide_Text_IO.File_Mode;
+      Name :        Wide_String)
+   is
       use Ada.Wide_Text_IO;
    begin
-      Open (File,
-            Mode => Mode,
-            Name => Wide_To_UTF8 (Name),
-            Form => UTF8_File_Form);
+      Open
+        (File, Mode => Mode, Name => Wide_To_UTF8 (Name),
+         Form       => UTF8_File_Form);
    end Wide_Open;
 
 end ZanyBlue.OS;

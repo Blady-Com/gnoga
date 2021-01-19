@@ -36,18 +36,18 @@
 with ZanyBlue.Text.Pseudo;
 with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Arguments;
-with ZanyBlue.Text.Format_Errors;   use ZanyBlue.Text.Format_Errors;
+with ZanyBlue.Text.Format_Errors; use ZanyBlue.Text.Format_Errors;
 
 function ZanyBlue.Text.Format_Message
-            (Message        : Wide_String;
-             Arguments      : ZanyBlue.Text.Arguments.Argument_List;
-             Mapping        : ZanyBlue.Text.Pseudo.Pseudo_Map_Access;
-             Locale         : ZanyBlue.Text.Locales.Locale_Type;
-             Raise_Errors   : Boolean := True;
-             Mark_Messages  : Boolean := True;
-             Mark_Arguments : Boolean := True;
-             Error_Handler  : access Error_Handler_Type'Class
-                                 := Standard_Error_Handler'Access)
+  (Message        : Wide_String;
+   Arguments      : ZanyBlue.Text.Arguments.Argument_List;
+   Mapping        : ZanyBlue.Text.Pseudo.Pseudo_Map_Access;
+   Locale         : ZanyBlue.Text.Locales.Locale_Type;
+   Raise_Errors   : Boolean                         := True;
+   Mark_Messages  : Boolean                         := True;
+   Mark_Arguments : Boolean                         := True;
+   Error_Handler  : access Error_Handler_Type'Class :=
+     Standard_Error_Handler'Access)
    return Wide_String;
 --  Function to format a message text string containing references to
 --  arguments, e.g., "{0}", "{1,10}", with the argument values based on

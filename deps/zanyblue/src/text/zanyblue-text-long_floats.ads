@@ -36,6 +36,5 @@
 with ZanyBlue.Text.Generic_Floats;
 pragma Elaborate_All (ZanyBlue.Text.Generic_Floats);
 
-package ZanyBlue.Text.Long_Floats is
-   new ZanyBlue.Text.Generic_Floats (
-           Float_Type => Long_Float);
+package ZanyBlue.Text.Long_Floats is new ZanyBlue.Text.Generic_Floats
+  (Float_Type => Long_Float);

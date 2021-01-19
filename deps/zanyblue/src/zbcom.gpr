@@ -61,6 +61,7 @@ project zbcom is
       when "Debug" =>
          Compile_Switches := Compile_Switches & ("-g",
                                                  "-gnatf",
+                                                 "-gnatW8",
                                                  "-gnatU",
                                                  "-gnato",
                                                  "-gnatwal",
@@ -82,5 +83,9 @@ project zbcom is
    package Ide is
       for VCS_Kind use "Subversion";
    end Ide;
+
+   package Pretty_Printer is
+      for Default_Switches ("Ada") use ("-W8", "--par_threshold=1", "--comments-unchanged");
+   end Pretty_Printer;
 
 end zbcom;

@@ -134,127 +134,151 @@ package ZanyBlue.Parameters.Scopes is
    --  Return to the enclosing scope.  Changes to local parameters are lost
    --  and the previous values are made available.
 
-   function Is_Defined (Param_Stack : Parameter_Stack_Type;
-                        Name        : Wide_String;
-                        Any_Scope   : Boolean := True) return Boolean;
+   function Is_Defined
+     (Param_Stack : Parameter_Stack_Type;
+      Name        : Wide_String;
+      Any_Scope   : Boolean := True)
+      return Boolean;
    --  Is a parameter defined, either for the current scope or in one of the
    --  enclosing scopes.  If Any_Scope is False, only the current scope
    --  is checked.
 
-   function Get (Param_Stack : Parameter_Stack_Type;
-                 Name        : Wide_String) return Value_Type'Class;
+   function Get
+     (Param_Stack : Parameter_Stack_Type;
+      Name        : Wide_String)
+      return Value_Type'Class;
    --  General parameter query routine.  This can be used to handle user
    --  defined parameter types.
 
-   function Get_Boolean (Param_Stack : Parameter_Stack_Type;
-                         Name        : Wide_String) return Boolean;
+   function Get_Boolean
+     (Param_Stack : Parameter_Stack_Type;
+      Name        : Wide_String)
+      return Boolean;
    --  Get the value of a Boolean parameter.  Not_A_Boolean_Error is raised
    --  if the value is not a Boolean.
 
-   function Get_Float (Param_Stack : Parameter_Stack_Type;
-                       Name        : Wide_String) return Float;
+   function Get_Float
+     (Param_Stack : Parameter_Stack_Type;
+      Name        : Wide_String)
+      return Float;
    --  Get the value of a Float parameter.  Not_A_Real_Error is raised
    --  if the value is not a Float.
 
-   function Get_Integer (Param_Stack : Parameter_Stack_Type;
-                         Name        : Wide_String) return Integer;
+   function Get_Integer
+     (Param_Stack : Parameter_Stack_Type;
+      Name        : Wide_String)
+      return Integer;
    --  Get the value of an Integer parameter.  Not_An_Integer_Error is raised
    --  if the value is not a Integer.
 
-   function Get_List (Param_Stack : Parameter_Stack_Type;
-                      Name        : Wide_String;
-                      Deep        : Boolean) return List_Type;
+   function Get_List
+     (Param_Stack : Parameter_Stack_Type;
+      Name        : Wide_String;
+      Deep        : Boolean)
+      return List_Type;
    --  Get the value of a List parameter.  If Deep is False, only the current
    --  scope is queried.  If Deep is True, the all scopes are queried and the
    --  the result is an accumulation of all values found.
 
-   function Get_Time (Param_Stack : Parameter_Stack_Type;
-                      Name        : Wide_String) return Time;
+   function Get_Time
+     (Param_Stack : Parameter_Stack_Type;
+      Name        : Wide_String)
+      return Time;
    --  Get the value of a Time parameter.  Not_A_Time_Error is raised
    --  if the value is not a Time.
 
-   function Get_String (Param_Stack : Parameter_Stack_Type;
-                        Name        : Wide_String) return Wide_String;
+   function Get_String
+     (Param_Stack : Parameter_Stack_Type;
+      Name        : Wide_String)
+      return Wide_String;
    --  Get the value of a String parameter.  All types support conversion to
    --  string so a value is always returned unless the parameter is not
    --  defined (Not_Defined_Error is raised in this case).
 
-   procedure Increment (Param_Stack : in out Parameter_Stack_Type;
-                        Name        : Wide_String;
-                        By_Amount   : Integer := 1;
-                        Deep        : Boolean := True);
+   procedure Increment
+     (Param_Stack : in out Parameter_Stack_Type;
+      Name        :        Wide_String;
+      By_Amount   :        Integer := 1;
+      Deep        :        Boolean := True);
    --  Increment an Integer parameter.  If Deep is True, then all instances
    --  of the parameter are increment, i.e., all scopes.
 
-   procedure Append (Param_Stack : in out Parameter_Stack_Type;
-                     Name        : Wide_String;
-                     Value       : Wide_String);
+   procedure Append
+     (Param_Stack : in out Parameter_Stack_Type;
+      Name        :        Wide_String;
+      Value       :        Wide_String);
    --  Append a value to the list parameter.  If the current parameter is not
    --  a list value, it converted (Get_String of the value) to a list prior to
    --  appending.
 
-   procedure Prepend (Param_Stack : in out Parameter_Stack_Type;
-                      Name        : Wide_String;
-                      Value       : Wide_String);
+   procedure Prepend
+     (Param_Stack : in out Parameter_Stack_Type;
+      Name        :        Wide_String;
+      Value       :        Wide_String);
    --  Prepend a value to the list parameter.  If the current parameter is not
    --  a list value, it converted (Get_String of the value) to a list prior to
    --  prepending.
 
-   procedure Set (Param_Stack : in out Parameter_Stack_Type;
-                  Name        : Wide_String;
-                  Value       : Value_Type'Class);
+   procedure Set
+     (Param_Stack : in out Parameter_Stack_Type;
+      Name        :        Wide_String;
+      Value       :        Value_Type'Class);
    --  General parameter set routine.  This can be used to handle user
    --  defined parameter types.
 
-   procedure Set_Boolean (Param_Stack : in out Parameter_Stack_Type;
-                          Name        : Wide_String;
-                          Value       : Boolean);
+   procedure Set_Boolean
+     (Param_Stack : in out Parameter_Stack_Type;
+      Name        :        Wide_String;
+      Value       :        Boolean);
    --  Set a parameter to a Boolean value.
 
-   procedure Set_Integer (Param_Stack : in out Parameter_Stack_Type;
-                          Name        : Wide_String;
-                          Value       : Integer);
+   procedure Set_Integer
+     (Param_Stack : in out Parameter_Stack_Type;
+      Name        :        Wide_String;
+      Value       :        Integer);
    --  Set a parameter to an Integer value.
 
-   procedure Set_Float (Param_Stack : in out Parameter_Stack_Type;
-                        Name        : Wide_String;
-                        Value       : Float);
+   procedure Set_Float
+     (Param_Stack : in out Parameter_Stack_Type;
+      Name        :        Wide_String;
+      Value       :        Float);
    --  Set a parameter to a Float value.
 
-   procedure Set_String (Param_Stack : in out Parameter_Stack_Type;
-                         Name        : Wide_String;
-                         Value       : Wide_String);
+   procedure Set_String
+     (Param_Stack : in out Parameter_Stack_Type;
+      Name        :        Wide_String;
+      Value       :        Wide_String);
    --  Set a parameter to a String value.
 
-   procedure Set_Time (Param_Stack : in out Parameter_Stack_Type;
-                       Name        : Wide_String;
-                       Value       : Time);
+   procedure Set_Time
+     (Param_Stack : in out Parameter_Stack_Type;
+      Name        :        Wide_String;
+      Value       :        Time);
    --  Set a parameter to a Time value.
 
-   procedure Dump (Param_Stack : Parameter_Stack_Type;
-                   Destination : Ada.Text_IO.File_Type;
-                   All_Scopes  : Boolean);
+   procedure Dump
+     (Param_Stack : Parameter_Stack_Type;
+      Destination : Ada.Text_IO.File_Type;
+      All_Scopes  : Boolean);
    --  Dump the set of parameters defined in a parameter set to a file.  This
    --  is a debugging routine: no XML quoting is currently performed on the
    --  parameter values so the general XML might not be valid XML!
 
-   procedure Dump (Param_Stack : Parameter_Stack_Type;
-                   Destination : Ada.Wide_Text_IO.File_Type;
-                   All_Scopes  : Boolean);
+   procedure Dump
+     (Param_Stack : Parameter_Stack_Type;
+      Destination : Ada.Wide_Text_IO.File_Type;
+      All_Scopes  : Boolean);
    --  Dump the set of parameters defined in a parameter set to a file.  This
    --  is a debugging routine: no XML quoting is currently performed on the
    --  parameter values so the general XML might not be valid XML!
 
 private
 
-   package Parameter_Set_Vectors is
-      new Ada.Containers.Indefinite_Vectors (
-             Index_Type => Positive,
-             Element_Type => Parameter_Set_Type);
+   package Parameter_Set_Vectors is new Ada.Containers.Indefinite_Vectors
+     (Index_Type => Positive, Element_Type => Parameter_Set_Type);
 
-   type Parameter_Stack_Type is tagged
-      record
-         Values : Parameter_Set_Vectors.Vector;
-      end record;
+   type Parameter_Stack_Type is tagged record
+      Values : Parameter_Set_Vectors.Vector;
+   end record;
 
 end ZanyBlue.Parameters.Scopes;

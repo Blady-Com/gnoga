@@ -45,22 +45,25 @@ package body ZanyBlue.Text.Printer is
    -- Print --
    -----------
 
-   overriding
-   procedure Print (Printer     : in out Standard_Printer_Type;
-                    Destination : Ada.Text_IO.File_Type;
-                    Facility    : Wide_String;
-                    Key         : Wide_String;
-                    Locale      : Locale_Type;
-                    Arguments   : Argument_List;
-                    Message     : Wide_String;
-                    With_NL     : Boolean) is
+   overriding procedure Print
+     (Printer     : in out Standard_Printer_Type;
+      Destination :        Ada.Text_IO.File_Type;
+      Facility    :        Wide_String;
+      Key         :        Wide_String;
+      Locale      :        Locale_Type;
+      Arguments   :        Argument_List;
+      Message     :        Wide_String;
+      With_NL     :        Boolean)
+   is
 
       pragma Unreferenced (Printer);
 
       use Ada.Text_IO.Text_Streams;
 
       procedure New_Line (The_Stream : Stream_Access);
-      procedure Put (The_Stream : Stream_Access; Text : Wide_String);
+      procedure Put
+        (The_Stream : Stream_Access;
+         Text       : Wide_String);
 
       The_Stream : constant Stream_Access := Stream (Destination);
 
@@ -68,11 +71,8 @@ package body ZanyBlue.Text.Printer is
       -- Impl --
       ----------
 
-      procedure Impl is
-         new ZanyBlue.Text.Generic_Printer (
-                File_Type => Stream_Access,
-                Put => Put,
-                New_Line => New_Line);
+      procedure Impl is new ZanyBlue.Text.Generic_Printer
+        (File_Type => Stream_Access, Put => Put, New_Line => New_Line);
 
       --------------
       -- New_Line --
@@ -87,7 +87,10 @@ package body ZanyBlue.Text.Printer is
       -- Put --
       ---------
 
-      procedure Put (The_Stream : Stream_Access; Text : Wide_String) is
+      procedure Put
+        (The_Stream : Stream_Access;
+         Text       : Wide_String)
+      is
          Encoded : constant String := Locale.Encode_To_String (Text);
       begin
          String'Write (The_Stream, Encoded);
@@ -101,15 +104,16 @@ package body ZanyBlue.Text.Printer is
    -- Print --
    -----------
 
-   overriding
-   procedure Print (Printer     : in out Standard_Printer_Type;
-                    Destination : Ada.Wide_Text_IO.File_Type;
-                    Facility    : Wide_String;
-                    Key         : Wide_String;
-                    Locale      : Locale_Type;
-                    Arguments   : Argument_List;
-                    Message     : Wide_String;
-                    With_NL     : Boolean) is
+   overriding procedure Print
+     (Printer     : in out Standard_Printer_Type;
+      Destination :        Ada.Wide_Text_IO.File_Type;
+      Facility    :        Wide_String;
+      Key         :        Wide_String;
+      Locale      :        Locale_Type;
+      Arguments   :        Argument_List;
+      Message     :        Wide_String;
+      With_NL     :        Boolean)
+   is
 
       pragma Unreferenced (Printer);
 
@@ -120,11 +124,9 @@ package body ZanyBlue.Text.Printer is
       -- Impl --
       ----------
 
-      procedure Impl is
-         new ZanyBlue.Text.Generic_Printer (
-                File_Type => Ada.Wide_Text_IO.File_Type,
-                Put => Ada.Wide_Text_IO.Put,
-                New_Line => New_Line);
+      procedure Impl is new ZanyBlue.Text.Generic_Printer
+        (File_Type => Ada.Wide_Text_IO.File_Type, Put => Ada.Wide_Text_IO.Put,
+         New_Line  => New_Line);
 
       --------------
       -- New_Line --

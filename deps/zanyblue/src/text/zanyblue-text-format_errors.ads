@@ -37,28 +37,31 @@ package ZanyBlue.Text.Format_Errors is
 
    type Error_Handler_Type is tagged null record;
 
-   procedure Format_Not_Closed (Error_Handler  : in out Error_Handler_Type;
-                                Message        : Wide_String;
-                                Position       : Positive;
-                                Level          : Natural;
-                                Raise_Errors   : Boolean);
+   procedure Format_Not_Closed
+     (Error_Handler : in out Error_Handler_Type;
+      Message       :        Wide_String;
+      Position      :        Positive;
+      Level         :        Natural;
+      Raise_Errors  :        Boolean);
    --  Handle the format reference in a message text string missing a
    --  closing brace, e.g., "Arg {0".
 
-   procedure Illegal_Character (Error_Handler  : in out Error_Handler_Type;
-                                Message        : Wide_String;
-                                Position       : Positive;
-                                Ch             : Wide_Character;
-                                Level          : Natural;
-                                Raise_Errors   : Boolean);
+   procedure Illegal_Character
+     (Error_Handler : in out Error_Handler_Type;
+      Message       :        Wide_String;
+      Position      :        Positive;
+      Ch            :        Wide_Character;
+      Level         :        Natural;
+      Raise_Errors  :        Boolean);
    --  Handle an illegal character in a format string, e.g., only digits
    --  are expected after an opening brace, "Arg {x}"
 
-   procedure Missing_Argument (Error_Handler  : in out Error_Handler_Type;
-                               Message        : Wide_String;
-                               Position       : Natural;
-                               Type_Name      : Wide_String;
-                               Raise_Errors   : Boolean);
+   procedure Missing_Argument
+     (Error_Handler : in out Error_Handler_Type;
+      Message       :        Wide_String;
+      Position      :        Natural;
+      Type_Name     :        Wide_String;
+      Raise_Errors  :        Boolean);
    --  Handle a reference to a missing argument when formatting a message.
 
    Standard_Error_Handler : aliased Error_Handler_Type;

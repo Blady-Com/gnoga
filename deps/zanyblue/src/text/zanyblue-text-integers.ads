@@ -36,6 +36,5 @@
 with ZanyBlue.Text.Generic_Integers;
 pragma Elaborate_All (ZanyBlue.Text.Generic_Integers);
 
-package ZanyBlue.Text.Integers is
-   new ZanyBlue.Text.Generic_Integers (
-           Integer_Type => Integer);
+package ZanyBlue.Text.Integers is new ZanyBlue.Text.Generic_Integers
+  (Integer_Type => Integer);

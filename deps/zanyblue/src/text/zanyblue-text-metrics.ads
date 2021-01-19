@@ -43,8 +43,9 @@ package ZanyBlue.Text.Metrics is
    use ZanyBlue.Text.Catalogs;
    use ZanyBlue.Text.Formatting;
 
-   procedure Write_Usage (Destination : Ada.Wide_Text_IO.File_Type;
-                          Catalog     : Catalog_Type := Standard_Catalog);
+   procedure Write_Usage
+     (Destination : Ada.Wide_Text_IO.File_Type;
+      Catalog     : Catalog_Type := Standard_Catalog);
    --  Write a summary of the usage of each message in the catalog to the
    --  given file as an XML document.  This should be call after the
    --  application has executed, e.g.,
@@ -58,12 +59,14 @@ package ZanyBlue.Text.Metrics is
    --    </zanyblue-message-usage>
    --
 
-   procedure Write_Usage (File_Name : Wide_String;
-                          Catalog   : Catalog_Type := Standard_Catalog);
+   procedure Write_Usage
+     (File_Name : Wide_String;
+      Catalog   : Catalog_Type := Standard_Catalog);
    --  Write the message usage summary to the named file.
 
-   procedure Write_Usage (File_Name : String;
-                          Catalog   : Catalog_Type := Standard_Catalog);
+   procedure Write_Usage
+     (File_Name : String;
+      Catalog   : Catalog_Type := Standard_Catalog);
    --  Write the message usage summary to the named file.
 
 end ZanyBlue.Text.Metrics;

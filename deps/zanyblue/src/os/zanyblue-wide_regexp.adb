@@ -50,19 +50,26 @@ package body ZanyBlue.Wide_Regexp is
    -- Compile --
    -------------
 
-   function Compile (Pattern        : Wide_String;
-                     Glob           : Boolean := False;
-                     Case_Sensitive : Boolean := True) return Regexp is
+   function Compile
+     (Pattern        : Wide_String;
+      Glob           : Boolean := False;
+      Case_Sensitive : Boolean := True)
+      return Regexp
+   is
    begin
-      return GNAT.Regexp.Compile (Wide_To_UTF8 (Pattern), Glob,
-                                  Case_Sensitive);
+      return
+        GNAT.Regexp.Compile (Wide_To_UTF8 (Pattern), Glob, Case_Sensitive);
    end Compile;
 
    -----------
    -- Match --
    -----------
 
-   function Match (S : Wide_String; R : Regexp) return Boolean is
+   function Match
+     (S : Wide_String;
+      R : Regexp)
+      return Boolean
+   is
    begin
       return GNAT.Regexp.Match (Wide_To_UTF8 (S), R);
    end Match;

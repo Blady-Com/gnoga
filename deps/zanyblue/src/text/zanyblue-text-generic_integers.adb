@@ -38,9 +38,8 @@ with ZanyBlue.Text.Generic_Buffer;
 
 package body ZanyBlue.Text.Generic_Integers is
 
-   package Integer_Buffer is
-      new ZanyBlue.Text.Generic_Buffer (
-             Integer_Type => Integer_Type);
+   package Integer_Buffer is new ZanyBlue.Text.Generic_Buffer
+     (Integer_Type => Integer_Type);
 
    use ZanyBlue.Text.Format_Parser;
    use Integer_Buffer;
@@ -49,7 +48,10 @@ package body ZanyBlue.Text.Generic_Integers is
    -- Create --
    ------------
 
-   function Create (Value : Integer_Type) return Integer_Argument_Type is
+   function Create
+     (Value : Integer_Type)
+      return Integer_Argument_Type
+   is
    begin
       return Integer_Argument_Type'(Data => Value);
    end Create;
@@ -58,17 +60,19 @@ package body ZanyBlue.Text.Generic_Integers is
    -- Format --
    ------------
 
-   overriding
-   function Format (Value     : Integer_Argument_Type;
-                    Type_Name : Wide_String;
-                    Template  : Wide_String;
-                    Locale    : Locale_Type) return Wide_String is
+   overriding function Format
+     (Value     : Integer_Argument_Type;
+      Type_Name : Wide_String;
+      Template  : Wide_String;
+      Locale    : Locale_Type)
+      return Wide_String
+   is
       pragma Unreferenced (Type_Name);
 
-      Formatting : constant Format_Type := Parse (Template, Locale);
-      Width      : Integer := Formatting.Width;
+      Formatting : constant Format_Type  := Parse (Template, Locale);
+      Width      : Integer               := Formatting.Width;
       Buffer     : Buffer_Type;
-      Lowercase  : Boolean := True;
+      Lowercase  : Boolean               := True;
       Base       : Positive range 2 .. 16;
       X          : constant Integer_Type := Value.Data;
 
@@ -80,7 +84,7 @@ package body ZanyBlue.Text.Generic_Integers is
          when 'o' =>
             Base := 8;
          when 'x' | 'X' =>
-            Base := 16;
+            Base      := 16;
             Lowercase := Formatting.Data = 'x';
          when others =>
             Base := 10;
@@ -105,37 +109,41 @@ package body ZanyBlue.Text.Generic_Integers is
       if Formatting.Include_Base and then Base /= 10 then
          --  Decorator with base information if base /= 10 and user requested
          case Base is
-            when 2 =>      Add (Buffer, "2#");
-                           Width := Width - 3;
-            when 8 =>      Add (Buffer, "8#");
-                           Width := Width - 3;
-            when 16 =>     Add (Buffer, "16#");
-                           Width := Width - 4;
-            when others => null;
+            when 2 =>
+               Add (Buffer, "2#");
+               Width := Width - 3;
+            when 8 =>
+               Add (Buffer, "8#");
+               Width := Width - 3;
+            when 16 =>
+               Add (Buffer, "16#");
+               Width := Width - 4;
+            when others =>
+               null;
          end case;
       end if;
       if Formatting.Align = Numeric then
          if Formatting.Fill_Defined then
-            Accumulate (Buffer, X, Locale,
-                        Width => Natural'Max (Width, 1),
-                        Fill => "" & Formatting.Fill,
-                        Base => Base, Lowercase => Lowercase);
+            Accumulate
+              (Buffer, X, Locale, Width => Natural'Max (Width, 1),
+               Fill                     => "" & Formatting.Fill, Base => Base,
+               Lowercase                => Lowercase);
          else
-            Accumulate (Buffer, X, Locale,
-                        Width => Natural'Max (Width, 1),
-                        Fill => "",
-                        Base => Base, Lowercase => Lowercase);
+            Accumulate
+              (Buffer, X, Locale, Width => Natural'Max (Width, 1), Fill => "",
+               Base                     => Base, Lowercase => Lowercase);
          end if;
       else
-         Accumulate (Buffer, X, Locale,
-                     Base => Base, Lowercase => Lowercase);
+         Accumulate (Buffer, X, Locale, Base => Base, Lowercase => Lowercase);
       end if;
       if Formatting.Include_Base and then Base /= 10 then
          Add (Buffer, '#');
       end if;
       --  Apply alignment and return
-      return Align (To_String (Buffer),
-                    Formatting.Fill, Formatting.Width, Formatting.Align);
+      return
+        Align
+          (To_String (Buffer), Formatting.Fill, Formatting.Width,
+           Formatting.Align);
    end Format;
 
 end ZanyBlue.Text.Generic_Integers;

@@ -85,35 +85,46 @@ package ZanyBlue.OS is
    function UTF8_File_Form return String;
    --  Return the form string used by the compiler to identify an UTF-8 file.
 
-   procedure Wide_Copy_Tree (Source_Name : Wide_String;
-                             Target_Name : Wide_String);
+   procedure Wide_Copy_Tree
+     (Source_Name : Wide_String;
+      Target_Name : Wide_String);
    --  Copy a directory tree.
 
-   procedure Wide_Create (File : in out Ada.Text_IO.File_Type;
-                          Name : Wide_String);
+   procedure Wide_Create
+     (File : in out Ada.Text_IO.File_Type;
+      Name :        Wide_String);
    --  Create a text with UTF8 encoding files.
 
-   procedure Wide_Create (File : in out Ada.Wide_Text_IO.File_Type;
-                          Name : Wide_String);
+   procedure Wide_Create
+     (File : in out Ada.Wide_Text_IO.File_Type;
+      Name :        Wide_String);
    --  Create a text with UTF8 encoding files.
 
-   procedure Wide_Open (File : in out Ada.Wide_Text_IO.File_Type;
-                        Mode : Ada.Wide_Text_IO.File_Mode;
-                        Name : Wide_String);
+   procedure Wide_Open
+     (File : in out Ada.Wide_Text_IO.File_Type;
+      Mode :        Ada.Wide_Text_IO.File_Mode;
+      Name :        Wide_String);
    --  Create a text with UTF8 encoding files.
 
-   procedure Wide_Open (File : in out Ada.Text_IO.File_Type;
-                        Mode : Ada.Text_IO.File_Mode;
-                        Name : Wide_String);
+   procedure Wide_Open
+     (File : in out Ada.Text_IO.File_Type;
+      Mode :        Ada.Text_IO.File_Mode;
+      Name :        Wide_String);
    --  Create a text with UTF8 encoding files.
 
-   function Wide_Is_Directory (Name : Wide_String) return Boolean;
+   function Wide_Is_Directory
+     (Name : Wide_String)
+      return Boolean;
    --  Is the named path a directory?
 
-   function Wide_Is_File (Name : Wide_String) return Boolean;
+   function Wide_Is_File
+     (Name : Wide_String)
+      return Boolean;
    --  Is the named path a file?
 
-   function Wide_Is_Executable_File (Name : Wide_String) return Boolean;
+   function Wide_Is_Executable_File
+     (Name : Wide_String)
+      return Boolean;
    --  Is the named path a file?
 
 end ZanyBlue.OS;

@@ -13,9 +13,9 @@ package body UXStrings.Text_IO is
 
    use GNAT.OS_Lib;
 
-   Std_In  : aliased File_Type := (Standin, In_File, "sdtin", Latin_1, CRLF, others => <>);
-   Std_Out : aliased File_Type := (Standout, Out_File, "sdtout", Latin_1, CRLF, others => <>);
-   Std_Err : aliased File_Type := (Standerr, Out_File, "sdterr", Latin_1, CRLF, others => <>);
+   Std_In  : aliased File_Type := (Standin, In_File, "sdtin", Latin_1, CRLF_Ending, others => <>);
+   Std_Out : aliased File_Type := (Standout, Out_File, "sdtout", Latin_1, CRLF_Ending, others => <>);
+   Std_Err : aliased File_Type := (Standerr, Out_File, "sdterr", Latin_1, CRLF_Ending, others => <>);
 
    Cur_In  : aliased File_Type := Std_In;
    Cur_Out : aliased File_Type := Std_Out;
@@ -48,7 +48,7 @@ package body UXStrings.Text_IO is
 
    procedure Create
      (File   : in out File_Type; Mode : in File_Mode := Out_File; Name : in UXString := Null_UXString;
-      Scheme : in     Encoding_Scheme := Latin_1; Ending : Line_Ending := CRLF)
+      Scheme : in     Encoding_Scheme := Latin_1; Ending : Line_Ending := CRLF_Ending)
    is
       FD : File_Descriptor;
    begin
@@ -69,7 +69,7 @@ package body UXStrings.Text_IO is
 
    procedure Open
      (File   : in out File_Type; Mode : in File_Mode; Name : in UXString; Scheme : in Encoding_Scheme := Latin_1;
-      Ending :        Line_Ending := CRLF)
+      Ending :        Line_Ending := CRLF_Ending)
    is
       FD : File_Descriptor;
    begin
@@ -419,8 +419,8 @@ package body UXStrings.Text_IO is
 
    procedure New_Line (File : in File_Type; Spacing : in Positive_Count := 1) is
       NL : constant String :=
-        (case File.Ending is when CR => (1 => Character'val (13)), when LF => (1 => Character'val (10)),
-           when CRLF                 => Character'Val (13) & Character'Val (10));
+        (case File.Ending is when CR_Ending => (1 => Character'val (13)), when LF_Ending => (1 => Character'val (10)),
+           when CRLF_Ending                 => Character'Val (13) & Character'Val (10));
       Dummy_Result : Integer;
    begin
       case File.Scheme is
@@ -500,8 +500,8 @@ package body UXStrings.Text_IO is
    procedure Line_Mark (Ending : Line_Ending) is
    begin
       LM :=
-        (case Ending is when CR => From_Latin_1 (Character'val (13)), when LF => From_Latin_1 (Character'val (10)),
-           when CRLF            => From_Latin_1 (Character'Val (13) & Character'Val (10)));
+        (case Ending is when CR_Ending => From_Latin_1 (Character'val (13)), when LF_Ending => From_Latin_1 (Character'val (10)),
+           when CRLF_Ending            => From_Latin_1 (Character'Val (13) & Character'Val (10)));
    end Line_Mark;
 
    --------------
@@ -906,8 +906,8 @@ package body UXStrings.Text_IO is
 
    procedure Get_Line (File : in out File_Type; Item : out UXString) is
       LM : constant UXString :=
-        (case File.Ending is when CR => From_Latin_1 (Character'val (13)), when LF => From_Latin_1 (Character'val (10)),
-           when CRLF                 => From_Latin_1 (Character'Val (13) & Character'Val (10)));
+        (case File.Ending is when CR_Ending => From_Latin_1 (Character'val (13)), when LF_Ending => From_Latin_1 (Character'val (10)),
+           when CRLF_Ending                 => From_Latin_1 (Character'Val (13) & Character'Val (10)));
       EOL : Natural := Index (File.Buffer, LM);
    begin
       while EOL = 0 loop

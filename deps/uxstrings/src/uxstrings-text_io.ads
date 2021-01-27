@@ -10,16 +10,16 @@ package UXStrings.Text_IO is
    subtype Count is Natural range 0 .. Natural'Last;
    subtype Positive_Count is Count range 1 .. Count'Last;
 
-   type Line_Ending is (CR, LF, CRLF);
+   type Line_Ending is (CR_Ending, LF_Ending, CRLF_Ending);
 
    -- File Management
 
    procedure Create
      (File   : in out File_Type; Mode : in File_Mode := Out_File; Name : in UXString := Null_UXString;
-      Scheme : in     Encoding_Scheme := Latin_1; Ending : Line_Ending := CRLF);
+      Scheme : in     Encoding_Scheme := Latin_1; Ending : Line_Ending := CRLF_Ending);
    procedure Open
      (File   : in out File_Type; Mode : in File_Mode; Name : in UXString; Scheme : in Encoding_Scheme := Latin_1;
-      Ending :        Line_Ending := CRLF);
+      Ending :        Line_Ending := CRLF_Ending);
 
    procedure Close (File : in out File_Type);
    procedure Delete (File : in out File_Type);

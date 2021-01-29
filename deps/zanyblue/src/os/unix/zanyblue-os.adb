@@ -34,14 +34,13 @@
 --
 
 with GNAT.OS_Lib;
-with Ada.Characters.Conversions;
 with Ada.Environment_Variables;
-with ZanyBlue.Wide_Wide_Directories;
+with ZanyBlue.Directories;
 
 package body ZanyBlue.OS is
 
    use Ada.Environment_Variables;
-   use ZanyBlue.Wide_Wide_Directories;
+   use ZanyBlue.Directories;
 
    Lang_Environment_Name : constant String := "LANG";
    --  Name of the environment variable defining the locale.
@@ -85,7 +84,7 @@ package body ZanyBlue.OS is
 
    function OS_New_Line return String is
    begin
-      return "" & Ada.Characters.Conversions.To_Wide_Wide_Character (ASCII.LF);
+      return From_Latin_1 (ASCII.LF);
    end OS_New_Line;
 
    --------------------

@@ -40,7 +40,7 @@
 --  strings and are decoded to UXStrings.
 --
 
-package ZanyBlue.Wide_Wide_Command_Line is
+package ZanyBlue.Command_Line is
 
    function Argument_Count return Natural;
    --  Number of command line arguments.
@@ -53,4 +53,4 @@ package ZanyBlue.Wide_Wide_Command_Line is
    function Command_Name return String;
    --  Return the command name as a String.
 
-end ZanyBlue.Wide_Wide_Command_Line;
+end ZanyBlue.Command_Line;

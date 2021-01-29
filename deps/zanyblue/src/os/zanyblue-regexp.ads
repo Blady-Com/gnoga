@@ -42,7 +42,7 @@
 
 with GNAT.Regexp;
 
-package ZanyBlue.Wide_Wide_Regexp is
+package ZanyBlue.Regexp is
 
    subtype Regexp is GNAT.Regexp.Regexp;
 
@@ -61,4 +61,4 @@ package ZanyBlue.Wide_Wide_Regexp is
 
    Error_In_Regexp : exception renames GNAT.Regexp.Error_In_Regexp;
 
-end ZanyBlue.Wide_Wide_Regexp;
+end ZanyBlue.Regexp;

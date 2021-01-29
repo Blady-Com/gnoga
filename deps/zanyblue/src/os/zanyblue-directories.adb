@@ -40,7 +40,7 @@
 --  strings and are decoded to UXStrings.
 --
 
-package body ZanyBlue.Wide_Wide_Directories is
+package body ZanyBlue.Directories is
 
    use Ada.Directories;
 
@@ -363,4 +363,4 @@ package body ZanyBlue.Wide_Wide_Directories is
       Start_Search (Search, To_UTF_8 (Directory), To_UTF_8 (Pattern), Filter);
    end Start_Search;
 
-end ZanyBlue.Wide_Wide_Directories;
+end ZanyBlue.Directories;

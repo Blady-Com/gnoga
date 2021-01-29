@@ -44,7 +44,7 @@ with Ada.Calendar;
 with Ada.Directories;
 with Ada.IO_Exceptions;
 
-package ZanyBlue.Wide_Wide_Directories is
+package ZanyBlue.Directories is
 
    function Current_Directory return String;
    --  Returns the full directory name for the current default directory.
@@ -220,4 +220,4 @@ package ZanyBlue.Wide_Wide_Directories is
    Use_Error    : exception renames Ada.IO_Exceptions.Use_Error;
    Device_Error : exception renames Ada.IO_Exceptions.Device_Error;
 
-end ZanyBlue.Wide_Wide_Directories;
+end ZanyBlue.Directories;

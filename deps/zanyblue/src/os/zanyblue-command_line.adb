@@ -34,39 +34,46 @@
 --
 
 --
---  This is a simple wrapper package around the GNAT GNAT.Regexp
+--  This is a simple wrapper package around the standard Ada.Command_Line
 --  package with String arguments and functions.  The underlying
---  Strings to/from GNAT.Regexp are simply interpreted as UTF-8 encoded
---  strings.
+--  Strings from Ada.Command_Line are simply interpreted as UTF-8 encoded
+--  strings and are decoded to UXStrings.
 --
 
-package body ZanyBlue.Wide_Wide_Regexp is
+with Ada.Command_Line;
 
-   -------------
-   -- Compile --
-   -------------
+package body ZanyBlue.Command_Line is
 
-   function Compile
-     (Pattern        : String;
-      Glob           : Boolean := False;
-      Case_Sensitive : Boolean := True)
-      return Regexp
+   use Ada.Command_Line;
+
+   --------------
+   -- Argument --
+   --------------
+
+   function Argument
+     (Number : Positive)
+      return String
    is
    begin
-      return GNAT.Regexp.Compile (To_UTF_8 (Pattern), Glob, Case_Sensitive);
-   end Compile;
+      return From_UTF_8 (Argument (Number));
+   end Argument;
 
-   -----------
-   -- Match --
-   -----------
+   --------------------
+   -- Argument_Count --
+   --------------------
 
-   function Match
-     (S : String;
-      R : Regexp)
-      return Boolean
-   is
+   function Argument_Count return Natural is
    begin
-      return GNAT.Regexp.Match (To_UTF_8 (S), R);
-   end Match;
+      return Ada.Command_Line.Argument_Count;
+   end Argument_Count;
 
-end ZanyBlue.Wide_Wide_Regexp;
+   ------------------
+   -- Command_Name --
+   ------------------
+
+   function Command_Name return String is
+   begin
+      return From_UTF_8 (Command_Name);
+   end Command_Name;
+
+end ZanyBlue.Command_Line;

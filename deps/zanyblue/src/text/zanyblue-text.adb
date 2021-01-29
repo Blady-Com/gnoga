@@ -35,7 +35,7 @@
 
 with Ada.Text_IO.Text_Streams;
 with ZanyBlue.OS;
-with ZanyBlue.Wide_Wide_Directories;
+with ZanyBlue.Directories;
 
 package body ZanyBlue.Text is
 
@@ -52,7 +52,7 @@ package body ZanyBlue.Text is
       Updated :    out Boolean)
    is
       use UXStrings.Text_IO;
-      use ZanyBlue.Wide_Wide_Directories;
+      use ZanyBlue.Directories;
       Len       : constant Natural := Update_Extension.Length;
       File_Name : constant String  := Name (File);
       Real_Name : constant String  := Head (File_Name, File_Name.Length - Len);

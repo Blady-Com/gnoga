@@ -500,7 +500,8 @@ package body UXStrings.Text_IO is
    procedure Line_Mark (Ending : Line_Ending) is
    begin
       LM :=
-        (case Ending is when CR_Ending => From_Latin_1 (Character'val (13)), when LF_Ending => From_Latin_1 (Character'val (10)),
+        (case Ending is when CR_Ending => From_Latin_1 (Character'val (13)),
+           when LF_Ending              => From_Latin_1 (Character'val (10)),
            when CRLF_Ending            => From_Latin_1 (Character'Val (13) & Character'Val (10)));
    end Line_Mark;
 
@@ -785,10 +786,19 @@ package body UXStrings.Text_IO is
    -- Look_Ahead --
    ----------------
 
-   procedure Look_Ahead (File : in File_Type; Item : out Unicode_Character; End_Of_Line : out Boolean) is
+   procedure Look_Ahead (File : in out File_Type; Item : out Unicode_Character; End_Of_Line : out Boolean) is
+      LM : constant UXString :=
+        (case File.Ending is when CR_Ending => From_Latin_1 (Character'val (13)),
+           when LF_Ending                   => From_Latin_1 (Character'val (10)),
+           when CRLF_Ending                 => From_Latin_1 (Character'Val (13) & Character'Val (10)));
    begin
-      pragma Compile_Time_Warning (Standard.True, "Look_Ahead unimplemented");
-      raise Program_Error with "Unimplemented procedure Look_Ahead";
+      if File.Buffer.Length = 0 then
+         Read_More (File);
+      end if;
+      End_Of_Line := File.Buffer.Length = 0 or else Index (File.Buffer, LM) = File.Buffer.First;
+      if not End_Of_Line then
+         Item := Get_Unicode (File.Buffer, 1);
+      end if;
    end Look_Ahead;
 
    ----------------
@@ -804,7 +814,7 @@ package body UXStrings.Text_IO is
    -- Get_Immediate --
    -------------------
 
-   procedure Get_Immediate (File : in File_Type; Item : out Unicode_Character) is
+   procedure Get_Immediate (File : in out File_Type; Item : out Unicode_Character) is
    begin
       pragma Compile_Time_Warning (Standard.True, "Get_Immediate unimplemented");
       raise Program_Error with "Unimplemented procedure Get_Immediate";
@@ -823,10 +833,16 @@ package body UXStrings.Text_IO is
    -- Get_Immediate --
    -------------------
 
-   procedure Get_Immediate (File : in File_Type; Item : out Unicode_Character; Available : out Boolean) is
+   procedure Get_Immediate (File : in out File_Type; Item : out Unicode_Character; Available : out Boolean) is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Get_Immediate unimplemented");
-      raise Program_Error with "Unimplemented procedure Get_Immediate";
+      if File.Buffer.Length = 0 then
+         Read_More (File);
+      end if;
+      Available := File.Buffer.Length /= 0;
+      if Available then
+         Item := Get_Unicode (File.Buffer, 1);
+         Delete (File.Buffer, 1, 1);
+      end if;
    end Get_Immediate;
 
    -------------------
@@ -906,7 +922,8 @@ package body UXStrings.Text_IO is
 
    procedure Get_Line (File : in out File_Type; Item : out UXString) is
       LM : constant UXString :=
-        (case File.Ending is when CR_Ending => From_Latin_1 (Character'val (13)), when LF_Ending => From_Latin_1 (Character'val (10)),
+        (case File.Ending is when CR_Ending => From_Latin_1 (Character'val (13)),
+           when LF_Ending                   => From_Latin_1 (Character'val (10)),
            when CRLF_Ending                 => From_Latin_1 (Character'Val (13) & Character'Val (10)));
       EOL : Natural := Index (File.Buffer, LM);
    begin

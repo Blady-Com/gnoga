@@ -132,13 +132,13 @@ package UXStrings.Text_IO is
    procedure Put (File : in File_Type; Item : in Unicode_Character);
    procedure Put (Item : in Unicode_Character);
 
-   procedure Look_Ahead (File : in File_Type; Item : out Unicode_Character; End_Of_Line : out Boolean);
+   procedure Look_Ahead (File : in out File_Type; Item : out Unicode_Character; End_Of_Line : out Boolean);
    procedure Look_Ahead (Item : out Unicode_Character; End_Of_Line : out Boolean);
 
-   procedure Get_Immediate (File : in File_Type; Item : out Unicode_Character);
+   procedure Get_Immediate (File : in out File_Type; Item : out Unicode_Character);
    procedure Get_Immediate (Item : out Unicode_Character);
 
-   procedure Get_Immediate (File : in File_Type; Item : out Unicode_Character; Available : out Boolean);
+   procedure Get_Immediate (File : in out File_Type; Item : out Unicode_Character; Available : out Boolean);
    procedure Get_Immediate (Item : out Unicode_Character; Available : out Boolean);
 
    -- Unicode String Input-Output

@@ -9,7 +9,7 @@
 -- CONTACT                      : http://blady.pagesperso-orange.fr
 -------------------------------------------------------------------------------
 
-with Ada.Strings.Fixed;          use Ada.Strings.Fixed;
+with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 --  with Ada.Strings.UTF_Encoding.Conversions;
 with STUTEN.SUEnco; -- Fix an issue in UTF-16 to UTF8 conversion
 with Ada.Unchecked_Deallocation;
@@ -58,8 +58,7 @@ package body UXStrings is
 --       (Ada.Strings.UTF_Encoding.UTF_8, Ada.Strings.UTF_Encoding.UTF_8, Ada.Strings.UTF_Encoding.UTF_16BE,
 --        Ada.Strings.UTF_Encoding.UTF_16LE);
    To_UTF_Encoding : constant array (Encoding_Scheme) of STUTEN.Encoding_Scheme :=
-     (STUTEN.UTF_8, STUTEN.UTF_8, STUTEN.UTF_16BE,
-      STUTEN.UTF_16LE);
+     (STUTEN.UTF_8, STUTEN.UTF_8, STUTEN.UTF_16BE, STUTEN.UTF_16LE);
 
    -- Memory management
 
@@ -90,6 +89,27 @@ package body UXStrings is
          Free (Object.Chars);
       end if;
    end Finalize;
+
+   -- Stream management
+
+   -------------------
+   -- UXString_Read --
+   -------------------
+
+   procedure UXString_Read (Stream : not null access Ada.Streams.Root_Stream_Type'Class; Item : out UXString) is
+   begin
+      pragma Compile_Time_Warning (Standard.True, "UXString_Read unimplemented");
+      raise Program_Error with "Unimplemented procedure UXString_Read";
+   end UXString_Read;
+
+   --------------------
+   -- UXString_Write --
+   --------------------
+
+   procedure UXString_Write (Stream : not null access Ada.Streams.Root_Stream_Type'Class; Item : UXString) is
+   begin
+      UTF_8_Character_Array'Write (Stream, Item.Chars.all);
+   end UXString_Write;
 
    -- UXStrings API implementation
 
@@ -393,8 +413,7 @@ package body UXStrings is
       return
         --          Ada.Strings.UTF_Encoding.Conversions.Convert
 --            (Source.Chars.all, Ada.Strings.UTF_Encoding.UTF_8, To_UTF_Encoding (Output_Scheme), Output_BOM);
-        STUTEN.SUEnco.Convert
-          (Source.Chars.all, STUTEN.UTF_8, To_UTF_Encoding (Output_Scheme), Output_BOM);
+      STUTEN.SUEnco.Convert (Source.Chars.all, STUTEN.UTF_8, To_UTF_Encoding (Output_Scheme), Output_BOM);
    end To_UTF_16;
 
    -----------------
@@ -408,8 +427,7 @@ package body UXStrings is
            new UTF_8_Character_Array'
          --               (Ada.Strings.UTF_Encoding.Conversions.Convert
 --                  (Source, To_UTF_Encoding (Input_Scheme), Ada.Strings.UTF_Encoding.UTF_8));
-         (STUTEN.SUEnco.Convert
-                (Source, To_UTF_Encoding (Input_Scheme), STUTEN.UTF_8));
+         (STUTEN.SUEnco.Convert (Source, To_UTF_Encoding (Input_Scheme), STUTEN.UTF_8));
       end return;
    end From_UTF_16;
 
@@ -542,12 +560,16 @@ package body UXStrings is
       Pointer1 : Integer := Source.Chars'First;
       Pointer2 : Integer;
    begin
-      Skip (String (Source.Chars.all), Pointer1, Low - 1);
-      Pointer2 := Pointer1;
-      Skip (String (Source.Chars.all), Pointer2, High - Low + 1);
-      return UXS : UXString do
-         UXS.Chars := new UTF_8_Character_Array'(Source.Chars.all (Pointer1 .. Pointer2 - 1));
-      end return;
+      if Low <= High then
+         Skip (String (Source.Chars.all), Pointer1, Low - 1);
+         Pointer2 := Pointer1;
+         Skip (String (Source.Chars.all), Pointer2, High - Low + 1);
+         return UXS : UXString do
+            UXS.Chars := new UTF_8_Character_Array'(Source.Chars.all (Pointer1 .. Pointer2 - 1));
+         end return;
+      else
+         return Null_UXString;
+      end if;
    end Slice;
 
    -----------
@@ -823,8 +845,7 @@ package body UXStrings is
 
    function Replace_Slice (Source : UXString; Low : Positive; High : Natural; By : UXString) return UXString is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Replace_Slice unimplemented");
-      return raise Program_Error with "Unimplemented function Replace_Slice";
+      return Source.Slice (Source.First, Low - 1) & By & Source.Slice (High + 1, Source.Last);
    end Replace_Slice;
 
    -------------------
@@ -833,8 +854,7 @@ package body UXStrings is
 
    procedure Replace_Slice (Source : in out UXString; Low : Positive; High : Natural; By : UXString) is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Replace_Slice unimplemented");
-      raise Program_Error with "Unimplemented procedure Replace_Slice";
+      Source := Replace_Slice (Source, Low, High, By);
    end Replace_Slice;
 
    ------------
@@ -951,9 +971,15 @@ package body UXStrings is
    ----------
 
    function Head (Source : UXString; Count : Natural; Pad : Unicode_Character := Wide_Wide_Space) return UXString is
+      Len : constant Natural := Source.Length;
    begin
-      pragma Compile_Time_Warning (Standard.True, "Head unimplemented");
-      return raise Program_Error with "Unimplemented function Head";
+      if Count > Len then
+         return UXS : UXString do
+            UXS.Chars := new UTF_8_Character_Array'(Source.Chars.all & (Count - Len) * (To_UTF8 (Pad)));
+         end return;
+      else
+         return Source.Slice (Source.First, Count);
+      end if;
    end Head;
 
    ----------
@@ -962,8 +988,7 @@ package body UXStrings is
 
    procedure Head (Source : in out UXString; Count : Natural; Pad : Unicode_Character := Wide_Wide_Space) is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Head unimplemented");
-      raise Program_Error with "Unimplemented procedure Head";
+      Source := Head (Source, Count, Pad);
    end Head;
 
    ----------
@@ -971,11 +996,11 @@ package body UXStrings is
    ----------
 
    function Tail (Source : UXString; Count : Natural; Pad : Unicode_Character := Wide_Wide_Space) return UXString is
-      Len : constant Positive := Source.Length;
+      Len : constant Natural := Source.Length;
    begin
       if Count > Len then
          return UXS : UXString do
-            UXS.Chars := new UTF_8_Character_Array'(Source.Chars.all & (Count - Len - 1) * (To_UTF8 (Pad)));
+            UXS.Chars := new UTF_8_Character_Array'(Source.Chars.all & (Count - Len) * (To_UTF8 (Pad)));
          end return;
       else
          return Source.Slice (Len - Count + 1, Len);

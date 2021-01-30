@@ -51,6 +51,7 @@ with ZanyBlue.Text.Long_Floats;
 with ZanyBlue.Text.Arguments;
 with ZanyBlue.Text.Null_Object;
 with ZanyBlue.Text.Wide_Characters;
+with ZanyBlue.Text.Wide_Wide_Characters;
 
 pragma Elaborate_All (ZanyBlue.Text.Pseudo);
 pragma Elaborate_All (ZanyBlue.Text.Catalogs);
@@ -67,6 +68,7 @@ pragma Elaborate_All (ZanyBlue.Text.Long_Floats);
 pragma Elaborate_All (ZanyBlue.Text.Arguments);
 pragma Elaborate_All (ZanyBlue.Text.Null_Object);
 pragma Elaborate_All (ZanyBlue.Text.Wide_Characters);
+pragma Elaborate_All (ZanyBlue.Text.Wide_Wide_Characters);
 
 package ZanyBlue.Text.Formatting is
 
@@ -141,6 +143,12 @@ package ZanyBlue.Text.Formatting is
       return ZanyBlue.Text.Wide_Characters
      .Wide_Character_Argument_Type renames
      ZanyBlue.Text.Wide_Characters.Create;
+
+   function "+"
+     (Wide_Wide_Character_Value : Wide_Wide_Character)
+      return ZanyBlue.Text.Wide_Wide_Characters
+     .Wide_Wide_Character_Argument_Type renames
+     ZanyBlue.Text.Wide_Wide_Characters.Create;
 
    function "+"
      (Boolean_Value : Boolean)

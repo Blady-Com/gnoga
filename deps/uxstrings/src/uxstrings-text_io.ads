@@ -158,6 +158,19 @@ package UXStrings.Text_IO is
    procedure Put_Line (File : in File_Type; Item : in UXString);
    procedure Put_Line (Item : in UXString);
 
+   ----------------
+   -- Exceptions --
+   ----------------
+
+   Status_Error : exception;
+   Mode_Error   : exception;
+   Name_Error   : exception;
+   Use_Error    : exception;
+   Device_Error : exception;
+   End_Error    : exception;
+   Data_Error   : exception;
+   Layout_Error : exception;
+
 private
 
    type File_Type is record

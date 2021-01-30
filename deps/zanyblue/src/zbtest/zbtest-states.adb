@@ -63,35 +63,43 @@ package body ZBTest.States is
 
    type Search_Type is (Search_File, Search_Executable, Search_Directory);
 
-   procedure Add_Tree_To_Path (State : in out State_Type;
-                               Here  : String);
+   procedure Add_Tree_To_Path
+     (State : in out State_Type;
+      Here  :        String);
    --  Add the directory tree rooted in the test area directory to the
    --  executeable search path.
 
-   procedure Expand_Functions (State  : in out State_Type;
-                               Buffer : in out Unbounded_Wide_String);
+   procedure Expand_Functions
+     (State  : in out State_Type;
+      Buffer : in out Unbounded_Wide_String);
    --  Expand references to function, e.g., $(which -e zbmcompile)
 
-   procedure Expand_References (State  : State_Type;
-                                Buffer : in out Unbounded_Wide_String);
+   procedure Expand_References
+     (State  :        State_Type;
+      Buffer : in out Unbounded_Wide_String);
    --  Exopand reference to parameters, e.g., $_testname
 
-   function Read_Test_Failure (File_Name : String) return String;
+   function Read_Test_Failure
+     (File_Name : String)
+      return String;
    --  Read and return the text contained in a fail file
 
    procedure Remove_Test_Area (Test_Area : String);
    --  Remove pre-existing test area prior to running a test.
 
-   procedure Rename_Test_Marker (Test_Name   : String;
-                                 Status_Name : String);
+   procedure Rename_Test_Marker
+     (Test_Name   : String;
+      Status_Name : String);
    --  Rename the marker file for a test to either the test ok or
    --  fail status name.  This could fail if the file already exists.
 
-   function Search (State       : State_Type;
-                    Name        : String;
-                    Paths_Name  : String;
-                    Exts_Name   : String;
-                    Target_Type : Search_Type) return String;
+   function Search
+     (State       : State_Type;
+      Name        : String;
+      Paths_Name  : String;
+      Exts_Name   : String;
+      Target_Type : Search_Type)
+      return String;
    --  Search for files or directories on the search path parameter.  The
    --  file located can have any of the exts extensions.
 
@@ -106,8 +114,10 @@ package body ZBTest.States is
    -- Add_Tree_To_Path --
    ----------------------
 
-   procedure Add_Tree_To_Path (State : in out State_Type;
-                               Here  : String) is
+   procedure Add_Tree_To_Path
+     (State : in out State_Type;
+      Here  :        String)
+   is
 
       Bin_Path : constant String := Wide_Compose (Here, "bin");
 
@@ -118,16 +128,18 @@ package body ZBTest.States is
       State.Append ("searchpath", Here);
       Add_Tree_To_Path (State, Wide_Containing_Directory (Here));
    exception
-   when Ada.Text_IO.Use_Error =>
-      null;
+      when Ada.Text_IO.Use_Error =>
+         null;
    end Add_Tree_To_Path;
 
    ---------------------
    -- Add_Undo_Action --
    ---------------------
 
-   procedure Add_Undo_Action (State  : in out State_Type;
-                              Action : String) is
+   procedure Add_Undo_Action
+     (State  : in out State_Type;
+      Action :        String)
+   is
    begin
       State.Prepend ("_undo", Action);
    end Add_Undo_Action;
@@ -136,9 +148,11 @@ package body ZBTest.States is
    -- Append --
    ------------
 
-   procedure Append (State  : in out State_Type;
-                     Name   : String;
-                     Value  : String) is
+   procedure Append
+     (State : in out State_Type;
+      Name  :        String;
+      Value :        String)
+   is
    begin
       State.Parameters.Append (Name, Value);
    end Append;
@@ -160,18 +174,18 @@ package body ZBTest.States is
       State.Set_String ("_fulltestname", "zbtest");
       State.Set_Boolean ("_implicit_scope", True);
       case OS_Name is
-      when Unix =>
-         State.Set_String ("_pathsep", ":");
-         State.Set_String ("_platform", "unix");
-         State.Append ("exes", "");
-         State.Append ("exes", "sh");
-      when Windows =>
-         State.Set_String ("_pathsep", ";");
-         State.Set_String ("_platform", "windows");
-         State.Append ("exes", "bat");
-         State.Append ("exes", "cmd");
-         State.Append ("exes", "com");
-         State.Append ("exes", "exe");
+         when Unix =>
+            State.Set_String ("_pathsep", ":");
+            State.Set_String ("_platform", "unix");
+            State.Append ("exes", "");
+            State.Append ("exes", "sh");
+         when Windows =>
+            State.Set_String ("_pathsep", ";");
+            State.Set_String ("_platform", "windows");
+            State.Append ("exes", "bat");
+            State.Append ("exes", "cmd");
+            State.Append ("exes", "com");
+            State.Append ("exes", "exe");
       end case;
       State.Set_Integer ("_word_size", System.Word_Size);
       Add_Tree_To_Path (State, Here);
@@ -183,12 +197,14 @@ package body ZBTest.States is
    -- Dump --
    ----------
 
-   procedure Dump (State       : State_Type;
-                   File_Name   : String;
-                   All_Scopes  : Boolean) is
+   procedure Dump
+     (State      : State_Type;
+      File_Name  : String;
+      All_Scopes : Boolean)
+   is
       File : File_Type;
    begin
-      Create (File, Mode => Out_File, Name => To_UTF_8 (File_Name));
+      Create (File, Mode => Out_File, Name => Wide_To_UTF8 (File_Name));
       State.Dump (File, All_Scopes);
       Close (File);
    end Dump;
@@ -197,9 +213,11 @@ package body ZBTest.States is
    -- Dump --
    ----------
 
-   procedure Dump (State       : State_Type;
-                   Destination : File_Type;
-                   All_Scopes  : Boolean) is
+   procedure Dump
+     (State       : State_Type;
+      Destination : File_Type;
+      All_Scopes  : Boolean)
+   is
    begin
       State.Parameters.Dump (Destination, All_Scopes);
    end Dump;
@@ -219,11 +237,13 @@ package body ZBTest.States is
    -- End_Scope --
    ---------------
 
-   procedure End_Scope (State  : in out State_Type;
-                        N_OK   : out Natural;
-                        N_Fail : out Natural) is
-      Undo_Actions : constant List_Type
-                        := State.Get_List ("_undo", Deep => False);
+   procedure End_Scope
+     (State  : in out State_Type;
+      N_OK   :    out Natural;
+      N_Fail :    out Natural)
+   is
+      Undo_Actions : constant List_Type :=
+        State.Get_List ("_undo", Deep => False);
    begin
       for I in 1 .. Length (Undo_Actions) loop
          Print_00032 (+Value (Undo_Actions, I));
@@ -241,8 +261,10 @@ package body ZBTest.States is
    -- Execute_Command --
    ---------------------
 
-   procedure Execute_Command (State : in out State_Type;
-                              Args  : List_Type) is
+   procedure Execute_Command
+     (State : in out State_Type;
+      Args  :        List_Type)
+   is
       Implementation : Command_Type;
    begin
       if Length (Args) > 0 then
@@ -250,45 +272,48 @@ package body ZBTest.States is
          Implementation (State, Args);
       end if;
    exception
-   when Command_Usage_Error =>
-      Print_Command_Usage (Value (Args, 1));
-   when Unknown_Command_Error =>
-      Print_10009 (+Value (Args, 1));
+      when Command_Usage_Error =>
+         Print_Command_Usage (Value (Args, 1));
+      when Unknown_Command_Error =>
+         Print_10009 (+Value (Args, 1));
    end Execute_Command;
 
    ------------------
    -- Execute_Line --
    ------------------
 
-   procedure Execute_Line (State        : in out State_Type;
-                           Input_Line   : String) is
+   procedure Execute_Line
+     (State      : in out State_Type;
+      Input_Line :        String)
+   is
       Buffer : Unbounded_Wide_String;
    begin
       Append (Buffer, Input_Line);
       Expand (State, Buffer);
       if To_Wide_String (Buffer) /= Input_Line then
-         Print_00044 (+Full_Test_Name (State),
-                      +State.Get_Integer ("_lineno"),
-                      +Buffer);
+         Print_00044
+           (+Full_Test_Name (State), +State.Get_Integer ("_lineno"), +Buffer);
       end if;
       State.Execute_Command (Parse_Words (To_Wide_String (Buffer)));
    exception
-   when Unterminated_String =>
-      Print_00043;
+      when Unterminated_String =>
+         Print_00043;
    end Execute_Line;
 
    ------------------
    -- Execute_Line --
    ------------------
 
-   procedure Execute_Line (State        : in out State_Type;
-                           Input_Line   : String;
-                           Interactive  : Boolean) is
+   procedure Execute_Line
+     (State       : in out State_Type;
+      Input_Line  :        String;
+      Interactive :        Boolean)
+   is
    begin
       if not Interactive then
-         Print_00014 (+Full_Test_Name (State),
-                      +State.Get_Integer ("_lineno"),
-                      +Input_Line);
+         Print_00014
+           (+Full_Test_Name (State), +State.Get_Integer ("_lineno"),
+            +Input_Line);
       end if;
       Execute_Line (State, Input_Line);
    end Execute_Line;
@@ -297,8 +322,10 @@ package body ZBTest.States is
    -- Expand --
    ------------
 
-   procedure Expand (State  : in out State_Type;
-                     Buffer : in out Unbounded_Wide_String) is
+   procedure Expand
+     (State  : in out State_Type;
+      Buffer : in out Unbounded_Wide_String)
+   is
    begin
       Expand_References (State, Buffer);
       Expand_Functions (State, Buffer);
@@ -308,16 +335,23 @@ package body ZBTest.States is
    -- Expand_Functions --
    ----------------------
 
-   procedure Expand_Functions (State  : in out State_Type;
-                               Buffer : in out Unbounded_Wide_String) is
+   procedure Expand_Functions
+     (State  : in out State_Type;
+      Buffer : in out Unbounded_Wide_String)
+   is
 
-      function Result (Function_Call : String) return String;
+      function Result
+        (Function_Call : String)
+         return String;
 
       ------------
       -- Result --
       ------------
 
-      function Result (Function_Call : String) return String is
+      function Result
+        (Function_Call : String)
+         return String
+      is
          Args : constant List_Type := Parse_Words (Function_Call);
          Impl : Function_Type;
       begin
@@ -328,12 +362,12 @@ package body ZBTest.States is
          Impl := Find (Value (Args, 1));
          return Impl (State'Access, Args);
       exception
-      when Unknown_Function_Error =>
-         Print_10032 (+Value (Args, 1));
-         return "";
-      when Function_Usage_Error =>
-         Print_Function_Usage (Value (Args, 1));
-         return "";
+         when Unknown_Function_Error =>
+            Print_10032 (+Value (Args, 1));
+            return "";
+         when Function_Usage_Error =>
+            Print_Function_Usage (Value (Args, 1));
+            return "";
       end Result;
 
       Start          : Positive := 1;
@@ -345,13 +379,13 @@ package body ZBTest.States is
          Function_Start := Index (Buffer, "$(", Start);
          exit when Function_Start = 0;
          Function_End := Index (Buffer, ")", Function_Start);
-         Next := Index (Buffer, "$(", Function_Start + 2);
+         Next         := Index (Buffer, "$(", Function_Start + 2);
          if Next > 0 and then Next < Function_End then
             Start := Function_Start + 2;
          else
-            Replace_Slice (Buffer, Function_Start, Function_End,
-                           Result (Slice (Buffer, Function_Start + 2,
-                                                  Function_End - 1)));
+            Replace_Slice
+              (Buffer, Function_Start, Function_End,
+               Result (Slice (Buffer, Function_Start + 2, Function_End - 1)));
             Start := 1;
          end if;
       end loop;
@@ -361,16 +395,21 @@ package body ZBTest.States is
    -- Expand_References --
    -----------------------
 
-   procedure Expand_References (State  : State_Type;
-                                Buffer : in out Unbounded_Wide_String) is
+   procedure Expand_References
+     (State  :        State_Type;
+      Buffer : in out Unbounded_Wide_String)
+   is
 
-      procedure Replace_Reference (Buffer : in out Unbounded_Wide_String;
-                                   Start  : Positive;
-                                   Last   : Positive);
+      procedure Replace_Reference
+        (Buffer : in out Unbounded_Wide_String;
+         Start  :        Positive;
+         Last   :        Positive);
 
-      procedure Replace_Reference (Buffer : in out Unbounded_Wide_String;
-                                   Start  : Positive;
-                                   Last   : Positive) is
+      procedure Replace_Reference
+        (Buffer : in out Unbounded_Wide_String;
+         Start  :        Positive;
+         Last   :        Positive)
+      is
          Parameter : constant String := Slice (Buffer, Start + 1, Last);
       begin
          if State.Is_Defined (Parameter) then
@@ -385,20 +424,21 @@ package body ZBTest.States is
       Start     : Positive := 1;
       Next_Ch   : Character;
       Ch        : Character;
-      In_String : Boolean := False;
+      In_String : Boolean  := False;
       I         : Positive := 1;
 
    begin
       while I < Length (Buffer) loop
-         Start := I;
-         Ch := To_Character (Element (Buffer, I));
-         I := I + 1;
+         Start   := I;
+         Ch      := To_Character (Element (Buffer, I));
+         I       := I + 1;
          Next_Ch := To_Character (Element (Buffer, I));
          if not In_String then
             In_String := Ch = ''';
-            if Ch = '$' and then
-               (Next_Ch = '_' or else
-                (Is_Alphanumeric (Next_Ch) and not Is_Digit (Next_Ch)))
+            if Ch = '$'
+              and then
+              (Next_Ch = '_'
+               or else (Is_Alphanumeric (Next_Ch) and not Is_Digit (Next_Ch)))
             then
                Last := I;
                while Next_Ch = '_' or else Is_Alphanumeric (Next_Ch) loop
@@ -422,7 +462,10 @@ package body ZBTest.States is
    -- Full_Test_Name --
    --------------------
 
-   function Full_Test_Name (State : State_Type) return String is
+   function Full_Test_Name
+     (State : State_Type)
+      return String
+   is
       Test_Names : constant List_Type := State.Get_List ("_testname");
       Buffer     : Unbounded_Wide_String;
    begin
@@ -439,8 +482,11 @@ package body ZBTest.States is
    -- Get --
    ---------
 
-   function Get (State  : State_Type;
-                 Name   : String) return Value_Type'Class is
+   function Get
+     (State : State_Type;
+      Name  : String)
+      return Value_Type'Class
+   is
    begin
       return State.Parameters.Get (Name);
    end Get;
@@ -449,8 +495,11 @@ package body ZBTest.States is
    -- Get_Boolean --
    -----------------
 
-   function Get_Boolean (State : State_Type;
-                         Name  : String) return Boolean is
+   function Get_Boolean
+     (State : State_Type;
+      Name  : String)
+      return Boolean
+   is
    begin
       return State.Parameters.Get_Boolean (Name);
    end Get_Boolean;
@@ -459,8 +508,11 @@ package body ZBTest.States is
    -- Get_Character --
    -------------------
 
-   function Get_Character (State : State_Type;
-                           Name  : String) return Unicode_Character is
+   function Get_Character
+     (State : State_Type;
+      Name  : String)
+      return Unicode_Character
+   is
       Value : constant String := State.Get_String (Name);
    begin
       if Value'Length > 0 then
@@ -474,8 +526,11 @@ package body ZBTest.States is
    -- Get_Float --
    ---------------
 
-   function Get_Float (State : State_Type;
-                       Name  : String) return Float is
+   function Get_Float
+     (State : State_Type;
+      Name  : String)
+      return Float
+   is
    begin
       return State.Parameters.Get_Float (Name);
    end Get_Float;
@@ -484,8 +539,11 @@ package body ZBTest.States is
    -- Get_Integer --
    -----------------
 
-   function Get_Integer (State : State_Type;
-                         Name  : String) return Integer is
+   function Get_Integer
+     (State : State_Type;
+      Name  : String)
+      return Integer
+   is
    begin
       return State.Parameters.Get_Integer (Name);
    end Get_Integer;
@@ -494,9 +552,12 @@ package body ZBTest.States is
    -- Get_List --
    --------------
 
-   function Get_List (State : State_Type;
-                      Name  : String;
-                      Deep  : Boolean := True) return List_Type is
+   function Get_List
+     (State : State_Type;
+      Name  : String;
+      Deep  : Boolean := True)
+      return List_Type
+   is
    begin
       return State.Parameters.Get_List (Name, Deep);
    end Get_List;
@@ -505,8 +566,11 @@ package body ZBTest.States is
    -- Get_String --
    ----------------
 
-   function Get_String (State : State_Type;
-                        Name  : String) return String is
+   function Get_String
+     (State : State_Type;
+      Name  : String)
+      return String
+   is
    begin
       return State.Parameters.Get_String (Name);
    end Get_String;
@@ -515,8 +579,11 @@ package body ZBTest.States is
    -- Get_Time --
    --------------
 
-   function Get_Time (State : State_Type;
-                      Name  : String) return Ada.Calendar.Time is
+   function Get_Time
+     (State : State_Type;
+      Name  : String)
+      return Ada.Calendar.Time
+   is
    begin
       return State.Parameters.Get_Time (Name);
    end Get_Time;
@@ -525,10 +592,12 @@ package body ZBTest.States is
    -- Increment --
    ---------------
 
-   procedure Increment (State     : in out State_Type;
-                        Name      : String;
-                        By_Amount : Integer := 1;
-                        Deep      : Boolean := True) is
+   procedure Increment
+     (State     : in out State_Type;
+      Name      :        String;
+      By_Amount :        Integer := 1;
+      Deep      :        Boolean := True)
+   is
    begin
       State.Parameters.Increment (Name, By_Amount, Deep);
    end Increment;
@@ -537,9 +606,11 @@ package body ZBTest.States is
    -- Initialize_Scope --
    ----------------------
 
-   procedure Initialize_Scope (State          : in out State_Type;
-                               Script_Dir     : String;
-                               Implicit_Scope : Boolean := False) is
+   procedure Initialize_Scope
+     (State          : in out State_Type;
+      Script_Dir     :        String;
+      Implicit_Scope :        Boolean := False)
+   is
    begin
       State.Set_Integer ("_n_fail_cumulative", 0);
       State.Set_Integer ("_n_ok_cumulative", 0);
@@ -560,9 +631,12 @@ package body ZBTest.States is
    -- Is_Defined --
    ----------------
 
-   function Is_Defined (State     : State_Type;
-                        Name      : String;
-                        Any_Scope : Boolean := True) return Boolean is
+   function Is_Defined
+     (State     : State_Type;
+      Name      : String;
+      Any_Scope : Boolean := True)
+      return Boolean
+   is
    begin
       return State.Parameters.Is_Defined (Name, Any_Scope);
    end Is_Defined;
@@ -571,8 +645,11 @@ package body ZBTest.States is
    -- Locate_Directory --
    ----------------------
 
-   function Locate_Directory (State : State_Type;
-                              Name  : String) return String is
+   function Locate_Directory
+     (State : State_Type;
+      Name  : String)
+      return String
+   is
    begin
       return Search (State, Name, "searchpath", "", Search_Directory);
    end Locate_Directory;
@@ -581,8 +658,11 @@ package body ZBTest.States is
    -- Locate_Executable --
    -----------------------
 
-   function Locate_Executable (State : State_Type;
-                               Name  : String) return String is
+   function Locate_Executable
+     (State : State_Type;
+      Name  : String)
+      return String
+   is
    begin
       return Search (State, Name, "path", "exes", Search_Executable);
    end Locate_Executable;
@@ -591,8 +671,11 @@ package body ZBTest.States is
    -- Locate_File --
    -----------------
 
-   function Locate_File (State : State_Type;
-                         Name  : String) return String is
+   function Locate_File
+     (State : State_Type;
+      Name  : String)
+      return String
+   is
    begin
       return Search (State, Name, "searchpath", "", Search_File);
    end Locate_File;
@@ -611,9 +694,11 @@ package body ZBTest.States is
    -- Prepend --
    -------------
 
-   procedure Prepend (State  : in out State_Type;
-                      Name   : String;
-                      Value  : String) is
+   procedure Prepend
+     (State : in out State_Type;
+      Name  :        String;
+      Value :        String)
+   is
    begin
       State.Parameters.Prepend (Name, Value);
    end Prepend;
@@ -622,35 +707,40 @@ package body ZBTest.States is
    -- Read_Eval_Loop --
    --------------------
 
-   procedure Read_Eval_Loop (State       : in out State_Type;
-                             Input       : File_Type;
-                             Interactive : Boolean) is
+   procedure Read_Eval_Loop
+     (State       : in out State_Type;
+      Input       :        File_Type;
+      Interactive :        Boolean)
+   is
    begin
       while not State.Get_Boolean ("_terminate") loop
          if Interactive then
             Print_00033 (+State.Get_String ("prompt"), With_NL => False);
          end if;
          State.Increment ("_lineno", Deep => False);
-         State.Execute_Line (From_UTF_8 (Get_Line (Input)), Interactive);
+         State.Execute_Line (Wide_From_UTF8 (Get_Line (Input)), Interactive);
       end loop;
    exception
-   when End_Error =>
-      return;
+      when End_Error =>
+         return;
    end Read_Eval_Loop;
 
    -----------------------
    -- Read_Test_Failure --
    -----------------------
 
-   function Read_Test_Failure (File_Name : String) return String is
+   function Read_Test_Failure
+     (File_Name : String)
+      return String
+   is
 
       use Ada.Directories;
 
-      File_Name_S : constant String := To_UTF_8 (File_Name);
-      File_Size : constant Natural := Natural (Size (File_Name_S));
+      File_Name_S : constant String  := Wide_To_UTF8 (File_Name);
+      File_Size   : constant Natural := Natural (Size (File_Name_S));
       subtype Element_Type is String (1 .. File_Size);
       package File_IO is new Ada.Direct_IO (Element_Type);
-      Input : File_IO.File_Type;
+      Input  : File_IO.File_Type;
       Result : Element_Type;
    begin
       File_IO.Open (Input, File_IO.In_File, File_Name_S);
@@ -663,26 +753,26 @@ package body ZBTest.States is
    -- Register_Failure --
    ----------------------
 
-   procedure Register_Failure (State     : in out State_Type;
-                               Test_Name : String) is
+   procedure Register_Failure
+     (State     : in out State_Type;
+      Test_Name :        String)
+   is
 
       use ZBTest_Messages.ZBTest_Wide_Strings;
 
-      Cur_Name : constant String := State.Get_String ("_fulltestname");
-      Cur_Log : constant String := State.Get_String ("_curlog");
-      Fail_Name : constant String := Wide_Compose (
-                                               Name      => Test_Name,
-                                               Extension => "fail");
+      Cur_Name  : constant String := State.Get_String ("_fulltestname");
+      Cur_Log   : constant String := State.Get_String ("_curlog");
+      Fail_Name : constant String :=
+        Wide_Compose (Name => Test_Name, Extension => "fail");
    begin
       Set_Last_Test (State);
       Rename_Test_Marker (Test_Name, Fail_Name);
       State.Increment ("_n_fail_cumulative", Deep => True);
       State.Increment ("_n_fail", Deep => False);
       State.Increment ("_n_tests", Deep => False);
-      State.Prepend ("_xml_results",
-                     Format_01004 (+Cur_Name,
-                                   +Cur_Log,
-                                   +Read_Test_Failure (Fail_Name)));
+      State.Prepend
+        ("_xml_results",
+         Format_01004 (+Cur_Name, +Cur_Log, +Read_Test_Failure (Fail_Name)));
       Print_10024 (+Test_Name);
    end Register_Failure;
 
@@ -690,16 +780,17 @@ package body ZBTest.States is
    -- Register_Success --
    ----------------------
 
-   procedure Register_Success (State     : in out State_Type;
-                               Test_Name : String) is
+   procedure Register_Success
+     (State     : in out State_Type;
+      Test_Name :        String)
+   is
 
       use ZBTest_Messages.ZBTest_Wide_Strings;
 
       Cur_Name : constant String := State.Get_String ("_fulltestname");
-      Cur_Log : constant String := State.Get_String ("_curlog");
-      OK_Name : constant String := Wide_Compose (
-                                               Name      => Test_Name,
-                                               Extension => "ok");
+      Cur_Log  : constant String := State.Get_String ("_curlog");
+      OK_Name  : constant String :=
+        Wide_Compose (Name => Test_Name, Extension => "ok");
    begin
       Set_Last_Test (State);
       Rename_Test_Marker (Test_Name, OK_Name);
@@ -719,35 +810,40 @@ package body ZBTest.States is
       Print_10011 (+Test_Area);
       Wide_Delete_Tree (Test_Area);
    exception
-   when E : Ada.Wide_Text_IO.Use_Error =>
-      Print_10013 (+Test_Area, +E);
-      raise Invalid_Environment;
+      when E : Ada.Wide_Text_IO.Use_Error =>
+         Print_10013 (+Test_Area, +E);
+         raise Invalid_Environment;
    end Remove_Test_Area;
 
    ------------------------
    -- Rename_Test_Marker --
    ------------------------
 
-   procedure Rename_Test_Marker (Test_Name   : String;
-                                 Status_Name : String) is
+   procedure Rename_Test_Marker
+     (Test_Name   : String;
+      Status_Name : String)
+   is
    begin
       Wide_Rename (Test_Name, Status_Name);
    exception
-   when E : Ada.Wide_Text_IO.Use_Error =>
-      Print_10038 (+Status_Name, +E);
+      when E : Ada.Wide_Text_IO.Use_Error =>
+         Print_10038 (+Status_Name, +E);
    end Rename_Test_Marker;
 
    ------------
    -- Search --
    ------------
 
-   function Search (State       : State_Type;
-                    Name        : String;
-                    Paths_Name  : String;
-                    Exts_Name   : String;
-                    Target_Type : Search_Type) return String is
+   function Search
+     (State       : State_Type;
+      Name        : String;
+      Paths_Name  : String;
+      Exts_Name   : String;
+      Target_Type : Search_Type)
+      return String
+   is
       Search_Path : constant List_Type := State.Get_List (Paths_Name);
-      Extensions : List_Type := State.Get_List (Exts_Name);
+      Extensions  : List_Type          := State.Get_List (Exts_Name);
    begin
       if Length (Extensions) = 0 then
          Append (Extensions, "");
@@ -756,23 +852,23 @@ package body ZBTest.States is
          for Extension in 1 .. Length (Extensions) loop
             declare
                Trail_Path : constant String :=
-                               Wide_Compose (Value (Search_Path, Path),
-                                             Name,
-                                             Value (Extensions, Extension));
+                 Wide_Compose
+                   (Value (Search_Path, Path), Name,
+                    Value (Extensions, Extension));
             begin
                case Target_Type is
-               when Search_File =>
-                  if Wide_Is_File (Trail_Path) then
-                     return Trail_Path;
-                  end if;
-               when Search_Executable =>
-                  if Wide_Is_Executable_File (Trail_Path) then
-                     return Trail_Path;
-                  end if;
-               when Search_Directory =>
-                  if Wide_Is_Directory (Trail_Path) then
-                     return Trail_Path;
-                  end if;
+                  when Search_File =>
+                     if Wide_Is_File (Trail_Path) then
+                        return Trail_Path;
+                     end if;
+                  when Search_Executable =>
+                     if Wide_Is_Executable_File (Trail_Path) then
+                        return Trail_Path;
+                     end if;
+                  when Search_Directory =>
+                     if Wide_Is_Directory (Trail_Path) then
+                        return Trail_Path;
+                     end if;
                end case;
             end;
          end loop;
@@ -784,9 +880,11 @@ package body ZBTest.States is
    -- Set --
    ---------
 
-   procedure Set (State  : in out State_Type;
-                  Name   : String;
-                  Value  : Value_Type'Class) is
+   procedure Set
+     (State : in out State_Type;
+      Name  :        String;
+      Value :        Value_Type'Class)
+   is
    begin
       State.Parameters.Set (Name, Value);
    end Set;
@@ -795,9 +893,11 @@ package body ZBTest.States is
    -- Set_Boolean --
    -----------------
 
-   procedure Set_Boolean (State  : in out State_Type;
-                          Name   : String;
-                          Value  : Boolean) is
+   procedure Set_Boolean
+     (State : in out State_Type;
+      Name  :        String;
+      Value :        Boolean)
+   is
    begin
       State.Parameters.Set_Boolean (Name, Value);
    end Set_Boolean;
@@ -806,9 +906,11 @@ package body ZBTest.States is
    -- Set_Float --
    ---------------
 
-   procedure Set_Float (State  : in out State_Type;
-                        Name   : String;
-                        Value  : Float) is
+   procedure Set_Float
+     (State : in out State_Type;
+      Name  :        String;
+      Value :        Float)
+   is
    begin
       State.Parameters.Set_Float (Name, Value);
    end Set_Float;
@@ -817,16 +919,18 @@ package body ZBTest.States is
    -- Set_Integer --
    -----------------
 
-   procedure Set_Integer (State  : in out State_Type;
-                          Name   : String;
-                          Value  : Integer) is
+   procedure Set_Integer
+     (State : in out State_Type;
+      Name  :        String;
+      Value :        Integer)
+   is
    begin
       State.Parameters.Set_Integer (Name, Value);
    end Set_Integer;
 
    procedure Set_Last_Test (State : in out State_Type) is
       use Ada.Calendar;
-      Now     : constant Time  := Clock;
+      Now : constant Time := Clock;
    begin
       State.Set_Time ("_last_test", Now);
    end Set_Last_Test;
@@ -835,9 +939,11 @@ package body ZBTest.States is
    -- Set_String --
    ----------------
 
-   procedure Set_String (State  : in out State_Type;
-                         Name   : String;
-                         Value  : String) is
+   procedure Set_String
+     (State : in out State_Type;
+      Name  :        String;
+      Value :        String)
+   is
    begin
       State.Parameters.Set_String (Name, Value);
    end Set_String;
@@ -846,9 +952,11 @@ package body ZBTest.States is
    -- Set_Time --
    --------------
 
-   procedure Set_Time (State  : in out State_Type;
-                       Name   : String;
-                       Value  : Ada.Calendar.Time) is
+   procedure Set_Time
+     (State : in out State_Type;
+      Name  :        String;
+      Value :        Ada.Calendar.Time)
+   is
    begin
       State.Parameters.Set_Time (Name, Value);
    end Set_Time;
@@ -859,7 +967,7 @@ package body ZBTest.States is
 
    procedure Setup_Test_Area (State : in out State_Type) is
       Test_Area : constant String :=
-                     Wide_Full_Name (State.Get_String ("_testarea"));
+        Wide_Full_Name (State.Get_String ("_testarea"));
    begin
       State.Prepend ("path", Test_Area);
       if Wide_Exists (Test_Area) then
@@ -875,23 +983,22 @@ package body ZBTest.States is
       Wide_Set_Directory (Test_Area);
       State.Set_String ("_testarea", Test_Area);
    exception
-   when E : Ada.Wide_Text_IO.Use_Error =>
-      Print_10014 (+Test_Area, +E);
-      raise Invalid_Environment;
+      when E : Ada.Wide_Text_IO.Use_Error =>
+         Print_10014 (+Test_Area, +E);
+         raise Invalid_Environment;
    end Setup_Test_Area;
 
    ---------------
    -- Write_XML --
    ---------------
 
-   procedure Write_XML (State : in out State_Type) is
-      separate;
+   procedure Write_XML (State : in out State_Type) is separate;
 
    ----------------------
    -- Write_XML_Report --
    ----------------------
 
-   procedure Write_XML_Report (State     : State_Type) is
+   procedure Write_XML_Report (State : State_Type) is
    begin
       null;
    end Write_XML_Report;

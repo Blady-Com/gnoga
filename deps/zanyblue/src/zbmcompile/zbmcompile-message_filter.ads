@@ -53,15 +53,15 @@ package ZBMCompile.Message_Filter is
    use ZanyBlue.Text.Filter;
 
    type Output_Level_Type is (Silent, Quiet, Normal, Verbose, Debug);
-   type Verbose_Filter_Type is new Message_Filter_Type with
-      record
-         Output_Level : Output_Level_Type := Normal;
-      end record;
+   type Verbose_Filter_Type is new Message_Filter_Type with record
+      Output_Level : Output_Level_Type := Normal;
+   end record;
 
-   overriding
-   function Is_Filtered (Filter    : Verbose_Filter_Type;
-                         Facility  : String;
-                         Key       : String) return Boolean;
+   overriding function Is_Filtered
+     (Filter   : Verbose_Filter_Type;
+      Facility : String;
+      Key      : String)
+      return Boolean;
 
    Filters : aliased Verbose_Filter_Type;
 

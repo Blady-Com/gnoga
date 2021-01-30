@@ -45,30 +45,35 @@ with Ada.Strings.Wide_Fixed;
 with ZanyBlue.Wide_Directories;
 
 separate (ZBTest.Commands)
-procedure Mkdir_Command (State : in out State_Type;
-                         Args  : List_Type) is
+procedure Mkdir_Command
+  (State : in out State_Type;
+   Args  :        List_Type)
+is
 
    use Ada.Strings.Wide_Fixed;
    use ZanyBlue.Wide_Directories;
 
-   procedure Make_Directory (State : in out State_Type;
-                             Name  : String);
+   procedure Make_Directory
+     (State : in out State_Type;
+      Name  :        String);
    --  The make directory helper function.
 
    --------------------
    -- Make_Directory --
    --------------------
 
-   procedure Make_Directory (State : in out State_Type;
-                             Name  : String) is
+   procedure Make_Directory
+     (State : in out State_Type;
+      Name  :        String)
+   is
    begin
       Wide_Create_Directory (Name);
       State.Add_Undo_Action (Format ("delete -r {0}", +Name));
       Print_00021 (+Name);
    exception
-   when E : ZanyBlue.Wide_Directories.Use_Error
-          | ZanyBlue.Wide_Directories.Name_Error =>
-      Print_10029 (+Name, +E);
+      when E : ZanyBlue.Wide_Directories.Use_Error |
+        ZanyBlue.Wide_Directories.Name_Error       =>
+         Print_10029 (+Name, +E);
    end Make_Directory;
 
    Target_Index : Natural := 0;

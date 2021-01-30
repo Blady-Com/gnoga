@@ -65,39 +65,47 @@
 with Ada.Environment_Variables;
 
 separate (ZBTest.Commands)
-procedure Getenv_Command (State : in out State_Type;
-                          Args  : List_Type) is
+procedure Getenv_Command
+  (State : in out State_Type;
+   Args  :        List_Type)
+is
 
    use Ada.Environment_Variables;
 
-   procedure Get_List_Value (State         : in out State_Type;
-                             Source        : String;
-                             Target        : String;
-                             Append_Values : Boolean);
+   procedure Get_List_Value
+     (State         : in out State_Type;
+      Source        :        String;
+      Target        :        String;
+      Append_Values :        Boolean);
    --  Get an environment variable as a list value.
 
    --------------------
    -- Get_List_Value --
    --------------------
 
-   procedure Get_List_Value (State         : in out State_Type;
-                             Source        : String;
-                             Target        : String;
-                             Append_Values : Boolean) is
+   procedure Get_List_Value
+     (State         : in out State_Type;
+      Source        :        String;
+      Target        :        String;
+      Append_Values :        Boolean)
+   is
 
-      procedure Parse_Values (List_Values : in out List_Type;
-                              Definition  : String);
+      procedure Parse_Values
+        (List_Values : in out List_Type;
+         Definition  :        String);
 
       ------------------
       -- Parse_Values --
       ------------------
 
-      procedure Parse_Values (List_Values : in out List_Type;
-                              Definition  : String) is
+      procedure Parse_Values
+        (List_Values : in out List_Type;
+         Definition  :        String)
+      is
 
-         PSep   : constant Unicode_Character := State.Get_Character ("_pathsep");
-         Start  : Positive := Definition'First;
-         Next   : Positive := Definition'First;
+         PSep  : constant Unicode_Character := State.Get_Character ("_pathsep");
+         Start : Positive                := Definition'First;
+         Next  : Positive                := Definition'First;
 
       begin
          while Next <= Definition'Last loop
@@ -113,9 +121,9 @@ procedure Getenv_Command (State : in out State_Type;
       List_Values : List_Type;
 
    begin  -- Get_List_Value
-      if Exists (To_UTF_8 (Source)) then
-         Parse_Values (List_Values,
-                       To_Wide_String (Value (To_UTF_8 (Source))));
+      if Exists (Wide_To_UTF8 (Source)) then
+         Parse_Values
+           (List_Values, To_Wide_String (Value (Wide_To_UTF8 (Source))));
          if Append_Values then
             for I in 1 .. Length (List_Values) loop
                State.Append (Target, Value (List_Values, I));
@@ -142,10 +150,10 @@ begin
       elsif Value (Args, I) = "-s" then
          Get_To_List := False;
       elsif Value (Args, I) = "-a" then
-         Get_To_List := True;
+         Get_To_List   := True;
          Append_Values := True;
       elsif Value (Args, I) = "-p" then
-         Get_To_List := True;
+         Get_To_List   := True;
          Append_Values := False;
       elsif Source_Idx = 0 then
          Source_Idx := I;
@@ -162,11 +170,12 @@ begin
       Target_Idx := Source_Idx;
    end if;
    if Get_To_List then
-      Get_List_Value (State, Value (Args, Source_Idx),
-                      Value (Args, Target_Idx), Append_Values);
+      Get_List_Value
+        (State, Value (Args, Source_Idx), Value (Args, Target_Idx),
+         Append_Values);
    else
-      State.Set_String (
-            Value (Args, Target_Idx),
-            To_Wide_String (Value (To_UTF_8 (Value (Args, Source_Idx)))));
+      State.Set_String
+        (Value (Args, Target_Idx),
+         To_Wide_String (Value (Wide_To_UTF8 (Value (Args, Source_Idx)))));
    end if;
 end Getenv_Command;

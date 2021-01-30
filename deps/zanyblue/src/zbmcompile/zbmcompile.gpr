@@ -57,4 +57,6 @@ project zbmcompile is
       for Executable ("zbmcompile-main.adb") use "zbmcompile";
    end Builder;
 
+   package Pretty_Printer renames zbcom.Pretty_Printer;
+
 end zbmcompile;

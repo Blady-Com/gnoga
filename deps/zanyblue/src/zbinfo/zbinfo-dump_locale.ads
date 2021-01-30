@@ -35,5 +35,6 @@
 
 with ZanyBlue.Text.Locales;
 
-procedure ZBInfo.Dump_Locale (Locale : ZanyBlue.Text.Locales.Locale_Type;
-                              Name   : String);
+procedure ZBInfo.Dump_Locale
+  (Locale : ZanyBlue.Text.Locales.Locale_Type;
+   Name : String);

@@ -45,25 +45,23 @@ package ZBInfo is
    use ZanyBlue.Text.Codecs;
    use ZanyBlue.Text.Locales;
 
-   package Hash_Type_Arguments is
-      new ZanyBlue.Text.Generic_Modulars (Hash_Type);
-   package Date_Time_Style_Arguments is
-      new ZanyBlue.Text.Generic_Enumerations (Date_Time_Style_Type);
-   package Day_Period_Arguments is
-      new ZanyBlue.Text.Generic_Enumerations (Day_Period_Type);
-   package Day_Arguments is
-      new ZanyBlue.Text.Generic_Enumerations (Day_Type);
-   package Era_Arguments is
-      new ZanyBlue.Text.Generic_Enumerations (Era_Type);
-   package Month_Arguments is
-      new ZanyBlue.Text.Generic_Enumerations (Month_Type);
-   package Numeric_Style_Arguments is
-      new ZanyBlue.Text.Generic_Enumerations (Numeric_Style_Type);
-   package Numeric_Item_Arguments is
-      new ZanyBlue.Text.Generic_Enumerations (Numeric_Item_Type);
-   package Text_Layout_Arguments is
-      new ZanyBlue.Text.Generic_Enumerations (Text_Layout_Type);
-   package Implementation_Arguments is
-      new ZanyBlue.Text.Generic_Enumerations (Implementation_Type);
+   package Hash_Type_Arguments is new ZanyBlue.Text.Generic_Modulars
+     (Hash_Type);
+   package Date_Time_Style_Arguments is new ZanyBlue.Text.Generic_Enumerations
+     (Date_Time_Style_Type);
+   package Day_Period_Arguments is new ZanyBlue.Text.Generic_Enumerations
+     (Day_Period_Type);
+   package Day_Arguments is new ZanyBlue.Text.Generic_Enumerations (Day_Type);
+   package Era_Arguments is new ZanyBlue.Text.Generic_Enumerations (Era_Type);
+   package Month_Arguments is new ZanyBlue.Text.Generic_Enumerations
+     (Month_Type);
+   package Numeric_Style_Arguments is new ZanyBlue.Text.Generic_Enumerations
+     (Numeric_Style_Type);
+   package Numeric_Item_Arguments is new ZanyBlue.Text.Generic_Enumerations
+     (Numeric_Item_Type);
+   package Text_Layout_Arguments is new ZanyBlue.Text.Generic_Enumerations
+     (Text_Layout_Type);
+   package Implementation_Arguments is new ZanyBlue.Text.Generic_Enumerations
+     (Implementation_Type);
 
 end ZBInfo;

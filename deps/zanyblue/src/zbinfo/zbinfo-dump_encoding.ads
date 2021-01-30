@@ -33,5 +33,6 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-procedure ZBInfo.Dump_Encoding (Name            : String;
-                                Reverse_Mapping : Boolean);
+procedure ZBInfo.Dump_Encoding
+  (Name : String;
+   Reverse_Mapping : Boolean);

@@ -51,43 +51,54 @@
 with ZanyBlue.Wide_Directories;
 
 separate (ZBTest.Commands)
-procedure Run_Command (State : in out State_Type;
-                       Args  : List_Type) is
+procedure Run_Command
+  (State : in out State_Type;
+   Args  :        List_Type)
+is
 
    use ZanyBlue.Wide_Directories;
 
-   procedure Execute_Script (State  : in out State_Type;
-                             Script : String);
+   procedure Execute_Script
+     (State  : in out State_Type;
+      Script :        String);
    --  Execute the script: open the script file and execute each line.
 
-   procedure Load_Init_Scripts (State          : in out State_Type;
-                                Script_Dir     : String);
+   procedure Load_Init_Scripts
+     (State      : in out State_Type;
+      Script_Dir :        String);
    --  Load any zbtest initialization scripts found in the directory
    --  tree, if not already loaded.
 
-   function Locate_Script (Path : String;
-                           Name : String) return String;
+   function Locate_Script
+     (Path : String;
+      Name : String)
+      return String;
    --  Locate the script to execute.
 
-   procedure Register_Run_Failure (State          : in out State_Type;
-                                   Script_Name    : String);
+   procedure Register_Run_Failure
+     (State       : in out State_Type;
+      Script_Name :        String);
    --  Register the failure to run a test script as a test failure.
 
-   procedure Run (State : in out State_Type;
-                  Name  : String);
+   procedure Run
+     (State : in out State_Type;
+      Name  :        String);
    --  Run the script.
 
-   procedure Wrap_Up (State     : in out State_Type;
-                      Test_Name : String);
+   procedure Wrap_Up
+     (State     : in out State_Type;
+      Test_Name :        String);
    --  Wrap-up the test, close any open scopes and print summary
 
    --------------------
    -- Execute_Script --
    --------------------
 
-   procedure Execute_Script (State  : in out State_Type;
-                             Script : String) is
-      File       : File_Type;
+   procedure Execute_Script
+     (State  : in out State_Type;
+      Script :        String)
+   is
+      File : File_Type;
    begin
       State.Set_String ("_source", Script);
       State.Set_Integer ("_lineno", 0);
@@ -97,35 +108,35 @@ procedure Run_Command (State : in out State_Type;
       State.Read_Eval_Loop (File, False);
       Close (File);
    exception
-   when E : others =>
-      if Is_Open (File) then
-         Close (File);
-      end if;
-      Print_10040 (+E, +Script);
+      when E : others =>
+         if Is_Open (File) then
+            Close (File);
+         end if;
+         Print_10040 (+E, +Script);
    end Execute_Script;
 
    -----------------------
    -- Load_Init_Scripts --
    -----------------------
 
-   procedure Load_Init_Scripts (State          : in out State_Type;
-                                Script_Dir     : String) is
-      Init_Script : constant String
-                       := Wide_Compose (Script_Dir,
-                                        ZBTest_Init_Name,
-                                        ZBTest_Extension);
+   procedure Load_Init_Scripts
+     (State      : in out State_Type;
+      Script_Dir :        String)
+   is
+      Init_Script : constant String :=
+        Wide_Compose (Script_Dir, ZBTest_Init_Name, ZBTest_Extension);
       Init_Param : constant String := "_init::" & Init_Script;
    begin
       begin
          --  Load the scripts in our parent directories first.
          Load_Init_Scripts (State, Wide_Containing_Directory (Script_Dir));
       exception
-      when ZanyBlue.Wide_Directories.Use_Error =>
+         when ZanyBlue.Wide_Directories.Use_Error =>
          --  At the root directory, just continue
-         null;
-      when ZanyBlue.Wide_Directories.Name_Error =>
+            null;
+         when ZanyBlue.Wide_Directories.Name_Error =>
          --  Something strange about he name, just return.
-         null;
+            null;
       end;
       if State.Is_Defined (Init_Param) then
          --  Initialization script already loaded.  They are only loaded
@@ -145,17 +156,20 @@ procedure Run_Command (State : in out State_Type;
    -- Locate_Script --
    -------------------
 
-   function Locate_Script (Path : String;
-                           Name : String) return String is
+   function Locate_Script
+     (Path : String;
+      Name : String)
+      return String
+   is
 
-      Test_1 : constant String := Wide_Compose ("", Name,
-                                                     ZBTest_Extension);
-      Test_2 : constant String := Wide_Compose (Name, Name,
-                                                     ZBTest_Extension);
-      Test_3 : constant String := Wide_Compose (Path, Name,
-                                                     ZBTest_Extension);
-      Test_4 : constant String := Wide_Compose (Wide_Compose (Path, Name),
-                                                     Name, ZBTest_Extension);
+      Test_1 : constant String :=
+        Wide_Compose ("", Name, ZBTest_Extension);
+      Test_2 : constant String :=
+        Wide_Compose (Name, Name, ZBTest_Extension);
+      Test_3 : constant String :=
+        Wide_Compose (Path, Name, ZBTest_Extension);
+      Test_4 : constant String :=
+        Wide_Compose (Wide_Compose (Path, Name), Name, ZBTest_Extension);
    begin
       if Wide_Is_File (Name) then
          return Name;
@@ -176,12 +190,13 @@ procedure Run_Command (State : in out State_Type;
    -- Register_Run_Failure --
    --------------------------
 
-   procedure Register_Run_Failure (State          : in out State_Type;
-                                   Script_Name    : String) is
-      Test_Name : constant String := Format ("{0}.{1}-run",
-                                                  +State.Full_Test_Name,
-                                                  +Script_Name);
-      File      : File_Type;
+   procedure Register_Run_Failure
+     (State       : in out State_Type;
+      Script_Name :        String)
+   is
+      Test_Name : constant String :=
+        Format ("{0}.{1}-run", +State.Full_Test_Name, +Script_Name);
+      File : File_Type;
    begin
       Wide_Create (File, Test_Name);
       Print_10037 (+Script_Name, File);
@@ -193,8 +208,10 @@ procedure Run_Command (State : in out State_Type;
    -- Run --
    ----------
 
-   procedure Run (State : in out State_Type;
-                  Name  : String) is
+   procedure Run
+     (State : in out State_Type;
+      Name  :        String)
+   is
       Cur_Path   : constant String := State.Get_String ("_curpath");
       Script     : constant String := Locate_Script (Cur_Path, Name);
       Script_Dir : constant String := Wide_Containing_Directory (Script);
@@ -211,10 +228,12 @@ procedure Run_Command (State : in out State_Type;
    -- Wrap_Up --
    -------------
 
-   procedure Wrap_Up (State     : in out State_Type;
-                      Test_Name : String) is
-      N_Fail   : Natural;
-      N_OK     : Natural;
+   procedure Wrap_Up
+     (State     : in out State_Type;
+      Test_Name :        String)
+   is
+      N_Fail : Natural;
+      N_OK   : Natural;
    begin
       --  Close any user created scopes ...
       while not State.Is_Defined ("_implicit_scope", False) loop
@@ -231,7 +250,7 @@ begin
       raise Command_Usage_Error;
    end if;
 exception
-when File_Not_Found =>
-   Register_Run_Failure (State, Value (Args, 2));
-   Print_10020 (+Value (Args, 2));
+   when File_Not_Found =>
+      Register_Run_Failure (State, Value (Args, 2));
+      Print_10020 (+Value (Args, 2));
 end Run_Command;

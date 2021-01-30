@@ -38,6 +38,6 @@ with ZanyBlue.Text.Generic_Enumerations;
 
 pragma Elaborate_All (ZanyBlue.Text.Generic_Enumerations);
 
-package ZBTest.Commands.File_Type_Arguments is
-   new ZanyBlue.Text.Generic_Enumerations (
-         Enumeration_Type => ZanyBlue.Wide_Directories.Wide_File_Kind);
+package ZBTest.Commands.File_Type_Arguments is new ZanyBlue.Text
+  .Generic_Enumerations
+  (Enumeration_Type => ZanyBlue.Wide_Directories.Wide_File_Kind);

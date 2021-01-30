@@ -61,8 +61,10 @@
 with Ada.Strings.Wide_Fixed;
 
 separate (ZBTest.Commands)
-procedure Append_Command (State   : in out State_Type;
-                          Args    : List_Type) is
+procedure Append_Command
+  (State : in out State_Type;
+   Args  :        List_Type)
+is
 
    use Ada.Strings.Wide_Fixed;
 
@@ -82,7 +84,7 @@ begin
       end if;
    end loop;
    if Param_Idx * Value_Idx = 0 then
-         raise Command_Usage_Error;
+      raise Command_Usage_Error;
    end if;
    State.Append (Value (Args, Param_Idx), Value (Args, Value_Idx));
 end Append_Command;

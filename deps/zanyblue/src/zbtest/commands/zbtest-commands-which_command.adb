@@ -59,23 +59,28 @@
 with Ada.Strings.Wide_Fixed;
 
 separate (ZBTest.Commands)
-procedure Which_Command (State : in out State_Type;
-                         Args  : List_Type) is
+procedure Which_Command
+  (State : in out State_Type;
+   Args  :        List_Type)
+is
 
    use Ada.Strings.Wide_Fixed;
 
-   procedure Display_Path (State      : State_Type;
-                           Name       : String;
-                           Executable : Boolean);
+   procedure Display_Path
+     (State      : State_Type;
+      Name       : String;
+      Executable : Boolean);
    --  Search for a path name and display the result.
 
    ------------------
    -- Display_Path --
    ------------------
 
-   procedure Display_Path (State      : State_Type;
-                           Name       : String;
-                           Executable : Boolean) is
+   procedure Display_Path
+     (State      : State_Type;
+      Name       : String;
+      Executable : Boolean)
+   is
    begin
       if Executable then
          Print_00033 (+State.Locate_Executable (Name));
@@ -83,8 +88,8 @@ procedure Which_Command (State : in out State_Type;
          Print_00033 (+State.Locate_File (Name));
       end if;
    exception
-   when File_Not_Found =>
-      Print_10010 (+Name);
+      when File_Not_Found =>
+         Print_10010 (+Name);
    end Display_Path;
 
    Executable : Boolean := False;

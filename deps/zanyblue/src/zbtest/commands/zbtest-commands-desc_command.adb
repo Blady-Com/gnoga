@@ -42,8 +42,10 @@
 with Ada.Strings.Wide_Unbounded;
 
 separate (ZBTest.Commands)
-procedure Desc_Command (State : in out State_Type;
-                        Args  : List_Type) is
+procedure Desc_Command
+  (State : in out State_Type;
+   Args  :        List_Type)
+is
 
    use Ada.Strings.Wide_Unbounded;
 

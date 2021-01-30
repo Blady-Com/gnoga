@@ -56,4 +56,6 @@ project zbtest is
       for Executable ("zbtest-main.adb") use "zbtest";
    end Builder;
 
+   package Pretty_Printer renames zbcom.Pretty_Printer;
+
 end zbtest;

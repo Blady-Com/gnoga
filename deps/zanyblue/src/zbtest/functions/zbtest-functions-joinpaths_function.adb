@@ -46,14 +46,17 @@ with Ada.Strings.Wide_Unbounded;
 with ZanyBlue.Wide_Directories;
 
 separate (ZBTest.Functions)
-function Joinpaths_Function (State : access State_Type;
-                             Args  : List_Type) return String is
+function Joinpaths_Function
+  (State : access State_Type;
+   Args  : List_Type)
+   return String
+is
    pragma Unreferenced (State);
 
    use Ada.Strings.Wide_Unbounded;
    use ZanyBlue.Wide_Directories;
 
-      Buffer : Unbounded_Wide_String;
+   Buffer : Unbounded_Wide_String;
 
 begin
    if Length (Args) < 2 then
@@ -61,9 +64,8 @@ begin
    end if;
    Append (Buffer, Value (Args, 2));
    for I in 3 .. Length (Args) loop
-      Set_Unbounded_Wide_String (Buffer,
-                                 Wide_Compose (To_Wide_String (Buffer),
-                                               Value (Args, I)));
+      Set_Unbounded_Wide_String
+        (Buffer, Wide_Compose (To_Wide_String (Buffer), Value (Args, I)));
    end loop;
    return To_Wide_String (Buffer);
 end Joinpaths_Function;

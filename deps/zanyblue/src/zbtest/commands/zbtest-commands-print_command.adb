@@ -64,26 +64,32 @@
 with Ada.Strings.Wide_Fixed;
 
 separate (ZBTest.Commands)
-procedure Print_Command (State : in out State_Type;
-                         Args  : List_Type) is
+procedure Print_Command
+  (State : in out State_Type;
+   Args  :        List_Type)
+is
 
    use Ada.Strings.Wide_Fixed;
 
-   procedure Handle_Argument (State    : in out State_Type;
-                              Argument : String;
-                              Scalar   : in out Boolean);
+   procedure Handle_Argument
+     (State    : in out State_Type;
+      Argument :        String;
+      Scalar   : in out Boolean);
    --  Handle the printing of a value (scalar or list).
 
-   procedure Print_List (State : in out State_Type;
-                         Name  : String);
+   procedure Print_List
+     (State : in out State_Type;
+      Name  :        String);
 
    ---------------------
    -- Handle_Argument --
    ---------------------
 
-   procedure Handle_Argument (State    : in out State_Type;
-                              Argument : String;
-                              Scalar   : in out Boolean) is
+   procedure Handle_Argument
+     (State    : in out State_Type;
+      Argument :        String;
+      Scalar   : in out Boolean)
+   is
    begin
       if Argument = "-l" then
          Scalar := False;
@@ -97,18 +103,20 @@ procedure Print_Command (State : in out State_Type;
          Print_List (State, Argument);
       end if;
    exception
-   when Not_Defined_Error =>
-      Print_10005 (+Argument);
+      when Not_Defined_Error =>
+         Print_10005 (+Argument);
    end Handle_Argument;
 
    ----------------
    -- Print_List --
    ----------------
 
-   procedure Print_List (State : in out State_Type;
-                         Name  : String) is
-      List : constant List_Type := State.Get_List (Name);
-      N_Elem : constant Natural := Length (List);
+   procedure Print_List
+     (State : in out State_Type;
+      Name  :        String)
+   is
+      List   : constant List_Type := State.Get_List (Name);
+      N_Elem : constant Natural   := Length (List);
    begin
       if N_Elem = 0 then
          Print_00005;

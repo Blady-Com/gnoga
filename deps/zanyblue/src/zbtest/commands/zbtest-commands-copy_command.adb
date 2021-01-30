@@ -65,31 +65,37 @@ with Ada.Strings.Wide_Fixed;
 with ZanyBlue.Wide_Directories;
 
 separate (ZBTest.Commands)
-procedure Copy_Command (State : in out State_Type;
-                        Args  : List_Type) is
+procedure Copy_Command
+  (State : in out State_Type;
+   Args  :        List_Type)
+is
 
    use Ada.Strings.Wide_Fixed;
    use ZanyBlue.Wide_Directories;
 
-   procedure Copy_Directory (State            : in out State_Type;
-                             Source_Name      : String;
-                             Destination_Name : String);
+   procedure Copy_Directory
+     (State            : in out State_Type;
+      Source_Name      :        String;
+      Destination_Name :        String);
    --  Recursively copy a directory.
 
-   procedure Copy_File (State            : in out State_Type;
-                        Source_Name      : String;
-                        Destination_Name : String);
+   procedure Copy_File
+     (State            : in out State_Type;
+      Source_Name      :        String;
+      Destination_Name :        String);
    --  Copy a simple file.
 
    --------------------
    -- Copy_Directory --
    --------------------
 
-   procedure Copy_Directory (State            : in out State_Type;
-                             Source_Name      : String;
-                             Destination_Name : String) is
+   procedure Copy_Directory
+     (State            : in out State_Type;
+      Source_Name      :        String;
+      Destination_Name :        String)
+   is
       Source_Path : constant String :=
-                       State.Locate_Directory (Source_Name);
+        State.Locate_Directory (Source_Name);
    begin
       Wide_Copy_Tree (Source_Path, Destination_Name);
       Print_00019 (+Source_Name, +Destination_Name);
@@ -100,9 +106,11 @@ procedure Copy_Command (State : in out State_Type;
    -- Copy_File --
    ---------------
 
-   procedure Copy_File (State            : in out State_Type;
-                        Source_Name      : String;
-                        Destination_Name : String) is
+   procedure Copy_File
+     (State            : in out State_Type;
+      Source_Name      :        String;
+      Destination_Name :        String)
+   is
       Source_Path : constant String := State.Locate_File (Source_Name);
    begin
       Wide_Copy_File (Source_Path, Destination_Name);
@@ -135,13 +143,13 @@ begin
       Destination_Index := Source_Index;
    end if;
    if Recursive then
-      Copy_Directory (State, Value (Args, Source_Index),
-                             Value (Args, Destination_Index));
+      Copy_Directory
+        (State, Value (Args, Source_Index), Value (Args, Destination_Index));
    else
-      Copy_File (State, Value (Args, Source_Index),
-                        Value (Args, Destination_Index));
+      Copy_File
+        (State, Value (Args, Source_Index), Value (Args, Destination_Index));
    end if;
 exception
-when File_Not_Found =>
-   Print_10018 (+Value (Args, Source_Index));
+   when File_Not_Found =>
+      Print_10018 (+Value (Args, Source_Index));
 end Copy_Command;

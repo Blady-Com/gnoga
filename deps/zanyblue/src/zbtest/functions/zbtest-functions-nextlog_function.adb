@@ -82,27 +82,37 @@
 with Ada.Strings.Wide_Fixed;
 
 separate (ZBTest.Functions)
-function Nextlog_Function (State : access State_Type;
-                           Args  : List_Type) return String is
+function Nextlog_Function
+  (State : access State_Type;
+   Args  : List_Type)
+   return String
+is
 
    use Ada.Strings.Wide_Fixed;
 
-   function Counter_Log_Name (State        : access State_Type;
-                              Counter_Name : String;
-                              With_Undo    : Boolean) return String;
+   function Counter_Log_Name
+     (State        : access State_Type;
+      Counter_Name : String;
+      With_Undo    : Boolean)
+      return String;
 
-   function Log_Name (State     : access State_Type;
-                      Base_Name : String;
-                      Log_Num   : Positive;
-                      With_Undo : Boolean) return String;
+   function Log_Name
+     (State     : access State_Type;
+      Base_Name : String;
+      Log_Num   : Positive;
+      With_Undo : Boolean)
+      return String;
 
    ----------------------
    -- Counter_Log_Name --
    ----------------------
 
-   function Counter_Log_Name (State        : access State_Type;
-                              Counter_Name : String;
-                              With_Undo    : Boolean) return String is
+   function Counter_Log_Name
+     (State        : access State_Type;
+      Counter_Name : String;
+      With_Undo    : Boolean)
+      return String
+   is
       Test_Name : constant String := State.Get_String ("_testname");
    begin
       if Counter_Name'Length = 0 or else Head (Counter_Name, 1) = "_" then
@@ -112,21 +122,26 @@ function Nextlog_Function (State : access State_Type;
          State.Set_Integer (Counter_Name, 0);
       end if;
       State.Increment (Counter_Name, Deep => False);
-      return Log_Name (State, Test_Name & "-" & Counter_Name,
-                       State.Get_Integer (Counter_Name), With_Undo);
+      return
+        Log_Name
+          (State, Test_Name & "-" & Counter_Name,
+           State.Get_Integer (Counter_Name), With_Undo);
    end Counter_Log_Name;
 
    --------------
    -- Log_Name --
    --------------
 
-   function Log_Name (State     : access State_Type;
-                      Base_Name : String;
-                      Log_Num   : Positive;
-                      With_Undo : Boolean) return String is
+   function Log_Name
+     (State     : access State_Type;
+      Base_Name : String;
+      Log_Num   : Positive;
+      With_Undo : Boolean)
+      return String
+   is
 
-      Result : constant String := Format ("{0}-{1,=2}.log",
-                                               +Base_Name, +Log_Num);
+      Result : constant String :=
+        Format ("{0}-{1,=2}.log", +Base_Name, +Log_Num);
    begin
       if With_Undo then
          State.Add_Undo_Action ("compare " & Result);
@@ -134,8 +149,8 @@ function Nextlog_Function (State : access State_Type;
       return Result;
    end Log_Name;
 
-   Counter_Index : Natural := 0;
-   With_Undo     : Boolean := True;
+   Counter_Index : Natural  := 0;
+   With_Undo     : Boolean  := True;
    Index         : Positive := 2;
 
 begin
@@ -143,20 +158,21 @@ begin
       if Value (Args, Index) = "-n" then
          With_Undo := not With_Undo;
       elsif Value (Args, Index) = "-c" and then Index < Length (Args) then
-         Index := Index + 1;
+         Index         := Index + 1;
          Counter_Index := Index;
-         With_Undo := not With_Undo;
+         With_Undo     := not With_Undo;
       else
          raise Function_Usage_Error;
       end if;
       Index := Index + 1;
    end loop;
    if Counter_Index /= 0 then
-      return Counter_Log_Name (State, Value (Args, Counter_Index),
-                               With_Undo);
+      return Counter_Log_Name (State, Value (Args, Counter_Index), With_Undo);
    else
       State.Increment ("_lognum", Deep => False);
-      return Log_Name (State, State.Get_String ("_testname"),
-                       State.Get_Integer ("_lognum"), With_Undo);
+      return
+        Log_Name
+          (State, State.Get_String ("_testname"),
+           State.Get_Integer ("_lognum"), With_Undo);
    end if;
 end Nextlog_Function;

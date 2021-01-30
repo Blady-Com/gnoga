@@ -44,26 +44,32 @@ with Ada.Strings.Wide_Fixed;
 with ZanyBlue.Wide_Directories;
 
 separate (ZBTest.Commands)
-procedure Delete_Command (State : in out State_Type;
-                          Args  : List_Type) is
+procedure Delete_Command
+  (State : in out State_Type;
+   Args  :        List_Type)
+is
 
    use Ada.Strings.Wide_Fixed;
    use ZanyBlue.Wide_Directories;
 
-   procedure Delete_Directory (State : in out State_Type;
-                               Name  : String);
+   procedure Delete_Directory
+     (State : in out State_Type;
+      Name  :        String);
    --  Delete a directory (recursively).
 
-   procedure Delete_File (State : in out State_Type;
-                          Name  : String);
+   procedure Delete_File
+     (State : in out State_Type;
+      Name  :        String);
    --  Delete a file.
 
    ----------------------
    -- Delete_Directory --
    ----------------------
 
-   procedure Delete_Directory (State : in out State_Type;
-                               Name  : String) is
+   procedure Delete_Directory
+     (State : in out State_Type;
+      Name  :        String)
+   is
       pragma Unreferenced (State);
    begin
       Wide_Delete_Tree (Name);
@@ -74,8 +80,10 @@ procedure Delete_Command (State : in out State_Type;
    -- Delete_File --
    -----------------
 
-   procedure Delete_File (State : in out State_Type;
-                          Name  : String) is
+   procedure Delete_File
+     (State : in out State_Type;
+      Name  :        String)
+   is
       pragma Unreferenced (State);
    begin
       Wide_Delete_File (Name);
@@ -106,6 +114,6 @@ begin
       Delete_File (State, Value (Args, Target_Index));
    end if;
 exception
-when E : ZanyBlue.Wide_Directories.Name_Error =>
-   Print_10026 (+Value (Args, Target_Index), +E);
+   when E : ZanyBlue.Wide_Directories.Name_Error =>
+      Print_10026 (+Value (Args, Target_Index), +E);
 end Delete_Command;

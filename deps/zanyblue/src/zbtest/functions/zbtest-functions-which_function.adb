@@ -51,8 +51,11 @@
 --
 
 separate (ZBTest.Functions)
-function Which_Function (State : access State_Type;
-                         Args  : List_Type) return String is
+function Which_Function
+  (State : access State_Type;
+   Args  : List_Type)
+   return String
+is
 
    Executable : Boolean := False;
    Name_Index : Natural := 0;
@@ -78,7 +81,7 @@ begin
       return State.Locate_File (Value (Args, Name_Index));
    end if;
 exception
-when File_Not_Found =>
-   Print_10010 (+Value (Args, Name_Index));
-   return "";
+   when File_Not_Found =>
+      Print_10010 (+Value (Args, Name_Index));
+      return "";
 end Which_Function;

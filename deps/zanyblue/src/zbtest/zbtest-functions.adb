@@ -53,83 +53,96 @@ package body ZBTest.Functions is
    use ZBTest_Messages.ZBTest_Prints;
    use ZBTest_Messages.Functions_Prints;
 
-   type Simple_Message_Printer is
-      access procedure (Destination : File_Type    := Current_Output;
-                        With_NL     : Boolean      := True;
-                        Locale      : Locale_Type  := Current_Locale;
-                        Catalog     : Catalog_Type := Standard_Catalog);
+   type Simple_Message_Printer is access procedure
+     (Destination : File_Type    := Current_Output;
+      With_NL     : Boolean      := True;
+      Locale      : Locale_Type  := Current_Locale;
+      Catalog     : Catalog_Type := Standard_Catalog);
 
-   type Argument_Message_Printer is
-      access procedure (Argument0   : Any_Category_Type'Class;
-                        Destination : File_Type    := Current_Output;
-                        With_NL     : Boolean      := True;
-                        Locale      : Locale_Type  := Current_Locale;
-                        Catalog     : Catalog_Type := Standard_Catalog);
+   type Argument_Message_Printer is access procedure
+     (Argument0   : Any_Category_Type'Class;
+      Destination : File_Type    := Current_Output;
+      With_NL     : Boolean      := True;
+      Locale      : Locale_Type  := Current_Locale;
+      Catalog     : Catalog_Type := Standard_Catalog);
 
-   type Function_Definition is
-      record
-         Name           : Wide_String_Access;
-         Implementation : Function_Type;
-         Usage          : Simple_Message_Printer;
-         Summary        : Argument_Message_Printer;
-         Help           : Simple_Message_Printer;
-      end record;
+   type Function_Definition is record
+      Name           : Wide_String_Access;
+      Implementation : Function_Type;
+      Usage          : Simple_Message_Printer;
+      Summary        : Argument_Message_Printer;
+      Help           : Simple_Message_Printer;
+   end record;
    --  Information on a text function.
 
    type Function_List is array (Positive range <>) of Function_Definition;
    --  List of known functions.
 
-   function Find_Index (Name : String) return Positive;
+   function Find_Index
+     (Name : String)
+      return Positive;
    --  Return the index in the function table for the named command.  If the
    --  function is not found, 0 is returned.
 
-   function Dirname_Function (State   : access State_Type;
-                              Args    : List_Type) return String;
-   function Joinpaths_Function (State   : access State_Type;
-                                Args    : List_Type) return String;
-   function Nextlog_Function (State   : access State_Type;
-                              Args    : List_Type) return String;
-   function Which_Function (State   : access State_Type;
-                            Args    : List_Type) return String;
+   function Dirname_Function
+     (State : access State_Type;
+      Args  : List_Type)
+      return String;
+   function Joinpaths_Function
+     (State : access State_Type;
+      Args  : List_Type)
+      return String;
+   function Nextlog_Function
+     (State : access State_Type;
+      Args  : List_Type)
+      return String;
+   function Which_Function
+     (State : access State_Type;
+      Args  : List_Type)
+      return String;
 
-   Function_Table : constant Function_List := (
-                 (Name           => new String'("dirname"),
-                  Implementation => Dirname_Function'Access,
-                  Usage          => Print_Dirname_Usage'Access,
-                  Summary        => Print_Dirname_Summary'Access,
-                  Help           => Print_Dirname_Docstring'Access),
+   Function_Table : constant Function_List :=
+     ((Name           => new String'("dirname"),
+       Implementation => Dirname_Function'Access,
+       Usage          => Print_Dirname_Usage'Access,
+       Summary        => Print_Dirname_Summary'Access,
+       Help           => Print_Dirname_Docstring'Access),
 
-                 (Name           => new String'("joinpaths"),
-                  Implementation => Joinpaths_Function'Access,
-                  Usage          => Print_Joinpaths_Usage'Access,
-                  Summary        => Print_Joinpaths_Summary'Access,
-                  Help           => Print_Joinpaths_Docstring'Access),
+      (Name           => new String'("joinpaths"),
+       Implementation => Joinpaths_Function'Access,
+       Usage          => Print_Joinpaths_Usage'Access,
+       Summary        => Print_Joinpaths_Summary'Access,
+       Help           => Print_Joinpaths_Docstring'Access),
 
-                 (Name           => new String'("nextlog"),
-                  Implementation => Nextlog_Function'Access,
-                  Usage          => Print_Nextlog_Usage'Access,
-                  Summary        => Print_Nextlog_Summary'Access,
-                  Help           => Print_Nextlog_Docstring'Access),
+      (Name           => new String'("nextlog"),
+       Implementation => Nextlog_Function'Access,
+       Usage          => Print_Nextlog_Usage'Access,
+       Summary        => Print_Nextlog_Summary'Access,
+       Help           => Print_Nextlog_Docstring'Access),
 
-                 (Name           => new String'("which"),
-                  Implementation => Which_Function'Access,
-                  Usage          => Print_Which_Usage'Access,
-                  Summary        => Print_Which_Summary'Access,
-                  Help           => Print_Which_Docstring'Access));
+      (Name           => new String'("which"),
+       Implementation => Which_Function'Access,
+       Usage          => Print_Which_Usage'Access,
+       Summary        => Print_Which_Summary'Access,
+       Help           => Print_Which_Docstring'Access));
 
    ----------------------
    -- Dirname_Function --
    ----------------------
 
-   function Dirname_Function (State   : access State_Type;
-                              Args    : List_Type) return String is
-      separate;
+   function Dirname_Function
+     (State : access State_Type;
+      Args  : List_Type)
+      return String is separate;
 
    ----------
    -- Find --
    ----------
 
-   function Find (Name : String) return Function_Type is
+   function Find
+     (Name : String)
+      return Function_Type
+   is
    begin
       return Function_Table (Find_Index (Name)).Implementation;
    end Find;
@@ -138,7 +151,10 @@ package body ZBTest.Functions is
    -- Find_Index --
    ----------------
 
-   function Find_Index (Name : String) return Positive is
+   function Find_Index
+     (Name : String)
+      return Positive
+   is
    begin
       for I in 1 .. Function_Table'Last loop
          if Name = Function_Table (I).Name.all then
@@ -152,7 +168,10 @@ package body ZBTest.Functions is
    -- Function_Name --
    -------------------
 
-   function Function_Name (Index : Positive) return String is
+   function Function_Name
+     (Index : Positive)
+      return String
+   is
    begin
       return Function_Table (Index).Name.all;
    end Function_Name;
@@ -161,17 +180,19 @@ package body ZBTest.Functions is
    -- Joinpaths_Function --
    ------------------------
 
-   function Joinpaths_Function (State   : access State_Type;
-                                Args    : List_Type) return String is
-      separate;
+   function Joinpaths_Function
+     (State : access State_Type;
+      Args  : List_Type)
+      return String is separate;
 
    ----------------------
    -- Nextlog_Function --
    ----------------------
 
-   function Nextlog_Function (State   : access State_Type;
-                              Args    : List_Type) return String is
-      separate;
+   function Nextlog_Function
+     (State : access State_Type;
+      Args  : List_Type)
+      return String is separate;
 
    -------------------------
    -- Number_Of_Functions --
@@ -190,16 +211,18 @@ package body ZBTest.Functions is
    begin
       Function_Table (Find_Index (Name)).Help.all;
    exception
-   when Unknown_Function_Error =>
-      Print_10042 (+Name);
+      when Unknown_Function_Error =>
+         Print_10042 (+Name);
    end Print_Function_Help;
 
    ----------------------------
    -- Print_Function_Summary --
    ----------------------------
 
-   procedure Print_Function_Summary (Name  : String;
-                                     Index : Positive) is
+   procedure Print_Function_Summary
+     (Name  : String;
+      Index : Positive)
+   is
    begin
       Function_Table (Find_Index (Name)).Summary.all (+Index);
    end Print_Function_Summary;
@@ -217,8 +240,9 @@ package body ZBTest.Functions is
    -- Which_Function --
    --------------------
 
-   function Which_Function (State   : access State_Type;
-                            Args    : List_Type) return String is
-      separate;
+   function Which_Function
+     (State : access State_Type;
+      Args  : List_Type)
+      return String is separate;
 
 end ZBTest.Functions;

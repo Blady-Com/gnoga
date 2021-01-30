@@ -46,43 +46,48 @@ package body ZBMCompile.Codegen.Base is
    use ZanyBlue.Utils;
    use ZanyBlue.Wide_Directories;
 
-   procedure Create_Message_List (File    : in out File_Type;
-                                  Catalog : Catalog_Type;
-                                  Options : Parameter_Set_Type);
+   procedure Create_Message_List
+     (File    : in out File_Type;
+      Catalog :        Catalog_Type;
+      Options :        Parameter_Set_Type);
    --  Write the code to add the messages using indexes to vectors already
    --  generated.
 
-   procedure Write_Name_List (File     : in out File_Type;
-                              Catalog  : Catalog_Type;
-                              Name     : String;
-                              Names    : String;
-                              N        : Natural;
-                              Options  : Parameter_Set_Type;
-                              Namer    : access
-                                 function (Catalog : Catalog_Type;
-                                           I       : Positive)
-                                    return String);
+   procedure Write_Name_List
+     (File    : in out File_Type;
+      Catalog :        Catalog_Type;
+      Name    :        String;
+      Names   :        String;
+      N       :        Natural;
+      Options :        Parameter_Set_Type;
+      Namer   :        access function
+        (Catalog : Catalog_Type;
+         I       : Positive)
+         return String);
    --  Write a list of names to the generated source file, Keys, Locales, etc.
 
-   procedure Write_Query_Decl (File    : in out File_Type;
-                               Name    : String;
-                               Options : Parameter_Set_Type);
+   procedure Write_Query_Decl
+     (File    : in out File_Type;
+      Name    :        String;
+      Options :        Parameter_Set_Type);
    --  Write the declaration for a generated query function which returns
    --  a facility or key name given an index.
 
-   procedure Write_Query_Impl (File       : in out File_Type;
-                               Name       : String;
-                               Table_Name : String;
-                               Options    : Parameter_Set_Type);
+   procedure Write_Query_Impl
+     (File       : in out File_Type;
+      Name       :        String;
+      Table_Name :        String;
+      Options    :        Parameter_Set_Type);
    --  Write the implementation for a generated query function which returns
    --  a facility or key name given an index.
 
-   procedure Write_String (File       : in out File_Type;
-                           Name       : String;
-                           Value      : String;
-                           ASCII      : Boolean;
-                           Width      : Positive;
-                           Decl_Index : Positive := 1);
+   procedure Write_String
+     (File       : in out File_Type;
+      Name       :        String;
+      Value      :        String;
+      ASCII      :        Boolean;
+      Width      :        Positive;
+      Decl_Index :        Positive := 1);
    --  Write a string (facility names, keys names, locale names and string
    --  pool) allowing for line over-runs.  The string is written to the file
    --  in a series of sub-strings concatenated together (the output line
@@ -95,70 +100,73 @@ package body ZBMCompile.Codegen.Base is
    -- Create_Message_List --
    -------------------------
 
-   procedure Create_Message_List (File    : in out File_Type;
-                                  Catalog : Catalog_Type;
-                                  Options : Parameter_Set_Type) is
+   procedure Create_Message_List
+     (File    : in out File_Type;
+      Catalog :        Catalog_Type;
+      Options :        Parameter_Set_Type)
+   is
 
-      procedure Add_Message (F        : Facility_Index_Type;
-                             K        : Key_Index_Type;
-                             L        : Locale_Index_Type;
-                             EL       : Locale_Index_Type;
-                             First    : Positive;
-                             Last     : Natural;
-                             Count    : Natural);
+      procedure Add_Message
+        (F     : Facility_Index_Type;
+         K     : Key_Index_Type;
+         L     : Locale_Index_Type;
+         EL    : Locale_Index_Type;
+         First : Positive;
+         Last  : Natural;
+         Count : Natural);
       --  Add an individual message definition, handling the case where
       --  the message is the last message in the list, i.e., no comma.
 
-      Pool                 : constant String := Get_Pool (Catalog);
+      Pool                 : constant String     := Get_Pool (Catalog);
       N_Messages           : constant Natural := Number_Of_Messages (Catalog);
-      First_Last_Message   : Message_Id_Type := "10017";
+      First_Last_Message   : Message_Id_Type          := "10017";
       Facility_Key_Message : constant Message_Id_Type := "10018";
       Locale_Message       : constant Message_Id_Type := "10019";
       Last_Message         : constant Message_Id_Type := "10020";
-      Current              : Positive := 1;
+      Current              : Positive                 := 1;
 
       -----------------
       -- Add_Message --
       -----------------
 
-      procedure Add_Message (F        : Facility_Index_Type;
-                             K        : Key_Index_Type;
-                             L        : Locale_Index_Type;
-                             EL       : Locale_Index_Type;
-                             First    : Positive;
-                             Last     : Natural;
-                             Count    : Natural) is
+      procedure Add_Message
+        (F     : Facility_Index_Type;
+         K     : Key_Index_Type;
+         L     : Locale_Index_Type;
+         EL    : Locale_Index_Type;
+         First : Positive;
+         Last  : Natural;
+         Count : Natural)
+      is
 
          pragma Unreferenced (Count);
 
       begin
-         Print_Line (File, ZBMBase_Facility, First_Last_Message,
-                           Argument0 => +Current,
-                           Argument1 => +First,
-                           Argument2 => +Last);
-         Print_Line (File, ZBMBase_Facility, Facility_Key_Message,
-                           Argument0 => +Positive (F),
-                           Argument1 => +Positive (K));
-         Print_Line (File, ZBMBase_Facility,
-                     Select_Message (Current < N_Messages, Locale_Message,
-                                                           Last_Message),
-                     Argument0 => +Positive (L),
-                     Argument1 => +Positive (EL));
+         Print_Line
+           (File, ZBMBase_Facility, First_Last_Message, Argument0 => +Current,
+            Argument1 => +First, Argument2 => +Last);
+         Print_Line
+           (File, ZBMBase_Facility, Facility_Key_Message,
+            Argument0 => +Positive (F), Argument1 => +Positive (K));
+         Print_Line
+           (File, ZBMBase_Facility,
+            Select_Message
+              (Current < N_Messages, Locale_Message, Last_Message),
+            Argument0 => +Positive (L), Argument1 => +Positive (EL));
          if not Options.Get_Boolean ("ascii_only") then
-            Write_Commented_Text (File, Pool (First .. Last),
-                                  Options.Get_Integer ("comment_size"));
+            Write_Commented_Text
+              (File, Pool (First .. Last),
+               Options.Get_Integer ("comment_size"));
          end if;
          Current := Current + 1;
       end Add_Message;
 
    begin
-      if Options.Get_Boolean ("positional_elements")
-        or else N_Messages = 1
+      if Options.Get_Boolean ("positional_elements") or else N_Messages = 1
       then
          First_Last_Message := "10016";
       end if;
-      Print_Line (File, ZBMBase_Facility, "10015",
-                  Argument0 => +N_Messages);
+      Print_Line (File, ZBMBase_Facility, "10015", Argument0 => +N_Messages);
       Iterate (Catalog, Add_Message'Access);
       New_Line (File);
    end Create_Message_List;
@@ -167,164 +175,163 @@ package body ZBMCompile.Codegen.Base is
    -- Create_Root_Body --
    ----------------------
 
-   procedure Create_Root_Body (Catalog          : Catalog_Type;
-                               Options          : Parameter_Set_Type) is
+   procedure Create_Root_Body
+     (Catalog : Catalog_Type;
+      Options : Parameter_Set_Type)
+   is
 
-      Output_Directory : constant String
-                              := Options.Get_String ("output_directory");
+      Output_Directory : constant String :=
+        Options.Get_String ("output_directory");
       Package_Name : constant String := Options.Get_String ("package");
-      Pool      : constant String := Get_Pool (Catalog);
-      File_Name : constant String := Wide_Compose (
-                             Output_Directory,
-                             Body_File_Name (Package_Name, GNAT_Naming_Style));
-      Updated   : Boolean;
-      File      : File_Type;
+      Pool         : constant String := Get_Pool (Catalog);
+      File_Name    : constant String :=
+        Wide_Compose
+          (Output_Directory, Body_File_Name (Package_Name, GNAT_Naming_Style));
+      Updated : Boolean;
+      File    : File_Type;
 
    begin
       Wide_Create_For_Update (File, File_Name);
-      Print_Line (File, ZBMBase_Facility, "10001",
-                  Argument0 => +Version_Major,
-                  Argument1 => +Version_Minor,
-                  Argument2 => +Version_Patch,
-                  Argument3 => +Revision);
-      Print_Line (File, ZBMBase_Facility, "10002",
-                  Argument0 => +Package_Name);
+      Print_Line
+        (File, ZBMBase_Facility, "10001", Argument0 => +Version_Major,
+         Argument1 => +Version_Minor, Argument2 => +Version_Patch,
+         Argument3                                  => +Revision);
+      Print_Line (File, ZBMBase_Facility, "10002", Argument0 => +Package_Name);
       if Number_Of_Messages (Catalog) > 0 then
          Print_Line (File, ZBMBase_Facility, "10003");
          --  Write the list of facility variables
-         Write_Name_List (File, Catalog, "Facility", "Facilities",
-                          Number_Of_Facilities (Catalog), Options,
-                          Get_Facility'Access);
+         Write_Name_List
+           (File, Catalog, "Facility", "Facilities",
+            Number_Of_Facilities (Catalog), Options, Get_Facility'Access);
          --  Write the list of key variables
-         Write_Name_List (File, Catalog, "Key", "Keys",
-                          Number_Of_Keys (Catalog), Options,
-                          Get_Key'Access);
+         Write_Name_List
+           (File, Catalog, "Key", "Keys", Number_Of_Keys (Catalog), Options,
+            Get_Key'Access);
          --  Write the list of locale variables
-         Write_Name_List (File, Catalog, "Locale", "Locales",
-                          Number_Of_Locales (Catalog), Options,
-                          Get_Locale_Name'Access);
+         Write_Name_List
+           (File, Catalog, "Locale", "Locales", Number_Of_Locales (Catalog),
+            Options, Get_Locale_Name'Access);
          --  Write the string pool
-         Write_String (File, "Pool_Data", Pool,
-                       Options.Get_Boolean ("ascii_only"),
-                       Options.Get_Integer ("pool_size"));
+         Write_String
+           (File, "Pool_Data", Pool, Options.Get_Boolean ("ascii_only"),
+            Options.Get_Integer ("pool_size"));
          Print_Line (File, ZBMBase_Facility, "10014");
          Create_Message_List (File, Catalog, Options);
       end if;
       Write_Query_Impl (File, "Facility", "Facilities", Options);
       --  Create the Initialize routine
       if Number_Of_Keys (Catalog) > 0 then
-         Print_Line (File, ZBMBase_Facility, "10027",
-                     +Modes_String (Options), +Package_Name, +Pool'Length);
+         Print_Line
+           (File, ZBMBase_Facility, "10027", +Modes_String (Options),
+            +Package_Name, +Pool'Length);
       else
-         Print_Line (File, ZBMBase_Facility, "10028",
-                     +Modes_String (Options), +Package_Name, +Pool'Length);
+         Print_Line
+           (File, ZBMBase_Facility, "10028", +Modes_String (Options),
+            +Package_Name, +Pool'Length);
       end if;
       Write_Query_Impl (File, "Key", "Keys", Options);
-      Print_If (Options.Get_Boolean ("body_initialize"), File,
-                ZBMBase_Facility, "10029",
-                Argument0 => +Package_Name);
-      Print_Line (File, ZBMBase_Facility, "10030",
-                  Argument0 => +Package_Name);
+      Print_If
+        (Options.Get_Boolean ("body_initialize"), File, ZBMBase_Facility,
+         "10029", Argument0 => +Package_Name);
+      Print_Line (File, ZBMBase_Facility, "10030", Argument0 => +Package_Name);
       Close_And_Update (File, Updated);
-      Print_Line (ZBMCompile_Facility,
-                  Select_Message (Updated, "V00012", "V00013"),
-                  Argument0 => +Package_Name,
-                  Argument1 => +File_Name);
+      Print_Line
+        (ZBMCompile_Facility, Select_Message (Updated, "V00012", "V00013"),
+         Argument0 => +Package_Name, Argument1 => +File_Name);
    end Create_Root_Body;
 
    ----------------------
    -- Create_Root_Spec --
    ----------------------
 
-   procedure Create_Root_Spec (Catalog          : Catalog_Type;
-                               Options          : Parameter_Set_Type) is
+   procedure Create_Root_Spec
+     (Catalog : Catalog_Type;
+      Options : Parameter_Set_Type)
+   is
 
       pragma Unreferenced (Catalog);
 
-      Output_Directory : constant String
-                              := Options.Get_String ("output_directory");
+      Output_Directory : constant String :=
+        Options.Get_String ("output_directory");
       Package_Name : constant String := Options.Get_String ("package");
-      File_Name : constant String := Wide_Compose (
-                             Output_Directory,
-                             Spec_File_Name (Package_Name, GNAT_Naming_Style));
-      Updated   : Boolean;
-      File      : File_Type;
+      File_Name    : constant String :=
+        Wide_Compose
+          (Output_Directory, Spec_File_Name (Package_Name, GNAT_Naming_Style));
+      Updated : Boolean;
+      File    : File_Type;
 
    begin
       Wide_Create_For_Update (File, File_Name);
-      Print_Line (File, ZBMBase_Facility, "00001",
-                  Argument0 => +Version_Major,
-                  Argument1 => +Version_Minor,
-                  Argument2 => +Version_Patch,
-                  Argument3 => +Revision);
+      Print_Line
+        (File, ZBMBase_Facility, "00001", Argument0 => +Version_Major,
+         Argument1 => +Version_Minor, Argument2 => +Version_Patch,
+         Argument3                                  => +Revision);
       Print_Line (File, ZBMBase_Facility, "00002");
-      Print_Line (File, ZBMBase_Facility, "00003",
-                  Argument0 => +Package_Name);
-      Print_If (Options.Get_Boolean ("body_initialize"), File,
-                ZBMBase_Facility, "00004",
-                Argument0 => +Package_Name);
+      Print_Line (File, ZBMBase_Facility, "00003", Argument0 => +Package_Name);
+      Print_If
+        (Options.Get_Boolean ("body_initialize"), File, ZBMBase_Facility,
+         "00004", Argument0 => +Package_Name);
       Print_Line (File, ZBMBase_Facility, "00006");
       Write_Query_Decl (File, "Facility", Options);
       Write_Query_Decl (File, "Key", Options);
-      Print_Line (File, ZBMBase_Facility, "00009",
-                  +Modes_String (Options));
+      Print_Line (File, ZBMBase_Facility, "00009", +Modes_String (Options));
       if Options.Get_Boolean ("use_export_name") then
-         Print_Line (File, ZBMBase_Facility, "00010",
-                     Argument0 => +Options.Get_String ("export_name"));
+         Print_Line
+           (File, ZBMBase_Facility, "00010",
+            Argument0 => +Options.Get_String ("export_name"));
       end if;
       New_Line (File);
-      Print_Line (File, ZBMBase_Facility, "00011",
-                  Argument0 => +Package_Name);
+      Print_Line (File, ZBMBase_Facility, "00011", Argument0 => +Package_Name);
       Close_And_Update (File, Updated);
-      Print_Line (ZBMCompile_Facility,
-                  Select_Message (Updated, "V00014", "V00015"),
-                  Argument0 => +Package_Name,
-                  Argument1 => +File_Name);
+      Print_Line
+        (ZBMCompile_Facility, Select_Message (Updated, "V00014", "V00015"),
+         Argument0 => +Package_Name, Argument1 => +File_Name);
    end Create_Root_Spec;
 
    ---------------------
    -- Write_Name_List --
    ---------------------
 
-   procedure Write_Name_List (File     : in out File_Type;
-                              Catalog  : Catalog_Type;
-                              Name     : String;
-                              Names    : String;
-                              N        : Natural;
-                              Options  : Parameter_Set_Type;
-                              Namer    : access
-                                 function (Catalog : Catalog_Type;
-                                           I       : Positive)
-                                    return String) is
+   procedure Write_Name_List
+     (File    : in out File_Type;
+      Catalog :        Catalog_Type;
+      Name    :        String;
+      Names   :        String;
+      N       :        Natural;
+      Options :        Parameter_Set_Type;
+      Namer   :        access function
+        (Catalog : Catalog_Type;
+         I       : Positive)
+         return String)
+   is
    begin
       for I in 1 .. N loop
-         Write_String (File, Name, Namer (Catalog, I),
-                       Options.Get_Boolean ("ascii_only"),
-                       Options.Get_Integer ("pool_size"),
-                       Decl_Index => I);
+         Write_String
+           (File, Name, Namer (Catalog, I), Options.Get_Boolean ("ascii_only"),
+            Options.Get_Integer ("pool_size"), Decl_Index => I);
       end loop;
-      Print_Line (File, ZBMBase_Facility, "10008",
-                  Argument0 => +Names,
-                  Argument1 => +N);
+      Print_Line
+        (File, ZBMBase_Facility, "10008", Argument0 => +Names,
+         Argument1                                  => +N);
       if N = 0 then
          Print_Line (File, ZBMBase_Facility, "10013");
       elsif N = 1 then
-         Print_Line (File, ZBMBase_Facility, "10011",
-                     Argument0 => +Name,
-                     Argument1 => +N);
+         Print_Line
+           (File, ZBMBase_Facility, "10011", Argument0 => +Name,
+            Argument1                                  => +N);
       else
-         for I in 1 ..  N loop
-            Print_Line (File, ZBMBase_Facility,
-                        Select_Message (
-                           I < N,
-                           Select_Message (
-                              Options.Get_Boolean ("positional_elements"),
-                              "10009", "10010"),
-                           Select_Message (
-                              Options.Get_Boolean ("positional_elements"),
-                              "10011", "10012")),
-                        Argument0 => +Name,
-                        Argument1 => +I);
+         for I in 1 .. N loop
+            Print_Line
+              (File, ZBMBase_Facility,
+               Select_Message
+                 (I < N,
+                  Select_Message
+                    (Options.Get_Boolean ("positional_elements"), "10009",
+                     "10010"),
+                  Select_Message
+                    (Options.Get_Boolean ("positional_elements"), "10011",
+                     "10012")),
+               Argument0 => +Name, Argument1 => +I);
          end loop;
       end if;
       New_Line (File);
@@ -334,9 +341,11 @@ package body ZBMCompile.Codegen.Base is
    -- Write_Query_Decl --
    ----------------------
 
-   procedure Write_Query_Decl (File    : in out File_Type;
-                               Name    : String;
-                               Options : Parameter_Set_Type) is
+   procedure Write_Query_Decl
+     (File    : in out File_Type;
+      Name    :        String;
+      Options :        Parameter_Set_Type)
+   is
       M_String : constant String := Modes_String (Options);
    begin
       Print_Line (File, ZBMBase_Facility, "00007", +Name, +M_String);
@@ -347,29 +356,35 @@ package body ZBMCompile.Codegen.Base is
    -- Write_Query_Impl --
    ----------------------
 
-   procedure Write_Query_Impl (File       : in out File_Type;
-                               Name       : String;
-                               Table_Name : String;
-                               Options    : Parameter_Set_Type) is
-      M_String : constant String := Modes_String (Options);
+   procedure Write_Query_Impl
+     (File       : in out File_Type;
+      Name       :        String;
+      Table_Name :        String;
+      Options    :        Parameter_Set_Type)
+   is
+      M_String : constant String    := Modes_String (Options);
       Dash     : constant Unicode_Character := '-';
    begin
-      Print_Line (File, ZBMBase_Facility, "10025",
-                        +Name, +M_String, +Table_Name, +Dash, +Name'Length);
-      Print_Line (File, ZBMBase_Facility, "10026",
-                        +Name, +Table_Name, +Dash, +Name'Length);
+      Print_Line
+        (File, ZBMBase_Facility, "10025", +Name, +M_String, +Table_Name, +Dash,
+         +Name'Length);
+      Print_Line
+        (File, ZBMBase_Facility, "10026", +Name, +Table_Name, +Dash,
+         +Name'Length);
    end Write_Query_Impl;
 
    ------------------
    -- Write_String --
    ------------------
 
-   procedure Write_String (File       : in out File_Type;
-                           Name       : String;
-                           Value      : String;
-                           ASCII      : Boolean;
-                           Width      : Positive;
-                           Decl_Index : Positive := 1) is
+   procedure Write_String
+     (File       : in out File_Type;
+      Name       :        String;
+      Value      :        String;
+      ASCII      :        Boolean;
+      Width      :        Positive;
+      Decl_Index :        Positive := 1)
+   is
 
       use Ada.Wide_Characters.Unicode;
 
@@ -390,14 +405,13 @@ package body ZBMCompile.Codegen.Base is
       function Buffered_Data return String is
          I : Positive := Buffer'First;
       begin
-         while I < Buffer'Last
-            and then not Finished
-            and then not Is_Non_Graphic (Current_Character)
+         while I < Buffer'Last and then not Finished
+           and then not Is_Non_Graphic (Current_Character)
          loop
             Buffer (I) := Current_Character;
             Advance;
             if Buffer (I) = '"' then
-               I := I + 1;
+               I          := I + 1;
                Buffer (I) := '"';
             end if;
             I := I + 1;
@@ -427,18 +441,18 @@ package body ZBMCompile.Codegen.Base is
       Print_Line (File, ZBMBase_Facility, "10004", +Name, +Decl_Index);
       if ASCII then
          for I in Value'Range loop
-            Print_Line (File, ZBMBase_Facility, "10005",
-                        +Unicode_Character'Pos (Value (I)));
+            Print_Line
+              (File, ZBMBase_Facility, "10005",
+               +Unicode_Character'Pos (Value (I)));
          end loop;
       else
          while not Finished loop
             if Is_Non_Graphic (Current_Character) then
-               Print_Line (File, ZBMBase_Facility, "10005",
-                           +Current_Character_Pos);
+               Print_Line
+                 (File, ZBMBase_Facility, "10005", +Current_Character_Pos);
                Advance;
             else
-               Print_Line (File, ZBMBase_Facility, "10006",
-                           +Buffered_Data);
+               Print_Line (File, ZBMBase_Facility, "10006", +Buffered_Data);
             end if;
          end loop;
       end if;

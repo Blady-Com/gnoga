@@ -49,10 +49,12 @@
 --
 
 separate (ZBTest.Commands)
-procedure Echo_Command (State : in out State_Type;
-                        Args  : List_Type) is
+procedure Echo_Command
+  (State : in out State_Type;
+   Args  :        List_Type)
+is
 
-      pragma Unreferenced (State);
+   pragma Unreferenced (State);
 
 begin
    for I in 2 .. Length (Args) loop

@@ -42,8 +42,10 @@
 --
 
 separate (ZBTest.Commands)
-procedure Exit_Command (State : in out State_Type;
-                        Args  : List_Type) is
+procedure Exit_Command
+  (State : in out State_Type;
+   Args  :        List_Type)
+is
 
 begin
    if Length (Args) /= 1 then

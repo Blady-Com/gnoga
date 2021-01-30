@@ -56,8 +56,10 @@
 --  of a ZBTest script via the :ref:`zb-zbtest-commands-run` command.
 
 separate (ZBTest.Commands)
-procedure Begin_Command (State   : in out State_Type;
-                         Args    : List_Type) is
+procedure Begin_Command
+  (State : in out State_Type;
+   Args  :        List_Type)
+is
 
 begin
    if Length (Args) /= 1 then

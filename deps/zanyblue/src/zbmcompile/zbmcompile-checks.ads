@@ -39,14 +39,16 @@ package ZBMCompile.Checks is
 
    use ZBMCompile.Parser_Handler;
 
-   procedure Accessors_Check (Handler       : in out ZBMC_Handler_Type;
-                              Ignore_Errors : Boolean);
+   procedure Accessors_Check
+     (Handler       : in out ZBMC_Handler_Type;
+      Ignore_Errors :        Boolean);
    --  Check the facility and key names used are valid Ada identifier names
    --  to support accessor function generation.
 
-   procedure Consistency_Check (Handler     : in out ZBMC_Handler_Type;
-                                Facility    : String;
-                                Base_Locale : String);
+   procedure Consistency_Check
+     (Handler     : in out ZBMC_Handler_Type;
+      Facility    :        String;
+      Base_Locale :        String);
    --  Check cross locale consistency of messages, i.e., ensure localized
    --  messages do not have more argument references than the base locale.
    --  It's OK for a localized message to have less argument references.

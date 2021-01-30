@@ -59,8 +59,10 @@
 --
 
 separate (ZBTest.Commands)
-procedure End_Command (State : in out State_Type;
-                       Args  : List_Type) is
+procedure End_Command
+  (State : in out State_Type;
+   Args  :        List_Type)
+is
 
    pragma Unreferenced (Args);
 

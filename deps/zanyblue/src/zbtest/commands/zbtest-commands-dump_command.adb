@@ -47,19 +47,21 @@
 --
 
 separate (ZBTest.Commands)
-procedure Dump_Command (State : in out State_Type;
-                        Args  : List_Type) is
+procedure Dump_Command
+  (State : in out State_Type;
+   Args  :        List_Type)
+is
 
-   Output_Index : Natural := 0;
-   All_Scopes   : Boolean := False;
+   Output_Index : Natural  := 0;
+   All_Scopes   : Boolean  := False;
    Index        : Positive := 2;
 begin
    while Index <= Length (Args) loop
       if Value (Args, Index) = "-a" then
          All_Scopes := True;
-      elsif Value (Args, Index) = "-o"  and then Output_Index = 0 then
+      elsif Value (Args, Index) = "-o" and then Output_Index = 0 then
          if Index < Length (Args) then
-            Index := Index + 1;
+            Index        := Index + 1;
             Output_Index := Index;
          else
             raise Command_Usage_Error;

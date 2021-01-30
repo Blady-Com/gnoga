@@ -43,8 +43,10 @@ with ZBInfo_Messages.ZBInfo_Prints;
 -- Dump_Encoding --
 -------------------
 
-procedure ZBInfo.Dump_Encoding (Name            : String;
-                                Reverse_Mapping : Boolean) is
+procedure ZBInfo.Dump_Encoding
+  (Name            : String;
+   Reverse_Mapping : Boolean)
+is
 
    use Ada.Wide_Text_IO;
    use Ada.Wide_Characters.Handling;
@@ -55,13 +57,15 @@ procedure ZBInfo.Dump_Encoding (Name            : String;
 
    Codecs : constant Codecs_Type := Make_Codecs (Name);
 
-   procedure Dump_Encoding (WCh : Unicode_Character;
-                            Encoding : String);
+   procedure Dump_Encoding
+     (WCh      : Unicode_Character;
+      Encoding : String);
    --  Iteration handler to dump the encoding for an individual wide
    --  character (Unicode Code Point order).
 
-   procedure Dump_Decoding (WCh : Unicode_Character;
-                            Encoding : String);
+   procedure Dump_Decoding
+     (WCh      : Unicode_Character;
+      Encoding : String);
    --  Iteration handler to dump the encoding for an individual wide
    --  character (Encoded Code Points order).
 
@@ -69,27 +73,30 @@ procedure ZBInfo.Dump_Encoding (Name            : String;
    -- Dump_Decoding --
    -------------------
 
-   procedure Dump_Decoding (WCh : Unicode_Character;
-                            Encoding : String) is
+   procedure Dump_Decoding
+     (WCh      : Unicode_Character;
+      Encoding : String)
+   is
       Code_Point : constant Natural := Unicode_Character'Pos (WCh);
    begin
       if Encoding'Length = 2 then
          if Is_Graphic (WCh) then
-            Print_00035 (+Character'Pos (Encoding (Encoding'First)),
-                         +Character'Pos (Encoding (Encoding'First + 1)),
-                         +WCh, +Code_Point);
+            Print_00035
+              (+Character'Pos (Encoding (Encoding'First)),
+               +Character'Pos (Encoding (Encoding'First + 1)), +WCh,
+               +Code_Point);
          else
-            Print_00033 (+Character'Pos (Encoding (Encoding'First)),
-                         +Character'Pos (Encoding (Encoding'First + 1)),
-                         +Code_Point);
+            Print_00033
+              (+Character'Pos (Encoding (Encoding'First)),
+               +Character'Pos (Encoding (Encoding'First + 1)), +Code_Point);
          end if;
       else
          if Is_Graphic (WCh) then
-            Print_00036 (+Character'Pos (Encoding (Encoding'First)),
-                         +WCh, +Code_Point);
+            Print_00036
+              (+Character'Pos (Encoding (Encoding'First)), +WCh, +Code_Point);
          else
-            Print_00034 (+Character'Pos (Encoding (Encoding'First)),
-                         +Code_Point);
+            Print_00034
+              (+Character'Pos (Encoding (Encoding'First)), +Code_Point);
          end if;
       end if;
    end Dump_Decoding;
@@ -98,8 +105,10 @@ procedure ZBInfo.Dump_Encoding (Name            : String;
    -- Dump_Encoding --
    -------------------
 
-   procedure Dump_Encoding (WCh : Unicode_Character;
-                            Encoding : String) is
+   procedure Dump_Encoding
+     (WCh      : Unicode_Character;
+      Encoding : String)
+   is
       Code_Point : constant Natural := Unicode_Character'Pos (WCh);
    begin
       if Is_Graphic (WCh) then

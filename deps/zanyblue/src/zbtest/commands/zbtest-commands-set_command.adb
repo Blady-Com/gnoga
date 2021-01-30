@@ -86,29 +86,34 @@ with Ada.Calendar;
 with Ada.Strings.Wide_Fixed;
 
 separate (ZBTest.Commands)
-procedure Set_Command (State : in out State_Type;
-                       Args  : List_Type) is
+procedure Set_Command
+  (State : in out State_Type;
+   Args  :        List_Type)
+is
 
    use Ada.Strings.Wide_Fixed;
 
    type Type_Char_Type is ('s', 'i', 'b', 'f', 't');
 
-   procedure Set_Value (State        : in out State_Type;
-                        Undef_Check  : Boolean;
-                        Type_Char    : Type_Char_Type;
-                        Name         : String;
-                        Value        : String);
+   procedure Set_Value
+     (State       : in out State_Type;
+      Undef_Check :        Boolean;
+      Type_Char   :        Type_Char_Type;
+      Name        :        String;
+      Value       :        String);
    --  Set a parameter value.
 
    ---------------
    -- Set_Value --
    ---------------
 
-   procedure Set_Value (State        : in out State_Type;
-                        Undef_Check  : Boolean;
-                        Type_Char    : Type_Char_Type;
-                        Name         : String;
-                        Value        : String) is
+   procedure Set_Value
+     (State       : in out State_Type;
+      Undef_Check :        Boolean;
+      Type_Char   :        Type_Char_Type;
+      Name        :        String;
+      Value       :        String)
+   is
    begin
       if Name (Name'First) = '_' then
          Print_10041 (+Name);
@@ -116,31 +121,31 @@ procedure Set_Command (State : in out State_Type;
          Print_00030 (+Name);
       else
          case Type_Char is
-         when 's' =>
-            State.Set_String (Name, Value);
-         when 'i' =>
-            State.Set_Integer (Name, Integer'Wide_Value (Value));
-         when 'b' =>
-            State.Set_Boolean (Name, Boolean'Wide_Value (Value));
-         when 'f' =>
-            State.Set_Float (Name, Float'Wide_Value (Value));
-         when 't' =>
-            if Value = "now" then
-               State.Set_Time (Name, Ada.Calendar.Clock);
-            else
-               Print_10006 (+Value);
-            end if;
+            when 's' =>
+               State.Set_String (Name, Value);
+            when 'i' =>
+               State.Set_Integer (Name, Integer'Wide_Value (Value));
+            when 'b' =>
+               State.Set_Boolean (Name, Boolean'Wide_Value (Value));
+            when 'f' =>
+               State.Set_Float (Name, Float'Wide_Value (Value));
+            when 't' =>
+               if Value = "now" then
+                  State.Set_Time (Name, Ada.Calendar.Clock);
+               else
+                  Print_10006 (+Value);
+               end if;
          end case;
       end if;
    exception
-   when Constraint_Error =>
-      Print_10004 (+Value);
+      when Constraint_Error =>
+         Print_10004 (+Value);
    end Set_Value;
 
-   Type_Char : Type_Char_Type := 's';
-   Undef_Check  : Boolean := False;
-   Param_Idx : Natural := 0;
-   Value_Idx : Natural := 0;
+   Type_Char   : Type_Char_Type := 's';
+   Undef_Check : Boolean        := False;
+   Param_Idx   : Natural        := 0;
+   Value_Idx   : Natural        := 0;
 
 begin
    for I in 2 .. Length (Args) loop
@@ -169,7 +174,7 @@ begin
    if Param_Idx = 0 or else Value_Idx = 0 then
       raise Command_Usage_Error;
    end if;
-   Set_Value (State, Undef_Check, Type_Char,
-                     Value (Args, Param_Idx),
-                     Value (Args, Value_Idx));
+   Set_Value
+     (State, Undef_Check, Type_Char, Value (Args, Param_Idx),
+      Value (Args, Value_Idx));
 end Set_Command;

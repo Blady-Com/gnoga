@@ -58,244 +58,247 @@ package body ZBTest.Commands is
    use ZBTest_Messages.ZBTest_Prints;
    use ZBTest_Messages.Commands_Prints;
 
-   type Simple_Message_Printer is
-      access procedure (Destination : File_Type    := Current_Output;
-                        With_NL     : Boolean      := True;
-                        Locale      : Locale_Type  := Current_Locale;
-                        Catalog     : Catalog_Type := Standard_Catalog);
+   type Simple_Message_Printer is access procedure
+     (Destination : File_Type    := Current_Output;
+      With_NL     : Boolean      := True;
+      Locale      : Locale_Type  := Current_Locale;
+      Catalog     : Catalog_Type := Standard_Catalog);
 
-   type Argument_Message_Printer is
-      access procedure (Argument0   : Any_Category_Type'Class;
-                        Destination : File_Type    := Current_Output;
-                        With_NL     : Boolean      := True;
-                        Locale      : Locale_Type  := Current_Locale;
-                        Catalog     : Catalog_Type := Standard_Catalog);
+   type Argument_Message_Printer is access procedure
+     (Argument0   : Any_Category_Type'Class;
+      Destination : File_Type    := Current_Output;
+      With_NL     : Boolean      := True;
+      Locale      : Locale_Type  := Current_Locale;
+      Catalog     : Catalog_Type := Standard_Catalog);
 
-   type Command_Definition is
-      record
-         Name           : Wide_String_Access;
-         Implementation : Command_Type;
-         Usage          : Simple_Message_Printer;
-         Summary        : Argument_Message_Printer;
-         Help           : Simple_Message_Printer;
-      end record;
+   type Command_Definition is record
+      Name           : Wide_String_Access;
+      Implementation : Command_Type;
+      Usage          : Simple_Message_Printer;
+      Summary        : Argument_Message_Printer;
+      Help           : Simple_Message_Printer;
+   end record;
    --  Information on a command.
 
    type Command_List is array (Natural range <>) of Command_Definition;
    --  List of known commands
 
-   procedure Append_Command (State   : in out State_Type;
-                             Args    : List_Type);
-   procedure Begin_Command (State   : in out State_Type;
-                            Args    : List_Type);
+   procedure Append_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Begin_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
 
-   procedure Compare_Command (State   : in out State_Type;
-                              Args    : List_Type);
-   procedure Copy_Command (State   : in out State_Type;
-                           Args    : List_Type);
-   procedure Delenv_Command (State   : in out State_Type;
-                             Args    : List_Type);
-   procedure Delete_Command (State   : in out State_Type;
-                             Args    : List_Type);
-   procedure Desc_Command (State   : in out State_Type;
-                           Args    : List_Type);
-   procedure Dump_Command (State   : in out State_Type;
-                           Args    : List_Type);
-   procedure Echo_Command (State   : in out State_Type;
-                           Args    : List_Type);
-   procedure End_Command (State   : in out State_Type;
-                          Args    : List_Type);
-   procedure Execute_Command (State   : in out State_Type;
-                              Args    : List_Type);
-   procedure Exit_Command (State   : in out State_Type;
-                           Args    : List_Type);
-   procedure Filestat_Command (State   : in out State_Type;
-                               Args    : List_Type);
-   procedure Getenv_Command (State   : in out State_Type;
-                             Args    : List_Type);
-   procedure Help_Command (State   : in out State_Type;
-                           Args    : List_Type);
-   procedure Incr_Command (State   : in out State_Type;
-                           Args    : List_Type);
-   procedure Mkdir_Command (State   : in out State_Type;
-                            Args    : List_Type);
-   procedure Noop_Command (State   : in out State_Type;
-                           Args    : List_Type);
-   procedure Prepend_Command (State   : in out State_Type;
-                              Args    : List_Type);
-   procedure Print_Command (State   : in out State_Type;
-                            Args    : List_Type);
-   procedure Rename_Command (State   : in out State_Type;
-                             Args    : List_Type);
-   procedure Run_Command (State   : in out State_Type;
-                          Args    : List_Type);
-   procedure Set_Command (State   : in out State_Type;
-                          Args    : List_Type);
-   procedure Setenv_Command (State   : in out State_Type;
-                             Args    : List_Type);
-   procedure Unknown_Command (State   : in out State_Type;
-                              Args    : List_Type);
-   procedure Which_Command (State   : in out State_Type;
-                            Args    : List_Type);
+   procedure Compare_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Copy_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Delenv_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Delete_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Desc_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Dump_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Echo_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure End_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Execute_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Exit_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Filestat_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Getenv_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Help_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Incr_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Mkdir_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Noop_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Prepend_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Print_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Rename_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Run_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Set_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Setenv_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Unknown_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
+   procedure Which_Command
+     (State : in out State_Type;
+      Args  :        List_Type);
 
-   Command_Table : constant Command_List := (
-                 (Name           => new String'("?"),
-                  Implementation => Unknown_Command'Access,
-                  Usage          => Print_20000'Access,
-                  Summary        => Print_30000'Access,
-                  Help           => Print_40000'Access),
+   Command_Table : constant Command_List :=
+     ((Name => new String'("?"), Implementation => Unknown_Command'Access,
+       Usage => Print_20000'Access, Summary => Print_30000'Access,
+       Help  => Print_40000'Access),
 
-                 (Name           => new String'("append"),
-                  Implementation => Append_Command'Access,
-                  Usage          => Print_Append_Usage'Access,
-                  Summary        => Print_Append_Summary'Access,
-                  Help           => Print_Append_Docstring'Access),
+      (Name           => new String'("append"),
+       Implementation => Append_Command'Access,
+       Usage          => Print_Append_Usage'Access,
+       Summary        => Print_Append_Summary'Access,
+       Help           => Print_Append_Docstring'Access),
 
-                 (Name           => new String'("begin"),
-                  Implementation => Begin_Command'Access,
-                  Usage          => Print_Begin_Usage'Access,
-                  Summary        => Print_Begin_Summary'Access,
-                  Help           => Print_Begin_Docstring'Access),
+      (Name           => new String'("begin"),
+       Implementation => Begin_Command'Access,
+       Usage          => Print_Begin_Usage'Access,
+       Summary        => Print_Begin_Summary'Access,
+       Help           => Print_Begin_Docstring'Access),
 
-                 (Name           => new String'("compare"),
-                  Implementation => Compare_Command'Access,
-                  Usage          => Print_Compare_Usage'Access,
-                  Summary        => Print_Compare_Summary'Access,
-                  Help           => Print_Compare_Docstring'Access),
+      (Name           => new String'("compare"),
+       Implementation => Compare_Command'Access,
+       Usage          => Print_Compare_Usage'Access,
+       Summary        => Print_Compare_Summary'Access,
+       Help           => Print_Compare_Docstring'Access),
 
-                 (Name           => new String'("copy"),
-                  Implementation => Copy_Command'Access,
-                  Usage          => Print_Copy_Usage'Access,
-                  Summary        => Print_Copy_Summary'Access,
-                  Help           => Print_Copy_Docstring'Access),
+      (Name => new String'("copy"), Implementation => Copy_Command'Access,
+       Usage => Print_Copy_Usage'Access, Summary => Print_Copy_Summary'Access,
+       Help  => Print_Copy_Docstring'Access),
 
-                 (Name           => new String'("delenv"),
-                  Implementation => Delenv_Command'Access,
-                  Usage          => Print_Delenv_Usage'Access,
-                  Summary        => Print_Delenv_Summary'Access,
-                  Help           => Print_Delenv_Docstring'Access),
+      (Name           => new String'("delenv"),
+       Implementation => Delenv_Command'Access,
+       Usage          => Print_Delenv_Usage'Access,
+       Summary        => Print_Delenv_Summary'Access,
+       Help           => Print_Delenv_Docstring'Access),
 
-                 (Name           => new String'("delete"),
-                  Implementation => Delete_Command'Access,
-                  Usage          => Print_Delete_Usage'Access,
-                  Summary        => Print_Delete_Summary'Access,
-                  Help           => Print_Delete_Docstring'Access),
+      (Name           => new String'("delete"),
+       Implementation => Delete_Command'Access,
+       Usage          => Print_Delete_Usage'Access,
+       Summary        => Print_Delete_Summary'Access,
+       Help           => Print_Delete_Docstring'Access),
 
-                 (Name           => new String'("desc"),
-                  Implementation => Desc_Command'Access,
-                  Usage          => Print_Desc_Usage'Access,
-                  Summary        => Print_Desc_Summary'Access,
-                  Help           => Print_Desc_Docstring'Access),
+      (Name => new String'("desc"), Implementation => Desc_Command'Access,
+       Usage => Print_Desc_Usage'Access, Summary => Print_Desc_Summary'Access,
+       Help  => Print_Desc_Docstring'Access),
 
-                 (Name           => new String'("dump"),
-                  Implementation => Dump_Command'Access,
-                  Usage          => Print_Dump_Usage'Access,
-                  Summary        => Print_Dump_Summary'Access,
-                  Help           => Print_Dump_Docstring'Access),
+      (Name => new String'("dump"), Implementation => Dump_Command'Access,
+       Usage => Print_Dump_Usage'Access, Summary => Print_Dump_Summary'Access,
+       Help  => Print_Dump_Docstring'Access),
 
-                 (Name           => new String'("echo"),
-                  Implementation => Echo_Command'Access,
-                  Usage          => Print_Echo_Usage'Access,
-                  Summary        => Print_Echo_Summary'Access,
-                  Help           => Print_Echo_Docstring'Access),
+      (Name => new String'("echo"), Implementation => Echo_Command'Access,
+       Usage => Print_Echo_Usage'Access, Summary => Print_Echo_Summary'Access,
+       Help  => Print_Echo_Docstring'Access),
 
-                 (Name           => new String'("end"),
-                  Implementation => End_Command'Access,
-                  Usage          => Print_End_Usage'Access,
-                  Summary        => Print_End_Summary'Access,
-                  Help           => Print_End_Docstring'Access),
+      (Name  => new String'("end"), Implementation => End_Command'Access,
+       Usage => Print_End_Usage'Access, Summary => Print_End_Summary'Access,
+       Help  => Print_End_Docstring'Access),
 
-                 (Name           => new String'("execute"),
-                  Implementation => Execute_Command'Access,
-                  Usage          => Print_Execute_Usage'Access,
-                  Summary        => Print_Execute_Summary'Access,
-                  Help           => Print_Execute_Docstring'Access),
+      (Name           => new String'("execute"),
+       Implementation => Execute_Command'Access,
+       Usage          => Print_Execute_Usage'Access,
+       Summary        => Print_Execute_Summary'Access,
+       Help           => Print_Execute_Docstring'Access),
 
-                 (Name           => new String'("exit"),
-                  Implementation => Exit_Command'Access,
-                  Usage          => Print_Exit_Usage'Access,
-                  Summary        => Print_Exit_Summary'Access,
-                  Help           => Print_Exit_Docstring'Access),
+      (Name => new String'("exit"), Implementation => Exit_Command'Access,
+       Usage => Print_Exit_Usage'Access, Summary => Print_Exit_Summary'Access,
+       Help  => Print_Exit_Docstring'Access),
 
-                 (Name           => new String'("filestat"),
-                  Implementation => Filestat_Command'Access,
-                  Usage          => Print_Filestat_Usage'Access,
-                  Summary        => Print_Filestat_Summary'Access,
-                  Help           => Print_Filestat_Docstring'Access),
+      (Name           => new String'("filestat"),
+       Implementation => Filestat_Command'Access,
+       Usage          => Print_Filestat_Usage'Access,
+       Summary        => Print_Filestat_Summary'Access,
+       Help           => Print_Filestat_Docstring'Access),
 
-                 (Name           => new String'("getenv"),
-                  Implementation => Getenv_Command'Access,
-                  Usage          => Print_Getenv_Usage'Access,
-                  Summary        => Print_Getenv_Summary'Access,
-                  Help           => Print_Getenv_Docstring'Access),
+      (Name           => new String'("getenv"),
+       Implementation => Getenv_Command'Access,
+       Usage          => Print_Getenv_Usage'Access,
+       Summary        => Print_Getenv_Summary'Access,
+       Help           => Print_Getenv_Docstring'Access),
 
-                 (Name           => new String'("help"),
-                  Implementation => Help_Command'Access,
-                  Usage          => Print_Help_Usage'Access,
-                  Summary        => Print_Help_Summary'Access,
-                  Help           => Print_Help_Docstring'Access),
+      (Name => new String'("help"), Implementation => Help_Command'Access,
+       Usage => Print_Help_Usage'Access, Summary => Print_Help_Summary'Access,
+       Help  => Print_Help_Docstring'Access),
 
-                 (Name           => new String'("incr"),
-                  Implementation => Incr_Command'Access,
-                  Usage          => Print_Incr_Usage'Access,
-                  Summary        => Print_Incr_Summary'Access,
-                  Help           => Print_Incr_Docstring'Access),
+      (Name => new String'("incr"), Implementation => Incr_Command'Access,
+       Usage => Print_Incr_Usage'Access, Summary => Print_Incr_Summary'Access,
+       Help  => Print_Incr_Docstring'Access),
 
-                 (Name           => new String'("mkdir"),
-                  Implementation => Mkdir_Command'Access,
-                  Usage          => Print_Mkdir_Usage'Access,
-                  Summary        => Print_Mkdir_Summary'Access,
-                  Help           => Print_Mkdir_Docstring'Access),
+      (Name           => new String'("mkdir"),
+       Implementation => Mkdir_Command'Access,
+       Usage          => Print_Mkdir_Usage'Access,
+       Summary        => Print_Mkdir_Summary'Access,
+       Help           => Print_Mkdir_Docstring'Access),
 
-                 (Name           => new String'("noop"),
-                  Implementation => Noop_Command'Access,
-                  Usage          => Print_Noop_Usage'Access,
-                  Summary        => Print_Noop_Summary'Access,
-                  Help           => Print_Noop_Docstring'Access),
+      (Name => new String'("noop"), Implementation => Noop_Command'Access,
+       Usage => Print_Noop_Usage'Access, Summary => Print_Noop_Summary'Access,
+       Help  => Print_Noop_Docstring'Access),
 
-                 (Name           => new String'("prepend"),
-                  Implementation => Prepend_Command'Access,
-                  Usage          => Print_Prepend_Usage'Access,
-                  Summary        => Print_Prepend_Summary'Access,
-                  Help           => Print_Prepend_Docstring'Access),
+      (Name           => new String'("prepend"),
+       Implementation => Prepend_Command'Access,
+       Usage          => Print_Prepend_Usage'Access,
+       Summary        => Print_Prepend_Summary'Access,
+       Help           => Print_Prepend_Docstring'Access),
 
-                 (Name           => new String'("print"),
-                  Implementation => Print_Command'Access,
-                  Usage          => Print_Print_Usage'Access,
-                  Summary        => Print_Print_Summary'Access,
-                  Help           => Print_Print_Docstring'Access),
+      (Name           => new String'("print"),
+       Implementation => Print_Command'Access,
+       Usage          => Print_Print_Usage'Access,
+       Summary        => Print_Print_Summary'Access,
+       Help           => Print_Print_Docstring'Access),
 
-                 (Name           => new String'("rename"),
-                  Implementation => Rename_Command'Access,
-                  Usage          => Print_Rename_Usage'Access,
-                  Summary        => Print_Rename_Summary'Access,
-                  Help           => Print_Rename_Docstring'Access),
+      (Name           => new String'("rename"),
+       Implementation => Rename_Command'Access,
+       Usage          => Print_Rename_Usage'Access,
+       Summary        => Print_Rename_Summary'Access,
+       Help           => Print_Rename_Docstring'Access),
 
-                 (Name           => new String'("run"),
-                  Implementation => Run_Command'Access,
-                  Usage          => Print_Run_Usage'Access,
-                  Summary        => Print_Run_Summary'Access,
-                  Help           => Print_Run_Docstring'Access),
+      (Name  => new String'("run"), Implementation => Run_Command'Access,
+       Usage => Print_Run_Usage'Access, Summary => Print_Run_Summary'Access,
+       Help  => Print_Run_Docstring'Access),
 
-                 (Name           => new String'("set"),
-                  Implementation => Set_Command'Access,
-                  Usage          => Print_Set_Usage'Access,
-                  Summary        => Print_Set_Summary'Access,
-                  Help           => Print_Set_Docstring'Access),
+      (Name  => new String'("set"), Implementation => Set_Command'Access,
+       Usage => Print_Set_Usage'Access, Summary => Print_Set_Summary'Access,
+       Help  => Print_Set_Docstring'Access),
 
-                 (Name           => new String'("setenv"),
-                  Implementation => Setenv_Command'Access,
-                  Usage          => Print_Setenv_Usage'Access,
-                  Summary        => Print_Setenv_Summary'Access,
-                  Help           => Print_Setenv_Docstring'Access),
+      (Name           => new String'("setenv"),
+       Implementation => Setenv_Command'Access,
+       Usage          => Print_Setenv_Usage'Access,
+       Summary        => Print_Setenv_Summary'Access,
+       Help           => Print_Setenv_Docstring'Access),
 
-                 (Name           => new String'("which"),
-                  Implementation => Which_Command'Access,
-                  Usage          => Print_Which_Usage'Access,
-                  Summary        => Print_Which_Summary'Access,
-                  Help           => Print_Which_Docstring'Access));
+      (Name           => new String'("which"),
+       Implementation => Which_Command'Access,
+       Usage          => Print_Which_Usage'Access,
+       Summary        => Print_Which_Summary'Access,
+       Help           => Print_Which_Docstring'Access));
 
-   function Find_Index (Name : String) return Natural;
+   function Find_Index
+     (Name : String)
+      return Natural;
    --  Return the index in the command table for the named command.  If the
    --  command is not found, 0 is returned.
 
@@ -303,23 +306,26 @@ package body ZBTest.Commands is
    -- Append_Command --
    --------------------
 
-   procedure Append_Command (State   : in out State_Type;
-                             Args    : List_Type) is
-      separate;
+   procedure Append_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    -------------------
    -- Begin_Command --
    -------------------
 
-   procedure Begin_Command (State   : in out State_Type;
-                            Args    : List_Type) is
-      separate;
+   procedure Begin_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    ------------------
    -- Command_Name --
    ------------------
 
-   function Command_Name (Index : Natural) return String is
+   function Command_Name
+     (Index : Natural)
+      return String
+   is
    begin
       return Command_Table (Index).Name.all;
    end Command_Name;
@@ -328,95 +334,98 @@ package body ZBTest.Commands is
    -- Compare_Command --
    ---------------------
 
-   procedure Compare_Command (State   : in out State_Type;
-                              Args    : List_Type) is
-      separate;
+   procedure Compare_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    ------------------
    -- Copy_Command --
    ------------------
 
-   procedure Copy_Command (State   : in out State_Type;
-                           Args    : List_Type) is
-      separate;
+   procedure Copy_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    --------------------
    -- Delenv_Command --
    --------------------
 
-   procedure Delenv_Command (State   : in out State_Type;
-                             Args    : List_Type) is
-      separate;
+   procedure Delenv_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    --------------------
    -- Delete_Command --
    --------------------
 
-   procedure Delete_Command (State   : in out State_Type;
-                             Args    : List_Type) is
-      separate;
+   procedure Delete_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    ------------------
    -- Desc_Command --
    ------------------
 
-   procedure Desc_Command (State   : in out State_Type;
-                           Args    : List_Type) is
-      separate;
+   procedure Desc_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    ------------------
    -- Dump_Command --
    ------------------
 
-   procedure Dump_Command (State   : in out State_Type;
-                           Args    : List_Type) is
-      separate;
+   procedure Dump_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    ------------------
    -- Echo_Command --
    ------------------
 
-   procedure Echo_Command (State   : in out State_Type;
-                           Args    : List_Type) is
-      separate;
+   procedure Echo_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    -----------------
    -- End_Command --
    -----------------
 
-   procedure End_Command (State   : in out State_Type;
-                          Args    : List_Type) is
-      separate;
+   procedure End_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    ---------------------
    -- Execute_Command --
    ---------------------
 
-   procedure Execute_Command (State   : in out State_Type;
-                              Args    : List_Type) is
-      separate;
+   procedure Execute_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    ------------------
    -- Exit_Command --
    ------------------
 
-   procedure Exit_Command (State   : in out State_Type;
-                           Args    : List_Type) is
-      separate;
+   procedure Exit_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    ----------------------
    -- Filestat_Command --
    ----------------------
 
-   procedure Filestat_Command (State   : in out State_Type;
-                               Args    : List_Type) is
-      separate;
+   procedure Filestat_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    ----------
    -- Find --
    ----------
 
-   function Find (Name : String) return Command_Type is
+   function Find
+     (Name : String)
+      return Command_Type
+   is
    begin
       return Command_Table (Find_Index (Name)).Implementation;
    end Find;
@@ -425,7 +434,10 @@ package body ZBTest.Commands is
    -- Find_Index --
    ----------------
 
-   function Find_Index (Name : String) return Natural is
+   function Find_Index
+     (Name : String)
+      return Natural
+   is
    begin
       for I in 1 .. Command_Table'Last loop
          if Name = Command_Table (I).Name.all then
@@ -439,25 +451,25 @@ package body ZBTest.Commands is
    -- Getenv_Command --
    --------------------
 
-   procedure Getenv_Command (State   : in out State_Type;
-                             Args    : List_Type) is
-      separate;
+   procedure Getenv_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    ------------------
    -- Help_Command --
    ------------------
 
-   procedure Help_Command (State   : in out State_Type;
-                           Args    : List_Type) is
-      separate;
+   procedure Help_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    ------------------
    -- Incr_Command --
    ------------------
 
-   procedure Incr_Command (State   : in out State_Type;
-                           Args    : List_Type) is
-      separate;
+   procedure Incr_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    ------------------------
    -- Number_Of_Commands --
@@ -472,33 +484,33 @@ package body ZBTest.Commands is
    -- Mkdir_Command --
    -------------------
 
-   procedure Mkdir_Command (State   : in out State_Type;
-                            Args    : List_Type) is
-      separate;
+   procedure Mkdir_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    ------------------
    -- Noop_Command --
    ------------------
 
-   procedure Noop_Command (State   : in out State_Type;
-                           Args    : List_Type) is
-      separate;
+   procedure Noop_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    ---------------------
    -- Prepend_Command --
    ---------------------
 
-   procedure Prepend_Command (State   : in out State_Type;
-                              Args    : List_Type) is
-      separate;
+   procedure Prepend_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    -------------------
    -- Print_Command --
    -------------------
 
-   procedure Print_Command (State   : in out State_Type;
-                            Args    : List_Type) is
-      separate;
+   procedure Print_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    ------------------------
    -- Print_Command_Help --
@@ -513,8 +525,10 @@ package body ZBTest.Commands is
    -- Print_Command_Summary --
    ---------------------------
 
-   procedure Print_Command_Summary (Name  : String;
-                                    Index : Positive) is
+   procedure Print_Command_Summary
+     (Name  : String;
+      Index : Positive)
+   is
    begin
       Command_Table (Find_Index (Name)).Summary.all (+Index);
    end Print_Command_Summary;
@@ -532,55 +546,55 @@ package body ZBTest.Commands is
    -- Rename_Command --
    --------------------
 
-   procedure Rename_Command (State   : in out State_Type;
-                             Args    : List_Type) is
-      separate;
+   procedure Rename_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    -----------------
    -- Run_Command --
    -----------------
 
-   procedure Run_Command (State   : in out State_Type;
-                          Args    : List_Type) is
-      separate;
+   procedure Run_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    -----------------
    -- Set_Command --
    -----------------
 
-   procedure Set_Command (State   : in out State_Type;
-                          Args    : List_Type) is
-      separate;
+   procedure Set_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    --------------------
    -- Setenv_Command --
    --------------------
 
-   procedure Setenv_Command (State   : in out State_Type;
-                             Args    : List_Type) is
-      separate;
+   procedure Setenv_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    ---------------------
    -- Unknown_Command --
    ---------------------
 
-   procedure Unknown_Command (State   : in out State_Type;
-                              Args    : List_Type) is
-      separate;
+   procedure Unknown_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
    -------------------
    -- Which_Command --
    -------------------
 
-   procedure Which_Command (State   : in out State_Type;
-                            Args    : List_Type) is
-      separate;
+   procedure Which_Command
+     (State : in out State_Type;
+      Args  :        List_Type) is separate;
 
 begin   -- ZBTest.Commands
    for I in Command_Table'First .. Command_Table'Last - 1 loop
       if Command_Table (I).Name.all > Command_Table (I + 1).Name.all then
          raise Command_Table_Not_Sorted
-            with To_UTF_8 (Command_Table (I + 1).Name.all);
+           with Wide_To_UTF8 (Command_Table (I + 1).Name.all);
       end if;
    end loop;
 end ZBTest.Commands;

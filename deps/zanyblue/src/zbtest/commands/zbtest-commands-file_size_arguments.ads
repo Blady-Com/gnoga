@@ -38,6 +38,6 @@ with ZanyBlue.Text.Generic_Integers;
 
 pragma Elaborate_All (ZanyBlue.Text.Generic_Integers);
 
-package ZBTest.Commands.File_Size_Arguments is
-   new ZanyBlue.Text.Generic_Integers (
-         Integer_Type => ZanyBlue.Wide_Directories.Wide_File_Size);
+package ZBTest.Commands.File_Size_Arguments is new ZanyBlue.Text
+  .Generic_Integers
+  (Integer_Type => ZanyBlue.Wide_Directories.Wide_File_Size);

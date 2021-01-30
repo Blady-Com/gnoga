@@ -56,4 +56,6 @@ project zbinfo is
       for Executable ("zbinfo-main.adb") use "zbinfo";
    end Builder;
 
+   package Pretty_Printer renames zbcom.Pretty_Printer;
+
 end zbinfo;

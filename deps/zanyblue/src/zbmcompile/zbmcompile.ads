@@ -54,9 +54,8 @@ package ZBMCompile is
    --  Size of comment text added to access routine defintions.  Message text
    --  longer than this will be output on multiple comment lines.
 
-   package String_Vectors is
-      new Ada.Containers.Indefinite_Vectors (Index_Type   => Natural,
-                                             Element_Type => String);
+   package String_Vectors is new Ada.Containers.Indefinite_Vectors
+     (Index_Type => Natural, Element_Type => String);
    --  The String_Vectors here is used to store the category type associated
    --  with an argument, e.g., "{0,number}" would associated the Number
    --  category with argument 0.  This information is used to verify consistent
@@ -72,12 +71,10 @@ package ZBMCompile is
    Accessor_WStrings   : aliased constant String := "wstrings";
    Accessor_Prints     : aliased constant String := "prints";
    Accessor_WPrints    : aliased constant String := "wprints";
-   Accessor_Types      : constant ZanyBlue.Text.Constant_String_List := (
-                            Accessor_Exceptions'Access,
-                            Accessor_Strings'Access,
-                            Accessor_WStrings'Access,
-                            Accessor_Prints'Access,
-                            Accessor_WPrints'Access);
+   Accessor_Types      : constant ZanyBlue.Text.Constant_String_List :=
+     (Accessor_Exceptions'Access, Accessor_Strings'Access,
+      Accessor_WStrings'Access, Accessor_Prints'Access,
+      Accessor_WPrints'Access);
    --  Names assigned to the various accessor type routines generated.  The
    --  names in this list are used to handle arguments to the -G command line
    --  option to select a particular accessor package type and also map to the
@@ -87,28 +84,35 @@ package ZBMCompile is
    ZBMBase_Facility    : constant String := "zbmbase";
    ZBMCompile_Facility : constant String := "zbmcompile";
 
-   function Process (Options : Parameter_Set_Type) return Boolean;
+   function Process
+     (Options : Parameter_Set_Type)
+      return Boolean;
    --  Perform the compilation of the .properties files.  Returns True for
    --  success, False for failure.
 
-   function Select_Message (Condition  : Boolean;
-                            True_Id    : String;
-                            False_Id   : String) return String;
+   function Select_Message
+     (Condition : Boolean;
+      True_Id   : String;
+      False_Id  : String)
+      return String;
    --  Depending on Condition, return either the true or false message
    --  id.  This is a simple utility function.
 
-   procedure Print_If (Condition  : Boolean;
-                       File       : File_Type;
-                       Facility   : String;
-                       Key        : String;
-                       Argument0  : Argument_Type'Class := Null_Argument;
-                       Argument1  : Argument_Type'Class := Null_Argument;
-                       Argument2  : Argument_Type'Class := Null_Argument;
-                       Argument3  : Argument_Type'Class := Null_Argument;
-                       Argument4  : Argument_Type'Class := Null_Argument);
+   procedure Print_If
+     (Condition : Boolean;
+      File      : File_Type;
+      Facility  : String;
+      Key       : String;
+      Argument0 : Argument_Type'Class := Null_Argument;
+      Argument1 : Argument_Type'Class := Null_Argument;
+      Argument2 : Argument_Type'Class := Null_Argument;
+      Argument3 : Argument_Type'Class := Null_Argument;
+      Argument4 : Argument_Type'Class := Null_Argument);
    --  Print a message if the given condition is true.
 
-   function Is_Ada_Identifier_OK (Name : String) return Boolean;
+   function Is_Ada_Identifier_OK
+     (Name : String)
+      return Boolean;
    --  Is the given name a valid Ada identifier name?  Leading digits are
    --  OK as the name will be prefixed with standard prefixes later.
 

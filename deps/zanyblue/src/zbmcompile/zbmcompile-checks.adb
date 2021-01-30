@@ -45,26 +45,27 @@ package body ZBMCompile.Checks is
    -- Accessors_Check --
    ---------------------
 
-   procedure Accessors_Check (Handler       : in out ZBMC_Handler_Type;
-                              Ignore_Errors : Boolean) is
-      Catalog : constant Catalog_Type := Get_Catalog (Handler);
+   procedure Accessors_Check
+     (Handler       : in out ZBMC_Handler_Type;
+      Ignore_Errors :        Boolean)
+   is
+      Catalog        : constant Catalog_Type := Get_Catalog (Handler);
       Facility_Index : Facility_Index_Type;
-      Key_Index : Key_Index_Type;
+      Key_Index      : Key_Index_Type;
    begin
       Print_Line (ZBMCompile_Facility, "V00004");
       for I in 1 .. Number_Of_Facilities (Catalog) loop
          Facility_Index := I;
-         if not Is_Ada_Identifier_OK (Get_Facility (Catalog,
-                                                    Facility_Index))
+         if not Is_Ada_Identifier_OK (Get_Facility (Catalog, Facility_Index))
          then
             if Ignore_Errors then
-               Print_Line (ZBMCompile_Facility, "I00009",
-                           Argument0 => +Get_Facility (Catalog,
-                                                       Facility_Index));
+               Print_Line
+                 (ZBMCompile_Facility, "I00009",
+                  Argument0 => +Get_Facility (Catalog, Facility_Index));
             else
-               Print_Line (ZBMCompile_Facility, "E00017",
-                           Argument0 => +Get_Facility (Catalog,
-                                                       Facility_Index));
+               Print_Line
+                 (ZBMCompile_Facility, "E00017",
+                  Argument0 => +Get_Facility (Catalog, Facility_Index));
                Handler.Increment_Errors;
             end if;
          end if;
@@ -73,11 +74,13 @@ package body ZBMCompile.Checks is
          Key_Index := I;
          if not Is_Ada_Identifier_OK (Get_Key (Catalog, Key_Index)) then
             if Ignore_Errors then
-               Print_Line (ZBMCompile_Facility, "I00010",
-                           Argument0 => +Get_Key (Catalog, Key_Index));
+               Print_Line
+                 (ZBMCompile_Facility, "I00010",
+                  Argument0 => +Get_Key (Catalog, Key_Index));
             else
-               Print_Line (ZBMCompile_Facility, "E00018",
-                           Argument0 => +Get_Key (Catalog, Key_Index));
+               Print_Line
+                 (ZBMCompile_Facility, "E00018",
+                  Argument0 => +Get_Key (Catalog, Key_Index));
                Handler.Increment_Errors;
             end if;
          end if;
@@ -88,23 +91,28 @@ package body ZBMCompile.Checks is
    -- Consistency_Check --
    -----------------------
 
-   procedure Consistency_Check (Handler     : in out ZBMC_Handler_Type;
-                                Facility    : String;
-                                Base_Locale : String) is
+   procedure Consistency_Check
+     (Handler     : in out ZBMC_Handler_Type;
+      Facility    :        String;
+      Base_Locale :        String)
+   is
 
-      procedure Callback (Catalog  : Catalog_Type;
-                          Facility : String;
-                          Key_Name : String;
-                          Locales  : Locale_Definitions_Map);
+      procedure Callback
+        (Catalog  : Catalog_Type;
+         Facility : String;
+         Key_Name : String;
+         Locales  : Locale_Definitions_Map);
 
       --------------
       -- Callback --
       --------------
 
-      procedure Callback (Catalog  : Catalog_Type;
-                          Facility : String;
-                          Key_Name : String;
-                          Locales  : Locale_Definitions_Map) is
+      procedure Callback
+        (Catalog  : Catalog_Type;
+         Facility : String;
+         Key_Name : String;
+         Locales  : Locale_Definitions_Map)
+      is
 
          pragma Unreferenced (Catalog);
 
@@ -118,48 +126,47 @@ package body ZBMCompile.Checks is
 
          procedure Check_Other_Locales (Position : Cursor) is
             L : constant Natural :=
-                Natural (String_Vectors.Length (Element (Position).Arg_Types));
+              Natural (String_Vectors.Length (Element (Position).Arg_Types));
          begin
             if L > Ref_Arg_Count then
-               Print_Line (ZBMCompile_Facility, "E00015",
-                           Argument0 => +Key_Name,
-                           Argument1 => +Facility,
-                           Argument2 => +Key (Position));
+               Print_Line
+                 (ZBMCompile_Facility, "E00015", Argument0 => +Key_Name,
+                  Argument1 => +Facility, Argument2 => +Key (Position));
                Handler.Increment_Errors;
             end if;
          end Check_Other_Locales;
 
          procedure Report_Extra_Locales (Position : Cursor) is
          begin
-            Print_Line (ZBMCompile_Facility, "E00014",
-                        Argument0 => +Key_Name,
-                        Argument1 => +Facility,
-                        Argument2 => +Key (Position));
+            Print_Line
+              (ZBMCompile_Facility, "E00014", Argument0 => +Key_Name,
+               Argument1 => +Facility, Argument2 => +Key (Position));
          end Report_Extra_Locales;
 
       begin
          if not Has_Element (Locales.Find (Base_Locale)) then
-            Print_Line (ZBMCompile_Facility, "E00013",
-                        Argument0 => +Key_Name,
-                        Argument1 => +Facility);
+            Print_Line
+              (ZBMCompile_Facility, "E00013", Argument0 => +Key_Name,
+               Argument1                                => +Facility);
             Locales.Iterate (Report_Extra_Locales'Access);
             Handler.Increment_Errors;
          else
-            Ref_Arg_Count := Natural (String_Vectors.Length (Element (
-                               Locales.Find (Base_Locale)).Arg_Types));
+            Ref_Arg_Count :=
+              Natural
+                (String_Vectors.Length
+                   (Element (Locales.Find (Base_Locale)).Arg_Types));
             Locales.Iterate (Check_Other_Locales'Access);
          end if;
       end Callback;
 
    begin
       if Facility_Defines_Locale (Handler, Facility, Base_Locale) then
-         Print_Line (ZBMCompile_Facility, "V00005",
-                     Argument0 => +Facility);
+         Print_Line (ZBMCompile_Facility, "V00005", Argument0 => +Facility);
          Message_Iterate (Handler, Facility, Callback'Access);
       else
-         Print_Line (ZBMCompile_Facility, "V00006",
-                     Argument0 => +Facility,
-                     Argument1 => +Base_Locale);
+         Print_Line
+           (ZBMCompile_Facility, "V00006", Argument0 => +Facility,
+            Argument1                                => +Base_Locale);
       end if;
    end Consistency_Check;
 

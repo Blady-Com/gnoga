@@ -92,37 +92,43 @@ with Ada.Strings.Wide_Fixed;
 with Ada.Strings.Wide_Unbounded;
 
 separate (ZBTest.Commands)
-procedure Execute_Command (State : in out State_Type;
-                           Args  : List_Type) is
+procedure Execute_Command
+  (State : in out State_Type;
+   Args  :        List_Type)
+is
 
    use Ada.Strings.Wide_Fixed;
 
-   procedure Execute_Command (State          : in out State_Type;
-                              Command        : String;
-                              Expect_Failure : Boolean;
-                              Args           : List_Type;
-                              Args_Index     : Positive;
-                              N_Args         : Natural;
-                              Output_Name    : String);
+   procedure Execute_Command
+     (State          : in out State_Type;
+      Command        :        String;
+      Expect_Failure :        Boolean;
+      Args           :        List_Type;
+      Args_Index     :        Positive;
+      N_Args         :        Natural;
+      Output_Name    :        String);
    --  Execute the command, given the full path to the command.
 
-   procedure Register_Execute_Failure (State          : in out State_Type;
-                                       Command_Line   : String;
-                                       Expect_Failure : Boolean;
-                                       Success        : Boolean);
+   procedure Register_Execute_Failure
+     (State          : in out State_Type;
+      Command_Line   :        String;
+      Expect_Failure :        Boolean;
+      Success        :        Boolean);
    --  Register a command failure.
 
    ---------------------
    -- Execute_Command --
    ---------------------
 
-   procedure Execute_Command (State          : in out State_Type;
-                              Command        : String;
-                              Expect_Failure : Boolean;
-                              Args           : List_Type;
-                              Args_Index     : Positive;
-                              N_Args         : Natural;
-                              Output_Name    : String) is
+   procedure Execute_Command
+     (State          : in out State_Type;
+      Command        :        String;
+      Expect_Failure :        Boolean;
+      Args           :        List_Type;
+      Args_Index     :        Positive;
+      N_Args         :        Natural;
+      Output_Name    :        String)
+   is
       use Ada.Strings.Wide_Unbounded;
       Command_Line : Unbounded_Wide_String;
       Arguments    : GNAT.OS_Lib.Argument_List (1 .. N_Args);
@@ -132,20 +138,20 @@ procedure Execute_Command (State : in out State_Type;
       Print_00029 (+Command);
       for I in Args_Index .. Args_Index + N_Args - 1 loop
          Arguments (I - Args_Index + 1) :=
-                                   new String'(To_UTF_8 (Value (Args, I)));
+           new String'(Wide_To_UTF8 (Value (Args, I)));
          Append (Command_Line, Value (Args, I));
          Append (Command_Line, " ");
       end loop;
       if Output_Name'Length > 0 then
-         GNAT.OS_Lib.Spawn (To_UTF_8 (Command), Arguments,
-                            To_UTF_8 (Output_Name),
-                            Success, Return_Code);
+         GNAT.OS_Lib.Spawn
+           (Wide_To_UTF8 (Command), Arguments, Wide_To_UTF8 (Output_Name),
+            Success, Return_Code);
       else
-         Return_Code := GNAT.OS_Lib.Spawn (To_UTF_8 (Command), Arguments);
+         Return_Code := GNAT.OS_Lib.Spawn (Wide_To_UTF8 (Command), Arguments);
       end if;
       if not (Expect_Failure xor Return_Code = 0) then
-         Register_Execute_Failure (State, To_Wide_String (Command_Line),
-                                   Expect_Failure, Success);
+         Register_Execute_Failure
+           (State, To_Wide_String (Command_Line), Expect_Failure, Success);
       end if;
       for I in Arguments'Range loop
          GNAT.OS_Lib.Free (Arguments (I));
@@ -156,14 +162,17 @@ procedure Execute_Command (State : in out State_Type;
    -- Register_Execute_Failure --
    ------------------------------
 
-   procedure Register_Execute_Failure (State          : in out State_Type;
-                                       Command_Line   : String;
-                                       Expect_Failure : Boolean;
-                                       Success        : Boolean) is
-      Test_Name : constant String := Format ("{0}-exec{1}",
-                                             +State.Full_Test_Name,
-                                             +State.Get_Integer ("_execfail"));
-      File      : File_Type;
+   procedure Register_Execute_Failure
+     (State          : in out State_Type;
+      Command_Line   :        String;
+      Expect_Failure :        Boolean;
+      Success        :        Boolean)
+   is
+      Test_Name : constant String :=
+        Format
+          ("{0}-exec{1}", +State.Full_Test_Name,
+           +State.Get_Integer ("_execfail"));
+      File : File_Type;
    begin
       Wide_Create (File, Test_Name);
       Print_00045 (File);
@@ -183,10 +192,10 @@ procedure Execute_Command (State : in out State_Type;
       State.Register_Failure (Test_Name);
    end Register_Execute_Failure;
 
-   Expect_Failure     : Boolean := False;
-   Command_Index      : Natural := 0;
-   Output_Index       : Natural := 0;
-   Index              : Positive := 2;
+   Expect_Failure : Boolean  := False;
+   Command_Index  : Natural  := 0;
+   Output_Index   : Natural  := 0;
+   Index          : Positive := 2;
 
 begin
    while Index <= Length (Args) and then Command_Index = 0 loop
@@ -196,7 +205,7 @@ begin
          Expect_Failure := False;
       elsif Value (Args, Index) = "-o" then
          if Index <= Length (Args) then
-            Index := Index + 1;
+            Index        := Index + 1;
             Output_Index := Index;
          else
             raise Command_Usage_Error;
@@ -212,25 +221,17 @@ begin
       raise Command_Usage_Error;
    end if;
    if Output_Index /= 0 then
-      Execute_Command (State,
-                       State.Locate_Executable (Value (Args,
-                                                       Command_Index)),
-                       Expect_Failure,
-                       Args,
-                       Command_Index + 1,
-                       Length (Args) - Command_Index,
-                       Value (Args, Output_Index));
+      Execute_Command
+        (State, State.Locate_Executable (Value (Args, Command_Index)),
+         Expect_Failure, Args, Command_Index + 1,
+         Length (Args) - Command_Index, Value (Args, Output_Index));
    else
-      Execute_Command (State,
-                       State.Locate_Executable (Value (Args,
-                                                       Command_Index)),
-                       Expect_Failure,
-                       Args,
-                       Command_Index + 1,
-                       Length (Args) - Command_Index,
-                       "");
+      Execute_Command
+        (State, State.Locate_Executable (Value (Args, Command_Index)),
+         Expect_Failure, Args, Command_Index + 1,
+         Length (Args) - Command_Index, "");
    end if;
 exception
-when File_Not_Found =>
-   Print_10036 (+Value (Args, Command_Index));
+   when File_Not_Found =>
+      Print_10036 (+Value (Args, Command_Index));
 end Execute_Command;

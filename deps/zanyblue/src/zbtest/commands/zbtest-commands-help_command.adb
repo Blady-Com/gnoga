@@ -70,8 +70,10 @@
 with ZBTest.Functions;
 
 separate (ZBTest.Commands)
-procedure Help_Command (State : in out State_Type;
-                        Args  : List_Type) is
+procedure Help_Command
+  (State : in out State_Type;
+   Args  :        List_Type)
+is
    pragma Unreferenced (State);
 
    use ZBTest.Functions;

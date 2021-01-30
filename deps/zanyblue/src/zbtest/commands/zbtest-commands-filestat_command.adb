@@ -72,26 +72,31 @@ with ZBTest.Commands.File_Size_Arguments;
 with ZBTest.Commands.File_Type_Arguments;
 
 separate (ZBTest.Commands)
-procedure Filestat_Command (State : in out State_Type;
-                            Args  : List_Type) is
+procedure Filestat_Command
+  (State : in out State_Type;
+   Args  :        List_Type)
+is
 
    use Ada.Strings.Wide_Fixed;
    use ZanyBlue.Wide_Directories;
    use ZBTest.Commands.File_Size_Arguments;
    use ZBTest.Commands.File_Type_Arguments;
 
-   procedure File_Stat (State     : in out State_Type;
-                        File_Name : String;
-                        Log_Name  : String);
+   procedure File_Stat
+     (State     : in out State_Type;
+      File_Name :        String;
+      Log_Name  :        String);
    --  Generate the status report on a file.
 
    ---------------
    -- File_Stat --
    ---------------
 
-   procedure File_Stat (State     : in out State_Type;
-                        File_Name : String;
-                        Log_Name  : String) is
+   procedure File_Stat
+     (State     : in out State_Type;
+      File_Name :        String;
+      Log_Name  :        String)
+   is
       pragma Unreferenced (State);
       use type Ada.Directories.File_Kind;
       Log_File : File_Type;

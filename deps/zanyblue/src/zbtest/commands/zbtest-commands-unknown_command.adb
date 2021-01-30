@@ -34,11 +34,13 @@
 --
 
 separate (ZBTest.Commands)
-procedure Unknown_Command (State : in out State_Type;
-                           Args  : List_Type) is
+procedure Unknown_Command
+  (State : in out State_Type;
+   Args  :        List_Type)
+is
 
-      pragma Unreferenced (State);
-      pragma Unreferenced (Args);
+   pragma Unreferenced (State);
+   pragma Unreferenced (Args);
 
 begin
    raise Unknown_Command_Error;

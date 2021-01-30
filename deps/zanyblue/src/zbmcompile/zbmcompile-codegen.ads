@@ -39,33 +39,41 @@ package ZBMCompile.Codegen is
 
    use ZanyBlue.Text.Catalogs;
 
-   function Modes_String (Options : Parameter_Set_Type) return String;
+   function Modes_String
+     (Options : Parameter_Set_Type)
+      return String;
    --  Depending on the selected mode for flags return either a space string
    --  " " or the string " in ".   This value is subsituted in function and
    --  procedures generated for arguments to explicitly include, or not, the
    --  "in" keyword for arguments.
 
-   function Optimize (Catalog : Catalog_Type;
-                      Options : Parameter_Set_Type) return Catalog_Type;
+   function Optimize
+     (Catalog : Catalog_Type;
+      Options : Parameter_Set_Type)
+      return Catalog_Type;
    --  Optimize the input catalog by organizing the messages by locale.
    --  For large catalogs, data associated with unreferenced locales might
    --  never be loaded into RAM.
 
-   function Sanitize (Value : String) return String;
+   function Sanitize
+     (Value : String)
+      return String;
    --  Sanitize a string for print replacing any control (non-graphic)
    --  characters with corresponding Unicode representations, if any.
 
-   procedure Write_Commented_Text (File       : File_Type;
-                                   Value      : String;
-                                   Block_Size : Positive);
+   procedure Write_Commented_Text
+     (File       : File_Type;
+      Value      : String;
+      Block_Size : Positive);
    --  Write a string value to the given file over multiple lines split
    --  first by new line and then by line length.  This routine is used
    --  write the base text associated with a key to the generated source
    --  file.  I.
 
-   procedure Write_Commented_Text_Line (File       : File_Type;
-                                        Value      : String;
-                                        Block_Size : Positive);
+   procedure Write_Commented_Text_Line
+     (File       : File_Type;
+      Value      : String;
+      Block_Size : Positive);
    --  Write a single line from a base message as a comment to the generated
    --  file.  The line might need to be split into multiple blocks of text
    --  depending on it's lenght (style restriction to 78 character output

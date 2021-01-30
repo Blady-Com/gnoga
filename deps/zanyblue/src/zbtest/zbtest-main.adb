@@ -58,7 +58,9 @@ procedure ZBTest.Main is
 
    function Banner return Time;
    procedure Process_Command_Line (State : in out State_Type);
-   procedure Trailer (Start_Time : Time; Failure : Boolean := False);
+   procedure Trailer
+     (Start_Time : Time;
+      Failure    : Boolean := False);
 
    ------------
    -- Banner --
@@ -67,8 +69,9 @@ procedure ZBTest.Main is
    function Banner return Time is
       Start_Time : constant Time := Clock;
    begin
-      Print_00001 (+ZanyBlue.Version_Major, +ZanyBlue.Version_Minor,
-                   +ZanyBlue.Version_Patch, +ZanyBlue.Revision, +Start_Time);
+      Print_00001
+        (+ZanyBlue.Version_Major, +ZanyBlue.Version_Minor,
+         +ZanyBlue.Version_Patch, +ZanyBlue.Revision, +Start_Time);
       Print_00002 (+ZanyBlue.Copyright_Year);
       return Start_Time;
    end Banner;
@@ -79,20 +82,24 @@ procedure ZBTest.Main is
 
    procedure Process_Command_Line (State : in out State_Type) is
 
-      procedure Handle_Argument (Value : String;
-                                 Index : in out Positive);
+      procedure Handle_Argument
+        (Value :        String;
+         Index : in out Positive);
 
-      procedure Set_Option_Value (Parameter : String;
-                                  Index     : in out Positive);
+      procedure Set_Option_Value
+        (Parameter :        String;
+         Index     : in out Positive);
 
-      procedure Set_Parameter_Value (Index     : in out Positive);
+      procedure Set_Parameter_Value (Index : in out Positive);
 
       ---------------------
       -- Handle_Argument --
       ---------------------
 
-      procedure Handle_Argument (Value : String;
-                                 Index : in out Positive) is
+      procedure Handle_Argument
+        (Value :        String;
+         Index : in out Positive)
+      is
          use Ada.Strings.Wide_Fixed;
       begin
          if Value = "-h" then
@@ -124,8 +131,10 @@ procedure ZBTest.Main is
       -- Set_Option_Value --
       ----------------------
 
-      procedure Set_Option_Value (Parameter : String;
-                                  Index     : in out Positive) is
+      procedure Set_Option_Value
+        (Parameter :        String;
+         Index     : in out Positive)
+      is
       begin
          if Index < Wide_Argument_Count then
             Index := Index + 1;
@@ -142,10 +151,10 @@ procedure ZBTest.Main is
       procedure Set_Parameter_Value (Index : in out Positive) is
       begin
          if Index + 1 < Wide_Argument_Count then
-            Print_00031 (+Wide_Argument (Index + 1),
-                         +Wide_Argument (Index + 2));
-            State.Set_String (Wide_Argument (Index + 1),
-                              Wide_Argument (Index + 2));
+            Print_00031
+              (+Wide_Argument (Index + 1), +Wide_Argument (Index + 2));
+            State.Set_String
+              (Wide_Argument (Index + 1), Wide_Argument (Index + 2));
             Index := Index + 2;
          else
             Raise_10035 (Usage_Error'Identity, +Wide_Argument (Index));
@@ -164,8 +173,11 @@ procedure ZBTest.Main is
    -- Trailer --
    -------------
 
-   procedure Trailer (Start_Time : Time; Failure : Boolean := False) is
-      Now : constant Time := Clock;
+   procedure Trailer
+     (Start_Time : Time;
+      Failure    : Boolean := False)
+   is
+      Now     : constant Time     := Clock;
       Elapsed : constant Duration := Now - Start_Time;
    begin
       Print_00003 (+Now, +Elapsed);
@@ -175,7 +187,7 @@ procedure ZBTest.Main is
    end Trailer;
 
    Start_Time : constant Time := Banner;
-   State : State_Type;
+   State      : State_Type;
 
 begin
    State.Define_Initial_Parameters;
@@ -191,12 +203,12 @@ begin
    State.Write_XML_Report;
    Trailer (Start_Time);
 exception
-when E : Usage_Error =>
-   Print_10017 (+E);
-   Trailer (Start_Time, True);
-when Invalid_Environment =>
-   Trailer (Start_Time, True);
-when E : others =>
-   Print_10033 (+E);
-   Trailer (Start_Time, True);
+   when E : Usage_Error =>
+      Print_10017 (+E);
+      Trailer (Start_Time, True);
+   when Invalid_Environment =>
+      Trailer (Start_Time, True);
+   when E : others =>
+      Print_10033 (+E);
+      Trailer (Start_Time, True);
 end ZBTest.Main;

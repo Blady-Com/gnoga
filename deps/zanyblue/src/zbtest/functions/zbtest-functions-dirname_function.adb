@@ -46,8 +46,11 @@
 with ZanyBlue.Wide_Directories;
 
 separate (ZBTest.Functions)
-function Dirname_Function (State : access State_Type;
-                           Args  : List_Type) return String is
+function Dirname_Function
+  (State : access State_Type;
+   Args  : List_Type)
+   return String
+is
 
    pragma Unreferenced (State);
 

@@ -33,10 +33,8 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Strings.Wide_Fixed;
 with Ada.Containers.Vectors;
-with Ada.Strings.Wide_Unbounded;
-with Ada.Wide_Characters.Unicode;
+with Ada.Wide_Wide_Characters.Unicode;
 with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Formatting;
 
@@ -47,12 +45,14 @@ package body ZBMCompile.Codegen is
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Formatting;
 
-   Continue_Marker : constant Unicode_Character := Unicode_Character'Val (16#2936#);
+   Continue_Marker : constant Unicode_Character :=
+     Unicode_Character'Val (16#2936#);
    --  U+2936 ARROW POINTING DOWNWARDS THEN CURVING LEFTWARDS ('⤶')
    --  Used to indicate lines of the accessor comment that have been split
    --  to ensure the generated output is within 80 column limit.
 
-   Newline_Marker : constant Unicode_Character := Unicode_Character'Val (16#23CE#);
+   Newline_Marker : constant Unicode_Character :=
+     Unicode_Character'Val (16#23CE#);
    --  U+23CE RETURN SYMBOL ('⏎'')
    --  Used to indicate lines of the accessor comment that have embedded
    --  new line characters.  To preserve the intended structure, this
@@ -237,12 +237,11 @@ package body ZBMCompile.Codegen is
      (Value : String)
       return String
    is
-      use Ada.Strings.Wide_Unbounded;
-      use Ada.Wide_Characters.Unicode;
-      Buffer : Unbounded_Wide_String;
+      use Ada.Wide_Wide_Characters.Unicode;
+      Buffer : String;
       Code   : Natural;
    begin
-      for I in Value'Range loop
+      for I in Value loop
          if Is_Non_Graphic (Value (I)) then
             Code := Unicode_Character'Pos (Value (I));
             case Code is
@@ -263,7 +262,7 @@ package body ZBMCompile.Codegen is
             Append (Buffer, Value (I));
          end if;
       end loop;
-      return To_Wide_String (Buffer);
+      return Buffer;
    end Sanitize;
 
    --------------------------
@@ -275,13 +274,11 @@ package body ZBMCompile.Codegen is
       Value      : String;
       Block_Size : Positive)
    is
-      use Ada.Strings.Wide_Fixed;
-      NL_String : constant String (1 .. 1) :=
-        (others => Unicode_Character'Val (10));
-      Safe_Value : constant String := Sanitize (Value);
-      Last       : constant Natural     := Safe_Value'Last;
-      Length     : constant Natural     := Safe_Value'Length;
-      From       : Positive             := Safe_Value'First;
+      NL_String : constant String := From_Unicode (Unicode_Character'Val (10));
+      Safe_Value : constant String  := Sanitize (Value);
+      Last       : constant Natural := Safe_Value.Last;
+      Length     : constant Natural := Safe_Value.Length;
+      From       : Positive         := Safe_Value.First;
       To         : Natural;
    begin
       Comment_Blocks :
@@ -289,12 +286,13 @@ package body ZBMCompile.Codegen is
          To := Index (Safe_Value, NL_String, From);
          exit Comment_Blocks when To = 0;
          Write_Commented_Text_Line
-           (File, Safe_Value (From .. To - 1) & Newline_Marker, Block_Size);
+           (File, Safe_Value.Slice (From, To - 1) & Newline_Marker,
+            Block_Size);
          From := To + 1;
       end loop Comment_Blocks;
       if From < Last then
          Write_Commented_Text_Line
-           (File, Safe_Value (From .. Last), Block_Size);
+           (File, Safe_Value.Slice (From, Last), Block_Size);
       elsif Length = 0 then
          Write_Commented_Text_Line (File, Safe_Value, Block_Size);
       end if;
@@ -309,24 +307,24 @@ package body ZBMCompile.Codegen is
       Value      : String;
       Block_Size : Positive)
    is
-      use Ada.Wide_Characters.Unicode;
-      N_Blocks : constant Natural := Value'Length / Block_Size;
+      use Ada.Wide_Wide_Characters.Unicode;
+      N_Blocks : constant Natural := Value.Length / Block_Size;
       From, To : Natural;
    begin
-      if Value'Length = 0 then
+      if Value.Length = 0 then
          Print_Line (File, ZBMBase_Facility, "10021");
       else
          for I in 1 .. N_Blocks loop
-            From := Value'First + (I - 1) * Block_Size;
+            From := Value.First + (I - 1) * Block_Size;
             To   := From + Block_Size - 1;
             Print_Line
               (File, ZBMBase_Facility, "10023",
-               Argument0 => +Value (From .. To),
+               Argument0 => +Value.Slice (From, To),
                Argument1 => +Continue_Marker);
          end loop;
-         From := Value'First + N_Blocks * Block_Size;
-         To   := Natural'Min (From + Block_Size, Value'Last);
-         while To >= Value'First
+         From := Value.First + N_Blocks * Block_Size;
+         To   := Natural'Min (From + Block_Size, Value.Last);
+         while To >= Value.First
            and then (Is_Space (Value (To)) and then To >= From)
          loop
             To := To - 1;
@@ -334,7 +332,7 @@ package body ZBMCompile.Codegen is
          if To >= From then
             Print_Line
               (File, ZBMBase_Facility, "10024",
-               Argument0 => +Value (From .. To));
+               Argument0 => +Value.Slice (From, To));
          end if;
       end if;
    end Write_Commented_Text_Line;

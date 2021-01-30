@@ -54,11 +54,11 @@ package body ZBMCompile.Message_Filter is
       Result        : Boolean := False;
       Key_Character : Unicode_Character;
    begin
-      if Facility /= ZBMCompile_Facility or Key'Length < 1 then
+      if Facility /= ZBMCompile_Facility or Key.Length < 1 then
          --  Non user message or degenerate key, print the message
          Result := False;
       else
-         Key_Character := Key (Key'First);
+         Key_Character := Key (Key.First);
          case Filter.Output_Level is
             when Silent =>
             --  Silent, nothing is printed, everything is filtered

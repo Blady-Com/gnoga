@@ -57,8 +57,8 @@ package ZBMCompile.Parser_Handler is
    --  the numbers used by the base locale.
 
    package Locale_Definitions_Package is new Indefinite_Hashed_Maps
-     (Key_Type => String, Element_Type => Key_Definition,
-      Hash     => Wide_Hash, Equivalent_Keys => "=");
+     (Key_Type => String, Element_Type => Key_Definition, Hash => Wide_Hash,
+      Equivalent_Keys => "=");
    subtype Locale_Definitions_Map is Locale_Definitions_Package.Map;
    function "="
      (Left, Right : Locale_Definitions_Map)
@@ -75,8 +75,7 @@ package ZBMCompile.Parser_Handler is
    --  Associate keys with their definitions in various locales
 
    package Locale_Sets is new Indefinite_Hashed_Sets
-     (Element_Type        => String, Hash => Wide_Hash,
-      Equivalent_Elements => "=");
+     (Element_Type => String, Hash => Wide_Hash, Equivalent_Elements => "=");
    subtype Locale_Set_Type is Locale_Sets.Set;
    --  Is a particular locale defined for a facility
 

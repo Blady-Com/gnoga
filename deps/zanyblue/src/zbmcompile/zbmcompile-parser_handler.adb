@@ -285,9 +285,8 @@ package body ZBMCompile.Parser_Handler is
 
          use String_Vectors;
 
-         Type_Category : constant String :=
-           Type_Name_To_Category (Type_Name);
-         Extra : constant Integer :=
+         Type_Category : constant String  := Type_Name_To_Category (Type_Name);
+         Extra         : constant Integer :=
            Position + 1 - Natural (Length (V_Handler.Arg_Types));
 
       begin

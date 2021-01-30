@@ -556,7 +556,7 @@ package body ZBMCompile.Messages is
       109 => Key_109'Access, 110 => Key_110'Access, 111 => Key_111'Access,
       112 => Key_112'Access, 113 => Key_113'Access, 114 => Key_114'Access);
 
-   Locale_1 : aliased constant String              := "" & "";
+   Locale_1 : aliased constant String                   := "" & "";
    Locales  : constant ZT.Constant_String_List (1 .. 1) :=
      (1 => Locale_1'Access);
 
@@ -6814,7 +6814,7 @@ package body ZBMCompile.Messages is
    begin
       ZTC.Initialize
         (Catalog, Messages, Pool, Facilities, Keys, Locales,
-         "ZBMCompile.Messages", Pool_Data_1'Length, 10_680);
+         "ZBMCompile.Messages", Pool_Data_1.Length, 10_680);
    end Initialize;
 
    ----------

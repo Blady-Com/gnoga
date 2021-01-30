@@ -36,15 +36,17 @@
 with Ada.Calendar;
 with Ada.Exceptions;
 with Ada.Command_Line;
+with ZanyBlue.Command_Line;
 with ZanyBlue.Text.Formatting;
 with ZBMCompile.Messages;
 with ZBMCompile.Message_Filter;
+with UXStrings.Conversions;
 
 procedure ZBMCompile.Main is
 
    use Ada.Calendar;
    use Ada.Exceptions;
-   use Ada.Command_Line;
+   use ZanyBlue.Command_Line;
    use ZanyBlue.Text;
    use ZanyBlue.Text.Formatting;
    use ZBMCompile.Message_Filter;
@@ -111,7 +113,7 @@ procedure ZBMCompile.Main is
               (Usage'Identity, ZBMCompile_Facility, "E00001",
                Argument0 => +Ch);
          end if;
-         return Wide_From_UTF8 (Argument (Index));
+         return Argument (Index);
       end Get_Option_Value;
 
       ----------------------
@@ -123,8 +125,9 @@ procedure ZBMCompile.Main is
          return Natural
       is
          Buffer : constant String := Get_Option_Value (Ch);
+         function Value is new UXStrings.Conversions.Integer_Value (Natural);
       begin
-         return Natural'Wide_Value (Buffer);
+         return Value (Buffer);
       exception
          when Constraint_Error =>
             Raise_Exception
@@ -271,15 +274,15 @@ procedure ZBMCompile.Main is
                         Argument0 => +Handling);
                   end if;
                end;
-            elsif Value'Length > 0 and then Value (Value'First) = '-' then
+            elsif Value.Length > 0 and then Value (Value.First) = '-' then
                Raise_Exception
                  (Usage'Identity, ZBMCompile_Facility, "E00020",
                   Argument0 => +Value);
             elsif not Options.Is_Defined ("package") then
-               Options.Set_String ("package", Wide_From_UTF8 (Value));
+               Options.Set_String ("package", Value);
             else
                Options.Append ("mesg_dirs", Options.Get_String ("cur_dir"));
-               Options.Append ("facilities", Wide_From_UTF8 (Value));
+               Options.Append ("facilities", Value);
                Options.Increment ("n_facilities");
             end if;
          end;
@@ -337,11 +340,11 @@ procedure ZBMCompile.Main is
 
    Start_Time : Ada.Calendar.Time;
    Options    : Parameter_Set_Type;
+   use Ada.Command_Line;
 
 begin
    ZBMCompile.Messages.Initialize;
    Set_Filter (Filters'Access);
-   Disable_Wide_IO;
    Options.Set_Name ("OPTIONS");
    Process_Command_Line (Options);
    Start_Time := Banner;
@@ -354,7 +357,8 @@ begin
 exception
    when E : Usage =>
       Start_Time := Banner;
-      Print_Line (ZBMCompile_Facility, "E00008", +Exception_Message (E));
+      Print_Line
+        (ZBMCompile_Facility, "E00008", +From_Latin_1 (Exception_Message (E)));
       Print_Line (ZBMCompile_Facility, "E00002");
       Trailer (Start_Time);
       Set_Exit_Status (Failure);

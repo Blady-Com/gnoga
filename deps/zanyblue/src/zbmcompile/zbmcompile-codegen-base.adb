@@ -33,10 +33,10 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Wide_Characters.Unicode;
+with Ada.Wide_Wide_Characters.Unicode;
 with ZanyBlue.Text.Formatting;
 with ZanyBlue.Utils;
-with ZanyBlue.Wide_Directories;
+with ZanyBlue.Directories;
 
 package body ZBMCompile.Codegen.Base is
 
@@ -44,7 +44,7 @@ package body ZBMCompile.Codegen.Base is
    use ZanyBlue.Text;
    use ZanyBlue.Text.Formatting;
    use ZanyBlue.Utils;
-   use ZanyBlue.Wide_Directories;
+   use ZanyBlue.Directories;
 
    procedure Create_Message_List
      (File    : in out File_Type;
@@ -117,7 +117,7 @@ package body ZBMCompile.Codegen.Base is
       --  Add an individual message definition, handling the case where
       --  the message is the last message in the list, i.e., no comma.
 
-      Pool                 : constant String     := Get_Pool (Catalog);
+      Pool                 : constant String          := Get_Pool (Catalog);
       N_Messages           : constant Natural := Number_Of_Messages (Catalog);
       First_Last_Message   : Message_Id_Type          := "10017";
       Facility_Key_Message : constant Message_Id_Type := "10018";
@@ -155,7 +155,7 @@ package body ZBMCompile.Codegen.Base is
             Argument0 => +Positive (L), Argument1 => +Positive (EL));
          if not Options.Get_Boolean ("ascii_only") then
             Write_Commented_Text
-              (File, Pool (First .. Last),
+              (File, Pool.Slice (First, Last),
                Options.Get_Integer ("comment_size"));
          end if;
          Current := Current + 1;
@@ -185,7 +185,7 @@ package body ZBMCompile.Codegen.Base is
       Package_Name : constant String := Options.Get_String ("package");
       Pool         : constant String := Get_Pool (Catalog);
       File_Name    : constant String :=
-        Wide_Compose
+        Compose
           (Output_Directory, Body_File_Name (Package_Name, GNAT_Naming_Style));
       Updated : Boolean;
       File    : File_Type;
@@ -223,11 +223,11 @@ package body ZBMCompile.Codegen.Base is
       if Number_Of_Keys (Catalog) > 0 then
          Print_Line
            (File, ZBMBase_Facility, "10027", +Modes_String (Options),
-            +Package_Name, +Pool'Length);
+            +Package_Name, +Pool.Length);
       else
          Print_Line
            (File, ZBMBase_Facility, "10028", +Modes_String (Options),
-            +Package_Name, +Pool'Length);
+            +Package_Name, +Pool.Length);
       end if;
       Write_Query_Impl (File, "Key", "Keys", Options);
       Print_If
@@ -255,7 +255,7 @@ package body ZBMCompile.Codegen.Base is
         Options.Get_String ("output_directory");
       Package_Name : constant String := Options.Get_String ("package");
       File_Name    : constant String :=
-        Wide_Compose
+        Compose
           (Output_Directory, Spec_File_Name (Package_Name, GNAT_Naming_Style));
       Updated : Boolean;
       File    : File_Type;
@@ -362,15 +362,15 @@ package body ZBMCompile.Codegen.Base is
       Table_Name :        String;
       Options    :        Parameter_Set_Type)
    is
-      M_String : constant String    := Modes_String (Options);
+      M_String : constant String            := Modes_String (Options);
       Dash     : constant Unicode_Character := '-';
    begin
       Print_Line
         (File, ZBMBase_Facility, "10025", +Name, +M_String, +Table_Name, +Dash,
-         +Name'Length);
+         +Name.Length);
       Print_Line
         (File, ZBMBase_Facility, "10026", +Name, +Table_Name, +Dash,
-         +Name'Length);
+         +Name.Length);
    end Write_Query_Impl;
 
    ------------------
@@ -386,10 +386,10 @@ package body ZBMCompile.Codegen.Base is
       Decl_Index :        Positive := 1)
    is
 
-      use Ada.Wide_Characters.Unicode;
+      use Ada.Wide_Wide_Characters.Unicode;
 
-      Buffer           : String (1 .. Width);
-      Current_Position : Natural := Value'First;
+      Buffer           : String;
+      Current_Position : Natural := Value.First;
 
       function Current_Character return Unicode_Character;
       function Current_Character_Pos return Natural;
@@ -403,20 +403,20 @@ package body ZBMCompile.Codegen.Base is
       end Advance;
 
       function Buffered_Data return String is
-         I : Positive := Buffer'First;
+         I : Positive := Buffer.First;
       begin
-         while I < Buffer'Last and then not Finished
+         while I < Buffer.Last and then not Finished
            and then not Is_Non_Graphic (Current_Character)
          loop
-            Buffer (I) := Current_Character;
+            Buffer.Replace_Unicode (I, Current_Character);
             Advance;
             if Buffer (I) = '"' then
-               I          := I + 1;
-               Buffer (I) := '"';
+               I := I + 1;
+               Buffer.Replace_Unicode (I, '"');
             end if;
             I := I + 1;
          end loop;
-         return Buffer (Buffer'First .. I - 1);
+         return Buffer.Slice (Buffer.First, I - 1);
       end Buffered_Data;
 
       function Current_Character return Unicode_Character is
@@ -434,13 +434,13 @@ package body ZBMCompile.Codegen.Base is
 
       function Finished return Boolean is
       begin
-         return Current_Position > Value'Length;
+         return Current_Position > Value.Length;
       end Finished;
 
    begin
       Print_Line (File, ZBMBase_Facility, "10004", +Name, +Decl_Index);
       if ASCII then
-         for I in Value'Range loop
+         for I in Value loop
             Print_Line
               (File, ZBMBase_Facility, "10005",
                +Unicode_Character'Pos (Value (I)));

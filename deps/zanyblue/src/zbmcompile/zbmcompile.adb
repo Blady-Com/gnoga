@@ -34,9 +34,8 @@
 --
 
 with Ada.Calendar;
-with Ada.Strings.Wide_Fixed;
-with Ada.Strings.Wide_Maps;
-with Ada.Strings.Wide_Maps.Wide_Constants;
+with Ada.Strings.Wide_Wide_Maps;
+with Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants;
 with ZanyBlue.OS;
 with ZanyBlue.Parameters;
 with ZanyBlue.Text.Locales;
@@ -123,9 +122,8 @@ package body ZBMCompile is
      (Name : String)
       return Boolean
    is
-      use Ada.Strings.Wide_Fixed;
-      use Ada.Strings.Wide_Maps;
-      use Ada.Strings.Wide_Maps.Wide_Constants;
+      use Ada.Strings.Wide_Wide_Maps;
+      use Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants;
    begin
       return Index (Name, not (Alphanumeric_Set or To_Set ("_"))) = 0;
    end Is_Ada_Identifier_OK;
@@ -142,7 +140,7 @@ package body ZBMCompile is
 
       Directories : constant List_Type   := Options.Get_List ("mesg_dirs");
       Facilities : constant List_Type   := Options.Get_List ("facilities");
-      Extension : constant String := Options.Get_String ("extension");
+      Extension          : constant String := Options.Get_String ("extension");
       Source_Root_Locale : constant Locale_Type :=
         Make_Locale (Options.Get_String ("source_root_locale"));
       N_Locales  : Natural := 0;
@@ -327,7 +325,7 @@ package body ZBMCompile is
       Now  : constant Time := Clock;
       File : File_Type;
    begin
-      Wide_Create (File, File_Name);
+      Create (File, File_Name);
       Print_Line (File, ZBMCompile_Facility, "I00006", Argument0 => +Clock);
       Close (File);
       Print_Line

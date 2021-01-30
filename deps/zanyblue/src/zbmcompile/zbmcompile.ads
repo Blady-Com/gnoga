@@ -33,18 +33,23 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Wide_Text_IO;
+with UXStrings.Text_IO;
 with Ada.Containers.Indefinite_Vectors;
 with ZanyBlue.Text.Arguments;
 with ZanyBlue.Text.Null_Object;
 with ZanyBlue.Parameters.Sets;
 
+with UXStrings;
+
 package ZBMCompile is
 
-   use Ada.Wide_Text_IO;
+   use UXStrings.Text_IO;
    use ZanyBlue.Text.Arguments;
    use ZanyBlue.Text.Null_Object;
    use ZanyBlue.Parameters.Sets;
+   use UXStrings;
+
+   subtype String is UXString;
 
    Output_Pool_Size : constant := 60;
    --  Size of the outputted comment strings for accessors, i.e., the base
@@ -64,7 +69,7 @@ package ZBMCompile is
    --  default if arguments are referenced out of sequence, e.g., "There
    --  are {1,number} moons around {0,string}".
 
-   subtype Message_Id_Type is String (1 .. 5);
+   subtype Message_Id_Type is String;
 
    Accessor_Exceptions : aliased constant String := "exceptions";
    Accessor_Strings    : aliased constant String := "strings";

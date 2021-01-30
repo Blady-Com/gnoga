@@ -33,12 +33,12 @@
 --  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-with Ada.Wide_Characters.Unicode;
+with Ada.Wide_Wide_Characters.Unicode;
 with Ada.Containers.Vectors;
 with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Formatting;
 with ZanyBlue.Utils;
-with ZanyBlue.Wide_Directories;
+with ZanyBlue.Directories;
 
 package body ZBMCompile.Codegen.Accessors is
 
@@ -47,7 +47,7 @@ package body ZBMCompile.Codegen.Accessors is
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Formatting;
    use ZanyBlue.Utils;
-   use ZanyBlue.Wide_Directories;
+   use ZanyBlue.Directories;
 
    type Key_Descriptor_Type is record
       Index     : Key_Index_Type;
@@ -230,14 +230,14 @@ package body ZBMCompile.Codegen.Accessors is
          Body_File      : File_Type;
          Key_Descriptor : Key_Descriptor_Type)
       is
-         Local_Arguments : constant String    := "Arguments";
-         Empty_Arguments : constant String    := "Empty_Argument_List";
+         Local_Arguments : constant String            := "Arguments";
+         Empty_Arguments : constant String            := "Empty_Argument_List";
          Key : constant String := Get_Key (Catalog, Key_Descriptor.Index);
          Dash            : constant Unicode_Character := '-';
       begin
          Print_Line (Spec_File, Accessor_Facility, "10007", +Key, +Modes);
          Print_Line
-           (Body_File, Accessor_Facility, "20007", +Key, +Dash, +Key'Length,
+           (Body_File, Accessor_Facility, "20007", +Key, +Dash, +Key.Length,
             +Modes);
          --  Print the argument list for the routine signature
          for I in 1 .. Key_Descriptor.N_Args loop
@@ -281,15 +281,15 @@ package body ZBMCompile.Codegen.Accessors is
 
       Output_Directory : constant String :=
         Options.Get_String ("output_directory");
-      Package_Name : constant String := Options.Get_String ("package");
+      Package_Name     : constant String := Options.Get_String ("package");
       Facility_Package : constant String :=
         Format (Accessor_Facility, "00000", +Package_Name, +Facility);
       Spec_Name : constant String :=
-        Wide_Compose
+        Compose
           (Output_Directory,
            Spec_File_Name (Facility_Package, GNAT_Naming_Style));
       Body_Name : constant String :=
-        Wide_Compose
+        Compose
           (Output_Directory,
            Body_File_Name (Facility_Package, GNAT_Naming_Style));
       Spec_File : File_Type;
@@ -353,10 +353,9 @@ package body ZBMCompile.Codegen.Accessors is
       Options  : Parameter_Set_Type)
    is
 
-      Catalog     : constant Catalog_Type := Get_Catalog (Handler);
-      Base_Locale : constant String  :=
-        Options.Get_String ("reference_locale");
-      Modes           : constant String := Modes_String (Options);
+      Catalog         : constant Catalog_Type := Get_Catalog (Handler);
+      Base_Locale : constant String := Options.Get_String ("reference_locale");
+      Modes           : constant String       := Modes_String (Options);
       Key_Descriptors : Key_Descriptor_Vector;
       Max_Args        : Natural;
 
@@ -423,7 +422,7 @@ package body ZBMCompile.Codegen.Accessors is
         (Left, Right : Key_Descriptor_Type)
          return Boolean
       is
-         use Ada.Wide_Characters.Unicode;
+         use Ada.Wide_Wide_Characters.Unicode;
 
          function Norm
            (Key : String)
@@ -434,16 +433,16 @@ package body ZBMCompile.Codegen.Accessors is
            (Key : String)
             return String
          is
-            Result : String (Key'Range);
+            Result : String := Key;
          begin
-            for I in Key'Range loop
-               Result (I) := To_Lower_Case (Key (I));
+            for I in Key loop
+               Result.Replace_Unicode (I, To_Lower_Case (Key (I)));
             end loop;
             return Result;
          end Norm;
 
-         Left_Key  : String := Norm (Get_Key (Catalog, Left.Index));
-         Right_Key : String := Norm (Get_Key (Catalog, Right.Index));
+         Left_Key  : constant String := Norm (Get_Key (Catalog, Left.Index));
+         Right_Key : constant String := Norm (Get_Key (Catalog, Right.Index));
 
       begin
          return Left_Key < Right_Key;

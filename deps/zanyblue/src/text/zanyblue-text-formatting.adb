@@ -873,8 +873,8 @@ package body ZanyBlue.Text.Formatting is
       Message : String)
    is
    begin
-      Raise_Exception
-        (E, Message => Current_Locale.Encode_To_String (Message));
+      Ada.Exceptions.Raise_Exception
+        (E, Message => To_UTF_8 (Current_Locale.Encode_To_String (Message)));
    end Raise_Exception;
 
    ---------------------

@@ -163,16 +163,16 @@ package ZanyBlue.Text.Locales is
    subtype Encoding_Type is String;
    --  An ISO Encoding code, e.g., "ISO8859-1".
 
-   Empty_Language : constant Language_Type := Null_UXString;
+   Empty_Language : constant Language_Type := Max_Language_Length * ' ';
    --  Emtpy language code string
 
-   Empty_Script : constant Script_Type := Null_UXString;
+   Empty_Script : constant Script_Type := Max_Script_Length * ' ';
    --  Empty string code string.
 
-   Empty_Territory : constant Territory_Type := Null_UXString;
+   Empty_Territory : constant Territory_Type := Max_Territory_Length * ' ';
    --  Empty Territory code string.
 
-   Empty_Encoding : constant Encoding_Type := Null_UXString;
+   Empty_Encoding : constant Encoding_Type := Max_Encoding_Length * ' ';
    --  Empty Encoding code string.
 
    type Level_Type is range 0 .. Maximum_Level;

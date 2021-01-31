@@ -336,6 +336,9 @@ package body ZanyBlue.Text.Locales is
       if Index (Name.Slice (First, Last), "-", First) /= 0 then
          Separator := '-';
       end if;
+      Language  := Empty_Language;
+      Script    := Empty_Script;
+      Territory := Empty_Territory;
       Get_Separated_Item (Language, First, Last);
       Get_Separated_Item (Script, First, Last);
       Get_Separated_Item (Territory, First, Last);

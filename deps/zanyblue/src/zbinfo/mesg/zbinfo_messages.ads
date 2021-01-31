@@ -6,6 +6,7 @@
 
 with ZanyBlue.Text.Catalogs;
 with ZanyBlue.Text.Formatting;
+with UXStrings;
 
 package ZBInfo_Messages is
 
@@ -13,6 +14,10 @@ package ZBInfo_Messages is
    --  only be with'ed.  Suppress any compiler warnings about an unused
    --  with'ed package.
    pragma Warnings (Off, ZBInfo_Messages);
+
+   use UXStrings;
+
+   subtype String is UXString;
 
    function Standard_Catalog return ZanyBlue.Text.Catalogs.Catalog_Type renames
      ZanyBlue.Text.Formatting.Standard_Catalog;

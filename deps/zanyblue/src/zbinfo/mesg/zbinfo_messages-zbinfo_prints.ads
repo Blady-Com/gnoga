@@ -4,14 +4,14 @@
 --  This is a generated file and should not be edited.
 --
 
-with Ada.Text_IO;
+with UXStrings.Text_IO;
 with ZanyBlue.Text.Catalogs;
 with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Arguments;
 
 package ZBInfo_Messages.ZBInfo_Prints is
 
-   use Ada.Text_IO;
+   use UXStrings.Text_IO;
    use ZanyBlue.Text.Catalogs;
    use ZanyBlue.Text.Locales;
    use ZanyBlue.Text.Arguments;

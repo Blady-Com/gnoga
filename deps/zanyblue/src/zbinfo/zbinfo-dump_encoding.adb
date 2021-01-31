@@ -34,7 +34,7 @@
 --
 
 with Ada.Wide_Text_IO;
-with Ada.Wide_Characters.Handling;
+with Ada.Wide_Wide_Characters.Handling;
 with ZanyBlue.Text.Codecs;
 with ZanyBlue.Text.Formatting;
 with ZBInfo_Messages.ZBInfo_Prints;
@@ -49,7 +49,7 @@ procedure ZBInfo.Dump_Encoding
 is
 
    use Ada.Wide_Text_IO;
-   use Ada.Wide_Characters.Handling;
+   use Ada.Wide_Wide_Characters.Handling;
    use ZanyBlue.Text.Codecs;
    use ZanyBlue.Text.Formatting;
    use ZBInfo_Messages.ZBInfo_Prints;
@@ -79,24 +79,27 @@ is
    is
       Code_Point : constant Natural := Unicode_Character'Pos (WCh);
    begin
-      if Encoding'Length = 2 then
+      if Encoding.Length = 2 then
          if Is_Graphic (WCh) then
             Print_00035
-              (+Character'Pos (Encoding (Encoding'First)),
-               +Character'Pos (Encoding (Encoding'First + 1)), +WCh,
+              (+Unicode_Character'Pos (Encoding (Encoding.First)),
+               +Unicode_Character'Pos (Encoding (Encoding.First + 1)), +WCh,
                +Code_Point);
          else
             Print_00033
-              (+Character'Pos (Encoding (Encoding'First)),
-               +Character'Pos (Encoding (Encoding'First + 1)), +Code_Point);
+              (+Unicode_Character'Pos (Encoding (Encoding.First)),
+               +Unicode_Character'Pos (Encoding (Encoding.First + 1)),
+               +Code_Point);
          end if;
       else
          if Is_Graphic (WCh) then
             Print_00036
-              (+Character'Pos (Encoding (Encoding'First)), +WCh, +Code_Point);
+              (+Unicode_Character'Pos (Encoding (Encoding.First)), +WCh,
+               +Code_Point);
          else
             Print_00034
-              (+Character'Pos (Encoding (Encoding'First)), +Code_Point);
+              (+Unicode_Character'Pos (Encoding (Encoding.First)),
+               +Code_Point);
          end if;
       end if;
    end Dump_Decoding;
@@ -116,8 +119,8 @@ is
       else
          Print_00030 (+Code_Point, With_NL => False);
       end if;
-      for I in Encoding'Range loop
-         Print_00031 (+Character'Pos (Encoding (I)), With_NL => False);
+      for I in Encoding loop
+         Print_00031 (+Unicode_Character'Pos (Encoding (I)), With_NL => False);
       end loop;
       New_Line;
    end Dump_Encoding;

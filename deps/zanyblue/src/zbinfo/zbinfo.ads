@@ -39,11 +39,16 @@ with ZanyBlue.Text.Locales;
 with ZanyBlue.Text.Generic_Modulars;
 with ZanyBlue.Text.Generic_Enumerations;
 
+with UXStrings;
+
 package ZBInfo is
 
    use Ada.Containers;
    use ZanyBlue.Text.Codecs;
    use ZanyBlue.Text.Locales;
+   use UXStrings;
+
+   subtype String is UXString;
 
    package Hash_Type_Arguments is new ZanyBlue.Text.Generic_Modulars
      (Hash_Type);

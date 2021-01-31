@@ -185,7 +185,7 @@ package body ZBInfo_Messages is
       34 => Key_34'Access, 35 => Key_35'Access, 36 => Key_36'Access,
       37 => Key_37'Access, 38 => Key_38'Access);
 
-   Locale_1 : aliased constant String              := "" & "";
+   Locale_1 : aliased constant String                   := "" & "";
    Locales  : constant ZT.Constant_String_List (1 .. 1) :=
      (1 => Locale_1'Access);
 
@@ -1272,7 +1272,7 @@ package body ZBInfo_Messages is
    begin
       ZTC.Initialize
         (Catalog, Messages, Pool, Facilities, Keys, Locales, "ZBInfo_Messages",
-         Pool_Data_1'Length, 1_793);
+         Pool_Data_1.Length, 1_793);
    end Initialize;
 
    ----------

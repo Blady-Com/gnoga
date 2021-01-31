@@ -34,8 +34,7 @@
 --
 
 with Ada.Calendar;
-with Ada.Strings.Wide_Unbounded;
-with ZanyBlue.Wide_Command_Line;
+with ZanyBlue.Command_Line;
 with ZanyBlue.Text.Formatting;
 with ZBInfo.Dump_Locale;
 with ZBInfo.Dump_Encoding;
@@ -46,8 +45,7 @@ with ZBInfo_Messages.ZBInfo_Prints;
 procedure ZBInfo.Main is
 
    use Ada.Calendar;
-   use Ada.Strings.Wide_Unbounded;
-   use ZanyBlue.Wide_Command_Line;
+   use ZanyBlue.Command_Line;
    use ZanyBlue.Text.Formatting;
    use ZBInfo_Messages.ZBInfo_Exceptions;
    use ZBInfo_Messages.ZBInfo_Prints;
@@ -59,9 +57,9 @@ procedure ZBInfo.Main is
    function Banner return Time;
    procedure Process_Command_Line
      (Mode            : out Mode_Type;
-      Locale_Name     : out Unbounded_Wide_String;
+      Locale_Name     : out String;
       Locale          : out Locale_Type;
-      Encoding_Name   : out Unbounded_Wide_String;
+      Encoding_Name   : out String;
       Reverse_Mapping : out Boolean);
    procedure Trailer (Start_Time : Time);
 
@@ -85,9 +83,9 @@ procedure ZBInfo.Main is
 
    procedure Process_Command_Line
      (Mode            : out Mode_Type;
-      Locale_Name     : out Unbounded_Wide_String;
+      Locale_Name     : out String;
       Locale          : out Locale_Type;
-      Encoding_Name   : out Unbounded_Wide_String;
+      Encoding_Name   : out String;
       Reverse_Mapping : out Boolean)
    is
 
@@ -96,7 +94,7 @@ procedure ZBInfo.Main is
          Index : in out Positive);
 
       procedure Set_Option_Value
-        (Target :    out Unbounded_Wide_String;
+        (Target :    out String;
          Index  : in out Positive);
 
       ---------------------
@@ -117,7 +115,7 @@ procedure ZBInfo.Main is
          elsif Value = "--dump-locale" then
             Mode := Locale_Info;
             Set_Option_Value (Locale_Name, Index);
-            Locale := Make_Locale (To_Wide_String (Locale_Name));
+            Locale := Make_Locale (Locale_Name);
          elsif Value = "--dump-encoding" then
             Mode := Encoding_Info;
             Set_Option_Value (Encoding_Name, Index);
@@ -132,15 +130,15 @@ procedure ZBInfo.Main is
       ----------------------
 
       procedure Set_Option_Value
-        (Target :    out Unbounded_Wide_String;
+        (Target :    out String;
          Index  : in out Positive)
       is
       begin
-         if Index < Wide_Argument_Count then
+         if Index < Argument_Count then
             Index  := Index + 1;
-            Target := To_Unbounded_Wide_String (Wide_Argument (Index));
+            Target := Argument (Index);
          else
-            Raise_10002 (Usage_Error'Identity, +Wide_Argument (Index));
+            Raise_10002 (Usage_Error'Identity, +Argument (Index));
          end if;
       end Set_Option_Value;
 
@@ -150,9 +148,9 @@ procedure ZBInfo.Main is
       Mode            := Locale_Info;
       Reverse_Mapping := False;
       Locale          := Current_Locale;
-      Locale_Name     := To_Unbounded_Wide_String (Current_Locale.Locale_Name);
-      while Index <= Wide_Argument_Count loop
-         Handle_Argument (Wide_Argument (Index), Index);
+      Locale_Name     := Current_Locale.Locale_Name;
+      while Index <= Argument_Count loop
+         Handle_Argument (Argument (Index), Index);
       end loop;
    end Process_Command_Line;
 
@@ -168,9 +166,9 @@ procedure ZBInfo.Main is
    end Trailer;
 
    Start_Time      : constant Time := Banner;
-   Locale_Name     : Unbounded_Wide_String;
+   Locale_Name     : String;
    Locale          : Locale_Type;
-   Encoding_Name   : Unbounded_Wide_String;
+   Encoding_Name   : String;
    Reverse_Mapping : Boolean;
    Mode            : Mode_Type;
 
@@ -181,12 +179,11 @@ begin
       when Help =>
          Print_00004;
       when None | Locale_Info =>
-         ZBInfo.Dump_Locale (Locale, To_Wide_String (Locale_Name));
+         ZBInfo.Dump_Locale (Locale, Locale_Name);
       when Encoding_List =>
          ZBInfo.List_Encodings;
       when Encoding_Info =>
-         ZBInfo.Dump_Encoding
-           (To_Wide_String (Encoding_Name), Reverse_Mapping);
+         ZBInfo.Dump_Encoding (Encoding_Name, Reverse_Mapping);
    end case;
    Trailer (Start_Time);
 end ZBInfo.Main;

@@ -23,6 +23,10 @@ package body UXStrings.Text_IO is
 
    LM : UXString := From_Latin_1 (Character'Val (13) & Character'Val (10)); -- Default is CRLF for Line_Mark function
 
+   ---------------
+   -- Read_More --
+   ---------------
+
    procedure Read_More (File : in out File_Type) is
       Buffer_Size : constant := 200;
       subtype Buffer_Type is String (1 .. Buffer_Size);
@@ -41,6 +45,32 @@ package body UXStrings.Text_IO is
          File.EOF := True;
       end if;
    end Read_More;
+
+   -----------------
+   -- Read_Stream --
+   -----------------
+
+   procedure Read_Stream (File : in out File_Type; Item : out UTF_8_Character_Array; Last : out Natural) is
+      Read_Buffer : UXString;
+   begin
+      if File.Buffer.Length < Item'Length then
+         Read_More (File);
+      end if;
+      Bounded_Move (File.Buffer, Read_Buffer, Item'Length, Last);
+      if Last > 0 then
+         Item (Item'First .. Item'First + Last - 1) := Read_Buffer.Chars.all;
+      end if;
+   end Read_Stream;
+
+   -----------------
+   -- Write_Stream --
+   -----------------
+
+   procedure Write_Stream (File : in out File_Type; Item : UTF_8_Character_Array) is
+      Dummy_Result : Integer;
+   begin
+      Dummy_Result := Write (File.FD, Item'Address, Item'Length);
+   end Write_Stream;
 
    ------------
    -- Create --

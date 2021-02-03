@@ -183,4 +183,7 @@ private
       EOF    : Boolean                     := False;
    end record;
 
+   procedure Read_Stream (File : in out File_Type; Item : out UTF_8_Character_Array; Last : out Natural);
+   procedure Write_Stream (File : in out File_Type; Item : UTF_8_Character_Array);
+
 end UXStrings.Text_IO;

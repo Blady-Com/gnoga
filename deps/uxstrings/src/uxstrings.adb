@@ -9,12 +9,14 @@
 -- CONTACT                      : http://blady.pagesperso-orange.fr
 -------------------------------------------------------------------------------
 
-with Ada.Strings.Fixed; use Ada.Strings.Fixed;
+with Ada.Strings.Fixed;           use Ada.Strings.Fixed;
+with Ada.Strings.Wide_Wide_Fixed; use Ada.Strings.Wide_Wide_Fixed;
 --  with Ada.Strings.UTF_Encoding.Conversions;
 with STUTEN.SUEnco; -- Fix an issue in UTF-16 to UTF8 conversion
+with Ada.Strings.UTF_Encoding.Wide_Wide_Strings; use Ada.Strings.UTF_Encoding.Wide_Wide_Strings;
 with Ada.Unchecked_Deallocation;
-with Strings_Edit.UTF8;          use Strings_Edit.UTF8;
-with Strings_Edit.UTF8.Handling; use Strings_Edit.UTF8.Handling;
+with Strings_Edit.UTF8;                          use Strings_Edit.UTF8;
+with Strings_Edit.UTF8.Handling;                 use Strings_Edit.UTF8.Handling;
 
 package body UXStrings is
 
@@ -111,6 +113,24 @@ package body UXStrings is
       UTF_8_Character_Array'Write (Stream, Item.Chars.all);
    end UXString_Write;
 
+   ------------------
+   -- Bounded_Move --
+   ------------------
+
+   procedure Bounded_Move (Source : in out UXString; Target : out UXString; Max : Natural; Last : out Natural) is
+      Item    : UTF8_Code_Point;
+      Pointer : Integer := Source.Chars'First;
+      Count   : Natural := 0;
+   begin
+      while Pointer <= Source.Chars'First + Max - 1 and Pointer <= Source.Chars'last loop
+         Get (Source.Chars.all, Pointer, Item);
+         Count := Count + 1;
+      end loop;
+      Target := Source.Slice (1, Count);
+      Delete (Source, 1, Count);
+      Last := Target.Chars.all'Length;
+   end Bounded_Move;
+
    -- UXStrings API implementation
 
    ------------
@@ -119,7 +139,7 @@ package body UXStrings is
 
    function Length (Source : UXString) return Natural is
    begin
-      return Length (String (Source.Chars.all));
+      return Length (Source.Chars.all);
    end Length;
 
    -----------
@@ -138,7 +158,7 @@ package body UXStrings is
    function Next (Source : UXString; Index : Positive) return Positive is
       Pointer : Integer := Source.Chars'First;
    begin
-      Skip (String (Source.Chars.all), Pointer, Index);
+      Skip (Source.Chars.all, Pointer, Index);
       return Index + 1;
    end Next;
 
@@ -205,8 +225,8 @@ package body UXStrings is
       Item    : UTF8_Code_Point;
       Pointer : Integer := Source.Chars'First;
    begin
-      Skip (String (Source.Chars.all), Pointer, Index - 1);
-      Get (String (Source.Chars.all), Pointer, Item);
+      Skip (Source.Chars.all, Pointer, Index - 1);
+      Get (Source.Chars.all, Pointer, Item);
       if Item > 16#FF# then
          return Substitute;
       else
@@ -220,7 +240,7 @@ package body UXStrings is
 
    function To_Latin_1 (Source : UXString; Substitute : in Latin_1_Character := '¿') return Latin_1_Character_Array is
    begin
-      return To_String (String (Source.Chars.all), Substitute);
+      return To_String (Source.Chars.all, Substitute);
    end To_Latin_1;
 
    ------------------
@@ -273,8 +293,8 @@ package body UXStrings is
       Item    : UTF8_Code_Point;
       Pointer : Integer := Source.Chars'First;
    begin
-      Skip (String (Source.Chars.all), Pointer, Index - 1);
-      Get (String (Source.Chars.all), Pointer, Item);
+      Skip (Source.Chars.all, Pointer, Index - 1);
+      Get (Source.Chars.all, Pointer, Item);
       if Item > 16#FFFF# then
          return Substitute;
       else
@@ -288,7 +308,7 @@ package body UXStrings is
 
    function To_BMP (Source : UXString; Substitute : in BMP_Character := '¿') return BMP_Character_Array is
    begin
-      return To_Wide_String (String (Source.Chars.all), Substitute);
+      return To_Wide_String (Source.Chars.all, Substitute);
    end To_BMP;
 
    --------------
@@ -341,8 +361,8 @@ package body UXStrings is
       Item    : UTF8_Code_Point;
       Pointer : Integer := Source.Chars'First;
    begin
-      Skip (String (Source.Chars.all), Pointer, Index - 1);
-      Get (String (Source.Chars.all), Pointer, Item);
+      Skip (Source.Chars.all, Pointer, Index - 1);
+      Get (Source.Chars.all, Pointer, Item);
       return Unicode_Character'Val (Item);
    end Get_Unicode;
 
@@ -352,7 +372,7 @@ package body UXStrings is
 
    function To_Unicode (Source : UXString) return Unicode_Character_Array is
    begin
-      return To_Wide_Wide_String (String (Source.Chars.all));
+      return To_Wide_Wide_String (Source.Chars.all);
    end To_Unicode;
 
    ------------------
@@ -561,9 +581,9 @@ package body UXStrings is
       Pointer2 : Integer;
    begin
       if Low <= High then
-         Skip (String (Source.Chars.all), Pointer1, Low - 1);
+         Skip (Source.Chars.all, Pointer1, Low - 1);
          Pointer2 := Pointer1;
-         Skip (String (Source.Chars.all), Pointer2, High - Low + 1);
+         Skip (Source.Chars.all, Pointer2, High - Low + 1);
          return UXS : UXString do
             UXS.Chars := new UTF_8_Character_Array'(Source.Chars.all (Pointer1 .. Pointer2 - 1));
          end return;
@@ -580,9 +600,9 @@ package body UXStrings is
       Pointer1 : Integer := Source.Chars'First;
       Pointer2 : Integer;
    begin
-      Skip (String (Source.Chars.all), Pointer1, Low - 1);
+      Skip (Source.Chars.all, Pointer1, Low - 1);
       Pointer2 := Pointer1;
-      Skip (String (Source.Chars.all), Pointer2, High - Low + 1);
+      Skip (Source.Chars.all, Pointer2, High - Low + 1);
       if Target.Chars /= null then
          Free (Target.Chars);
       end if;
@@ -667,8 +687,7 @@ package body UXStrings is
       return Natural
    is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Index unimplemented");
-      return raise Program_Error with "Unimplemented function Index";
+      return Index (Decode (Source.Chars.all), Set, Test, Going);
    end Index;
 
    -----------
@@ -683,10 +702,10 @@ package body UXStrings is
       Pointer2 : Integer;
    begin
       if Source.Chars /= null and Pattern.Chars /= null then
-         Skip (String (Source.Chars.all), Pointer1, From - 1);
-         Pointer2 := Index (String (Source.Chars.all), String (Pattern.Chars.all), Pointer1);
+         Skip (Source.Chars.all, Pointer1, From - 1);
+         Pointer2 := Index (Source.Chars.all, Pattern.Chars.all, Pointer1);
          if Pointer2 > 0 then
-            return Length (String (Source.Chars.all (Source.Chars'First .. Pointer2 - 1))) + 1;
+            return Length (Source.Chars.all (Source.Chars'First .. Pointer2 - 1)) + 1;
          else
             return 0;
          end if;
@@ -805,8 +824,7 @@ package body UXStrings is
 
    function Translate (Source : UXString; Mapping : Wide_Wide_Character_Mapping) return UXString is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Translate unimplemented");
-      return raise Program_Error with "Unimplemented function Translate";
+      return From_UTF_8 (Encode (Translate (Decode (Source.Chars.all), Mapping)));
    end Translate;
 
    ---------------
@@ -815,8 +833,7 @@ package body UXStrings is
 
    procedure Translate (Source : in out UXString; Mapping : Wide_Wide_Character_Mapping) is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Translate unimplemented");
-      raise Program_Error with "Unimplemented procedure Translate";
+      Source := Translate (Source, Mapping);
    end Translate;
 
    ---------------
@@ -825,8 +842,7 @@ package body UXStrings is
 
    function Translate (Source : UXString; Mapping : Wide_Wide_Character_Mapping_Function) return UXString is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Translate unimplemented");
-      return raise Program_Error with "Unimplemented function Translate";
+      return From_UTF_8 (Encode (Translate (Decode (Source.Chars.all), Mapping)));
    end Translate;
 
    ---------------
@@ -835,8 +851,7 @@ package body UXStrings is
 
    procedure Translate (Source : in out UXString; Mapping : Wide_Wide_Character_Mapping_Function) is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Translate unimplemented");
-      raise Program_Error with "Unimplemented procedure Translate";
+      Source := Translate (Source, Mapping);
    end Translate;
 
    -------------------
@@ -916,12 +931,14 @@ package body UXStrings is
       Pointer2     : Integer;
       Saved_Access : UTF_8_Characters_Access := Source.Chars;
    begin
-      Skip (String (Source.Chars.all), Pointer1, From - 1);
-      Pointer2 := Pointer1;
-      Skip (String (Source.Chars.all), Pointer2, Through - From + 1);
-      Source.Chars := new UTF_8_Character_Array'(Delete (String (Source.Chars.all), Pointer1, Pointer2 - 1));
-      if Saved_Access /= null then
-         Free (Saved_Access);
+      if From <= Through then
+         Skip (Source.Chars.all, Pointer1, From - 1);
+         Pointer2 := Pointer1;
+         Skip (Source.Chars.all, Pointer2, Through - From + 1);
+         Source.Chars := new UTF_8_Character_Array'(Delete (Source.Chars.all, Pointer1, Pointer2 - 1));
+         if Saved_Access /= null then
+            Free (Saved_Access);
+         end if;
       end if;
    end Delete;
 
@@ -932,7 +949,7 @@ package body UXStrings is
    function Trim (Source : UXString; Side : Trim_End) return UXString is
    begin
       return UXS : UXString do
-         UXS.Chars := new UTF_8_Character_Array'(Trim (String (Source.Chars.all), Side));
+         UXS.Chars := new UTF_8_Character_Array'(Trim (Source.Chars.all, Side));
       end return;
    end Trim;
 

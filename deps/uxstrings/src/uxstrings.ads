@@ -170,6 +170,7 @@ package UXStrings is
    function "*" (Left : Natural; Right : Unicode_Character) return UXString;
 
 private
+
    type UTF_8_Characters_Access is access UTF_8_Character_Array;
    type UXString is new Ada.Finalization.Controlled with record
       Chars : UTF_8_Characters_Access := new UTF_8_Character_Array (2 .. 1);
@@ -177,6 +178,8 @@ private
 
    procedure Adjust (Object : in out UXString);
    procedure Finalize (Object : in out UXString);
+
+   procedure Bounded_Move (Source : in out UXString; Target : out UXString; Max : Natural; Last : out Natural);
 
    procedure UXString_Read (Stream : not null access Ada.Streams.Root_Stream_Type'Class; Item : out UXString);
    for UXString'Read use UXString_Read;

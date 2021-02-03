@@ -13,21 +13,34 @@ with Ada.Unchecked_Conversion;
 
 package body UXStrings.Text_IO.Text_Streams is
 
+   ----------
+   -- Read --
+   ----------
+
    overriding procedure Read
      (Stream : in out Stream_File; Item : out Stream_Element_Array; Last : out Stream_Element_Offset)
    is
+      subtype SEA is Stream_Element_Array (Item'Range);
+      subtype UCA is UTF_8_Character_Array (1 .. Natural (Item'Last));
+      function Convert is new Ada.Unchecked_Conversion (UCA, SEA);
+      Read_Buffer : UCA;
+      Read_Last   : Natural;
    begin
-      pragma Compile_Time_Warning (Standard.True, "Read unimplemented");
-      raise Program_Error with "Unimplemented procedure Read";
+      Read_Stream (Stream.File.all, Read_Buffer, Read_Last);
+      Item := Convert (Read_Buffer);
+      Last := Stream_Element_Offset (Read_Last);
    end Read;
+
+   -----------
+   -- Write --
+   -----------
 
    overriding procedure Write (Stream : in out Stream_File; Item : Stream_Element_Array) is
       subtype SEA is Stream_Element_Array (Item'Range);
       subtype UCA is UTF_8_Character_Array (1 .. Natural (Item'Last));
       function Convert is new Ada.Unchecked_Conversion (SEA, UCA);
-      Str : constant UXString := From_UTF_8 (UTF_8_Character_Array (Convert (Item)));
    begin
-      Put (Stream.File.all, Str);
+      Write_Stream (Stream.File.all, Convert (Item));
    end Write;
 
    ------------

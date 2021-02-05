@@ -45,7 +45,7 @@ package body Localize.Parser is
       end Append;
 
    begin
-      UXStrings.Text_IO.Open (Raw_File, UXStrings.Text_IO.In_File, File_Name, UTF_16LE, UXStrings.Text_IO.LF);
+      UXStrings.Text_IO.Open (Raw_File, UXStrings.Text_IO.In_File, File_Name, UTF_16LE, UXStrings.Text_IO.LF_Ending);
       while not UXStrings.Text_IO.End_Of_File (Raw_File) loop
          UXStrings.Text_IO.Get (Raw_File, C);
          Text.Append (C);
@@ -134,7 +134,7 @@ package body Localize.Parser is
       end Escaped_Put;
 
    begin
-      UXStrings.Text_IO.Create (Raw_File, UXStrings.Text_IO.Out_File, File_Name, UTF_16LE, UXStrings.Text_IO.LF);
+      UXStrings.Text_IO.Create (Raw_File, UXStrings.Text_IO.Out_File, File_Name, UTF_16LE, UXStrings.Text_IO.LF_Ending);
       UXStrings.Text_IO.Put_BOM (Raw_File);
       for C in Content.Iterate loop
          if Content_Maps.Element (C).Comment /= Null_UXString then
@@ -192,7 +192,7 @@ package body Localize.Parser is
       end Append;
 
    begin
-      UXStrings.Text_IO.Open (Raw_File, UXStrings.Text_IO.In_File, File_Name, Latin_1, UXStrings.Text_IO.LF);
+      UXStrings.Text_IO.Open (Raw_File, UXStrings.Text_IO.In_File, File_Name, Latin_1, UXStrings.Text_IO.LF_Ending);
       while not UXStrings.Text_IO.End_Of_File (Raw_File) loop
          UXStrings.Text_IO.Get (Raw_File, C);
          Text.Append (C);
@@ -322,7 +322,7 @@ package body Localize.Parser is
       end Escaped_Write;
 
    begin
-      UXStrings.Text_IO.Create (Raw_File, UXStrings.Text_IO.Out_File, File_Name, Latin_1, UXStrings.Text_IO.LF);
+      UXStrings.Text_IO.Create (Raw_File, UXStrings.Text_IO.Out_File, File_Name, Latin_1, UXStrings.Text_IO.LF_Ending);
       for C in Content.Iterate loop
          if Content_Maps.Element (C).Comment /= Null_UXString then
             UXStrings.Text_IO.Put (Raw_File, '#');

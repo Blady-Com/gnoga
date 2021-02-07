@@ -10,21 +10,18 @@ with UXStrings;
 
 package ZBInfo_Messages is
 
+   use UXStrings;
+   subtype String is UXString;
+
    --  Since the body calls the Initialize procedure, this package need
    --  only be with'ed.  Suppress any compiler warnings about an unused
    --  with'ed package.
    pragma Warnings (Off, ZBInfo_Messages);
 
-   use UXStrings;
+   function Standard_Catalog return ZanyBlue.Text.Catalogs.Catalog_Type
+      renames ZanyBlue.Text.Formatting.Standard_Catalog;
 
-   subtype String is UXString;
-
-   function Standard_Catalog return ZanyBlue.Text.Catalogs.Catalog_Type renames
-     ZanyBlue.Text.Formatting.Standard_Catalog;
-
-   function Facility
-     (Index : Positive)
-      return String;
+   function Facility (Index : Positive) return String;
    --  The name of the Index'th Facility item compiled.
    --  This routine is normally only used by generated accessor code.
 
@@ -32,9 +29,7 @@ package ZBInfo_Messages is
    --  Numnber of Facility items compiled.
    --  This routine is normally only used by generated accessor code.
 
-   function Key
-     (Index : Positive)
-      return String;
+   function Key (Index : Positive) return String;
    --  The name of the Index'th Key item compiled.
    --  This routine is normally only used by generated accessor code.
 
@@ -42,8 +37,8 @@ package ZBInfo_Messages is
    --  Numnber of Key items compiled.
    --  This routine is normally only used by generated accessor code.
 
-   procedure Initialize
-     (Catalog : ZanyBlue.Text.Catalogs.Catalog_Type := Standard_Catalog);
+   procedure Initialize (
+      Catalog : ZanyBlue.Text.Catalogs.Catalog_Type := Standard_Catalog);
    --  The catalog initialization routine: load the compiled messages into
    --  a catalog.
 

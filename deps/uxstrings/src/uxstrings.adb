@@ -201,8 +201,7 @@ package body UXStrings is
 
    function Is_Latin_1 (Source : UXString; Index : Positive) return Boolean is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Is_Latin_1 unimplemented");
-      return raise Program_Error with "Unimplemented function Is_Latin_1";
+      return Unicode_Character'Pos (Source.Get_Unicode (Index)) < 16#1_00#;
    end Is_Latin_1;
 
    ----------------
@@ -211,8 +210,7 @@ package body UXStrings is
 
    function Is_Latin_1 (Source : UXString) return Boolean is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Is_Latin_1 unimplemented");
-      return raise Program_Error with "Unimplemented function Is_Latin_1";
+      return (for all C of Source => Unicode_Character'Pos (C) < 16#1_00#);
    end Is_Latin_1;
 
    -----------------
@@ -271,8 +269,7 @@ package body UXStrings is
 
    function Is_BMP (Source : UXString; Index : Positive) return Boolean is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Is_BMP unimplemented");
-      return raise Program_Error with "Unimplemented function Is_BMP";
+      return Unicode_Character'Pos (Source.Get_Unicode (Index)) < 16#1_0000#;
    end Is_BMP;
 
    ------------
@@ -281,8 +278,7 @@ package body UXStrings is
 
    function Is_BMP (Source : UXString) return Boolean is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Is_BMP unimplemented");
-      return raise Program_Error with "Unimplemented function Is_BMP";
+      return (for all C of Source => Unicode_Character'Pos (C) < 16#1_0000#);
    end Is_BMP;
 
    -------------
@@ -339,8 +335,7 @@ package body UXStrings is
 
    function Is_Unicode (Source : UXString; Index : Positive) return Boolean is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Is_Unicode unimplemented");
-      return raise Program_Error with "Unimplemented function Is_Unicode";
+      return True;
    end Is_Unicode;
 
    ----------------
@@ -349,8 +344,7 @@ package body UXStrings is
 
    function Is_Unicode (Source : UXString) return Boolean is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Is_Unicode unimplemented");
-      return raise Program_Error with "Unimplemented function Is_Unicode";
+      return True;
    end Is_Unicode;
 
    -----------------
@@ -597,16 +591,8 @@ package body UXStrings is
    -----------
 
    procedure Slice (Source : UXString; Target : out UXString; Low : Positive; High : Natural) is
-      Pointer1 : Integer := Source.Chars'First;
-      Pointer2 : Integer;
    begin
-      Skip (Source.Chars.all, Pointer1, Low - 1);
-      Pointer2 := Pointer1;
-      Skip (Source.Chars.all, Pointer2, High - Low + 1);
-      if Target.Chars /= null then
-         Free (Target.Chars);
-      end if;
-      Target.Chars := new UTF_8_Character_Array'(Source.Chars.all (Pointer1 .. Pointer2 - 1));
+      Target := Slice (Source, Low, High);
    end Slice;
 
    ---------
@@ -663,7 +649,11 @@ package body UXStrings is
       Mapping : Wide_Wide_Character_Mapping := Identity) return Natural
    is
    begin
-      return Index (Source, Pattern, 1, Going, Mapping);
+      if Going = Forward then
+         return Index (Source, Pattern, Source.First, Forward, Mapping);
+      else
+         return Index (Source, Pattern, Source.Last, Backward, Mapping);
+      end if;
    end Index;
 
    -----------
@@ -675,7 +665,11 @@ package body UXStrings is
       Mapping : Wide_Wide_Character_Mapping_Function) return Natural
    is
    begin
-      return Index (Source, Pattern, 1, Going, Mapping);
+      if Going = Forward then
+         return Index (Source, Pattern, Source.First, Forward, Mapping);
+      else
+         return Index (Source, Pattern, Source.Last, Backward, Mapping);
+      end if;
    end Index;
 
    -----------
@@ -687,7 +681,11 @@ package body UXStrings is
       return Natural
    is
    begin
-      return Index (Decode (Source.Chars.all), Set, Test, Going);
+      if Going = Forward then
+         return Index (Source, Set, Source.First, Test, Forward);
+      else
+         return Index (Source, Set, Source.Last, Test, Backward);
+      end if;
    end Index;
 
    -----------
@@ -698,20 +696,8 @@ package body UXStrings is
      (Source  : UXString; Pattern : UXString; From : Positive; Going : Direction := Forward;
       Mapping : Wide_Wide_Character_Mapping := Identity) return Natural
    is
-      Pointer1 : Integer := Source.Chars'First;
-      Pointer2 : Integer;
    begin
-      if Source.Chars /= null and Pattern.Chars /= null then
-         Skip (Source.Chars.all, Pointer1, From - 1);
-         Pointer2 := Index (Source.Chars.all, Pattern.Chars.all, Pointer1);
-         if Pointer2 > 0 then
-            return Length (Source.Chars.all (Source.Chars'First .. Pointer2 - 1)) + 1;
-         else
-            return 0;
-         end if;
-      else
-         return 0;
-      end if;
+      return Index (Decode (Source.Chars.all), Decode (Pattern.Chars.all), From, Going, Mapping);
    end Index;
 
    -----------
@@ -723,8 +709,7 @@ package body UXStrings is
       Mapping : Wide_Wide_Character_Mapping_Function) return Natural
    is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Index unimplemented");
-      return raise Program_Error with "Unimplemented function Index";
+      return Index (Decode (Source.Chars.all), Decode (Pattern.Chars.all), From, Going, Mapping);
    end Index;
 
    -----------
@@ -736,8 +721,7 @@ package body UXStrings is
       Going  : Direction := Forward) return Natural
    is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Index unimplemented");
-      return raise Program_Error with "Unimplemented function Index";
+      return Index (Decode (Source.Chars.all), Set, From, Test, Going);
    end Index;
 
    ---------------------
@@ -746,8 +730,7 @@ package body UXStrings is
 
    function Index_Non_Blank (Source : UXString; Going : Direction := Forward) return Natural is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Index_Non_Blank unimplemented");
-      return raise Program_Error with "Unimplemented function Index_Non_Blank";
+      return Index (Source, To_Set (Wide_Wide_Space), Outside, Going);
    end Index_Non_Blank;
 
    ---------------------
@@ -756,8 +739,7 @@ package body UXStrings is
 
    function Index_Non_Blank (Source : UXString; From : Positive; Going : Direction := Forward) return Natural is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Index_Non_Blank unimplemented");
-      return raise Program_Error with "Unimplemented function Index_Non_Blank";
+      return Index (Source, To_Set (Wide_Wide_Space), From, Outside, Going);
    end Index_Non_Blank;
 
    -----------
@@ -768,8 +750,7 @@ package body UXStrings is
      (Source : UXString; Pattern : UXString; Mapping : Wide_Wide_Character_Mapping := Identity) return Natural
    is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Count unimplemented");
-      return raise Program_Error with "Unimplemented function Count";
+      return Count (Decode (Source.Chars.all), Decode (Pattern.Chars.all), Mapping);
    end Count;
 
    -----------
@@ -779,8 +760,7 @@ package body UXStrings is
    function Count (Source : UXString; Pattern : UXString; Mapping : Wide_Wide_Character_Mapping_Function) return Natural
    is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Count unimplemented");
-      return raise Program_Error with "Unimplemented function Count";
+      return Count (Decode (Source.Chars.all), Decode (Pattern.Chars.all), Mapping);
    end Count;
 
    -----------
@@ -789,8 +769,7 @@ package body UXStrings is
 
    function Count (Source : UXString; Set : Wide_Wide_Character_Set) return Natural is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Count unimplemented");
-      return raise Program_Error with "Unimplemented function Count";
+      return Count (Decode (Source.Chars.all), Set);
    end Count;
 
    ----------------
@@ -802,8 +781,8 @@ package body UXStrings is
       Last   : out Natural)
    is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Find_Token unimplemented");
-      raise Program_Error with "Unimplemented procedure Find_Token";
+      Find_Token (Decode (Source.Chars.all), Set, From, Test, First, Last);
+
    end Find_Token;
 
    ----------------
@@ -814,8 +793,7 @@ package body UXStrings is
      (Source : UXString; Set : Wide_Wide_Character_Set; Test : Membership; First : out Positive; Last : out Natural)
    is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Find_Token unimplemented");
-      raise Program_Error with "Unimplemented procedure Find_Token";
+      Find_Token (Source, Set, Source.First, Test, First, Last);
    end Find_Token;
 
    ---------------
@@ -860,7 +838,11 @@ package body UXStrings is
 
    function Replace_Slice (Source : UXString; Low : Positive; High : Natural; By : UXString) return UXString is
    begin
-      return Source.Slice (Source.First, Low - 1) & By & Source.Slice (High + 1, Source.Last);
+      if Low <= High then
+         return Source.Slice (Source.First, Low - 1) & By & Source.Slice (High + 1, Source.Last);
+      else
+         return Insert (Source, Low, By);
+      end if;
    end Replace_Slice;
 
    -------------------
@@ -878,8 +860,7 @@ package body UXStrings is
 
    function Insert (Source : UXString; Before : Positive; New_Item : UXString) return UXString is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Insert unimplemented");
-      return raise Program_Error with "Unimplemented function Insert";
+      return Source.Slice (Source.First, Before - 1) & New_Item & Source.Slice (Before, Source.Last);
    end Insert;
 
    ------------
@@ -888,8 +869,7 @@ package body UXStrings is
 
    procedure Insert (Source : in out UXString; Before : Positive; New_Item : UXString) is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Insert unimplemented");
-      raise Program_Error with "Unimplemented procedure Insert";
+      Source := Insert (Source, Before, New_Item);
    end Insert;
 
    ---------------
@@ -898,8 +878,7 @@ package body UXStrings is
 
    function Overwrite (Source : UXString; Position : Positive; New_Item : UXString) return UXString is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Overwrite unimplemented");
-      return raise Program_Error with "Unimplemented function Overwrite";
+      return Replace_Slice (Source, Position, Natural'min (Source.Length, New_Item.Length), New_Item);
    end Overwrite;
 
    ---------------
@@ -908,8 +887,7 @@ package body UXStrings is
 
    procedure Overwrite (Source : in out UXString; Position : Positive; New_Item : UXString) is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Overwrite unimplemented");
-      raise Program_Error with "Unimplemented procedure Overwrite";
+      Source := Overwrite (Source, Position, New_Item);
    end Overwrite;
 
    ------------
@@ -918,8 +896,11 @@ package body UXStrings is
 
    function Delete (Source : UXString; From : Positive; Through : Natural) return UXString is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Delete unimplemented");
-      return raise Program_Error with "Unimplemented function Delete";
+      if From <= Through then
+         return Replace_Slice (Source, From, Through, Null_UXString);
+      else
+         return Source;
+      end if;
    end Delete;
 
    ------------
@@ -927,19 +908,8 @@ package body UXStrings is
    ------------
 
    procedure Delete (Source : in out UXString; From : Positive; Through : Natural) is
-      Pointer1     : Integer                 := Source.Chars'First;
-      Pointer2     : Integer;
-      Saved_Access : UTF_8_Characters_Access := Source.Chars;
    begin
-      if From <= Through then
-         Skip (Source.Chars.all, Pointer1, From - 1);
-         Pointer2 := Pointer1;
-         Skip (Source.Chars.all, Pointer2, Through - From + 1);
-         Source.Chars := new UTF_8_Character_Array'(Delete (Source.Chars.all, Pointer1, Pointer2 - 1));
-         if Saved_Access /= null then
-            Free (Saved_Access);
-         end if;
-      end if;
+      Source := Delete (Source, From, Through);
    end Delete;
 
    ----------
@@ -948,9 +918,7 @@ package body UXStrings is
 
    function Trim (Source : UXString; Side : Trim_End) return UXString is
    begin
-      return UXS : UXString do
-         UXS.Chars := new UTF_8_Character_Array'(Trim (Source.Chars.all, Side));
-      end return;
+      return From_UTF_8 (Encode (Trim (Decode (Source.Chars.all), Side)));
    end Trim;
 
    ----------
@@ -959,8 +927,7 @@ package body UXStrings is
 
    procedure Trim (Source : in out UXString; Side : Trim_End) is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Trim unimplemented");
-      raise Program_Error with "Unimplemented procedure Trim";
+      Source := Trim (Source, Side);
    end Trim;
 
    ----------
@@ -969,8 +936,7 @@ package body UXStrings is
 
    function Trim (Source : UXString; Left : Wide_Wide_Character_Set; Right : Wide_Wide_Character_Set) return UXString is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Trim unimplemented");
-      return raise Program_Error with "Unimplemented function Trim";
+      return From_UTF_8 (Encode (Trim (Decode (Source.Chars.all), Left, Right)));
    end Trim;
 
    ----------
@@ -979,8 +945,7 @@ package body UXStrings is
 
    procedure Trim (Source : in out UXString; Left : Wide_Wide_Character_Set; Right : Wide_Wide_Character_Set) is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Trim unimplemented");
-      raise Program_Error with "Unimplemented procedure Trim";
+      Source := Trim (Source, Left, Right);
    end Trim;
 
    ----------

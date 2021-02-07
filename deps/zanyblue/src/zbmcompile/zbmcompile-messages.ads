@@ -6,8 +6,12 @@
 
 with ZanyBlue.Text.Catalogs;
 with ZanyBlue.Text.Formatting;
+with UXStrings;
 
 package ZBMCompile.Messages is
+
+   use UXStrings;
+   subtype String is UXString;
 
    function Standard_Catalog return ZanyBlue.Text.Catalogs.Catalog_Type
       renames ZanyBlue.Text.Formatting.Standard_Catalog;

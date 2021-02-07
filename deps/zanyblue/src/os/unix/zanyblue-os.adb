@@ -154,7 +154,9 @@ package body ZanyBlue.OS is
    is
       use UXStrings.Text_IO;
    begin
-      Create (File, Mode => Out_File, Name => Name, Scheme => UTF_8);
+      Create
+        (File, Mode => Out_File, Name => Name, Scheme => UTF_8,
+         Ending     => LF_Ending);
    end Create;
 
    ------------------
@@ -208,7 +210,9 @@ package body ZanyBlue.OS is
    is
       use UXStrings.Text_IO;
    begin
-      Open (File, Mode => Mode, Name => Name, Scheme => UTF_8);
+      Open
+        (File, Mode => Mode, Name => Name, Scheme => UTF_8,
+         Ending     => LF_Ending);
    end Open;
 
 end ZanyBlue.OS;

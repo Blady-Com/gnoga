@@ -77,7 +77,7 @@ package body Gnoga.Client.Bind_Page is
                begin
                   E.Attach_Using_Parent (Parent  => View,
                                          ID      => ID);
-                  View.Add_Element (ID, E);
+                  View.Add_Element (ID, Gnoga.Gui.Element.Pointer_To_Element_Class (E));
                end;
 
                Split;

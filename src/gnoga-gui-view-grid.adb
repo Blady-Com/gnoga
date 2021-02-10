@@ -179,7 +179,7 @@ package body Gnoga.Gui.View.Grid is
                Address : constant String := Left_Trim (Row'Img) & "_" &
                  Left_Trim (Column'Img);
             begin
-               Grid.Add_Element (Address, Column_Object);
+               Grid.Add_Element (Address, Gnoga.Gui.Element.Pointer_To_Element_Class (Column_Object));
             end;
 
             Column := Column + 1;

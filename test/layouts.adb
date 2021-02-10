@@ -68,7 +68,7 @@ procedure Layouts is
       Dex := new View.Docker.Docker_View_Type;
       Dex.Dynamic;
       Dex.Create (App.Docks);
-      App.Docks.Fill_Dock (Dex);
+      App.Docks.Fill_Dock (View.Pointer_To_View_Base_Class(Dex));
 
       --  Prevent backspace from causing browser to go to previous page
       Stop_B := new Common.DIV_Type;
@@ -79,7 +79,7 @@ procedure Layouts is
 
       App.View.Create (Dex.all);
       App.View.Border;
-      Dex.Fill_Dock (App.View'Access);
+      Dex.Fill_Dock (App.View'Unchecked_Access);
 
       Tabs := new View.Card.Tab_Type;
       Tabs.Dynamic;
@@ -98,35 +98,35 @@ procedure Layouts is
       Tab.Create (Tabs.all, "2", "Card 2");
       Tab.On_Click_Handler (On_Click'Unrestricted_Access);
 
-      Dex.Top_Dock (Tabs);
+      Dex.Top_Dock (View.Pointer_To_View_Base_Class(Tabs));
 
       V := new View.View_Type;
       V.Dynamic;
       V.Create (App.Docks);
       V.Background_Color ("Black");
       V.Put_Line ("Here");
-      App.Docks.Top_Dock (V);
+      App.Docks.Top_Dock (View.Pointer_To_View_Base_Class(V));
 
       V := new View.View_Type;
       V.Dynamic;
       V.Create (App.Docks);
       V.Background_Color ("Green");
       V.Put_Line ("Here");
-      App.Docks.Bottom_Dock (V);
+      App.Docks.Bottom_Dock (View.Pointer_To_View_Base_Class(V));
 
       V := new View.View_Type;
       V.Dynamic;
       V.Create (App.Docks);
       V.Background_Color ("Blue");
       V.Put_Line ("Here");
-      App.Docks.Left_Dock (V);
+      App.Docks.Left_Dock (View.Pointer_To_View_Base_Class(V));
 
       V := new View.View_Type;
       V.Dynamic;
       V.Create (App.Docks);
       V.Background_Color ("Yellow");
       V.Put_Line ("Here");
-      App.Docks.Right_Dock (V);
+      App.Docks.Right_Dock (View.Pointer_To_View_Base_Class(V));
 
       Card_1 := new View.Console.Console_View_Type;
       Card_1.Dynamic;

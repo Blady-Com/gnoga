@@ -142,7 +142,7 @@ package body Gnoga.Gui.Plugin.JSTree is
       Tree.View := new JSTree_View_Type;
       Tree.View.Create (Parent, ID);
       Tree.View.Parent_Tree := Tree;
-      JSTree_Access (Tree.View.New_Element (Name, Tree)).Create
+      JSTree_Access (Tree.View.New_Element (Name, Gnoga.Gui.Element.Pointer_To_Element_Class (Tree))).Create
       (Tree.View.all);
    end New_Root_Tree;
 

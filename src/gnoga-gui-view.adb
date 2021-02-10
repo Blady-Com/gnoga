@@ -266,11 +266,11 @@ package body Gnoga.Gui.View is
    procedure Add_Element
      (View    : in out View_Base_Type;
       Name    : in     String;
-      Element : access Gnoga.Gui.Element.Element_Type'Class)
+      Element : Gnoga.Gui.Element.Pointer_To_Element_Class)
    is
    begin
       View.Element_Map.Include (Key      => Name,
-                                New_Item => Gnoga.Gui.Element.Pointer_To_Element_Class (Element));
+                                New_Item => Element);
    end Add_Element;
 
    -----------------
@@ -280,7 +280,7 @@ package body Gnoga.Gui.View is
    function New_Element
      (View    : access View_Base_Type;
       Name    : String;
-      Element : access Gnoga.Gui.Element.Element_Type'Class)
+      Element : Gnoga.Gui.Element.Pointer_To_Element_Class)
       return Gnoga.Gui.Element.Pointer_To_Element_Class
    is
    begin

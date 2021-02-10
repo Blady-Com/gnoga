@@ -279,13 +279,15 @@ logo: zanyblue
 	- cd demo$(PATHSEP)logo && ..$(PATHSEP)..$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)bin$(PATHSEP)zbmcompile -i -v -G strings logo_messages logo
 	$(BUILDER) -P demo/demo_agg.gpr $@-main $(GN_OPTIONS) $(ZB_OPTIONS)
 
-localize: zanyblue
-#	$(COPY) demo$(PATHSEP)logo$(PATHSEP)*.png img
-#	- cd demo$(PATHSEP)logo && ..$(PATHSEP)..$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)bin$(PATHSEP)zbmcompile -i -v -G strings logo_messages logo
+localize:
+#	- cd demo$(PATHSEP)localize && ..$(PATHSEP)..$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)bin$(PATHSEP)zbmcompile -i -v -G strings localize_messages localize
 	$(BUILDER) -P demo/demo_agg.gpr $@-main $(GN_OPTIONS) $(ZB_OPTIONS)
 
 tests:
 	- $(BUILDER) -k -P test/test_agg.gpr $(GN_OPTIONS)
+
+tests-%:
+	- $(BUILDER) -k -P test/test_agg.gpr $(subst tests-,,$@) $(GN_OPTIONS)
 
 tests_ssl: gnoga_secure
 	- $(BUILDER) -P test_ssl/test_ssl.gpr $(GN_OPTIONS)

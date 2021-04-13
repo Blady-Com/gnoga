@@ -96,7 +96,7 @@ procedure AdaEdit is
       App.Editor.Tab_Size (3);
       App.Editor.Soft_Tabs;
 
-      App.Dock.Fill_Dock (App.Editor'Access);
+      App.Dock.Fill_Dock (App.Editor'Unchecked_Access);
    end On_Connect;
 
 begin

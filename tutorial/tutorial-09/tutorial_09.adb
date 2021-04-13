@@ -91,14 +91,14 @@ procedure Tutorial_09 is
       --  Once a dynamic element is stored in a view's map it can be easily
       --  accessed using the Element property.
 
-      App.My_Docker.Top_Dock (App.My_Panel'Access);
+      App.My_Docker.Top_Dock (App.My_Panel'Unchecked_Access);
 
       App.My_Deck.Create (App.My_Docker);
-      App.My_Docker.Fill_Dock (App.My_Deck'Access);
+      App.My_Docker.Fill_Dock (App.My_Deck'Unchecked_Access);
 
       App.My_Cards.Create (App.My_Deck);
       App.My_Cards.Border;
-      App.My_Deck.Fill_Dock (App.My_Cards'Access);
+      App.My_Deck.Fill_Dock (App.My_Cards'Unchecked_Access);
 
       App.My_Tabs.Create (Parent    => App.My_Deck,
                           Card_View => App.My_Cards);
@@ -121,7 +121,7 @@ procedure Tutorial_09 is
                              Card => App.My_Results'Access);
       App.My_Tabs.Add_Tab ("Results", "Interactive Results");
 
-      App.My_Deck.Top_Dock (App.My_Tabs'Access);
+      App.My_Deck.Top_Dock (App.My_Tabs'Unchecked_Access);
       --  We wait to dock My_Tabs until after we have added the tabs
       --  this ensures that My_Tabs's Height with content is known.
    end On_Connect;

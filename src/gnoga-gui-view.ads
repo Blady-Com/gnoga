@@ -145,7 +145,7 @@ package Gnoga.Gui.View is
    procedure Add_Element
      (View    : in out View_Base_Type;
       Name    : in     String;
-      Element :        access Gnoga.Gui.Element.Element_Type'Class);
+      Element : Gnoga.Gui.Element.Pointer_To_Element_Class);
    --  Add Element to associative array of elements at Name and available using
    --  the View_Base_Type's Element property. This does not re-parent the
    --  Element to View if it was created with a different parent nor does it
@@ -155,7 +155,7 @@ package Gnoga.Gui.View is
    function New_Element
      (View    : access View_Base_Type;
       Name    : String;
-      Element : access Gnoga.Gui.Element.Element_Type'Class)
+      Element : Gnoga.Gui.Element.Pointer_To_Element_Class)
       return Gnoga.Gui.Element.Pointer_To_Element_Class;
    --  Only use for dynamic objects.
    --  Performs like Add_Element (View, Name, Element); Element.Dynamic;

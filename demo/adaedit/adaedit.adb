@@ -9,11 +9,16 @@ with Gnoga.Server.Template_Parser.Simple;
 
 with Ada.Directories;
 
+with UXStrings;
+
 procedure AdaEdit is
    use Gnoga;
    use Gnoga.Types;
    use Gnoga.Gui;
    use Gnoga.Gui.Element;
+
+   use UXStrings;
+   subtype String is UXString;
 
    type App_Data is new Connection_Data_Type with
       record
@@ -60,8 +65,8 @@ procedure AdaEdit is
       procedure Fill_List (Directory_Entry : Directory_Entry_Type) is
       begin
          if Kind (Directory_Entry) = Ordinary_File then
-            App.File_List.Add_Option (Simple_Name (Directory_Entry),
-                                      Simple_Name (Directory_Entry));
+            App.File_List.Add_Option (From_UTF_8 (Simple_Name (Directory_Entry)),
+                                      From_UTF_8 (Simple_Name (Directory_Entry)));
          end if;
       end Fill_List;
 
@@ -84,8 +89,8 @@ procedure AdaEdit is
         (Gnoga.Server.Application_Directory &
            Gnoga.Server.Directory_Separator & "src");
 
-      Search (Directory => Gnoga.Server.Application_Directory &
-                Gnoga.Server.Directory_Separator & "src",
+      Search (Directory => To_UTF_8 (Gnoga.Server.Application_Directory &
+                Gnoga.Server.Directory_Separator & "src"),
               Pattern   => "*.ad?",
               Process   => Fill_List'Access);
 

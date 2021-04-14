@@ -3,7 +3,7 @@ with UXStrings.Text_IO; use UXStrings.Text_IO;
 with UXStrings.Text_IO.Text_Streams; use UXStrings.Text_IO.Text_Streams;
 with UXStrings.Conversions;
 
-procedure Test_UXStrings_Text_IO is
+procedure Test_UXStrings_Text_IO2 is
    function Image is new UXStrings.Conversions.Scalar_Image (Encoding_Scheme);
    function Value is new UXStrings.Conversions.Scalar_Value (Encoding_Scheme);
 
@@ -63,19 +63,19 @@ begin
    -- Change the default to LF and UTF-8
    Ending (Current_Output, LF_Ending);
    Line_Mark (LF_Ending);
-   Scheme (Current_Output, UTF_8);
+   Scheme (Current_Output, ASCII_7);
    Ending (Current_Input, LF_Ending);
-   Scheme (Current_Input, UTF_8);
+   Scheme (Current_Input, ASCII_7);
    loop
       Put ("-->");
       Get_Line (S1);
       Put_Line (S1);
       exit when S1 = "exit";
       if S1.Index ("fwrite") = S1.First then
-         Write (if S1.index ("utf_") > 0 then Value (S1.Slice (8, S1.Length)) else Latin_1);
+         Write (if S1.index ("utf_") > 0 then Value (S1.Slice (8, S1.Length)) else ASCII_7);
       end if;
       if S1.Index ("fread")= S1.First then
-         Read(if S1.index ("utf_") > 0 then Value (S1.Slice (7, S1.Length)) else Latin_1);
+         Read(if S1.index ("utf_") > 0 then Value (S1.Slice (7, S1.Length)) else ASCII_7);
       end if;
       if S1.Index ("swrite")= S1.First then
          Write_Stream;
@@ -85,4 +85,4 @@ begin
       end if;
    end loop;
    Put_Line ("<-->");
-end Test_UXStrings_Text_IO;
+end Test_UXStrings_Text_IO2;

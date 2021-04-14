@@ -34,6 +34,8 @@ package body UXStrings.Text_IO is
       Last   : constant Integer := Read (File.FD, Buffer'Address, Buffer'Length);
    begin
       case File.Scheme is
+         when ASCII_7 =>
+            File.Buffer.Append (From_ASCII (Buffer (1 .. Last)));
          when Latin_1 =>
             File.Buffer.Append (From_Latin_1 (Buffer (1 .. Last)));
          when UTF_8 =>
@@ -454,7 +456,7 @@ package body UXStrings.Text_IO is
       Dummy_Result : Integer;
    begin
       case File.Scheme is
-         when Latin_1 | UTF_8 =>
+         when ASCII_7 | Latin_1 | UTF_8 =>
             for Count in 1 .. Spacing loop
                Dummy_Result := Write (File.FD, NL'Address, NL'Length);
             end loop;
@@ -732,7 +734,7 @@ package body UXStrings.Text_IO is
       use Ada.Strings.UTF_Encoding;
    begin
       case File.Scheme is
-         when Latin_1 =>
+         when ASCII_7 | Latin_1 =>
             null;
          when UTF_8 =>
             Dummy_Result := Write (File.FD, BOM_8'Address, BOM_8'Length);
@@ -782,6 +784,12 @@ package body UXStrings.Text_IO is
       Dummy_Result : Integer;
    begin
       case File.Scheme is
+         when ASCII_7 =>
+            declare
+               Buffer : constant String := To_ASCII (From_Unicode (Item));
+            begin
+               Dummy_Result := Write (File.FD, Buffer'Address, Buffer'Length);
+            end;
          when Latin_1 =>
             declare
                Buffer : constant String := To_Latin_1 (From_Unicode (Item));
@@ -916,6 +924,12 @@ package body UXStrings.Text_IO is
       Dummy_Result : Integer;
    begin
       case File.Scheme is
+         when ASCII_7 =>
+            declare
+               Buffer : constant String := To_ASCII (Item);
+            begin
+               Dummy_Result := Write (File.FD, Buffer'Address, Buffer'Length);
+            end;
          when Latin_1 =>
             declare
                Buffer : constant String := To_Latin_1 (Item);

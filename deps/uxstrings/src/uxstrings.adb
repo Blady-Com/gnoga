@@ -17,6 +17,9 @@ with Ada.Strings.UTF_Encoding.Strings;
 with Ada.Strings.UTF_Encoding.Wide_Wide_Strings; use Ada.Strings.UTF_Encoding.Wide_Wide_Strings;
 with Ada.Characters.Conversions;                 use Ada.Characters.Conversions;
 with Ada.Unchecked_Deallocation;
+with Ada.Wide_Wide_Characters.Handling;          use Ada.Wide_Wide_Characters.Handling;
+with Ada.Wide_Characters.Handling;
+with GNAT.UTF_32;
 with Strings_Edit.UTF8;                          use Strings_Edit.UTF8;
 with Strings_Edit.UTF8.Handling;                 use Strings_Edit.UTF8.Handling;
 
@@ -233,6 +236,15 @@ package body UXStrings is
    begin
       return Length (Source);
    end Last;
+
+   ---------------------------
+   -- Character_Set_Version --
+   ---------------------------
+
+   function Character_Set_Version return UXString is
+   begin
+      return From_ASCII (Ada.Wide_Characters.Handling.Character_Set_Version);
+   end Character_Set_Version;
 
    --------------
    -- Is_ASCII --
@@ -604,9 +616,9 @@ package body UXStrings is
    -- Set --
    ---------
 
-   procedure Set (Target : out UXString; Unicode_Source : Unicode_Character_Array) is
+   procedure Set (Target : out UXString; Source : Unicode_Character_Array) is
    begin
-      Target := From_Unicode (Unicode_Source);
+      Target := From_Unicode (Source);
    end Set;
 
    ------------
@@ -1281,5 +1293,68 @@ package body UXStrings is
          UXS.Full_ASCII := Unicode_Character'Pos (Right) < 16#80#;
       end return;
    end "*";
+
+   ----------------------------
+   -- Equal_Case_Insensitive --
+   ----------------------------
+
+   function Equal_Case_Insensitive (Left, Right : UXString) return Boolean is
+   begin
+      return To_Lower (Left) = To_Lower (Right);
+   end Equal_Case_Insensitive;
+
+   ---------------------------
+   -- Less_Case_Insensitive --
+   ---------------------------
+
+   function Less_Case_Insensitive (Left, Right : UXString) return Boolean is
+   begin
+      return To_Lower (Left) < To_Lower (Right);
+   end Less_Case_Insensitive;
+
+   --------------
+   -- To_Lower --
+   --------------
+
+   function To_Lower (Item : UXString) return UXString is
+   begin
+      return UXS : UXString do
+         UXS.Chars := new UTF_8_Character_Array'(Encode (To_Lower (Decode (Item.Chars.all))));
+      end return;
+   end To_Lower;
+
+   --------------
+   -- To_Upper --
+   --------------
+
+   function To_Upper (Item : UXString) return UXString is
+   begin
+      return UXS : UXString do
+         UXS.Chars := new UTF_8_Character_Array'(Encode (To_Upper (Decode (Item.Chars.all))));
+      end return;
+   end To_Upper;
+
+   --------------
+   -- To_Basic --
+   --------------
+
+   function To_Basic (Item : Wide_Wide_Character) return Wide_Wide_Character is
+     (Wide_Wide_Character'Val (GNAT.UTF_32.UTF_32_To_Basic (Wide_Wide_Character'Pos (Item))));
+
+   function To_Basic (Item : Wide_Wide_String) return Wide_Wide_String is
+      Result : Wide_Wide_String (Item'Range);
+   begin
+      for J in Result'Range loop
+         Result (J) := To_Basic (Item (J));
+      end loop;
+      return Result;
+   end To_Basic;
+
+   function To_Basic (Item : UXString) return UXString is
+   begin
+      return UXS : UXString do
+         UXS.Chars := new UTF_8_Character_Array'(Encode (To_Basic (Decode (Item.Chars.all))));
+      end return;
+   end To_Basic;
 
 end UXStrings;

@@ -120,7 +120,7 @@ package body Gnoga.Gui.Window is
    exception
       when E : others =>
          Log ("Error finalizing Window ID " & Object.ID);
-         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
+         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
    end Finalize;
 
    ------------
@@ -170,7 +170,7 @@ package body Gnoga.Gui.Window is
    exception
       when E : others =>
          Log ("Unable to find gnoga['Connection_ID'] on " & ID & " eval returned : " & CID);
-         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
+         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
          raise Not_A_Gnoga_Window;
    end Attach;
 

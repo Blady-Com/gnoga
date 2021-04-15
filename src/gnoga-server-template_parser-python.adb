@@ -186,7 +186,7 @@ package body Gnoga.Server.Template_Parser.Python is
          Module := PyImport_AddModule;
 
          PyRun_SimpleStringFlags (Redirect);
-         PyRun_SimpleStringFlags (To_Latin_1 (Code) & nul);
+         PyRun_SimpleStringFlags (To_UTF_8 (Code) & nul);
 
          PyErr_Print;
 
@@ -195,7 +195,7 @@ package body Gnoga.Server.Template_Parser.Python is
 
          PyString_AsStringAndSize (P_Result, C_Result, Length);
 
-         Result := From_Latin_1 (Interfaces.C.Strings.Value (C_Result, Length));
+         Result := From_UTF_8 (Interfaces.C.Strings.Value (C_Result, Length));
 
          Py_Finalize;
       end Execute;

@@ -143,7 +143,7 @@ package body Gnoga.Server.Migration is
          when E : Gnoga.Server.Database.Query_Error =>
             --  table already exists
             Log ("Error Create_Param_Table table already exists.");
-            Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
+            Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
       end Create_Param_Table;
 
       Collection.Migrate_To (Connection, Collection.Migrations_Up.Last_Index);
@@ -165,7 +165,7 @@ package body Gnoga.Server.Migration is
    begin
       if Argument_Count > 0 then
          declare
-            Command : constant String := Translate (From_Latin_1 (Argument (1)), Lower_Case_Map);
+            Command : constant String := Translate (From_UTF_8 (Argument (1)), Lower_Case_Map);
          begin
             if Command = "setup" then
                Migration_Procedure (M);

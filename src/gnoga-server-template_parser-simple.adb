@@ -94,7 +94,7 @@ package body Gnoga.Server.Template_Parser.Simple is
 
          F : File_Type;
       begin
-         Open (File => F, Mode => In_File, Name => Parse_Name (Name), Ending => LF_Ending);
+         Open (File => F, Mode => In_File, Name => Parse_Name (Name), Scheme => UTF_8, Ending => LF_Ending);
 
          while not End_Of_File (F) loop
             if Length (Parsed_File) > 0 then

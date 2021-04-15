@@ -82,30 +82,40 @@ package Gnoga.Gui.View.Docker is
    --  Docker_View_Type - Properties
    -------------------------------------------------------------------------
 
-   procedure Top_Dock (View : in out Docker_View_Type;
-                       Dock : Pointer_To_View_Base_Class);
-   function Top_Dock (View : Docker_View_Type)
-                      return Pointer_To_View_Base_Class;
+   procedure Top_Dock
+     (View : in out Docker_View_Type;
+      Dock :        Pointer_To_View_Base_Class);
+   function Top_Dock
+     (View : Docker_View_Type)
+      return Pointer_To_View_Base_Class;
 
-   procedure Bottom_Dock (View : in out Docker_View_Type;
-                          Dock : Pointer_To_View_Base_Class);
-   function Bottom_Dock (View : Docker_View_Type)
-                         return Pointer_To_View_Base_Class;
+   procedure Bottom_Dock
+     (View : in out Docker_View_Type;
+      Dock :        Pointer_To_View_Base_Class);
+   function Bottom_Dock
+     (View : Docker_View_Type)
+      return Pointer_To_View_Base_Class;
 
-   procedure Fill_Dock (View : in out Docker_View_Type;
-                        Dock : Pointer_To_View_Base_Class);
-   function Fill_Dock (View : Docker_View_Type)
-                       return Pointer_To_View_Base_Class;
+   procedure Fill_Dock
+     (View : in out Docker_View_Type;
+      Dock :        Pointer_To_View_Base_Class);
+   function Fill_Dock
+     (View : Docker_View_Type)
+      return Pointer_To_View_Base_Class;
 
-   procedure Left_Dock (View : in out Docker_View_Type;
-                        Dock : Pointer_To_View_Base_Class);
-   function Left_Dock (View : Docker_View_Type)
-                       return Pointer_To_View_Base_Class;
+   procedure Left_Dock
+     (View : in out Docker_View_Type;
+      Dock :        Pointer_To_View_Base_Class);
+   function Left_Dock
+     (View : Docker_View_Type)
+      return Pointer_To_View_Base_Class;
 
-   procedure Right_Dock (View : in out Docker_View_Type;
-                         Dock : Pointer_To_View_Base_Class);
-   function Right_Dock (View : Docker_View_Type)
-                        return Pointer_To_View_Base_Class;
+   procedure Right_Dock
+     (View : in out Docker_View_Type;
+      Dock :        Pointer_To_View_Base_Class);
+   function Right_Dock
+     (View : Docker_View_Type)
+      return Pointer_To_View_Base_Class;
 
    -------------------------------------------------------------------------
    --  Docker_View_Type - Event Methods

@@ -60,7 +60,7 @@ package Gnoga.Server is
    --    |
    --    |___ upload - option, optional directory for incoming files
 
-   function Directory_Separator return String;
+   function Directory_Separator return Unicode_Character;
    --  Return the Directory Separator using for the OS Gnoga is compiled on.
 
    function Application_Directory return String;

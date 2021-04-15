@@ -47,7 +47,7 @@ package body Gnoga.Server.Mime is
      (File_Name : String)
       return String
    is
-      Ext : constant String := From_Latin_1 (Ada.Directories.Extension (To_Latin_1 (File_Name)));
+      Ext : constant String := From_UTF_8 (Ada.Directories.Extension (To_UTF_8 (File_Name)));
    begin
       if Ext = "js" then
          return "text/javascript";

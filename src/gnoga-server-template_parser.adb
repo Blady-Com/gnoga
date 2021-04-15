@@ -37,8 +37,6 @@
 
 with UXStrings.Text_IO;
 
-with GNAT.OS_Lib;
-
 package body Gnoga.Server.Template_Parser is
 
    Template_Directory : String := Gnoga.Server.Templates_Directory;
@@ -244,14 +242,14 @@ package body Gnoga.Server.Template_Parser is
    is
       Templates_Dir : constant String := Template_Directory;
    begin
-      if Index (Name, ":") > 0 or Name.Get_Latin_1 (Name.First) = GNAT.OS_Lib.Directory_Separator then
+      if Index (Name, ":") > 0 or Name (Name.First) = Directory_Separator then
          return Name;
       end if;
 
       if Templates_Dir = "" then
          return Name;
       else
-         return Templates_Dir & From_Latin_1 (GNAT.OS_Lib.Directory_Separator) & Name;
+         return Templates_Dir & Directory_Separator & Name;
       end if;
    end Parse_Name;
 
@@ -312,9 +310,9 @@ package body Gnoga.Server.Template_Parser is
 
       F : File_Type;
    begin
-      Create (File => F, Mode => Out_File, Name => File_Name);
+      Create (File => F, Mode => Out_File, Name => File_Name, Scheme => UTF_8, Ending => LF_Ending);
 
-      Put (F, Value);
+      Put_Line (F, Value);
 
       Close (F);
    end Write_String_To_File;

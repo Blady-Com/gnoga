@@ -111,13 +111,13 @@ package body Gnoga.Application.Multi_Connect is
       when E : Gnoga.Server.Connection.Connection_Error =>
          --  Browser window was closed
          Log ("Error connection" & Image (ID) & " browser window was closed.");
-         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
+         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
 
       when E : others =>
          Connection.Release;
 
          Log ("Error connection" & Image (ID) & " closed by exception.");
-         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
+         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
    end On_Connect;
 
    ----------------

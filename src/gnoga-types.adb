@@ -105,14 +105,14 @@ package body Gnoga.Types is
       P    : constant Integer := Value.First;
    begin
       if Value.Length = 7 then
-         RGBA.Red   := Color_Type'Value (To_Latin_1 ("16#" & Value.Slice ((P + 1), (P + 2))) & '#');
-         RGBA.Green := Color_Type'Value (To_Latin_1 ("16#" & Value.Slice ((P + 3), (P + 4))) & '#');
-         RGBA.Blue  := Color_Type'Value (To_Latin_1 ("16#" & Value.Slice ((P + 5), (P + 6))) & '#');
+         RGBA.Red   := Color_Type'Value (To_ASCII ("16#" & Value.Slice ((P + 1), (P + 2))) & '#');
+         RGBA.Green := Color_Type'Value (To_ASCII ("16#" & Value.Slice ((P + 3), (P + 4))) & '#');
+         RGBA.Blue  := Color_Type'Value (To_ASCII ("16#" & Value.Slice ((P + 5), (P + 6))) & '#');
       elsif Value.Length = 9 then
-         RGBA.Alpha := Alpha_Type (Integer'Value (To_Latin_1 ("16#" & Value.Slice ((P + 1), (P + 2))) & '#')) / 255;
-         RGBA.Red   := Color_Type'Value (To_Latin_1 ("16#" & Value.Slice ((P + 3), (P + 4))) & '#');
-         RGBA.Green := Color_Type'Value (To_Latin_1 ("16#" & Value.Slice ((P + 5), (P + 6))) & '#');
-         RGBA.Blue  := Color_Type'Value (To_Latin_1 ("16#" & Value.Slice ((P + 7), (P + 8))) & '#');
+         RGBA.Alpha := Alpha_Type (Integer'Value (To_ASCII ("16#" & Value.Slice ((P + 1), (P + 2))) & '#')) / 255;
+         RGBA.Red   := Color_Type'Value (To_ASCII ("16#" & Value.Slice ((P + 3), (P + 4))) & '#');
+         RGBA.Green := Color_Type'Value (To_ASCII ("16#" & Value.Slice ((P + 5), (P + 6))) & '#');
+         RGBA.Blue  := Color_Type'Value (To_ASCII ("16#" & Value.Slice ((P + 7), (P + 8))) & '#');
       else
          Log ("Invalid Hex value for rbga value from " & Value);
       end if;
@@ -121,7 +121,7 @@ package body Gnoga.Types is
    exception
       when E : others =>
          Log ("Error converting to rbga value from " & Value);
-         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
+         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
          return RGBA;
    end To_RGBA_From_Hex;
 

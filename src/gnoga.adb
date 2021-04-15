@@ -159,15 +159,15 @@ package body Gnoga is
       is
       begin
          if C in 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '-' | '*' | '_' then
-            return From_Latin_1 (C);
+            return From_ASCII (C);
          elsif C = ' ' then
             return "+";
          else
             declare
-               V : Latin_1_Character_Array (1 .. 6); -- 16#HH#
+               V : ASCII_Character_Array (1 .. 6); -- 16#HH#
             begin
                Ada.Integer_Text_IO.Put (V, Character'Pos (C), 16);
-               return From_Latin_1 ("%" & V (4 .. 5));
+               return From_ASCII ("%" & V (4 .. 5));
             end;
          end if;
       end Translate_Character;
@@ -351,7 +351,9 @@ package body Gnoga is
       Flush_Auto : in Boolean := False)
    is
    begin
-      UXStrings.Text_IO.Create (File => Log_File, Mode => UXStrings.Text_IO.Append_File, Name => File_Name);
+      UXStrings.Text_IO.Create
+        (File   => Log_File, Mode => UXStrings.Text_IO.Append_File, Name => File_Name, Scheme => UTF_8,
+         Ending => UXStrings.Text_IO.LF_Ending);
 
       Use_File        := True;
       Automatic_Flush := Flush_Auto;
@@ -368,7 +370,7 @@ package body Gnoga is
    procedure Log (Message : in String) is
       T            : constant Ada.Calendar.Time := Ada.Calendar.Clock;
       Date_Message : constant String            :=
-        From_Latin_1
+        From_ASCII
           (Ada.Calendar.Formatting.Image
              (Date => T, Include_Time_Fraction => True, Time_Zone => Ada.Calendar.Time_Zones.UTC_Time_Offset (T)) &
            " : ") &
@@ -386,7 +388,7 @@ package body Gnoga is
 
    procedure Log (Occurrence : in Ada.Exceptions.Exception_Occurrence) is
    begin
-      Log (From_Latin_1 (Ada.Exceptions.Exception_Information (Occurrence)));
+      Log (From_UTF_8 (Ada.Exceptions.Exception_Information (Occurrence)));
    end Log;
 
    ---------------
@@ -419,11 +421,11 @@ package body Gnoga is
       begin
          case Cause is
             when Normal =>
-               Log (From_Latin_1 ("Normal exit of task: " & Ada.Task_Identification.Image (Id)));
+               Log (From_UTF_8 ("Normal exit of task: " & Ada.Task_Identification.Image (Id)));
             when Abnormal =>
-               Log (From_Latin_1 ("Abnormal exit of task: " & Ada.Task_Identification.Image (Id)));
+               Log (From_UTF_8 ("Abnormal exit of task: " & Ada.Task_Identification.Image (Id)));
             when Unhandled_Exception =>
-               Log (From_Latin_1 ("Unhandled exception in task: " & Ada.Task_Identification.Image (Id)));
+               Log (From_UTF_8 ("Unhandled exception in task: " & Ada.Task_Identification.Image (Id)));
                Log (Occurrence);
          end case;
       end Log;
@@ -434,4 +436,9 @@ package body Gnoga is
       Ada.Task_Termination.Set_Specific_Handler (Id, Exception_Handler.Log'Access);
    end Activate_Exception_Handler;
 
+begin
+   --  Change the default to LF and UTF-8
+   UXStrings.Text_IO.Ending (UXStrings.Text_IO.Current_Output, UXStrings.Text_IO.LF_Ending);
+   UXStrings.Text_IO.Line_Mark (UXStrings.Text_IO.LF_Ending);
+   UXStrings.Text_IO.Scheme (UXStrings.Text_IO.Current_Output, UTF_8);
 end Gnoga;

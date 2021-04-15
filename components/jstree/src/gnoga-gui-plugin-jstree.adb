@@ -49,7 +49,7 @@ package body Gnoga.Gui.Plugin.JSTree is
       return String
    is
       Plugins : constant String :=
-        From_Latin_1
+        From_ASCII
           ((if Options.Plugins (CheckBox) then "'checkbox'," else "") &
            (if Options.Plugins (ContextMenu) then "'contextmenu'," else "") &
            (if Options.Plugins (DragAndDrop) then "'dnd'," else "") &
@@ -57,7 +57,7 @@ package body Gnoga.Gui.Plugin.JSTree is
            (if Options.Plugins (WholeRow) then "'wholerow'," else ""));
    begin
       return
-        From_Latin_1
+        From_ASCII
           ('{' & "'core':{" &
            (if Options.Plugins (ContextMenu) or Options.Plugins (DragAndDrop) then "'check_callback':true," else "")) &
         "'animation':" & Image (Options.Core.Animation) & ',' & "'multiple':" & Image (Options.Core.Multiple) & ',' &
@@ -117,7 +117,7 @@ package body Gnoga.Gui.Plugin.JSTree is
       Tree.View.Create (Parent, ID);
       Tree.View.Parent_Tree := Tree;
       JSTree_Access (Tree.View.New_Element (Name, Gnoga.Gui.Element.Pointer_To_Element_Class (Tree))).Create
-      (Tree.View.all);
+        (Tree.View.all);
    end New_Root_Tree;
 
    --------------

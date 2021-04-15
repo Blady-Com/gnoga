@@ -109,11 +109,11 @@ package body Gnoga.Server.Database.MySQL is
 
       C.Server_ID := MYSQL_Real_Connect (Init_Result);
       if C.Server_ID = null then
-         raise Connection_Error with To_Latin_1 (Error_Message (Init_Result));
+         raise Connection_Error with To_UTF_8 (Error_Message (Init_Result));
       end if;
 
       if MYSQL_Select_DB /= 0 then
-         raise Database_Error with To_Latin_1 (Error_Message (C));
+         raise Database_Error with To_UTF_8 (Error_Message (C));
       end if;
 
    end Connect;
@@ -153,7 +153,7 @@ package body Gnoga.Server.Database.MySQL is
       end if;
 
       if MYSQL_Real_Query /= 0 then
-         raise Query_Error with To_Latin_1 (SQL & " => " & Error_Message (C));
+         raise Query_Error with To_UTF_8 (SQL & " => " & Error_Message (C));
       end if;
    end Execute_Query;
 
@@ -227,7 +227,7 @@ package body Gnoga.Server.Database.MySQL is
          return charbuf_access;
       pragma Import (C, MYSQL_Error, "mysql_error");
    begin
-      return From_Latin_1 (Interfaces.C.To_Ada (MYSQL_Error.all));
+      return From_UTF_8 (Interfaces.C.To_Ada (MYSQL_Error.all));
    end Error_Message;
 
    overriding function Error_Message
@@ -346,7 +346,7 @@ package body Gnoga.Server.Database.MySQL is
       end if;
 
       if MYSQL_Real_Query /= 0 then
-         raise Query_Error with To_Latin_1 (SQL & " => " & Error_Message (RS.Server_ID));
+         raise Query_Error with To_UTF_8 (SQL & " => " & Error_Message (RS.Server_ID));
       end if;
 
       RS.Query_ID := MYSQL_Store_Result;
@@ -422,7 +422,7 @@ package body Gnoga.Server.Database.MySQL is
       else
          R.Lengths := MYSQL_Fetch_Lengths;
          if R.Lengths = null then
-            raise Query_Error with To_Latin_1 (Error_Message (RS.Query_ID));
+            raise Query_Error with To_UTF_8 (Error_Message (RS.Query_ID));
          end if;
          return True;
       end if;
@@ -539,12 +539,11 @@ package body Gnoga.Server.Database.MySQL is
    begin
       Field := MYSQL_Fetch_Field_Direct;
       if Field = null then
-         raise Query_Error with To_Latin_1 (Error_Message (RS.Query_ID));
+         raise Query_Error with To_UTF_8 (Error_Message (RS.Query_ID));
       end if;
 
       return
-        From_Latin_1
-          (Interfaces.C.To_Ada (Field.Name (0 .. Interfaces.C.size_t (Field.Name_L) - 1) & Interfaces.C.nul));
+        From_UTF_8 (Interfaces.C.To_Ada (Field.Name (0 .. Interfaces.C.size_t (Field.Name_L) - 1) & Interfaces.C.nul));
    end Field_Name;
 
    -----------------
@@ -574,7 +573,7 @@ package body Gnoga.Server.Database.MySQL is
       end if;
 
       return
-        From_Latin_1
+        From_UTF_8
           (Interfaces.C.To_Ada
              (RS.Last_Row (Field_Number) (0 .. Interfaces.C.size_t (RS.Lengths (Field_Number)) - 1) &
               Interfaces.C.nul));
@@ -658,21 +657,22 @@ package body Gnoga.Server.Database.MySQL is
       S : String)
       return String
    is
-      subtype Buffer_Type is Latin_1_Character_Array (1 .. S.Length * 2 + 1); -- Min Buf Size
+      subtype Buffer_Type is UTF_8_Character_Array (1 .. S.Length * 2 + 1); -- Min Buf Size
 
-      Buf : constant Buffer_Type := (others => Character'First);
+      Buf : constant Buffer_Type     := (others => Character'First);
+      O   : constant Standard.String := To_UTF_8 (S);
 
       function MYSQL_Real_Escape_String
         (mysql  : MySQL_ID        := C.Server_ID;
          Buffer : Buffer_Type     := Buf;
-         Org    : Standard.String := To_Latin_1 (S);
-         Length : Natural         := S.Length)
+         Org    : Standard.String := O;
+         Length : Natural         := O'Length)
          return Natural;
       pragma Import (C, MYSQL_Real_Escape_String, "mysql_real_escape_string");
 
       Length : constant Natural := MYSQL_Real_Escape_String;
    begin
-      return From_Latin_1 (Buf (1 .. Length));
+      return From_UTF_8 (Buf (1 .. Length));
    end Escape_String;
 
 end Gnoga.Server.Database.MySQL;

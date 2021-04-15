@@ -102,7 +102,7 @@ package body Gnoga.Server.Model is
       Field_Name : in     String;
       Date_Value : in     Ada.Calendar.Time)
    is
-      V : constant String := From_Latin_1 (Ada.Calendar.Formatting.Image (Date_Value));
+      V : constant String := From_ASCII (Ada.Calendar.Formatting.Image (Date_Value));
    begin
       Value (A, Field_Name, V);
    end Value;
@@ -283,7 +283,7 @@ package body Gnoga.Server.Model is
    exception
       when E : Gnoga.Server.Database.End_Of_Recordset =>
          Log ("Error End_Of_Recordset.");
-         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
+         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
          if Create_New then
             A.Value ("id", "");
             RS.Close;

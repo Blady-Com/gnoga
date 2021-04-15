@@ -121,7 +121,7 @@ package body Gnoga.Gui.Plugin.Message_Boxes is
    exception
       when E : others =>
          Log ("Error Message_Box.");
-         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
+         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
          return Cancel;
    end Message_Box;
 

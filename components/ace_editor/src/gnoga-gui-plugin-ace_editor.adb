@@ -960,7 +960,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    exception
       when E : others =>
          Log ("Error Editor_Execute converting to Integer (forced to 0).");
-         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
+         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
          return 0;
    end Editor_Execute;
 

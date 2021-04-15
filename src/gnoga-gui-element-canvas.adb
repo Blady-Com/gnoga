@@ -51,7 +51,7 @@ package body Gnoga.Gui.Element.Canvas is
    exception
       when E : Gnoga.Server.Connection.Connection_Error =>
          Log ("Connection" & Image (Object.Connection_ID) & " error during delete object " & Object.Context_ID);
-         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
+         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
    end Finalize;
 
    ------------
@@ -152,7 +152,7 @@ package body Gnoga.Gui.Element.Canvas is
    exception
       when E : others =>
          Log ("Error Property converting to Integer (forced to 0).");
-         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
+         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
          return 0;
    end Property;
 
@@ -167,7 +167,7 @@ package body Gnoga.Gui.Element.Canvas is
    exception
       when E : others =>
          Log ("Error Property converting to Boolean (forced to False).");
-         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
+         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
          return False;
    end Property;
 
@@ -181,7 +181,7 @@ package body Gnoga.Gui.Element.Canvas is
    exception
       when E : others =>
          Log ("Error Property converting to Float (forced to 0.0).");
-         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
+         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
          return 0.0;
    end Property;
 

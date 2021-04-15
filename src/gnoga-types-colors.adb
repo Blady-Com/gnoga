@@ -266,7 +266,7 @@ package body Gnoga.Types.Colors is
    exception
       when E : Constraint_Error =>
          Log ("Error converting to Color_Enumeration from " & Value);
-         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
+         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
          raise Color_Error;
    end To_Color_Enumeration;
 

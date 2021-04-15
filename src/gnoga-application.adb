@@ -86,7 +86,7 @@ package body Gnoga.Application is
       PID  : GNAT.OS_Lib.Process_Id;
       pragma Unreferenced (PID);
    begin
-      Args := GNAT.OS_Lib.Argument_String_To_List (To_Latin_1 (Open_Command & URL));
+      Args := GNAT.OS_Lib.Argument_String_To_List (To_UTF_8 (Open_Command & URL));
       PID  :=
         GNAT.OS_Lib.Non_Blocking_Spawn
           (Program_Name => Args (Args'First).all, Args => Args (Args'First + 1 .. Args'Last));

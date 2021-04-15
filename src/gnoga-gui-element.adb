@@ -199,7 +199,7 @@ package body Gnoga.Gui.Element is
    exception
       when E : others =>
          Log ("Error Style converting to Integer (forced to 0).");
-         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
+         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
          return 0;
    end Style;
 
@@ -403,7 +403,7 @@ package body Gnoga.Gui.Element is
    exception
       when E : others =>
          Log ("Error Overflow converting to Overflow_Type" & " (forced to Visible).");
-         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
+         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
          return Visible;
    end Overflow;
 
@@ -468,7 +468,7 @@ package body Gnoga.Gui.Element is
    exception
       when E : others =>
          Log ("Error Resizable converting to Resizable_Type" & " (forced to None).");
-         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
+         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
          return None;
    end Resizable;
 
@@ -495,7 +495,7 @@ package body Gnoga.Gui.Element is
    exception
       when E : others =>
          Log ("Error Position converting to Position_Type" & " (forced to Static).");
-         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
+         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
          return Static;
    end Position;
 
@@ -1374,7 +1374,7 @@ package body Gnoga.Gui.Element is
    exception
       when E : others =>
          Log ("Error Opacity converting to Alpha_Type (forced to 1.0).");
-         Log (From_Latin_1 (Ada.Exceptions.Exception_Information (E)));
+         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
          return 1.0;
    end Opacity;
 

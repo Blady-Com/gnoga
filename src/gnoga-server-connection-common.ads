@@ -59,7 +59,7 @@ package Gnoga.Server.Connection.Common is
    --  Private Variables
    -------------------------------------------------------------------------
 
-   CRLF : constant String := From_Latin_1 ((Character'Val (13), Character'Val (10)));
+   CRLF : constant String := From_ASCII ((Character'Val (13), Character'Val (10)));
 
    Boot_HTML : String;
 

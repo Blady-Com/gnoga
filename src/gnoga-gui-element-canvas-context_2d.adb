@@ -1181,7 +1181,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
          return Gnoga.Types.Color_Type is (Gnoga.Types.Color_Type (Value mod 16#100#));
       XPM_File : aliased File_Type;
    begin
-      Open (XPM_File, In_File, To_Latin_1 (File_Name));
+      Open (XPM_File, In_File, To_UTF_8 (File_Name));
       declare
          XPM_Source : aliased Source (XPM_File'Access);
          XPM_Header : constant Descriptor         := Get (XPM_Source'Access);

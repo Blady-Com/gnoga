@@ -85,7 +85,7 @@ package body Gnoga.Server.Database.SQLite is
       --  Serializes access to database, all use safe from multiple threads
 
       function sqlite3_open
-        (filename : Standard.String  := To_Latin_1 (Database) & Nul;
+        (filename : Standard.String  := To_UTF_8 (Database) & Nul;
          ppDb     : access SQLite_ID := C.Server_ID'Access;
          flags    : Integer          := SQLITE_OPEN_READWRITE + SQLITE_OPEN_CREATE + SQLITE_OPEN_FULLMUTEX;
          zVfs     : Integer          := 0)
@@ -98,7 +98,7 @@ package body Gnoga.Server.Database.SQLite is
 
       if R /= 0 then
          raise Connection_Error
-           with To_Latin_1 ("Connection to server " & Database & " has failed - " & Error_Message (C.Server_ID));
+           with To_UTF_8 ("Connection to server " & Database & " has failed - " & Error_Message (C.Server_ID));
       end if;
    end Connect;
 
@@ -152,14 +152,14 @@ package body Gnoga.Server.Database.SQLite is
       end if;
 
       if sqlite3_prepare /= SQLITE_OK then
-         raise Query_Error with To_Latin_1 (SQL & " => " & Error_Message (C.Server_ID));
+         raise Query_Error with To_UTF_8 (SQL & " => " & Error_Message (C.Server_ID));
       end if;
 
       declare
          result : constant Integer := sqlite3_step;
       begin
          if result /= SQLITE_OK and result /= SQLITE_ROW and result /= SQLITE_DONE then
-            raise Query_Error with To_Latin_1 (SQL & " => " & Image (result) & " - " & Error_Message (C.Server_ID));
+            raise Query_Error with To_UTF_8 (SQL & " => " & Image (result) & " - " & Error_Message (C.Server_ID));
          end if;
       end;
 
@@ -236,7 +236,7 @@ package body Gnoga.Server.Database.SQLite is
          return charbuf_access;
       pragma Import (C, sqlite3_errmsg, "sqlite3_errmsg");
    begin
-      return From_Latin_1 (Interfaces.C.To_Ada (sqlite3_errmsg.all));
+      return From_ASCII (Interfaces.C.To_Ada (sqlite3_errmsg.all));
    end Error_Message;
 
    overriding function Error_Message
@@ -365,14 +365,14 @@ package body Gnoga.Server.Database.SQLite is
       end if;
 
       if sqlite3_prepare /= SQLITE_OK then
-         raise Query_Error with To_Latin_1 (SQL & " => " & Error_Message (RS.Server_ID));
+         raise Query_Error with To_UTF_8 (SQL & " => " & Error_Message (RS.Server_ID));
       end if;
 
       RS.Query_ID := Q;
 
       R := sqlite3_step;
       if R /= SQLITE_OK and R /= SQLITE_ROW and R /= SQLITE_DONE then
-         raise Query_Error with To_Latin_1 (SQL & " => " & Image (R) & " - " & Error_Message (C.Server_ID));
+         raise Query_Error with To_UTF_8 (SQL & " => " & Image (R) & " - " & Error_Message (C.Server_ID));
       end if;
 
       RS.Last_Result := R;
@@ -464,8 +464,6 @@ package body Gnoga.Server.Database.SQLite is
       SQL     : in     String;
       Process :        not null access procedure (RS : Gnoga.Server.Database.Recordset'Class))
    is
-      --        LSQL : constant Standard.String := (if C.UTF8_String then To_Latin_1(SQL) else
-      --                                              Ada.Strings.UTF_Encoding.Strings.Encode (SQL));
       RS : Gnoga.Server.Database.Recordset'Class := C.Query (SQL);
    begin
       RS.Iterate (Process);

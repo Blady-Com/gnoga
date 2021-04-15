@@ -86,11 +86,11 @@ package body UXStrings.Text_IO is
    begin
       case Mode is
          when In_File =>
-            FD := Open_Read (To_Latin_1 (Name), Binary);
+            FD := Open_Read (To_UTF_8 (Name), Binary);
          when Out_File =>
-            FD := Create_File (To_Latin_1 (Name), Binary);
+            FD := Create_File (To_UTF_8 (Name), Binary);
          when Append_File =>
-            FD := Open_Append (To_Latin_1 (Name), Binary);
+            FD := Open_Append (To_UTF_8 (Name), Binary);
       end case;
       File := (FD, Mode, Name, Scheme, Ending, others => <>);
    end Create;
@@ -107,11 +107,11 @@ package body UXStrings.Text_IO is
    begin
       case Mode is
          when In_File =>
-            FD := Open_Read (To_Latin_1 (Name), Binary);
+            FD := Open_Read (To_UTF_8 (Name), Binary);
          when Out_File =>
-            FD := Create_File (To_Latin_1 (Name), Binary);
+            FD := Create_File (To_UTF_8 (Name), Binary);
          when Append_File =>
-            FD := Open_Append (To_Latin_1 (Name), Binary);
+            FD := Open_Append (To_UTF_8 (Name), Binary);
       end case;
       File := (FD, Mode, Name, Scheme, Ending, others => <>);
    end Open;
@@ -132,7 +132,7 @@ package body UXStrings.Text_IO is
    procedure Delete (File : in out File_Type) is
       Dummy_Result : Boolean;
    begin
-      Delete_File (To_Latin_1 (File.Name), Dummy_Result);
+      Delete_File (To_UTF_8 (File.Name), Dummy_Result);
    end Delete;
 
    -----------

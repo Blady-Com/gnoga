@@ -29,7 +29,7 @@ package body UXStrings.Conversions is
    function Integer_Value (Item : UXString; Base : in Number_Base := 10) return T is
       package Strings_Edit_T is new Strings_Edit.Integer_Edit (T);
    begin
-      return Strings_Edit_T.Value (To_Latin_1 (Item), Base);
+      return Strings_Edit_T.Value (To_ASCII (Item), Base);
    end Integer_Value;
 
    --------------------------

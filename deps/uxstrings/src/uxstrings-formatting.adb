@@ -26,7 +26,7 @@ package body UXStrings.Formatting is
       Pointer : Integer := Text'First;
    begin
       Strings_Edit_T.Put (Text, Pointer, Item, Base, Put_Plus, Field, Justify, Fill);
-      return From_Latin_1 (Text (Text'First .. Pointer - 1));
+      return From_ASCII (Text (Text'First .. Pointer - 1));
    end Integer_Format;
 
 end UXStrings.Formatting;

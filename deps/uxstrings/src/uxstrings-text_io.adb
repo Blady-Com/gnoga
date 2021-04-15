@@ -21,7 +21,7 @@ package body UXStrings.Text_IO is
    Cur_Out : aliased File_Type := Std_Out;
    Cur_Err : aliased File_Type := Std_Err;
 
-   LM : UXString := From_Latin_1 (Character'Val (13) & Character'Val (10)); -- Default is CRLF for Line_Mark function
+   LM : UXString := From_ASCII (Character'Val (13) & Character'Val (10)); -- Default is CRLF for Line_Mark function
 
    ---------------
    -- Read_More --
@@ -462,7 +462,7 @@ package body UXStrings.Text_IO is
             end loop;
          when UTF_16BE | UTF_16LE =>
             declare
-               Buffer : UTF_16_Character_Array := To_UTF_16 (From_Latin_1 (NL), File.Scheme);
+               Buffer : UTF_16_Character_Array := To_UTF_16 (From_ASCII (NL), File.Scheme);
             begin
                for Count in 1 .. Spacing loop
                   Dummy_Result := Write (File.FD, Buffer'Address, Buffer'Length);
@@ -532,9 +532,9 @@ package body UXStrings.Text_IO is
    procedure Line_Mark (Ending : Line_Ending) is
    begin
       LM :=
-        (case Ending is when CR_Ending => From_Latin_1 (Character'val (13)),
-           when LF_Ending              => From_Latin_1 (Character'val (10)),
-           when CRLF_Ending            => From_Latin_1 (Character'Val (13) & Character'Val (10)));
+        (case Ending is when CR_Ending => From_ASCII (Character'val (13)),
+           when LF_Ending              => From_ASCII (Character'val (10)),
+           when CRLF_Ending            => From_ASCII (Character'Val (13) & Character'Val (10)));
    end Line_Mark;
 
    --------------
@@ -826,9 +826,9 @@ package body UXStrings.Text_IO is
 
    procedure Look_Ahead (File : in out File_Type; Item : out Unicode_Character; End_Of_Line : out Boolean) is
       LM : constant UXString :=
-        (case File.Ending is when CR_Ending => From_Latin_1 (Character'val (13)),
-           when LF_Ending                   => From_Latin_1 (Character'val (10)),
-           when CRLF_Ending                 => From_Latin_1 (Character'Val (13) & Character'Val (10)));
+        (case File.Ending is when CR_Ending => From_ASCII (Character'val (13)),
+           when LF_Ending                   => From_ASCII (Character'val (10)),
+           when CRLF_Ending                 => From_ASCII (Character'Val (13) & Character'Val (10)));
    begin
       if File.Buffer.Length = 0 then
          Read_More (File);
@@ -966,9 +966,9 @@ package body UXStrings.Text_IO is
 
    procedure Get_Line (File : in out File_Type; Item : out UXString) is
       LM : constant UXString :=
-        (case File.Ending is when CR_Ending => From_Latin_1 (Character'val (13)),
-           when LF_Ending                   => From_Latin_1 (Character'val (10)),
-           when CRLF_Ending                 => From_Latin_1 (Character'Val (13) & Character'Val (10)));
+        (case File.Ending is when CR_Ending => From_ASCII (Character'val (13)),
+           when LF_Ending                   => From_ASCII (Character'val (10)),
+           when CRLF_Ending                 => From_ASCII (Character'Val (13) & Character'Val (10)));
       EOL : Natural := Index (File.Buffer, LM);
    begin
       while EOL = 0 loop

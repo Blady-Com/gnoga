@@ -21,6 +21,7 @@ procedure Storage is
    type App_Data is new Connection_Data_Type with record
       Main_Window : Window.Pointer_To_Window_Class;
       Message     : Common.DIV_Type;
+      View        : Gnoga.Gui.View.View_Type;
    end record;
    type App_Access is access all App_Data;
 
@@ -58,7 +59,6 @@ procedure Storage is
    is
       pragma Unreferenced (Connection);
       App     : constant access App_Data                  := new App_Data;
-      View    : Gnoga.Gui.View.View_Type;
       Local   : Gnoga.Client.Storage.Local_Storage_Type   := Gnoga.Client.Storage.Local_Storage (Main_Window);
       Session : Gnoga.Client.Storage.Session_Storage_Type := Gnoga.Client.Storage.Session_Storage (Main_Window);
    begin
@@ -66,24 +66,24 @@ procedure Storage is
 
       App.Main_Window := Main_Window'Unchecked_Access;
 
-      View.Create (Main_Window);
-      View.Background_Color ("azure");
-      View.Border;
+      App.View.Create (Main_Window);
+      App.View.Background_Color ("azure");
+      App.View.Border;
 
       Main_Window.On_Storage_Handler (On_Storage'Unrestricted_Access);
 
-      App.Message.Create (View, "Click me and I will hide.");
+      App.Message.Create (App.View, "Click me and I will hide.");
       App.Message.On_Click_Handler (On_Click'Unrestricted_Access);
 
-      View.Put_Line ("Last access was at " & Local.Get ("Last_View"));
+      App.View.Put_Line ("Last access was at " & Local.Get ("Last_View"));
       Local.Set ("Last_View", Image (Natural (Ada.Calendar.Conversions.To_Unix_Time (Ada.Calendar.Clock))));
 
       if Session.Get ("ID") = "null" then
          Session.Set ("ID", Main_Window.Gnoga_Session_ID);
-         View.Put_Line ("New session assigned.");
+         App.View.Put_Line ("New session assigned.");
       end if;
 
-      View.Put_Line ("Session id is " & Session.Get ("ID"));
+      App.View.Put_Line ("Session id is " & Session.Get ("ID"));
 
       Gnoga.Log ("Hidden = " & Image (App.Message.Hidden));
       Gnoga.Log ("Visible = " & Image (App.Message.Visible));

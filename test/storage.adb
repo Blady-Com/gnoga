@@ -22,6 +22,7 @@ procedure Storage is
       record
          Main_Window : Window.Pointer_To_Window_Class;
          Message     : Common.DIV_Type;
+         View        : Gnoga.Gui.View.View_Type;
       end record;
    type App_Access is access all App_Data;
 
@@ -76,26 +77,26 @@ procedure Storage is
 
       App.Main_Window := Main_Window'Unchecked_Access;
 
-      View.Create (Main_Window);
-      View.Background_Color ("azure");
-      View.Border;
+      App.View.Create (Main_Window);
+      App.View.Background_Color ("azure");
+      App.View.Border;
 
       Main_Window.On_Storage_Handler (On_Storage'Unrestricted_Access);
 
-      App.Message.Create (View, "Click me and I will hide.");
+      App.Message.Create (App.View, "Click me and I will hide.");
       App.Message.On_Click_Handler (On_Click'Unrestricted_Access);
 
-      View.Put_Line ("Last access was at " & Local.Get ("Last_View"));
+      App.View.Put_Line ("Last access was at " & Local.Get ("Last_View"));
       Local.Set
         ("Last_View",
          Ada.Calendar.Conversions.To_Unix_Time (Ada.Calendar.Clock)'Img);
 
       if Session.Get ("ID") = "null" then
          Session.Set ("ID", Main_Window.Gnoga_Session_ID);
-         View.Put_Line ("New session assigned.");
+         App.View.Put_Line ("New session assigned.");
       end if;
 
-      View.Put_Line ("Session id is " & Session.Get ("ID"));
+      App.View.Put_Line ("Session id is " & Session.Get ("ID"));
 
       Gnoga.Log ("Hidden = " & App.Message.Hidden'Img);
       Gnoga.Log ("Visible = " & App.Message.Visible'Img);

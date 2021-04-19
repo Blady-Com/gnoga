@@ -388,7 +388,7 @@ package body ZBMCompile.Codegen.Base is
 
       use Ada.Wide_Wide_Characters.Unicode;
 
-      Buffer           : String;
+      Buffer           : String  := Width * '@';
       Current_Position : Natural := Value.First;
 
       function Current_Character return Unicode_Character;

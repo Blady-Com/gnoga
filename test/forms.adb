@@ -6,16 +6,15 @@ with Gnoga.Gui.Element.Form;
 with Gnoga.Gui.View.Console;
 with Gnoga.Types;
 with Gnoga.Server.Connection;
-with UXStrings;
 
 procedure Forms is
    use Gnoga;
    use Gnoga.Types;
    use Gnoga.Gui;
    use Gnoga.Gui.Element;
-   use UXStrings;
+   use all type Gnoga.String;
 
-   subtype String is UXString;
+   subtype String is Gnoga.String;
 
    Last_Parameters : Gnoga.Types.Data_Map_Type;
 

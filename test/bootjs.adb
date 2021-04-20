@@ -14,6 +14,7 @@ procedure BootJS is
    use Gnoga.Types;
    use Gnoga.Gui;
    use Gnoga.Gui.Element;
+   use all type Gnoga.String;
 
    type App_Data is new Connection_Data_Type with record
       Main_Window : Window.Pointer_To_Window_Class;

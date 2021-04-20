@@ -7,19 +7,22 @@ with Gnoga.Types;
 with System.Address_Image;
 with Ada.Unchecked_Conversion;
 
+with UXStrings.Conversions;
+
 procedure Multiuser is
    use Gnoga;
    use Gnoga.Types;
-   use Gnoga.Gui;
    use Gnoga.Gui.Element;
+   use all type Gnoga.String;
 
-   task type Color_Me_Task (O : Element.Pointer_To_Element_Class) is
+   task type Color_Me_Task (O : Gnoga.Gui.Element.Pointer_To_Element_Class) is
       entry Start;
       entry Stop;
    end Color_Me_Task;
 
    task body Color_Me_Task is
       type Colors is (red, green, blue, orange, black);
+      function Image is new UXStrings.Conversions.Scalar_Image (Colors);
 
       Current_Color : Colors := Colors'First;
    begin
@@ -28,7 +31,7 @@ procedure Multiuser is
       loop
          begin
             if O.Valid then
-               O.Color (Current_Color'Img);
+               O.Color (Image (Current_Color));
 
                if Current_Color = Colors'Last then
                   Current_Color := Colors'First;
@@ -47,7 +50,7 @@ procedure Multiuser is
    end Color_Me_Task;
 
    type App_Data is new Connection_Data_Type with record
-      Main_Window : Window.Pointer_To_Window_Class;
+      Main_Window : Gnoga.Gui.Window.Pointer_To_Window_Class;
       Hello_World : aliased Common.DIV_Type;
       Click_Quit  : Common.DIV_Type;
       Click_Close : Common.DIV_Type;
@@ -70,7 +73,7 @@ procedure Multiuser is
       App.Hello_World.Color ("green");
       App.Hello_World.Background_Color (RGBA_Type'(255, 255, 255, 1.0));
       App.Main_Window.Log ("Color = " & Gnoga.Types.To_String (App.Hello_World.Color));
-      App.Main_Window.Alert ("X = " & Event.X'Img & " Y = " & Event.Y'Img);
+      App.Main_Window.Alert ("X = " & Image (Event.X) & " Y = " & Image (Event.Y));
    end On_Click;
 
    procedure On_Key_Press
@@ -83,7 +86,7 @@ procedure Multiuser is
    is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
-      App.Key.Text (Event.Key_Code'Img);
+      App.Key.Text (Image (Event.Key_Code));
    end On_Key_Press;
 
    procedure On_Move
@@ -101,9 +104,9 @@ procedure Multiuser is
    is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
-      Gnoga.Log ("Mouse Move - " & Event.X'Img & " X " & Event.Y'Img);
-      App.X.Text (Event.X'Img);
-      App.Y.Text (Event.Y'Img);
+      Gnoga.Log ("Mouse Move - " & Image (Event.X) & " X " & Image (Event.Y));
+      App.X.Text (Image (Event.X));
+      App.Y.Text (Image (Event.Y));
    end On_Move;
 
    procedure On_Context (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -130,14 +133,14 @@ procedure Multiuser is
       App : constant App_Access := App_Access (Object.Connection_Data);
       function Conv is new Ada.Unchecked_Conversion (App_Access, System.Address);
    begin
-      Log ("Winwdow is about to be unloaded, Connection_Data is " & System.Address_Image (Conv (App)));
+      Log ("Winwdow is about to be unloaded, Connection_Data is " & From_ASCII (System.Address_Image (Conv (App))));
    end On_Before_Unload;
 
    procedure On_Destroy (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Access := App_Access (Object.Connection_Data);
       function Conv is new Ada.Unchecked_Conversion (App_Access, System.Address);
    begin
-      Log ("Winwdow is destroyed, Connection_Data is " & System.Address_Image (Conv (App)));
+      Log ("Winwdow is destroyed, Connection_Data is " & From_ASCII (System.Address_Image (Conv (App))));
    end On_Destroy;
 
    procedure On_Connect

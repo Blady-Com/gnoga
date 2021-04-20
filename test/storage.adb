@@ -10,13 +10,13 @@ with Gnoga.Server.Connection;
 
 with Ada.Calendar;
 with Ada.Calendar.Conversions;
-with Ada.Strings.Unbounded;
 
 procedure Storage is
    use Gnoga;
    use Gnoga.Types;
    use Gnoga.Gui;
    use Gnoga.Gui.Element;
+   use all type Gnoga.String;
 
    type App_Data is new Connection_Data_Type with record
       Main_Window : Window.Pointer_To_Window_Class;
@@ -33,22 +33,19 @@ procedure Storage is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Message.Display ("none");
-      Gnoga.Log ("Visible = " & App.Message.Visible'Img);
-      Gnoga.Log ("Hidden = " & App.Message.Hidden'Img);
+      Gnoga.Log ("Visible = " & Image (App.Message.Visible));
+      Gnoga.Log ("Hidden = " & Image (App.Message.Hidden));
    end On_Click;
 
    procedure On_Storage
      (Object        : in out Gnoga.Gui.Base.Base_Type'Class;
       Storage_Event : in     Gnoga.Gui.Window.Storage_Event_Record)
    is
-      use Ada.Strings.Unbounded;
-
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       Gnoga.Log ("On Storage");
       App.Main_Window.Alert
-        (To_String (Storage_Event.Name) & ": old = " & To_String (Storage_Event.Old_Value) & ", now = " &
-         To_String (Storage_Event.New_Value));
+        (Storage_Event.Name & ": old = " & Storage_Event.Old_Value & ", now = " & Storage_Event.New_Value);
    end On_Storage;
 
    procedure On_Connect
@@ -79,7 +76,7 @@ procedure Storage is
       App.Message.On_Click_Handler (On_Click'Unrestricted_Access);
 
       View.Put_Line ("Last access was at " & Local.Get ("Last_View"));
-      Local.Set ("Last_View", Ada.Calendar.Conversions.To_Unix_Time (Ada.Calendar.Clock)'Img);
+      Local.Set ("Last_View", Image (Natural (Ada.Calendar.Conversions.To_Unix_Time (Ada.Calendar.Clock))));
 
       if Session.Get ("ID") = "null" then
          Session.Set ("ID", Main_Window.Gnoga_Session_ID);
@@ -88,13 +85,13 @@ procedure Storage is
 
       View.Put_Line ("Session id is " & Session.Get ("ID"));
 
-      Gnoga.Log ("Hidden = " & App.Message.Hidden'Img);
-      Gnoga.Log ("Visible = " & App.Message.Visible'Img);
-      Gnoga.Log ("Session len = " & Session.Length'Img);
-      Gnoga.Log ("Local len = " & Local.Length'Img);
+      Gnoga.Log ("Hidden = " & Image (App.Message.Hidden));
+      Gnoga.Log ("Visible = " & Image (App.Message.Visible));
+      Gnoga.Log ("Session len = " & Image (Session.Length));
+      Gnoga.Log ("Local len = " & Image (Local.Length));
       Gnoga.Log ("Session 1 = " & Session.Key (1) & " : " & Session.Get (Session.Key (1)));
       Gnoga.Log ("Local 1 = " & Local.Key (1) & " : " & Local.Get (Local.Key (1)));
-      Gnoga.Log ("Number of active connections = " & Gnoga.Server.Connection.Active_Connections'Img);
+      Gnoga.Log ("Number of active connections = " & Image (Gnoga.Server.Connection.Active_Connections));
       Gnoga.Log ("END");
    end On_Connect;
 

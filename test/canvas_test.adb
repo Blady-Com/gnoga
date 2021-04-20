@@ -7,12 +7,15 @@ with Gnoga.Gui.Element.Canvas;
 with Gnoga.Gui.Element.Canvas.Context_2D;
 with Gnoga.Types;
 
+with UXStrings.Conversions;
+
 procedure Canvas_Test is
    use Gnoga;
    use Gnoga.Types;
    use Gnoga.Gui;
    use Gnoga.Gui.Element;
    use Gnoga.Gui.Element.Canvas;
+   use all type Gnoga.String;
 
    type App_Data is new Connection_Data_Type with record
       Main_Window : Window.Pointer_To_Window_Class;
@@ -122,7 +125,7 @@ procedure Canvas_Test is
       begin
          Gnoga.Log ("Transform Data");
 
-         Gnoga.Log ("Dimensions of Image Data " & D'Length (1)'Img & " x" & D'Length (2)'Img);
+         Gnoga.Log ("Dimensions of Image Data " & Image (D'Length (1)) & " x" & Image (D'Length (2)));
 
          for X in 1 .. D'Length (1) loop
             for Y in 1 .. D'Length (2) loop
@@ -147,9 +150,11 @@ procedure Canvas_Test is
          declare
             P : constant Gnoga.Types.Pixel_Type := C.Pixel (10, 10);
             R : constant Gnoga.Types.RGBA_Type  := To_RGBA (P);
+            function Image is new UXStrings.Conversions.Integer_Image (Color_Type);
+            function Image is new UXStrings.Conversions.Fixed_Point_Image (Alpha_Type);
          begin
-            Gnoga.Log ("P = " & P.Red'Img & P.Green'Img & P.Blue'Img & P.Alpha'Img);
-            Gnoga.Log ("R = " & R.Red'Img & R.Green'Img & R.Blue'Img & R.Alpha'Img);
+            Gnoga.Log ("P = " & Image (P.Red) & Image (P.Green) & Image (P.Blue) & Image (P.Alpha));
+            Gnoga.Log ("R = " & Image (R.Red) & Image (R.Green) & Image (R.Blue) & Image (R.Alpha));
             Button1.Background_Color (R);
          end;
 

@@ -1,11 +1,16 @@
-with Ada.Exceptions;
-
 with Gnoga.Application.Singleton;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View.Console;
 with Gnoga.Gui.Plugin.Message_Boxes;
 
+with UXStrings.Conversions;
+
 procedure Message_Boxes is
+   use Gnoga;
+   use all type Gnoga.String;
+
+   function Image is new UXStrings.Conversions.Scalar_Image (Gnoga.Gui.Plugin.Message_Boxes.Message_Box_Result);
+
    Main_Window : Gnoga.Gui.Window.Window_Type;
    Main_View   : Gnoga.Gui.View.Console.Console_View_Type;
    Result      : Gnoga.Gui.Plugin.Message_Boxes.Message_Box_Result;
@@ -26,12 +31,12 @@ begin
    Result :=
      Gnoga.Gui.Plugin.Message_Boxes.Message_Box
        (Main_Window, "titre2", "texte2", Gnoga.Gui.Plugin.Message_Boxes.Yes_No_Def_Cancel_Box);
-   Main_View.Put_Line (Result'Img);
+   Main_View.Put_Line (Image (Result));
 
    Main_View.Put_Line ("Hello World3!");
 
    Gnoga.Application.Singleton.Message_Loop;
 exception
    when E : others =>
-      Gnoga.Log (Ada.Exceptions.Exception_Name (E) & " - " & Ada.Exceptions.Exception_Message (E));
+      Gnoga.Log (E);
 end Message_Boxes;

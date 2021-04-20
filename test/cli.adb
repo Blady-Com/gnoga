@@ -7,6 +7,7 @@ procedure CLI is
    use Gnoga;
    use Gnoga.Types;
    use Gnoga.Gui;
+   use all type Gnoga.String;
 
    type App_Data;
    type App_Access is access all App_Data;
@@ -23,7 +24,7 @@ procedure CLI is
 
    task body Main_Loop is
       App : App_Access;
-      S   : String (1 .. 20);
+      S   : Gnoga.String;
       L   : Natural;
    begin
       select
@@ -41,15 +42,15 @@ procedure CLI is
          App.CLI.Put_Line ("Enter exit to end session,");
          App.CLI.Put ("quit to end app: ");
          App.CLI.Get_Line (S, L);
-         App.CLI.Put ("Line (20 max):@" & S (S'First .. L));
+         App.CLI.Put ("Line (20 max):@" & S.Slice (S.First, L));
          App.CLI.Put_Line ("@");
-         exit when S (S'First .. L) = "exit" or S (S'First .. L) = "quit";
+         exit when S.slice (S.First, L) = "exit" or S.slice (S.First, L) = "quit";
       end loop;
       App.CLI.Put_Line ("End.");
-      if S (S'First .. L) = "quit" then
+      if S.slice (S.First, L) = "quit" then
          Application.Multi_Connect.End_Application;
       end if;
-      Gnoga.Log ("End " & App.Main_Window.Connection_ID'Image);
+      Gnoga.Log ("End " & Image (App.Main_Window.Connection_ID));
    end Main_Loop;
 
    procedure On_Connect

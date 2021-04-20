@@ -1,4 +1,4 @@
-with Ada.Exceptions;
+with Ada.Characters.Conversions;
 
 with Gnoga.Application.Singleton;
 with Gnoga.Gui.Window;
@@ -7,8 +7,12 @@ with Gnoga.Gui.View.Grid;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Base;
 
+with UXStrings.Conversions;
+
 procedure Essai11 is
+   use Gnoga;
    use Gnoga.Gui.View.Grid;
+   use all type Gnoga.String;
 
    Main_Window : Gnoga.Gui.Window.Window_Type;
 
@@ -37,7 +41,7 @@ procedure Essai11 is
    is
       pragma Unreferenced (Object);
    begin
-      Text_View.Put ((1 => Key));
+      Text_View.Put (From_ASCII (Key));
    end On_Key_Char_Event;
 
    procedure On_Key_Press_Event
@@ -45,21 +49,22 @@ procedure Essai11 is
       Keyboard_Event : in     Gnoga.Gui.Base.Keyboard_Event_Record)
    is
       pragma Unreferenced (Object);
+      function Image is new UXStrings.Conversions.Scalar_Image (Gnoga.Gui.Base.Keyboard_Message_Type);
    begin
       Gnoga.Log
-        (Keyboard_Event.Message'Img &
+        (Image (Keyboard_Event.Message) &
          ',' &
-         Keyboard_Event.Key_Code'Img &
+         Image (Keyboard_Event.Key_Code) &
          ',' &
-         Keyboard_Event.Key_Char'Img &
+         Ada.Characters.Conversions.To_Wide_Wide_Character (Keyboard_Event.Key_Char) &
          ',' &
-         Keyboard_Event.Alt'Img &
+         Image (Keyboard_Event.Alt) &
          ',' &
-         Keyboard_Event.Control'Img &
+         Image (Keyboard_Event.Control) &
          ',' &
-         Keyboard_Event.Shift'Img &
+         Image (Keyboard_Event.Shift) &
          ',' &
-         Keyboard_Event.Meta'Img);
+         Image (Keyboard_Event.Meta));
    end On_Key_Press_Event;
 
 begin
@@ -92,6 +97,5 @@ begin
    Gnoga.Application.Singleton.Message_Loop;
 exception
    when E : others =>
-      Gnoga.Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                   Ada.Exceptions.Exception_Message (E));
+      Gnoga.Log (E);
 end Essai11;

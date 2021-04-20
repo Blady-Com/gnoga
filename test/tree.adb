@@ -12,6 +12,9 @@ procedure Tree is
    use Gnoga.Gui.Element;
    use Gnoga.Gui.Element.List;
    use Gnoga.Gui.Plugin.JSTree;
+   use all type Gnoga.String;
+
+   subtype String is Gnoga.String;
 
    --  Views
 

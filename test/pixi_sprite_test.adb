@@ -13,7 +13,6 @@ with Gnoga.Types.Colors;
 
 with Ada.Numerics.Elementary_Functions;
 
-with UXStrings;
 with UXStrings.Conversions;
 
 procedure Pixi_Sprite_Test is
@@ -22,8 +21,7 @@ procedure Pixi_Sprite_Test is
    use Gnoga.Gui;
    use Gnoga.Gui.Element;
    use Gnoga.Gui.Element.Canvas;
-
-   use UXStrings;
+   use all type Gnoga.String;
 
    function Image is new UXStrings.Conversions.Scalar_Image (Plugin.Pixi.Sprite.Effect_Type);
    function Image is new UXStrings.Conversions.Fixed_Point_Image (Duration);

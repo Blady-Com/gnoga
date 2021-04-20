@@ -1,9 +1,6 @@
 --  To use this app, run: db_active setup
 --  then run again: db_active
 
-with Ada.Exceptions;
-with Ada.Containers;
-
 with GNAT.OS_Lib;
 
 with Gnoga.Server.Database.SQLite;
@@ -18,7 +15,9 @@ with Gnoga.Gui.View;
 with Gnoga.Gui.Element;
 
 procedure DB_Active is
+   use Gnoga;
    use Gnoga.Server;
+   use all type Gnoga.String;
 
    pragma Linker_Options ("-lsqlite3");
 
@@ -95,16 +94,14 @@ begin
 
       Records := Users.Find_All;
 
-      V.Put_Line ("Records in table : " & Records.Length'Img);
+      V.Put_Line ("Records in table : " & Image (Natural (Records.Length)));
 
       for i in Records.First_Index .. Records.Last_Index loop
          declare
-            use type Ada.Containers.Count_Type;
-
             F  : Model.Queries.Active_Record_Array.Vector;
             F2 : Foods.Active_Record;
          begin
-            V.Put_Line ("Record : " & i'Img);
+            V.Put_Line ("Record : " & Image (i));
             V.Put_Line ("First Name : " & Records.Element (i).Value ("firstname"));
             V.Put_Line ("Last Name : " & Records.Element (i).Value ("lastname"));
 
@@ -129,5 +126,5 @@ begin
    Gnoga.Application.Singleton.Message_Loop;
 exception
    when E : others =>
-      Gnoga.Log (Ada.Exceptions.Exception_Name (E) & " - " & Ada.Exceptions.Exception_Message (E));
+      Gnoga.Log (E);
 end DB_Active;

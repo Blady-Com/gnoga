@@ -8,7 +8,9 @@ with Gnoga.Gui.View;
 with Gnoga.Gui.View.Docker;
 
 procedure Align is
+   use Gnoga;
    use Gnoga.Gui.Element;
+   use all type Gnoga.String;
 
    procedure On_Move
      (Object : in out Gnoga.Gui.Base.Base_Type'Class;
@@ -53,7 +55,7 @@ procedure Align is
    is
       pragma Unreferenced (Object);
    begin
-      Gnoga.Log (Event.X'Img & " x " & Event.Y'Img);
+      Gnoga.Log (Image (Event.X) & " x " & Image (Event.Y));
    end On_Move;
 
    procedure Dec_Change (Element : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -117,7 +119,7 @@ begin
 
    for i in Radios'Range loop
       Radios (i).Create (F);
-      F.Put ("Radio #" & i'Img);
+      F.Put ("Radio #" & Image (i));
       F.New_Line;
    end loop;
 
@@ -127,9 +129,9 @@ begin
    --  as groups based on the Name attribute, in this case "Group1"
 
    for i in Radio_Group'Range loop
-      Radio_Group (i).Create (F, Name => "Group1", Value => i'Img);
+      Radio_Group (i).Create (F, Name => "Group1", Value => Image (i));
       Radio_Group (i).On_Change_Handler (Radio_Select'Unrestricted_Access);
-      F.Put ("Radio Group #" & i'Img);
+      F.Put ("Radio Group #" & Image (i));
       F.New_Line;
    end loop;
 

@@ -1,5 +1,3 @@
-with Ada.Exceptions;
-
 with Gnoga.Application.Singleton;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View.Console;
@@ -11,6 +9,7 @@ with Gnoga.Server.Connection;
 
 procedure Essai10b is
    use Gnoga.Gui.View.Grid;
+   use all type Gnoga.String;
 
    Main_Window : Gnoga.Gui.Window.Window_Type;
 
@@ -89,6 +88,5 @@ begin
    Gnoga.Application.Singleton.Message_Loop;
 exception
    when E : others =>
-      Gnoga.Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                   Ada.Exceptions.Exception_Message (E));
+      Gnoga.Log (E);
 end Essai10b;

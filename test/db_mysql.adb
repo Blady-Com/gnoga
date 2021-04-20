@@ -4,9 +4,6 @@
 --  then, run: db_mysql setup
 --  then run again: db_mysql
 
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-with Ada.Exceptions;
-
 with GNAT.OS_Lib;
 
 with Gnoga.Types;
@@ -19,6 +16,9 @@ with Gnoga.Gui.View;
 with Gnoga.Gui.Element;
 
 procedure DB_MySQL is
+   use Gnoga;
+   use all type Gnoga.String;
+
    pragma Linker_Options ("-lmysqlclient");
 
    Connection : aliased Gnoga.Server.Database.MySQL.Connection;
@@ -80,14 +80,14 @@ begin
    Descriptions := Connection.Field_Descriptions ("users");
    for I in Descriptions.First_Index .. Descriptions.Last_Index loop
       Description := Descriptions.Element (I);
-      V.Put_Line ("Column Name : " & To_String (Description.Column_Name));
-      V.Put_Line ("Data Type   : " & To_String (Description.Data_Type));
+      V.Put_Line ("Column Name : " & Description.Column_Name);
+      V.Put_Line ("Data Type   : " & Description.Data_Type);
       V.Put_Line ("Field Type  : " & Gnoga.Server.Database.Field_Type (Description));
       V.Put_Line ("Field Opts  : " & Gnoga.Server.Database.Field_Options (Description));
-      V.Put_Line ("Field Size  : " & Gnoga.Server.Database.Field_Size (Description)'Img);
-      V.Put_Line ("Decimals    : " & Gnoga.Server.Database.Field_Decimals (Description)'Img);
-      V.Put_Line ("Can Be Null : " & Description.Can_Be_Null'Img);
-      V.Put_Line ("Default     : " & To_String (Description.Default_Value));
+      V.Put_Line ("Field Size  : " & Image (Gnoga.Server.Database.Field_Size (Description)));
+      V.Put_Line ("Decimals    : " & Image (Gnoga.Server.Database.Field_Decimals (Description)));
+      V.Put_Line ("Can Be Null : " & Image (Description.Can_Be_Null));
+      V.Put_Line ("Default     : " & Description.Default_Value);
    end loop;
 
    V.Put_Line (Connection.Escape_String ("I've been thinking.. ""escaped"" \ is it?"));
@@ -109,5 +109,5 @@ begin
    Gnoga.Application.Singleton.Message_Loop;
 exception
    when E : others =>
-      Gnoga.Log (Ada.Exceptions.Exception_Name (E) & " - " & Ada.Exceptions.Exception_Message (E));
+      Gnoga.Log (E);
 end DB_MySQL;

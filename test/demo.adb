@@ -23,6 +23,9 @@ procedure Demo is
    use Gnoga.Types;
    use Gnoga.Gui;
    use Gnoga.Gui.Element;
+   use all type Gnoga.String;
+
+   subtype String is Gnoga.String;
 
    type App_Data is new Connection_Data_Type with record
       Main_Window : Window.Pointer_To_Window_Class;
@@ -64,7 +67,7 @@ procedure Demo is
       for i in 1 .. App.My_Select.Length loop
          App.Console.Put_Line
            (App.My_Select.Value (Index => i) & " - " & App.My_Select.Text (Index => i) & " - " &
-            App.My_Select.Selected (i)'Img);
+            Image (App.My_Select.Selected (i)));
       end loop;
 
       for i in 1 .. 50 loop
@@ -109,7 +112,7 @@ procedure Demo is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Target.Border (Color => Colors.Green);
-      App.Target.Text (Drag_Text & "@" & X'Img & Y'Img);
+      App.Target.Text (Drag_Text & "@" & Image (X) & Image (Y));
    end Drop;
 
    procedure On_Connect
@@ -242,7 +245,7 @@ procedure Demo is
          ul1.Class_Name ("test_class");
 
          for i in 1 .. 3 loop
-            List.List_Item_Access (ul1.Add (new List.List_Item_Type)).Create (ul1.all, i'Img);
+            List.List_Item_Access (ul1.Add (new List.List_Item_Type)).Create (ul1.all, Image (i));
          end loop;
       end;
 
@@ -257,7 +260,7 @@ procedure Demo is
          Gnoga.Client.Bind_Page.Bind_Page (Collection_View);
 
          Name_List := Collection_View.Element_Names;
-         App.Console.Put_Line ("Total Elements : " & Name_List.Length'Img);
+         App.Console.Put_Line ("Total Elements : " & Image (Natural (Name_List.Length)));
          for N of Name_List loop
             App.Console.Put_Line ("Element ID : " & N);
             Collection_View.Element (N).Color ("orange");

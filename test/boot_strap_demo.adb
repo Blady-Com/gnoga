@@ -15,6 +15,7 @@ procedure Boot_Strap_Demo is
    use Gnoga.Gui;
    use Gnoga.Gui.Element;
    use Gnoga.Gui.Plugin;
+   use all type Gnoga.String;
 
    type App_Data is new Connection_Data_Type with record
       Main_Window : Window.Pointer_To_Window_Class;

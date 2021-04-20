@@ -12,6 +12,7 @@ procedure Media is
    use Gnoga.Types;
    use Gnoga.Gui;
    use Gnoga.Gui.Element;
+   use all type Gnoga.String;
 
    type App_Data is new Connection_Data_Type with record
       Main_Window : Window.Pointer_To_Window_Class;
@@ -31,9 +32,9 @@ procedure Media is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Audio1.Play;
-      Gnoga.Log ("Current position : " & App.Audio1.Media_Position'Img);
-      Gnoga.Log ("Duration : " & App.Audio1.Media_Duration'Img);
-      Gnoga.Log ("Playback rate : " & App.Audio1.Playback_Rate'Img);
+      Gnoga.Log ("Current position : " & Image (App.Audio1.Media_Position));
+      Gnoga.Log ("Duration : " & Image (App.Audio1.Media_Duration));
+      Gnoga.Log ("Playback rate : " & Image (App.Audio1.Playback_Rate));
       App.Audio1.Media_Position (0.0);
       App.Audio1.Playback_Rate (App.Audio1.Playback_Rate * 1.25);
    end On_Click;
@@ -41,7 +42,7 @@ procedure Media is
    procedure On_Progress (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
-      Gnoga.Log ("Progress position : " & App.Audio1.Media_Position'Img);
+      Gnoga.Log ("Progress position : " & Image (App.Audio1.Media_Position));
    end On_Progress;
 
    procedure On_Connect
@@ -68,7 +69,7 @@ procedure Media is
          Preload => True);
       App.Audio1.On_Progress_Handler (On_Progress'Unrestricted_Access);
 
-      Gnoga.Log ("The browser can play MP3s? - " & App.Audio1.Can_Play ("audio/mp3")'Img);
+      Gnoga.Log ("The browser can play MP3s? - " & Image (App.Audio1.Can_Play ("audio/mp3")));
       Gnoga.Log ("Audio source is : " & App.Audio1.Media_Source);
 
       View.New_Line;

@@ -10,7 +10,12 @@ with Gnoga.Gui.Window;
 
 with Gnoga.Application.Gtk_Window;
 
+with UXStrings.Conversions;
+
 procedure Singleton is
+   use Gnoga;
+   use all type Gnoga.String;
+
    task type Color_Me_Task (O : Gnoga.Gui.Element.Pointer_To_Element_Class) is
       entry start;
       entry stop;
@@ -25,6 +30,7 @@ procedure Singleton is
 
    task body Color_Me_Task is
       type Colors is (red, green, blue, orange, black);
+      function Image is new UXStrings.Conversions.Scalar_Image (Colors);
 
       Current_Color : Colors := Colors'First;
    begin
@@ -33,7 +39,7 @@ procedure Singleton is
       loop
          begin
             if O.Valid then
-               O.Color (Current_Color'Img);
+               O.Color (Image (Current_Color));
 
                if Current_Color = Colors'Last then
                   Current_Color := Colors'First;
@@ -56,19 +62,19 @@ procedure Singleton is
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       use Gnoga.Gui.Element;
    begin
-      Gnoga.Log ("Visible = " & Element_Type (Object).Visible'Img);
-      Gnoga.Log ("Screen.Available_Height = " & Gnoga.Gui.Screen.Available_Height (M)'Img);
-      Gnoga.Log ("Screen.Height = " & Gnoga.Gui.Screen.Height (M)'Img);
+      Gnoga.Log ("Visible = " & Image (Element_Type (Object).Visible));
+      Gnoga.Log ("Screen.Available_Height = " & Image (Gnoga.Gui.Screen.Available_Height (M)));
+      Gnoga.Log ("Screen.Height = " & Image (Gnoga.Gui.Screen.Height (M)));
       Gnoga.Log ("Color = " & Gnoga.Types.To_String (Element_Type (Object).Color));
-      Gnoga.Log ("Height = " & Element_Type (Object).Height'Img);
-      Gnoga.Log ("Width = " & Element_Type (Object).Width'Img);
+      Gnoga.Log ("Height = " & Image (Element_Type (Object).Height));
+      Gnoga.Log ("Width = " & Image (Element_Type (Object).Width));
       Element_Type (Object).Color ("green");
       Element_Type (Object).Background_Color ("black");
       Element_Type (Object).Box_Height ("200px");
       Element_Type (Object).Box_Width (300);
       Gnoga.Log ("Color = " & Element_Type (Object).Style ("color"));
-      Gnoga.Log ("Height = " & Element_Type (Object).Height'Img);
-      Gnoga.Log ("Width = " & Element_Type (Object).Width'Img);
+      Gnoga.Log ("Height = " & Image (Element_Type (Object).Height));
+      Gnoga.Log ("Width = " & Image (Element_Type (Object).Width));
    end On_Click;
 
    procedure End_App (Object : in out Gnoga.Gui.Base.Base_Type'Class);

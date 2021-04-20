@@ -16,6 +16,9 @@ procedure jDemo is
    use Gnoga.Gui;
    use Gnoga.Gui.Element;
    use Gnoga.Gui.Plugin;
+   use all type Gnoga.String;
+
+   subtype String is Gnoga.String;
 
    type App_Data is new Connection_Data_Type with record
       Main_Window : Window.Pointer_To_Window_Class;
@@ -51,7 +54,7 @@ procedure jDemo is
          while C.ID /= "undefined" loop
 
             App.Console.Put ("-->" & C.Text & ": ");
-            App.Console.Put (jQueryUI.Is_Selected (C.all)'Img);
+            App.Console.Put (Image (jQueryUI.Is_Selected (C.all)));
             App.Console.New_Line;
 
             N := new List.List_Item_Type;
@@ -125,7 +128,7 @@ procedure jDemo is
 
       procedure Act (E : in out Element_Type'Class) is
       begin
-         E.Text ("X =" & E.Offset_From_Left'Img & " Y = " & E.Offset_From_Top'Img);
+         E.Text ("X =" & Image (E.Offset_From_Left) & " Y = " & Image (E.Offset_From_Top));
       end Act;
    begin
       Act (Element_Type (Object));

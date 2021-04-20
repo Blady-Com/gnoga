@@ -6,6 +6,8 @@ with Gnoga.Gui.Window;
 with Gnoga.Gui.View.Grid;
 with Gnoga.Types.Colors;
 
+with UXStrings.Conversions;
+
 procedure Pack is
    use Gnoga.Gui.Element;
    use Gnoga.Gui.View.Grid;
@@ -31,6 +33,9 @@ procedure Pack is
       Split_View.Panel (1, 1).Box_Height ("90%");
       Split_View.Panel (2, 1).Background_Color (To_RGBA (Yellow_Green));
    end On_Click;
+
+   function Image is new UXStrings.Conversions.Scalar_Image (Gnoga.Gui.Element.Position_Type);
+
 begin
 --     Gnoga.Application.Open_URL;
 
@@ -96,7 +101,7 @@ begin
 
    A_View.Create (Split_View.Panel (1, 1).all);
    A_View.Fill_Parent;
-   Gnoga.Log (A_View.Position'Img);
+   Gnoga.Log (Image (A_View.Position));
 
    A_View.Box_Sizing (Border_Box);
    A_View.Border;

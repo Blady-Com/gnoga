@@ -1,5 +1,3 @@
-with Ada.Exceptions;
-
 with Gnoga.Application.Singleton;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View.Console;
@@ -8,7 +6,14 @@ with Gnoga.Types;
 with Gnoga.Gui.Base;
 with Gnoga.Client.Files;
 
+with UXStrings.Conversions;
+
 procedure Files_Ops is
+   use Gnoga;
+   use all type Gnoga.String;
+
+   function Image is new UXStrings.Conversions.Scalar_Image (Gnoga.Client.Files.State_Type);
+
    Main_Window : Gnoga.Gui.Window.Window_Type;
 
    type App_Data is new Gnoga.Types.Connection_Data_Type with record
@@ -25,13 +30,13 @@ procedure Files_Ops is
 
    procedure On_Load
      (Object : in out Gnoga.Gui.Base.Base_Type'Class;
-      Event  :        String)
+      Event  :        Gnoga.String)
    is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Mon_Texte_Multi.Value (App.Reader.Content);
       App.Main_View.Put_Line ("Reader Event = " & Event);
-      App.Main_View.Put_Line ("Reader State = " & App.Reader.State'Image);
+      App.Main_View.Put_Line ("Reader State = " & Image (App.Reader.State));
       App.Main_View.Put_Line ("Reader Error = " & App.Reader.Error_Name);
    end On_Load;
 
@@ -40,18 +45,18 @@ procedure Files_Ops is
    begin
       App.Reader.Transfert_As_Text (App.Mon_Fichier);
 --        App.Reader.Transfert_As_Binary (App.Mon_Fichier);
-      App.Main_View.Put_Line ("Reader State = " & App.Reader.State'Image);
+      App.Main_View.Put_Line ("Reader State = " & Image (App.Reader.State));
       App.Main_View.Put_Line ("Reader Error = " & App.Reader.Error_Name);
    end On_Submit;
 
    procedure On_Change (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
-      App.Main_View.Put_Line ("Files count = " & App.Mon_Fichier_Mult.File_Count'Image);
+      App.Main_View.Put_Line ("Files count = " & Image (App.Mon_Fichier_Mult.File_Count));
       for I in 1 .. App.Mon_Fichier_Mult.File_Count loop
-         App.Main_View.Put_Line ("File (" & I'image & ") = " & App.Mon_Fichier_Mult.File_Name (Index => I));
+         App.Main_View.Put_Line ("File (" & Image (I) & ") = " & App.Mon_Fichier_Mult.File_Name (Index => I));
          App.Main_View.Put_Line
-           ("File (" & I'image & ") = " & App.Mon_Fichier_Mult.File_WebkitRelativePath (Index => I));
+           ("File (" & Image (I) & ") = " & App.Mon_Fichier_Mult.File_WebkitRelativePath (Index => I));
       end loop;
    end On_Change;
 
@@ -90,5 +95,5 @@ begin
    Gnoga.Application.Singleton.Message_Loop;
 exception
    when E : others =>
-      Gnoga.Log (Ada.Exceptions.Exception_Name (E) & " - " & Ada.Exceptions.Exception_Message (E));
+      Gnoga.Log (E);
 end Files_Ops;

@@ -48,7 +48,7 @@ procedure TTables is
                col : constant Table.Table_Heading_Access := new Table.Table_Heading_Type;
             begin
                col.Dynamic;
-               col.Create (row.all, cols'Img);
+               col.Create (row.all, Image (cols));
             end;
          end loop;
       end;
@@ -65,7 +65,7 @@ procedure TTables is
                   col : constant Table.Table_Column_Access := new Table.Table_Column_Type;
                begin
                   col.Dynamic;
-                  col.Create (row.all, cols'Img);
+                  col.Create (row.all, Image (cols));
                end;
             end loop;
          end;

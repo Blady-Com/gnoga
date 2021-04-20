@@ -14,6 +14,7 @@ procedure Layouts is
    use Gnoga.Types;
    use Gnoga.Gui;
    use Gnoga.Gui.Element;
+   use all type Gnoga.String;
 
    type App_Data is new Connection_Data_Type with record
       Main_Window : Window.Pointer_To_Window_Class;
@@ -31,9 +32,9 @@ procedure Layouts is
       View.Card.Tab_Item_Type (Object).Tab_Select;
 
       Click_Count.Attach_Using_Parent (Object, "click_count");
-      Count := Natural'Value (Click_Count.Text);
+      Count := Value (Click_Count.Text);
       Count := Count + 1;
-      Click_Count.Text (Gnoga.Left_Trim (Count'Img));
+      Click_Count.Text (Image (Count));
    end On_Click;
 
    procedure On_Connect

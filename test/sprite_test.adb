@@ -15,6 +15,7 @@ procedure Sprite_Test is
    use Gnoga.Gui.Element;
    use Gnoga.Gui.Element.Canvas;
    use Gnoga.Gui.Element.Canvas.Context_2D.Sprite;
+   use all type Gnoga.String;
 
    type App_Data is new Connection_Data_Type with record
       Main_Window : Window.Pointer_To_Window_Class;
@@ -85,13 +86,13 @@ procedure Sprite_Test is
       C.Move_To (100, 100);
       C.Line_To (Column (App.SP1), Row (App.SP1));
       C.Stroke;
-      Gnoga.Log ("Distance:" & Distance (App.SP1, 100, 100)'Img);
+      Gnoga.Log ("Distance:" & Image (Distance (App.SP1, 100, 100)));
       delay 5.0;
       C.Stroke_Color ("green");
       C.Move_To (100, 100);
       C.Line_To (Column (App.SP1), Row (App.SP1));
       C.Stroke;
-      Gnoga.Log ("Distance:" & Distance (App.SP1, 100, 100)'Img);
+      Gnoga.Log ("Distance:" & Image (Distance (App.SP1, 100, 100)));
       Delete (App.SP1);
 
       C.Get_Image_Data (Image_Data => Img_Dat1, Left => 100, Top => 70, Width => 45, Height => 40);
@@ -123,7 +124,7 @@ procedure Sprite_Test is
             end if;
          end if;
          delay 1.0;
-         Gnoga.Log ("Distance:" & Distance (App.SP1, App.SP2)'Img);
+         Gnoga.Log ("Distance:" & Image (Distance (App.SP1, App.SP2)));
          exit when X_Pos > 350;
       end loop;
 

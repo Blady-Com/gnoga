@@ -8,6 +8,7 @@ with Gnoga.Gui.Plugin.MacGap;
 procedure Mac_Test is
    use Gnoga.Gui.Plugin;
    use Gnoga.Gui.Element;
+   use all type Gnoga.String;
 
    Main_Window : Gnoga.Gui.Window.Window_Type;
    Main_View   : Gnoga.Gui.View.View_Type;

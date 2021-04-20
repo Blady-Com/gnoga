@@ -1,5 +1,3 @@
-with Ada.Exceptions;
-
 with Gnoga.Application.Singleton;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View.Console;
@@ -10,7 +8,9 @@ with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Canvas.Context_2D;
 
 procedure Essai8 is
+   use Gnoga;
    use Gnoga.Gui.View.Grid;
+   use all type Gnoga.String;
 
    Main_Window : Gnoga.Gui.Window.Window_Type;
 
@@ -38,7 +38,7 @@ procedure Essai8 is
    is
       pragma Unreferenced (Object);
    begin
-      Text_View.Put_Line (Mouse_Event.X'Img & ',' & Mouse_Event.Y'Img);
+      Text_View.Put_Line (Image (Mouse_Event.X) & ',' & Image (Mouse_Event.Y));
    end Mouse_Move;
 
 begin
@@ -68,7 +68,7 @@ begin
    Cr.Get_Drawing_Context_2D (My_Canvas);
    Cr.Font (Height => "40px");
    for Ch in Character'('0') .. '9' loop
-      Cr.Fill_Text ((1 => Ch), 100, 30 + (Character'Pos (Ch) - 48) * 30);
+      Cr.Fill_Text (From_ASCII (Ch), 100, 30 + (Character'Pos (Ch) - 48) * 30);
    end loop;
 
    My_Canvas.On_Mouse_Move_Handler (Mouse_Move'Unrestricted_Access);
@@ -77,6 +77,5 @@ begin
 
 exception
    when E : others =>
-      Gnoga.Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                   Ada.Exceptions.Exception_Message (E));
+      Gnoga.Log (E);
 end Essai8;

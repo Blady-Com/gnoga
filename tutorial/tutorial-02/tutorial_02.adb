@@ -1,4 +1,3 @@
-
 --  In the previous tutorial we created a simple application that just
 --  wrote in console fashion to the browser window. In this example
 --  we introduce the idea of event handlers and how to interact live
@@ -19,11 +18,11 @@ with Gnoga.Gui.Element.Common;
 procedure Tutorial_02 is
    My_Window : Gnoga.Gui.Window.Window_Type;
 
-   My_View   : Gnoga.Gui.View.View_Type;
+   My_View : Gnoga.Gui.View.View_Type;
 
    My_Button : Gnoga.Gui.Element.Common.Button_Type;
 
-   My_Exit   : Gnoga.Gui.Element.Common.Button_Type;
+   My_Exit : Gnoga.Gui.Element.Common.Button_Type;
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    --  The procedure matches the prototype for Action_Events

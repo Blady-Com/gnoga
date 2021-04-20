@@ -35,8 +35,7 @@ procedure Tutorial_10 is
    --  Upon application start up, Connection will be opened using the SQLite
    --  database engine.
 
-   procedure Migrations
-     (M : in out Gnoga.Server.Migration.Migration_Collection);
+   procedure Migrations (M : in out Gnoga.Server.Migration.Migration_Collection);
    --  Migrations are a graceful way of dealing with changing database schema.
    --  For every step of a migration we add what is needed to bring "up" the
    --  change in the database schema and to bring "down", undo that change.
@@ -62,40 +61,26 @@ procedure Tutorial_10 is
    --  Migration and migration levels make it possible to deliver new versions
    --  or roll back to older versions of applications.
 
-   procedure Migrations
-     (M : in out Gnoga.Server.Migration.Migration_Collection)
-   is
+   procedure Migrations (M : in out Gnoga.Server.Migration.Migration_Collection) is
    begin
       M.Add_Migration_Up
-        ("CREATE TABLE `users`" &
-           " (" & Connection.ID_Field_String & "," &
-           "  lastname VARCHAR(80)," &
-           "  firstname VARCHAR(80))");
-      M.Add_Migration_Down
-        ("DROP TABLE `users`");
+        ("CREATE TABLE `users`" & " (" & Connection.ID_Field_String & "," & "  lastname VARCHAR(80)," &
+         "  firstname VARCHAR(80))");
+      M.Add_Migration_Down ("DROP TABLE `users`");
       --  Our first migration level is to set up the users table.
 
-      M.Add_Migration_Up
-        ("INSERT INTO users (`lastname`, `firstname`) " &
-           "VALUES ('Taft','Tucker')");
-      M.Add_Migration_Down
-        ("delete from users");
+      M.Add_Migration_Up ("INSERT INTO users (`lastname`, `firstname`) " & "VALUES ('Taft','Tucker')");
+      M.Add_Migration_Down ("delete from users");
       --  It is possible to also us migration levels to not just modify the
       --  schema but to also run any query that would be needed for the
       --  application. All migrations though must include the needed queries
       --  to bring down and changes the migration brings up.
 
-      M.Add_Migration_Up
-        ("INSERT INTO users (`lastname`, `firstname`) " &
-           "VALUES ('Dewar','Robert')");
-      M.Add_Migration_Down
-        ("delete from users");
+      M.Add_Migration_Up ("INSERT INTO users (`lastname`, `firstname`) " & "VALUES ('Dewar','Robert')");
+      M.Add_Migration_Down ("delete from users");
 
-      M.Add_Migration_Up
-        ("INSERT INTO users (`lastname`, `firstname`) " &
-           "VALUES ('Botton','David')");
-      M.Add_Migration_Down
-        ("delete from users");
+      M.Add_Migration_Up ("INSERT INTO users (`lastname`, `firstname`) " & "VALUES ('Botton','David')");
+      M.Add_Migration_Down ("delete from users");
    end Migrations;
 
    Tables       : Gnoga.Types.Data_Array_Type;
@@ -109,11 +94,11 @@ begin
    --  This will connect to (and if needed create) the tutorial_10.db in the
    --  current directory using Sqlite3.
 
-   if not
-     Gnoga.Server.Migration.Migrations_Handled_Command_Line
+   if not Gnoga.Server.Migration.Migrations_Handled_Command_Line
        (Connection'Unchecked_Access, Migrations'Unrestricted_Access)
      --  If the command line was handled by the Migration package we don't
      --  run our regular application code.
+
    then
       declare
          My_Window : Gnoga.Gui.Window.Window_Type;
@@ -130,8 +115,7 @@ begin
 
          My_View.Put_Line ("Display list of tables: test");
          for I in 1 .. Natural (Tables.Length) loop
-            My_View.Put_Line ("Table Name in database : " &
-                                Tables.Element (I));
+            My_View.Put_Line ("Table Name in database : " & Tables.Element (I));
          end loop;
 
          Fields := Connection.List_Fields_Of_Table ("users");
@@ -142,41 +126,27 @@ begin
          Descriptions := Connection.Field_Descriptions ("users");
          for I in Descriptions.First_Index .. Descriptions.Last_Index loop
             Description := Descriptions.Element (I);
-            My_View.Put_Line ("Column Name : " &
-                                To_String (Description.Column_Name));
-            My_View.Put_Line ("Data Type   : " &
-                                To_String (Description.Data_Type));
-            My_View.Put_Line
-              ("Field Type  : " &
-                 Gnoga.Server.Database.Field_Type (Description));
-            My_View.Put_Line
-              ("Field Opts  : " &
-                 Gnoga.Server.Database.Field_Options (Description));
-            My_View.Put_Line
-              ("Field Size  : " &
-                 Gnoga.Server.Database.Field_Size (Description)'Img);
-            My_View.Put_Line
-              ("Decimals    : " &
-                 Gnoga.Server.Database.Field_Decimals (Description)'Img);
+            My_View.Put_Line ("Column Name : " & To_String (Description.Column_Name));
+            My_View.Put_Line ("Data Type   : " & To_String (Description.Data_Type));
+            My_View.Put_Line ("Field Type  : " & Gnoga.Server.Database.Field_Type (Description));
+            My_View.Put_Line ("Field Opts  : " & Gnoga.Server.Database.Field_Options (Description));
+            My_View.Put_Line ("Field Size  : " & Gnoga.Server.Database.Field_Size (Description)'Img);
+            My_View.Put_Line ("Decimals    : " & Gnoga.Server.Database.Field_Decimals (Description)'Img);
             My_View.Put_Line ("Can Be Null : " & Description.Can_Be_Null'Img);
-            My_View.Put_Line ("Default     : " &
-                                To_String (Description.Default_Value));
+            My_View.Put_Line ("Default     : " & To_String (Description.Default_Value));
          end loop;
 
          My_View.Put_Line
            (Connection.Escape_String
-              ("This will escape things like a ' or "" or " &
-                 " \ or whatever may be needed like a ` based on the " &
-                 "particular database enginge."));
+              ("This will escape things like a ' or "" or " & " \ or whatever may be needed like a ` based on the " &
+               "particular database enginge."));
 
          declare
-            RS : Gnoga.Server.Database.Recordset'Class :=
-                   Connection.Query ("select * from users");
+            RS : Gnoga.Server.Database.Recordset'Class := Connection.Query ("select * from users");
          begin
             while RS.Next loop
                for J in 1 .. RS.Number_Of_Fields loop
-                  My_View.Put_Line (RS.Field_Name (J) & " => " &
-                                      RS.Field_Value (J));
+                  My_View.Put_Line (RS.Field_Name (J) & " => " & RS.Field_Value (J));
                end loop;
             end loop;
 

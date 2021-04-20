@@ -1,4 +1,3 @@
-
 --  In the previous tutorials we created Singletons applications where there
 --  is no issue of concurrency outside of events from the same user. This
 --  allowed for programming in the familiar sequential patterns of regular
@@ -27,13 +26,12 @@ procedure Tutorial_03 is
    --  a derivative of Gnoga.Types.Connection_Data_Type that will be accessible
    --  to any object on a connection.
 
-   type App_Data is new Gnoga.Types.Connection_Data_Type with
-      record
-         My_Window : Gnoga.Gui.Window.Pointer_To_Window_Class;
-         My_View   : Gnoga.Gui.View.View_Type;
-         My_Button : Gnoga.Gui.Element.Common.Button_Type;
-         My_Exit   : Gnoga.Gui.Element.Common.Button_Type;
-      end record;
+   type App_Data is new Gnoga.Types.Connection_Data_Type with record
+      My_Window : Gnoga.Gui.Window.Pointer_To_Window_Class;
+      My_View   : Gnoga.Gui.View.View_Type;
+      My_Button : Gnoga.Gui.Element.Common.Button_Type;
+      My_Exit   : Gnoga.Gui.Element.Common.Button_Type;
+   end record;
    type App_Access is access all App_Data;
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
@@ -51,7 +49,7 @@ procedure Tutorial_03 is
    end On_Click;
 
    procedure On_Exit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App : constant App_Access := App_Access (Object.Connection_Data);
+      App  : constant App_Access := App_Access (Object.Connection_Data);
       View : Gnoga.Gui.View.View_Type;
    begin
       App.My_View.Remove;
@@ -59,15 +57,13 @@ procedure Tutorial_03 is
       View.Put_Line ("Application exited.");
       App.My_Window.Close_Connection;
    exception
-   when E : others =>
-         Gnoga.Log (Message => "On_Exit: " &
-                      Ada.Exceptions.Exception_Information (E));
+      when E : others =>
+         Gnoga.Log (Message => "On_Exit: " & Ada.Exceptions.Exception_Information (E));
    end On_Exit;
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
    --  Instead of creating and setting up our GUI in the main body of the
    --  application, we now set up the GUI in a connection event handler.
    --  The implementation is almost identical to the last tutorial except we
@@ -76,8 +72,7 @@ procedure Tutorial_03 is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
       App : constant App_Access := new App_Data;
@@ -107,9 +102,7 @@ begin
 
    Gnoga.Application.Multi_Connect.Initialize;
 
-   Gnoga.Application.Multi_Connect.On_Connect_Handler
-     (Event => On_Connect'Unrestricted_Access,
-      Path  => "default");
+   Gnoga.Application.Multi_Connect.On_Connect_Handler (Event => On_Connect'Unrestricted_Access, Path => "default");
    --  With a Multi_Connect application it is possible to have different
    --  URL paths start different Connection Event Handlers. This allows
    --  for the creation of Web Apps that appear as larger web sites or as

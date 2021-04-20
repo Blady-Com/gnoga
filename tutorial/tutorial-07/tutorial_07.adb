@@ -11,14 +11,13 @@ with Gnoga.Types.Colors;
 
 procedure Tutorial_07 is
 
-   type App_Data is new Gnoga.Types.Connection_Data_Type with
-      record
-         My_View   : Gnoga.Gui.View.View_Type;
-         My_Exit   : Gnoga.Gui.Element.Common.Button_Type;
-         Source    : Gnoga.Gui.Element.Common.DIV_Type;
-         Target    : Gnoga.Gui.Element.Common.DIV_Type;
+   type App_Data is new Gnoga.Types.Connection_Data_Type with record
+      My_View : Gnoga.Gui.View.View_Type;
+      My_Exit : Gnoga.Gui.Element.Common.Button_Type;
+      Source  : Gnoga.Gui.Element.Common.DIV_Type;
+      Target  : Gnoga.Gui.Element.Common.DIV_Type;
          --  Source will be our drag source and Target our Drop Source
-      end record;
+   end record;
    type App_Access is access all App_Data;
 
    procedure On_Exit (Object : in out Gnoga.Gui.Base.Base_Type'Class);
@@ -31,43 +30,41 @@ procedure Tutorial_07 is
 
    procedure Enter_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure Leave_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class);
-   procedure Drop (Object    : in out Gnoga.Gui.Base.Base_Type'Class;
-                   X, Y      : in     Integer;
-                   Drag_Text : in     String);
+   procedure Drop
+     (Object    : in out Gnoga.Gui.Base.Base_Type'Class;
+      X, Y      : in     Integer;
+      Drag_Text : in     String);
    --  These three event handlers are used to show visual cues that Target
    --  is open to accept the drop, and to actually accept the drop.
 
-   procedure Start_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure Start_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Source.Opacity (0.4);
    end Start_Drag;
 
-   procedure End_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure End_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Source.Opacity (1.0);
    end End_Drag;
 
-   procedure Enter_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure Enter_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Target.Border (Color => Gnoga.Types.Colors.Red);
    end Enter_Drag;
 
-   procedure Leave_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure Leave_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Target.Border (Color => Gnoga.Types.Colors.Black);
    end Leave_Drag;
 
-   procedure Drop (Object    : in out Gnoga.Gui.Base.Base_Type'Class;
-                   X, Y      : in     Integer;
-                   Drag_Text : in     String)
+   procedure Drop
+     (Object    : in out Gnoga.Gui.Base.Base_Type'Class;
+      X, Y      : in     Integer;
+      Drag_Text : in     String)
    is
       pragma Unreferenced (Y, X);
       App : constant App_Access := App_Access (Object.Connection_Data);
@@ -89,14 +86,12 @@ procedure Tutorial_07 is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
    --  Setup GUI for each connection.
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
       App : constant App_Access := new App_Data;
@@ -125,9 +120,7 @@ procedure Tutorial_07 is
       App.Source.Draggable;
       --  Tell the browser this is an Element that can be dragged.
 
-      App.Source.On_Drag_Start_Handler
-        (Handler   => Start_Drag'Unrestricted_Access,
-         Drag_Text => "Got the Drop!");
+      App.Source.On_Drag_Start_Handler (Handler => Start_Drag'Unrestricted_Access, Drag_Text => "Got the Drop!");
       --  Setup drag start handler, which makes the element actually draggable
       --  The Drag_Text will be what is delivered to target when dropped on it.
 
@@ -157,9 +150,7 @@ begin
 
    Gnoga.Application.Multi_Connect.Initialize;
 
-   Gnoga.Application.Multi_Connect.On_Connect_Handler
-     (Event => On_Connect'Unrestricted_Access,
-      Path  => "default");
+   Gnoga.Application.Multi_Connect.On_Connect_Handler (Event => On_Connect'Unrestricted_Access, Path => "default");
 
    Gnoga.Application.Multi_Connect.Message_Loop;
 end Tutorial_07;

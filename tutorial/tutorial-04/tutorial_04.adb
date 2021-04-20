@@ -1,4 +1,3 @@
-
 --  Gnoga is Ada Inside, which means that it was designed to make use of all
 --  that Ada has to offer including the ability to play along well with the
 --  concurrency features offered by Ada.
@@ -20,9 +19,7 @@ procedure Tutorial_04 is
    --  have setup the Element it will be accessing first and to ensure we
    --  stop the task before Element is finalized on close of the connection.
 
-   task type Color_Me_Task_Type
-     (O : Gnoga.Gui.Element.Pointer_To_Element_Class)
-   is
+   task type Color_Me_Task_Type (O : Gnoga.Gui.Element.Pointer_To_Element_Class) is
       entry Start;
       entry Stop;
    end Color_Me_Task_Type;
@@ -55,12 +52,11 @@ procedure Tutorial_04 is
       end loop;
    end Color_Me_Task_Type;
 
-   type App_Data is new Gnoga.Types.Connection_Data_Type with
-      record
-         My_View   : Gnoga.Gui.View.View_Type;
-         My_Button : Gnoga.Gui.Element.Common.Button_Type;
-         My_Exit   : Gnoga.Gui.Element.Common.Button_Type;
-         Flasher   : aliased Gnoga.Gui.Element.Common.DIV_Type;
+   type App_Data is new Gnoga.Types.Connection_Data_Type with record
+      My_View   : Gnoga.Gui.View.View_Type;
+      My_Button : Gnoga.Gui.Element.Common.Button_Type;
+      My_Exit   : Gnoga.Gui.Element.Common.Button_Type;
+      Flasher   : aliased Gnoga.Gui.Element.Common.DIV_Type;
          --  In Gnoga (as in HTML) the two main elements used for display are
          --  the DIV_Type and the Span_Type. The difference between the two is
          --  the a DIV_Type is a "block" element and a Span_Type is an inline
@@ -68,7 +64,7 @@ procedure Tutorial_04 is
          --  and Span_Types will be placed on the same line as the last inline
          --  element. Think of Span_Types as ways to mark text for
          --  interaction with the user.
-      end record;
+   end record;
    type App_Access is access all App_Data;
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
@@ -97,14 +93,12 @@ procedure Tutorial_04 is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
    --  Setup GUI for each connection.
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App          : App_Access := new App_Data;
       Flasher_Task : Color_Me_Task_Type (App.Flasher'Unchecked_Access);
@@ -121,8 +115,7 @@ procedure Tutorial_04 is
       App.My_Button.On_Click_Handler (On_Click'Unrestricted_Access);
 
       App.My_View.Put ("<button id='my_exit'>End App</button>");
-      App.My_Exit.Attach_Using_Parent (Parent  => App.My_View,
-                                       ID      => "my_exit");
+      App.My_Exit.Attach_Using_Parent (Parent => App.My_View, ID => "my_exit");
       --  It is possible to attach Gnoga elements that have already been
       --  created in HTML. (A later tutorial will show how to use popups
       --  and iFrames to load any HTML file and attach to controls in it.
@@ -157,9 +150,7 @@ begin
 
    Gnoga.Application.Multi_Connect.Initialize;
 
-   Gnoga.Application.Multi_Connect.On_Connect_Handler
-     (Event => On_Connect'Unrestricted_Access,
-      Path  => "default");
+   Gnoga.Application.Multi_Connect.On_Connect_Handler (Event => On_Connect'Unrestricted_Access, Path => "default");
 
    Gnoga.Application.Multi_Connect.Message_Loop;
 end Tutorial_04;

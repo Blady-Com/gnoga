@@ -17,16 +17,15 @@ with Gnoga.Gui.Element.IFrame;
 
 procedure Tutorial_06 is
 
-   type App_Data is new Gnoga.Types.Connection_Data_Type with
-      record
-         My_View   : Gnoga.Gui.View.View_Type;
-         My_Button : Gnoga.Gui.Element.Common.Button_Type;
-         My_Exit   : Gnoga.Gui.Element.Common.Button_Type;
-         My_Popup1 : Gnoga.Gui.Window.Window_Type;
-         My_Popup2 : Gnoga.Gui.Window.Window_Type;
-         My_PView  : Gnoga.Gui.View.View_Type;
-         My_Frame  : Gnoga.Gui.Element.IFrame.IFrame_Type;
-      end record;
+   type App_Data is new Gnoga.Types.Connection_Data_Type with record
+      My_View   : Gnoga.Gui.View.View_Type;
+      My_Button : Gnoga.Gui.Element.Common.Button_Type;
+      My_Exit   : Gnoga.Gui.Element.Common.Button_Type;
+      My_Popup1 : Gnoga.Gui.Window.Window_Type;
+      My_Popup2 : Gnoga.Gui.Window.Window_Type;
+      My_PView  : Gnoga.Gui.View.View_Type;
+      My_Frame  : Gnoga.Gui.Element.IFrame.IFrame_Type;
+   end record;
    type App_Access is access all App_Data;
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
@@ -58,14 +57,12 @@ procedure Tutorial_06 is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
    --  Setup GUI for each connection.
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
       use type Gnoga.Gui.Document.Ready_State_Type;
@@ -83,39 +80,21 @@ procedure Tutorial_06 is
 
       App.My_View.Horizontal_Rule;
 
-      App.My_Frame.Create (Parent   => App.My_View,
-                           URL      => "http://www.gnoga.com",
-                           Seamless => False);
+      App.My_Frame.Create (Parent => App.My_View, URL => "http://www.gnoga.com", Seamless => False);
       App.My_Frame.Width (App.My_View.Width);
       App.My_Frame.Height (500);
       App.My_Frame.Border;
       --  IFrame_Types are like any other element and can be styled, etc.
 
-      App.My_Popup1.Launch (Parent   => Main_Window,
-                            URL      => "http://google.com",
-                            Width    => 800,
-                            Height   => 500,
-                            Left     => 10,
-                            Top      => 10,
-                            Location => True,
-                            Menu     => True,
-                            Status   => True,
-                            Tool_Bar => True,
-                            Title    => True);
+      App.My_Popup1.Launch
+        (Parent   => Main_Window, URL => "http://google.com", Width => 800, Height => 500, Left => 10, Top => 10,
+         Location => True, Menu => True, Status => True, Tool_Bar => True, Title => True);
       --  Most new browsers do not let you control the decorations,
       --  but we will set them anyways.
 
-      App.My_Popup2.Launch (Parent   => Main_Window,
-                            URL      => "/no_boot.html",
-                            Width    => 500,
-                            Height   => 500,
-                            Left     => 50,
-                            Top      => 50,
-                            Location => False,
-                            Menu     => False,
-                            Status   => False,
-                            Tool_Bar => False,
-                            Title    => False);
+      App.My_Popup2.Launch
+        (Parent   => Main_Window, URL => "/no_boot.html", Width => 500, Height => 500, Left => 50, Top => 50,
+         Location => False, Menu => False, Status => False, Tool_Bar => False, Title => False);
       --  In order to avoid popup blocking issues on some browsers we need
       --  to make sure we pass in a URL on the same host.
 
@@ -125,10 +104,7 @@ procedure Tutorial_06 is
       --  created and attempting to click them will raise an
       --  Object_Was_Not_Created exception when tying to close them.
 
-      while
-        App.My_Popup2.Document.Ready_State /= Gnoga.Gui.Document.Complete or
-        App.My_Popup2.Width = 0
-      loop
+      while App.My_Popup2.Document.Ready_State /= Gnoga.Gui.Document.Complete or App.My_Popup2.Width = 0 loop
          delay 0.25;
       end loop;
       --  We need to make sure that popup2's contents is load in order to
@@ -143,15 +119,11 @@ procedure Tutorial_06 is
       App.My_PView.Create (App.My_Popup2);
       App.My_PView.Padding ("1em", "1em", "1em", "1em");
       App.My_PView.Put_Line
-        ("Since this popup is not a cross-site frame " &
-           "we have full control over it " &
-           "even though this popup was blank and has no " &
-           "websocket connection to our application. " &
-           "We are piggy backing off the connection in the " &
-           "main window.");
+        ("Since this popup is not a cross-site frame " & "we have full control over it " &
+         "even though this popup was blank and has no " & "websocket connection to our application. " &
+         "We are piggy backing off the connection in the " & "main window.");
       App.My_PView.New_Line;
-      App.My_PView.Put_Line
-        ("Click the close popups buttons in the main window.");
+      App.My_PView.Put_Line ("Click the close popups buttons in the main window.");
    exception
       when Gnoga.Gui.Window.Popup_Blocked =>
          Gnoga.Log ("Popups are being blocked on the browser");
@@ -164,9 +136,7 @@ begin
 
    Gnoga.Application.Multi_Connect.Initialize;
 
-   Gnoga.Application.Multi_Connect.On_Connect_Handler
-     (Event => On_Connect'Unrestricted_Access,
-      Path  => "default");
+   Gnoga.Application.Multi_Connect.On_Connect_Handler (Event => On_Connect'Unrestricted_Access, Path => "default");
 
    Gnoga.Application.Multi_Connect.Message_Loop;
 end Tutorial_06;

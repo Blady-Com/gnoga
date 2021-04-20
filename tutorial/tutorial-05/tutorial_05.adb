@@ -14,16 +14,15 @@ with Gnoga.Gui.Element.Canvas.Context_2D;
 
 procedure Tutorial_05 is
 
-   type App_Data is new Gnoga.Types.Connection_Data_Type with
-      record
-         My_View   : Gnoga.Gui.View.View_Type;
-         My_Button : Gnoga.Gui.Element.Common.Button_Type;
-         My_Exit   : Gnoga.Gui.Element.Common.Button_Type;
-         My_Canvas : Gnoga.Gui.Element.Canvas.Canvas_Type;
+   type App_Data is new Gnoga.Types.Connection_Data_Type with record
+      My_View   : Gnoga.Gui.View.View_Type;
+      My_Button : Gnoga.Gui.Element.Common.Button_Type;
+      My_Exit   : Gnoga.Gui.Element.Common.Button_Type;
+      My_Canvas : Gnoga.Gui.Element.Canvas.Canvas_Type;
          --  Canvas_Types are the container, but drawing is done with in a
          --  "Context" of the Canvas_Type. Currently only the 2D Context
          --  is standardized, but many browsers support WebGL as a 3D context.
-      end record;
+   end record;
    type App_Access is access all App_Data;
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
@@ -110,7 +109,7 @@ procedure Tutorial_05 is
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       use Gnoga.Gui.Element.Canvas.Context_2D;
 
-      App : constant App_Access := App_Access (Object.Connection_Data);
+      App     : constant App_Access := App_Access (Object.Connection_Data);
       Context : Context_2D_Type;
    begin
       Context.Get_Drawing_Context_2D (App.My_Canvas);
@@ -122,8 +121,7 @@ procedure Tutorial_05 is
 
       Context.Fill_Color ("white");
       Context.Stroke_Color ("white");
-      Context.Fill_Rectangle
-        ((0, 0, App.My_Canvas.Width, App.My_Canvas.Height));
+      Context.Fill_Rectangle ((0, 0, App.My_Canvas.Width, App.My_Canvas.Height));
 
       Context.Restore;
       --  Restore the state of the context.
@@ -143,14 +141,12 @@ procedure Tutorial_05 is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
    --  Setup GUI for each connection.
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
       App : constant App_Access := new App_Data;
@@ -167,9 +163,7 @@ procedure Tutorial_05 is
 
       App.My_View.Horizontal_Rule;
 
-      App.My_Canvas.Create (Parent => App.My_View,
-                            Width  => 600,
-                            Height => 400);
+      App.My_Canvas.Create (Parent => App.My_View, Width => 600, Height => 400);
       App.My_Canvas.Border;
       --  Every element inherits the ability to be styled from Element_Type
 
@@ -183,9 +177,7 @@ begin
 
    Gnoga.Application.Multi_Connect.Initialize;
 
-   Gnoga.Application.Multi_Connect.On_Connect_Handler
-     (Event => On_Connect'Unrestricted_Access,
-      Path  => "default");
+   Gnoga.Application.Multi_Connect.On_Connect_Handler (Event => On_Connect'Unrestricted_Access, Path => "default");
 
    Gnoga.Application.Multi_Connect.Message_Loop;
 end Tutorial_05;

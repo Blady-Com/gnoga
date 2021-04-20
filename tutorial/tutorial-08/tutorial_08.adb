@@ -21,24 +21,23 @@ procedure Tutorial_08 is
    --  composite of other elements so that we can reuse the view in the
    --  future.
 
-   type My_Widget_Type is new Gnoga.Gui.View.View_Type with
-      record
-         Widget_Form : Gnoga.Gui.Element.Form.Form_Type;
-         Name_Input  : Gnoga.Gui.Element.Form.Text_Type;
-         Message     : Gnoga.Gui.Element.Form.Text_Area_Type;
-         My_Submit   : Gnoga.Gui.Element.Form.Submit_Button_Type;
-      end record;
+   type My_Widget_Type is new Gnoga.Gui.View.View_Type with record
+      Widget_Form : Gnoga.Gui.Element.Form.Form_Type;
+      Name_Input  : Gnoga.Gui.Element.Form.Text_Type;
+      Message     : Gnoga.Gui.Element.Form.Text_Area_Type;
+      My_Submit   : Gnoga.Gui.Element.Form.Submit_Button_Type;
+   end record;
 
-   overriding
-   procedure Create  (View    : in out My_Widget_Type;
-                      Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                      ID      : in     String  := "");
+   overriding procedure Create
+     (View   : in out My_Widget_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "");
    --  Used to create our custom view
 
-   overriding
-   procedure Create (View    : in out My_Widget_Type;
-                     Parent  : in out Gnoga.Gui.Base.Base_Type'Class;
-                     ID      : in     String  := "")
+   overriding procedure Create
+     (View   : in out My_Widget_Type;
+      Parent : in out Gnoga.Gui.Base.Base_Type'Class;
+      ID     : in     String := "")
    is
       use Gnoga.Gui.Element.Table;
       Layout_Table : constant Table_Access := new Table_Type;
@@ -53,7 +52,7 @@ procedure Tutorial_08 is
       Layout_Table.Create (View);
 
       declare
-         row  : constant Table_Row_Access := new Table_Row_Type;
+         row  : constant Table_Row_Access    := new Table_Row_Type;
          col1 : constant Table_Column_Access := new Table_Column_Type;
          col2 : constant Table_Column_Access := new Table_Column_Type;
       begin
@@ -64,9 +63,7 @@ procedure Tutorial_08 is
          row.Create (Layout_Table.all);
          col1.Create (row.all, "Name");
          col2.Create (row.all);
-         View.Name_Input.Create (Form  => View.Widget_Form,
-                                 Size  => 40,
-                                 Name  => "Name");
+         View.Name_Input.Create (Form => View.Widget_Form, Size => 40, Name => "Name");
          --  The Name of the element is its variable name when submitted.
 
          View.Name_Input.Required;
@@ -84,7 +81,7 @@ procedure Tutorial_08 is
       end;
 
       declare
-         row  : constant Table_Row_Access := new Table_Row_Type;
+         row  : constant Table_Row_Access    := new Table_Row_Type;
          col1 : constant Table_Column_Access := new Table_Column_Type;
          col2 : constant Table_Column_Access := new Table_Column_Type;
       begin
@@ -96,10 +93,7 @@ procedure Tutorial_08 is
          row.Style ("vertical-align", "top");
          col1.Create (row.all, "Message");
          col2.Create (row.all);
-         View.Message.Create (Form    => View.Widget_Form,
-                              Columns => 20,
-                              Rows    => 10,
-                              Name    => "Message");
+         View.Message.Create (Form => View.Widget_Form, Columns => 20, Rows => 10, Name => "Message");
          View.Message.Place_Inside_Top_Of (col2.all);
       end;
 
@@ -107,12 +101,11 @@ procedure Tutorial_08 is
       View.My_Submit.Place_After (Layout_Table.all);
    end Create;
 
-   type App_Data is new Gnoga.Types.Connection_Data_Type with
-      record
-         My_View   : Gnoga.Gui.View.View_Type;
-         My_Widget : My_Widget_Type;
-         My_Exit   : Gnoga.Gui.Element.Common.Button_Type;
-      end record;
+   type App_Data is new Gnoga.Types.Connection_Data_Type with record
+      My_View   : Gnoga.Gui.View.View_Type;
+      My_Widget : My_Widget_Type;
+      My_Exit   : Gnoga.Gui.Element.Common.Button_Type;
+   end record;
    type App_Access is access all App_Data;
 
    procedure On_Exit (Object : in out Gnoga.Gui.Base.Base_Type'Class);
@@ -131,21 +124,18 @@ procedure Tutorial_08 is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
    --  Setup GUI for each connection.
 
    procedure On_Result_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
    --  Setup another path in to the application for submitting results
    --  /result, see On_Connect_Handler in body of this procedure.
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
       App : constant App_Access := new App_Data;
@@ -164,15 +154,13 @@ procedure Tutorial_08 is
 
    procedure On_Result_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
       --  Since there will be no interactions with page once displayed there
       --  is no need to setup any data to associate with the main window.
 
-      Result_View : constant Gnoga.Gui.View.View_Access :=
-        new Gnoga.Gui.View.View_Type;
+      Result_View : constant Gnoga.Gui.View.View_Access := new Gnoga.Gui.View.View_Type;
    begin
       Result_View.Dynamic;
       --  By marking the View dynamic it will be deallocated by Main_Window
@@ -180,8 +168,7 @@ procedure Tutorial_08 is
       Result_View.Create (Main_Window);
 
       Result_View.Put_Line ("Name : " & Main_Window.Form_Parameter ("Name"));
-      Result_View.Put_Line ("Message : " &
-                              Main_Window.Form_Parameter ("Message"));
+      Result_View.Put_Line ("Message : " & Main_Window.Form_Parameter ("Message"));
    end On_Result_Connect;
 
 begin
@@ -191,13 +178,10 @@ begin
 
    Gnoga.Application.Multi_Connect.Initialize;
 
-   Gnoga.Application.Multi_Connect.On_Connect_Handler
-     (Event => On_Connect'Unrestricted_Access,
-      Path  => "default");
+   Gnoga.Application.Multi_Connect.On_Connect_Handler (Event => On_Connect'Unrestricted_Access, Path => "default");
 
    Gnoga.Application.Multi_Connect.On_Connect_Handler
-     (Event => On_Result_Connect'Unrestricted_Access,
-      Path  => "result");
+     (Event => On_Result_Connect'Unrestricted_Access, Path => "result");
 
    Gnoga.Application.Multi_Connect.Message_Loop;
 end Tutorial_08;

@@ -31,46 +31,28 @@ procedure Tutorial_11 is
    --  Unlike the previous tutorial we will use an access type to point
    --  to the connection.
 
-   procedure Migrations
-     (M : in out Gnoga.Server.Migration.Migration_Collection);
+   procedure Migrations (M : in out Gnoga.Server.Migration.Migration_Collection);
 
-   procedure Migrations
-     (M : in out Gnoga.Server.Migration.Migration_Collection)
-   is
+   procedure Migrations (M : in out Gnoga.Server.Migration.Migration_Collection) is
    begin
       M.Add_Migration_Up
-        ("CREATE TABLE `users`" &
-           " (" & Connection.ID_Field_String & "," &
-           "  lastname VARCHAR(80)," &
-           "  firstname VARCHAR(80))");
-      M.Add_Migration_Down
-        ("DROP TABLE `users`");
+        ("CREATE TABLE `users`" & " (" & Connection.ID_Field_String & "," & "  lastname VARCHAR(80)," &
+         "  firstname VARCHAR(80))");
+      M.Add_Migration_Down ("DROP TABLE `users`");
       --  For Gnoga's automatic database modeling, table names end with a
       --  plural 's'.
 
-      M.Add_Migration_Up
-        ("INSERT INTO users (`lastname`, `firstname`) " &
-           "VALUES ('Taft','Tucker')");
-      M.Add_Migration_Down
-        ("delete from users");
-      M.Add_Migration_Up
-        ("INSERT INTO users (`lastname`, `firstname`) " &
-           "VALUES ('Dewar','Robert')");
-      M.Add_Migration_Down
-        ("delete from users");
-      M.Add_Migration_Up
-        ("INSERT INTO users (`lastname`, `firstname`) " &
-           "VALUES ('Botton','David')");
-      M.Add_Migration_Down
-        ("delete from users");
+      M.Add_Migration_Up ("INSERT INTO users (`lastname`, `firstname`) " & "VALUES ('Taft','Tucker')");
+      M.Add_Migration_Down ("delete from users");
+      M.Add_Migration_Up ("INSERT INTO users (`lastname`, `firstname`) " & "VALUES ('Dewar','Robert')");
+      M.Add_Migration_Down ("delete from users");
+      M.Add_Migration_Up ("INSERT INTO users (`lastname`, `firstname`) " & "VALUES ('Botton','David')");
+      M.Add_Migration_Down ("delete from users");
 
       M.Add_Migration_Up
-        ("CREATE TABLE `foods`" &
-           " (" & Connection.ID_Field_String & "," &
-           "  user_id Integer," &
-           "  food VARCHAR(80))");
-      M.Add_Migration_Down
-        ("DROP TABLE `foods`");
+        ("CREATE TABLE `foods`" & " (" & Connection.ID_Field_String & "," & "  user_id Integer," &
+         "  food VARCHAR(80))");
+      M.Add_Migration_Down ("DROP TABLE `foods`");
       --  In this tutorial our database is a bit more involved and has a one to
       --  many relationship. The "many" references the "one" using a standard
       --  of tablename(minus plural) + _id, so in our tutorial to reference the
@@ -82,12 +64,10 @@ begin
    --  This will both create the connection object and connect to the SqlLite
    --  database.
 
-   if not
-     Gnoga.Server.Migration.Migrations_Handled_Command_Line
-       (Connection, Migrations'Unrestricted_Access)
+   if not Gnoga.Server.Migration.Migrations_Handled_Command_Line (Connection, Migrations'Unrestricted_Access)
      --  If the command line was handled by the Migration package we don't
      --  run our regular application code.
-   then
+      then
       declare
          My_Window : Gnoga.Gui.Window.Window_Type;
          My_View   : Gnoga.Gui.View.Console.Console_View_Type;
@@ -101,16 +81,14 @@ begin
          My_View.Put_Line ("Using Gnoga.Server.Model.Table");
 
          declare
-            package Users is new Gnoga.Server.Model.Table
-              ("users", Connection);
+            package Users is new Gnoga.Server.Model.Table ("users", Connection);
 
-            package Foods is new Gnoga.Server.Model.Table
-              ("foods", Connection);
+            package Foods is new Gnoga.Server.Model.Table ("foods", Connection);
 
             Records : Gnoga.Server.Model.Queries.Active_Record_Array.Vector;
 
-            A_User  : Users.Active_Record;
-            A_Food  : Foods.Active_Record;
+            A_User : Users.Active_Record;
+            A_Food : Foods.Active_Record;
          begin
             A_User.Find_Where ("lastname='Botton'");
             A_Food.Value ("user_id", A_User.Value ("id"));
@@ -140,23 +118,19 @@ begin
                   F2 : Foods.Active_Record;
                begin
                   My_View.Put_Line ("Record : " & i'Img);
-                  My_View.Put_Line ("First Name : " &
-                                Records.Element (i).Value ("firstname"));
-                  My_View.Put_Line ("Last Name : " &
-                                Records.Element (i).Value ("lastname"));
+                  My_View.Put_Line ("First Name : " & Records.Element (i).Value ("firstname"));
+                  My_View.Put_Line ("Last Name : " & Records.Element (i).Value ("lastname"));
 
                   --  One to Many Users -> Foods
                   F := Foods.Find_Items (Parent => Records.Element (i));
                   for j in F.First_Index .. F.Last_Index loop
-                     My_View.Put_Line ("He Likes : " &
-                                   F.Element (j).Value ("food"));
+                     My_View.Put_Line ("He Likes : " & F.Element (j).Value ("food"));
                   end loop;
 
                   --  One to One Users -> Foods
                   F2.Find_Item (Parent => Records.Element (i));
                   if F2.Value ("id") /= "" then
-                     My_View.Put_Line ("The first thing he liked was " &
-                                   F2.Value ("food"));
+                     My_View.Put_Line ("The first thing he liked was " & F2.Value ("food"));
                   end if;
 
                end;

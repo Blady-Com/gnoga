@@ -23,7 +23,7 @@ procedure Tutorial_01 is
    My_Window : Gnoga.Gui.Window.Window_Type;
    --  My_Window will be connected during Initialize to the browser.
 
-   My_View   : Gnoga.Gui.View.Console.Console_View_Type;
+   My_View : Gnoga.Gui.View.Console.Console_View_Type;
    --  My_View when created will attach itself My_Window and manage our GUI
    --  view in the browser.
 begin

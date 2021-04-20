@@ -11,5 +11,6 @@ project Tutorial_06 is
    package Compiler renames Settings.Compiler;
    package Binder renames Settings.Binder;
    package Linker renames Settings.Linker;
+   package Pretty_Printer renames Settings.Pretty_Printer;
 
 end Tutorial_06;

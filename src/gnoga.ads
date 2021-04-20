@@ -110,6 +110,11 @@ package Gnoga is
    procedure Log (Occurrence : in Ada.Exceptions.Exception_Occurrence);
    --  Output exception occurence to log
 
+   procedure Log
+     (Message    : in String;
+      Occurrence : in Ada.Exceptions.Exception_Occurrence);
+   --  Output message with exception occurence to log
+
    procedure Flush_Log;
    --  Manual flush log file
 

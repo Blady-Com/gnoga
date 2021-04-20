@@ -107,7 +107,7 @@ package body Gnoga is
       function Translate_Character return String is
       begin
          if C < S.Last - 1 then
-            if S.slice (C, C + 1) = "\\" then
+            if S.Slice (C, C + 1) = "\\" then
                C := C + 2;
                return "\";
             elsif S.Slice (C, C + 1) = "\x" then
@@ -237,7 +237,7 @@ package body Gnoga is
          return S;
       end if;
 
-      if S (S.First) = Space or S (S.First) = tab then
+      if S (S.First) = Space or S (S.First) = Tab then
          return Left_Trim (S.Slice ((S.First + 1), S.Last));
       else
          return S;
@@ -259,7 +259,7 @@ package body Gnoga is
          return S;
       end if;
 
-      if S (S.Last) = Space or S (S.Last) = tab then
+      if S (S.Last) = Space or S (S.Last) = Tab then
          return Right_Trim (S.Slice (S.First, (S.Last - 1)));
       else
          return S;
@@ -282,7 +282,7 @@ package body Gnoga is
          return S;
       end if;
 
-      if S (S.First) = Space or S (S.First) = tab or S (S.First) = Slash then
+      if S (S.First) = Space or S (S.First) = Tab or S (S.First) = Slash then
          return Left_Trim_Slashes (S.Slice ((S.First + 1), S.Last));
       else
          return S;
@@ -359,8 +359,7 @@ package body Gnoga is
       Automatic_Flush := Flush_Auto;
    exception
       when E : others =>
-         Log ("Error failed to open log file " & File_Name);
-         Log (E);
+         Log ("Error failed to open log file " & File_Name, E);
    end Log_To_File;
 
    ---------
@@ -384,6 +383,14 @@ package body Gnoga is
       else
          Write_To_Console (Date_Message);
       end if;
+   end Log;
+
+   procedure Log
+     (Message    : in String;
+      Occurrence : in Ada.Exceptions.Exception_Occurrence)
+   is
+   begin
+      Log (Message & From_UTF_8 (Ada.Exceptions.Exception_Information (Occurrence)));
    end Log;
 
    procedure Log (Occurrence : in Ada.Exceptions.Exception_Occurrence) is

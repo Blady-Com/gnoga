@@ -19,7 +19,8 @@ package body Logo.Parser is
    end Check_Spelling;
    function Check_Matched
      (Source  : String;
-      Pointer : Integer) return Boolean
+      Pointer : Integer)
+      return Boolean
    is
    begin
       case Source (Pointer) is

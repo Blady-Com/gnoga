@@ -32,34 +32,37 @@ package body Random_Int.UI is
       High   : Integer;
       Result : Integer;
    begin -- On_Generate
-      Min_Error : begin
+      Min_Error :
+      begin
          Low := Integer'Value (App.Min_Entry.Value);
       exception -- Min_Error
-      when others =>
-         App.Min_Entry.Value (Value => "Error");
+         when others =>
+            App.Min_Entry.Value (Value => "Error");
 
-         return;
+            return;
       end Min_Error;
 
-      Max_Error : begin
+      Max_Error :
+      begin
          High := Integer'Value (App.Max_Entry.Value);
       exception -- Max_Error
-      when others =>
-         App.Max_Entry.Value (Value => "Error");
+         when others =>
+            App.Max_Entry.Value (Value => "Error");
 
-         return;
+            return;
       end Max_Error;
 
       if High < Low then
          Result := High;
-         High := Low;
-         Low := Result;
+         High   := Low;
+         Low    := Result;
       end if;
 
       App.Min_Entry.Value (Value => Low);
       App.Max_Entry.Value (Value => High);
 
-      Get_Value : declare
+      Get_Value :
+      declare
          subtype Desired is Integer range Low .. High;
 
          package Random is new Ada.Numerics.Discrete_Random (Result_Subtype => Desired);
@@ -68,11 +71,11 @@ package body Random_Int.UI is
       begin -- Get_Value
          Random.Reset (Gen => Gen);
          Result := Random.Random (Gen);
-         App.Result.Value (Value => Integer'Image (Result) );
+         App.Result.Value (Value => Integer'Image (Result));
       end Get_Value;
    exception -- On_Generate
-   when E : others =>
-      Gnoga.Log (Message => "On_Generate: " & Ada.Exceptions.Exception_Information (E) );
+      when E : others =>
+         Gnoga.Log (Message => "On_Generate: " & Ada.Exceptions.Exception_Information (E));
    end On_Generate;
 
    End_Message : constant String := "Random Integers ended.";
@@ -88,12 +91,13 @@ package body Random_Int.UI is
       App.Window.Close;
       App.Window.Close_Connection;
    exception -- On_Quit
-   when E : others =>
-      Gnoga.Log (Message => "On_Quit: " & Ada.Exceptions.Exception_Information (E) );
+      when E : others =>
+         Gnoga.Log (Message => "On_Quit: " & Ada.Exceptions.Exception_Information (E));
    end On_Quit;
 
-   procedure On_Connect (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-                         Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+   procedure On_Connect
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       Placeholder : constant String := "Enter an integer";
 
@@ -123,8 +127,8 @@ package body Random_Int.UI is
       App.Quit.Create (Parent => App.Input, Content => "Quit");
       App.Quit.On_Click_Handler (Handler => On_Quit'Access);
    exception -- On_Connect
-   when E : others =>
-      Gnoga.Log (Message => "On_Connect: " & Ada.Exceptions.Exception_Information (E) );
+      when E : others =>
+         Gnoga.Log (Message => "On_Connect: " & Ada.Exceptions.Exception_Information (E));
    end On_Connect;
 begin -- Random_Int.UI
    Gnoga.Application.Title (Name => "Random Integers");
@@ -133,6 +137,6 @@ begin -- Random_Int.UI
    Gnoga.Application.Multi_Connect.On_Connect_Handler (Event => On_Connect'Access);
    Gnoga.Application.Multi_Connect.Message_Loop;
 exception -- Random_Int.UI
-when E : others =>
-   Gnoga.Log (Message => Ada.Exceptions.Exception_Information (E) );
+   when E : others =>
+      Gnoga.Log (Message => Ada.Exceptions.Exception_Information (E));
 end Random_Int.UI;

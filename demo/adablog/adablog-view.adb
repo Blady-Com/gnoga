@@ -10,12 +10,9 @@ package body AdaBlog.View is
    begin
       Entry_Div.Create
         (Parent,
-         "<div class='blog_entry'>" &
-           "<div class='blog_user'>" & Data.Element ("username") & "</div>" &
-           "<div class='blog_date'>&nbsp;said on " &
-           Data.Element ("entry_date") & ":</div><br />" &
-           "<div class='blog_text'>" & Data.Element ("entry_text") &
-           "</div></div>");
+         "<div class='blog_entry'>" & "<div class='blog_user'>" & Data.Element ("username") & "</div>" &
+         "<div class='blog_date'>&nbsp;said on " & Data.Element ("entry_date") & ":</div><br />" &
+         "<div class='blog_text'>" & Data.Element ("entry_text") & "</div></div>");
    end Display_Blog_Entry;
 
    procedure New_Entry_Form
@@ -23,15 +20,13 @@ package body AdaBlog.View is
       Content     : in out Gnoga.Gui.Element.Common.DIV_Type'Class)
    is
    begin
-      Content.Create (Parent  => Main_Window,
-                      Content =>
-                        "<div><form>" &
-                        "Blog Entry: <br />" &
-                        "<textarea cols=60 rows=10 id='entry_text' " &
-                        "name='entry_text' autofocus></textarea>" &
-                        "<input type='button' id='submit_entry' " &
-                        "value='Submit'></form></div>",
-                      ID      => "main-body");
+      Content.Create
+        (Parent  => Main_Window,
+         Content =>
+           "<div><form>" & "Blog Entry: <br />" & "<textarea cols=60 rows=10 id='entry_text' " &
+           "name='entry_text' autofocus></textarea>" & "<input type='button' id='submit_entry' " &
+           "value='Submit'></form></div>",
+         ID => "main-body");
    end New_Entry_Form;
 
    procedure User_Panel
@@ -44,30 +39,19 @@ package body AdaBlog.View is
          Panel.Create
            (Parent  => Main_Window,
             Content =>
-              "<form>" &
-              "Username: <input type=text name='username' " &
-              "id='username' size='20' autofocus><br />" &
-              "Password : <input type=password name='pass' " &
-              "id='pass' size='20'><br />" &
-              "<div id='verify-pass' style='display:none'> " &
-              "Verify Password : <input type=password name='pass2' " &
-              "id='pass2' size='20'><br /></div>" &
-              "<input id='login-button' type='button'" &
-              " value='Submit'> " &
-              "<input id='create-button' type='button'" &
-              " value='Create'> <br/>" &
-              "</form>",
+              "<form>" & "Username: <input type=text name='username' " & "id='username' size='20' autofocus><br />" &
+              "Password : <input type=password name='pass' " & "id='pass' size='20'><br />" &
+              "<div id='verify-pass' style='display:none'> " & "Verify Password : <input type=password name='pass2' " &
+              "id='pass2' size='20'><br /></div>" & "<input id='login-button' type='button'" & " value='Submit'> " &
+              "<input id='create-button' type='button'" & " value='Create'> <br/>" & "</form>",
             ID => "left-panel");
       else
          Panel.Create
            (Parent  => Main_Window,
             Content =>
-              " Username: <b>" & User_Record.Element ("username") &
-              "</b><br /><br />" &
-              "<a href='/new_entry'>" &
-              "Add Entry</a><br /><br />" &
-              "<a href='/logout'>Logout</a ><br/>",
-            ID      => "left-panel");
+              " Username: <b>" & User_Record.Element ("username") & "</b><br /><br />" & "<a href='/new_entry'>" &
+              "Add Entry</a><br /><br />" & "<a href='/logout'>Logout</a ><br/>",
+            ID => "left-panel");
       end if;
    end User_Panel;
 
@@ -82,9 +66,7 @@ package body AdaBlog.View is
       Main_Window.Document.Load_CSS ("/css/adablog.css");
       Main_Window.Disable_Auto_Set_View;
 
-      Title_Div.Create (Parent  => Main_Window,
-                        Content => "AdaBlog",
-                        ID      => "title");
+      Title_Div.Create (Parent => Main_Window, Content => "AdaBlog", ID => "title");
       Title_Div.Place_Inside_Top_Of (Main_Window.Document.Body_Element.all);
 
       Left_Panel.Place_After (Title_Div);

@@ -27,10 +27,7 @@
 
 package Match_3 is
 
-   type Cell is
-      (empty,
-       tile_1, tile_2, tile_3, tile_4, tile_5, tile_6, tile_7, tile_8, tile_9, tile_10
-      );
+   type Cell is (empty, tile_1, tile_2, tile_3, tile_4, tile_5, tile_6, tile_7, tile_8, tile_9, tile_10);
    pragma Ordered (Cell);
 
    subtype Simple_tile is Cell range tile_1 .. tile_10;
@@ -47,14 +44,15 @@ package Match_3 is
    --
    type Board is array (Positive range <>, Positive range <>) of Cell;
 
-   procedure Fill (b : in out Board; p : Tile_prob);
+   procedure Fill
+     (b : in out Board;
+      p :        Tile_prob);
 
-   function Find_any_match (b : Board) return Boolean;
+   function Find_any_match
+     (b : Board)
+      return Boolean;
 
-   type Match_kind is (
-      Hor_3, Hor_4, Hor_5p,
-      Ver_3, Ver_4, Ver_5p
-   );
+   type Match_kind is (Hor_3, Hor_4, Hor_5p, Ver_3, Ver_4, Ver_5p);
    pragma Ordered (Match_kind);
 
    type Cell_pos is record
@@ -69,30 +67,39 @@ package Match_3 is
    ---------------
 
    type Match_item is record
-     kind : Match_kind;
-     pos  : Cell_pos;  --  Pos is the top / left cell of a match
+      kind : Match_kind;
+      pos  : Cell_pos;  --  Pos is the top / left cell of a match
    end record;
 
    type Match_list is array (Positive range <>) of Match_item;
 
-   function Matches (b : Board) return Match_list;
+   function Matches
+     (b : Board)
+      return Match_list;
 
-   procedure Empty_matching_cells (b : in out Board; ma : Match_list);
+   procedure Empty_matching_cells
+     (b  : in out Board;
+      ma :        Match_list);
 
    ------------------------------------------------------------------------
    --  Gravity: fill holes with above tiles; on top row, with new tiles  --
    ------------------------------------------------------------------------
 
    type Gravity_item is record
-     new_content : Cell;
-     from, to    : Cell_pos;
+      new_content : Cell;
+      from, to    : Cell_pos;
    end record;
 
    type Gravity_list is array (Positive range <>) of Gravity_item;
 
-   function Gravity_step (b : Board; p : Tile_prob) return Gravity_list;
+   function Gravity_step
+     (b : Board;
+      p : Tile_prob)
+      return Gravity_list;
 
-   procedure Apply_gravity_moves (b : in out Board; gl : Gravity_list);
+   procedure Apply_gravity_moves
+     (b  : in out Board;
+      gl :        Gravity_list);
 
    --  TBD:
    --        - detect when there is no possible successful swap

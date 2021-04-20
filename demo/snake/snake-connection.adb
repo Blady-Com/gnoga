@@ -23,14 +23,9 @@ package body Snake.Connection is
    begin
       Display.Create
         (Main_Window,
-         "<H1>" & Snake.Title & "</H1>" &
-           "<br />" &
-           "<p>Use your kebyoard to move Sparky to pick up batteries.</p>" &
-           "<i>Be careful...</i><br />" &
-           "If sparky hits his tail he electrocutes" &
-           " himself to <b>death!!</b>" &
-           "<br /><br />" &
-           "Use the arrow keys or a,w,s,d for direction keys.<br/><br/>");
+         "<H1>" & Snake.Title & "</H1>" & "<br />" & "<p>Use your kebyoard to move Sparky to pick up batteries.</p>" &
+         "<i>Be careful...</i><br />" & "If sparky hits his tail he electrocutes" & " himself to <b>death!!</b>" &
+         "<br /><br />" & "Use the arrow keys or a,w,s,d for direction keys.<br/><br/>");
       Main_Window.Set_View (Display);
       Display.Text_Alignment (Gnoga.Gui.Element.Center);
 
@@ -53,11 +48,9 @@ package body Snake.Connection is
 
    function New_Food return Point_Type is
 
-      subtype X_Range is
-        Integer range 0 .. (Display_Width / Segment_Size) - 1;
+      subtype X_Range is Integer range 0 .. (Display_Width / Segment_Size) - 1;
 
-      subtype Y_Range is
-        Integer range 0 .. (Display_Height / Segment_Size) - 1;
+      subtype Y_Range is Integer range 0 .. (Display_Height / Segment_Size) - 1;
 
       package Random_X is new Ada.Numerics.Discrete_Random (X_Range);
       package Random_Y is new Ada.Numerics.Discrete_Random (Y_Range);
@@ -70,7 +63,7 @@ package body Snake.Connection is
       Random_X.Reset (X_Gen);
       Random_Y.Reset (Y_Gen);
 
-      Food_Cell :=  (Random_X.Random (X_Gen), Random_Y.Random (Y_Gen));
+      Food_Cell := (Random_X.Random (X_Gen), Random_Y.Random (Y_Gen));
 
       return Food_Cell;
    exception
@@ -79,22 +72,22 @@ package body Snake.Connection is
          return Food_Cell;
    end New_Food;
 
-   type App_Data is new Connection_Data_Type with
-      record
-         Main_Window : Pointer_To_Window_Class;
-         Background  : View_Type;
-         Display     : Canvas_Type;
+   type App_Data is new Connection_Data_Type with record
+      Main_Window : Pointer_To_Window_Class;
+      Background  : View_Type;
+      Display     : Canvas_Type;
 
-         Score           : Integer              := 0;
-         Snake           : Snake_Arrays.Vector;
-         Snake_Direction : Snake_Direction_Type := Right;
-         Food            : Point_Type           := New_Food;
-      end record;
+      Score           : Integer              := 0;
+      Snake           : Snake_Arrays.Vector;
+      Snake_Direction : Snake_Direction_Type := Right;
+      Food            : Point_Type           := New_Food;
+   end record;
    type App_Access is access all App_Data;
 
-   procedure Paint (Context   : in out Context_2D_Type;
-                    App       : in     App_Access;
-                    Game_Over : out    Boolean);
+   procedure Paint
+     (Context   : in out Context_2D_Type;
+      App       : in     App_Access;
+      Game_Over :    out Boolean);
 
    ----------------
    -- Start_Game --
@@ -117,9 +110,7 @@ package body Snake.Connection is
       App.Display.Border (Width => "thin");
       App.Display.Border_Radius ("10px");
       App.Display.Background_Color ("white");
-      App.Display.Shadow (Horizontal_Position => "3px",
-                          Vertical_Position   => "3px",
-                          Blur                => "5px");
+      App.Display.Shadow (Horizontal_Position => "3px", Vertical_Position => "3px", Blur => "5px");
 
       --  Initialize Snake
       for i in reverse 0 .. Initial_Length - 1 loop
@@ -145,8 +136,9 @@ package body Snake.Connection is
          Gnoga.Log ("Exception in Start_Game");
    end Start_Game;
 
-   procedure On_Key_Down (Object : in out Base_Type'Class;
-                          Key    : in     Keyboard_Event_Record)
+   procedure On_Key_Down
+     (Object : in out Base_Type'Class;
+      Key    : in     Keyboard_Event_Record)
    is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
@@ -164,24 +156,29 @@ package body Snake.Connection is
          Gnoga.Log ("Exception in On_Key_Down");
    end On_Key_Down;
 
-   procedure Paint (Context   : in out Context_2D_Type;
-                    App       : in     App_Access;
-                    Game_Over : out    Boolean)
+   procedure Paint
+     (Context   : in out Context_2D_Type;
+      App       : in     App_Access;
+      Game_Over :    out Boolean)
    is
 
       procedure Draw_Segment (Cell : Point_Type);
 
       procedure Draw_Segment (Cell : Point_Type) is
          Cell_Rectangle : constant Rectangle_Type :=
-           (Cell.X * Segment_Size, Cell.Y * Segment_Size,
-            Segment_Size, Segment_Size);
+           (Cell.X * Segment_Size, Cell.Y * Segment_Size, Segment_Size, Segment_Size);
       begin
          Context.Fill_Rectangle (Cell_Rectangle);
       end Draw_Segment;
 
-      function Self_Collision (Cell : Point_Type) return Boolean;
+      function Self_Collision
+        (Cell : Point_Type)
+         return Boolean;
 
-      function Self_Collision (Cell : Point_Type) return Boolean is
+      function Self_Collision
+        (Cell : Point_Type)
+         return Boolean
+      is
       begin
          for i in App.Snake.First_Index .. App.Snake.Last_Index loop
             declare
@@ -196,9 +193,14 @@ package body Snake.Connection is
          return False;
       end Self_Collision;
 
-      function Food_Collision (Cell : Point_Type) return Boolean;
+      function Food_Collision
+        (Cell : Point_Type)
+         return Boolean;
 
-      function Food_Collision (Cell : Point_Type) return Boolean is
+      function Food_Collision
+        (Cell : Point_Type)
+         return Boolean
+      is
       begin
          if Cell.X = App.Food.X and Cell.Y = App.Food.Y then
             return True;
@@ -224,10 +226,8 @@ package body Snake.Connection is
                Head_Cell.Y := Head_Cell.Y + 1;
          end case;
 
-         if
-           Head_Cell.X < 0 or Head_Cell.X * Segment_Size >= Display_Width or
-           Head_Cell.Y < 0 or Head_Cell.Y * Segment_Size >= Display_Height or
-           Self_Collision (Head_Cell)
+         if Head_Cell.X < 0 or Head_Cell.X * Segment_Size >= Display_Width or Head_Cell.Y < 0 or
+           Head_Cell.Y * Segment_Size >= Display_Height or Self_Collision (Head_Cell)
          then
             Context.Fill_Color ("red");
             Context.Font (Height => "20px");
@@ -246,8 +246,7 @@ package body Snake.Connection is
                --  clear old score
                Context.Fill_Color ("white");
                Context.Font (Height => "12px");
-               Context.Fill_Text
-                 ("Score :" & App.Score'Img, 5, Display_Height - 15);
+               Context.Fill_Text ("Score :" & App.Score'Img, 5, Display_Height - 15);
 
                App.Score := App.Score + 10;
 
@@ -278,7 +277,7 @@ package body Snake.Connection is
 
    procedure On_Connect_Default
      (Main_Window : in out Window_Type'Class;
-      Connection  : access Connection_Holder_Type)
+      Connection  :        access Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
       App : constant App_Access := new App_Data;
@@ -300,7 +299,5 @@ package body Snake.Connection is
    end On_Connect_Default;
 
 begin
-   On_Connect_Handler
-     (Event => Snake.Connection.On_Connect_Default'Unrestricted_Access,
-      Path  => "default");
+   On_Connect_Handler (Event => Snake.Connection.On_Connect_Default'Unrestricted_Access, Path => "default");
 end Snake.Connection;

@@ -13,22 +13,17 @@ procedure AdaBlog.Main is
 
    pragma Linker_Options ("-lsqlite3");
 begin
-   if
-     Gnoga.Server.Migration.Migrations_Handled_Command_Line
-       (Connection, Migrations'Unrestricted_Access)
-   then
+   if Gnoga.Server.Migration.Migrations_Handled_Command_Line (Connection, Migrations'Unrestricted_Access) then
       GNAT.OS_Lib.OS_Exit (0);
    end if;
 
    Application.Title ("AdaBlog - Gnoga Demo");
-   Application.HTML_On_Close
-     ("<b>Connection to Application has been terminated</b>");
-   Application.Multi_Connect.Initialize (Boot  => "debug.html");
+   Application.HTML_On_Close ("<b>Connection to Application has been terminated</b>");
+   Application.Multi_Connect.Initialize (Boot => "debug.html");
 
    Application.Multi_Connect.Message_Loop;
 exception
    when E : others =>
-      Log (Ada.Exceptions.Exception_Name (E) & " - " &
-             Ada.Exceptions.Exception_Message (E));
+      Log (Ada.Exceptions.Exception_Name (E) & " - " & Ada.Exceptions.Exception_Message (E));
 
 end AdaBlog.Main;

@@ -12,12 +12,12 @@ project Localize is
       for Executable ("localize-main.adb") use "localize";
    end Builder;
 
-   package Compiler renames Settings.Compiler;
+   package Compiler is
+      for Default_Switches ("Ada") use Settings.Compiler'Default_Switches ("Ada") & "-gnatyN";
+   end Compiler;
+
    package Binder renames Settings.Binder;
    package Linker renames Settings.Linker;
-
-   package Pretty_Printer is
-      for Default_Switches ("Ada") use ("-M120", "-W8", "--comments-unchanged");
-   end Pretty_Printer;
+   package Pretty_Printer renames Settings.Pretty_Printer;
 
 end Localize;

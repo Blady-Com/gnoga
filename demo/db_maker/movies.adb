@@ -18,10 +18,16 @@ procedure Movies is
       Female_Lead : Strng;
    end record;
 
-   function "=" (Left : Movie_Info; Right : Movie_Info) return Boolean is
-      (Left.Title = Right.Title and Left.Year = Right.Year and Left.Director = Right.Director);
+   function "="
+     (Left  : Movie_Info;
+      Right : Movie_Info)
+      return Boolean is (Left.Title = Right.Title and Left.Year = Right.Year and Left.Director = Right.Director);
 
-   function "<" (Left : Movie_Info; Right : Movie_Info) return Boolean is
+   function "<"
+     (Left  : Movie_Info;
+      Right : Movie_Info)
+      return Boolean
+   is
       -- Empty
    begin -- "<"
       if Left.Title /= Right.Title then
@@ -37,70 +43,77 @@ procedure Movies is
 
    subtype Field_Number is Integer range 1 .. 6;
 
-   function Field_Name (Field : in Field_Number) return String is
+   function Field_Name
+     (Field : in Field_Number)
+      return String
+   is
       -- Empty
    begin -- Field_Name
       case Field is
-      when 1 =>
-         return "Title";
-      when 2 =>
-         return "Year";
-      when 3 =>
-         return "Director";
-      when 4 =>
-         return "Screenplay";
-      when 5 =>
-         return "Male Lead";
-      when 6 =>
-         return "Female Lead";
+         when 1 =>
+            return "Title";
+         when 2 =>
+            return "Year";
+         when 3 =>
+            return "Director";
+         when 4 =>
+            return "Screenplay";
+         when 5 =>
+            return "Male Lead";
+         when 6 =>
+            return "Female Lead";
       end case;
    end Field_Name;
 
-   function Value (Item : in Movie_Info; Field : in Field_Number) return String is
+   function Value
+     (Item  : in Movie_Info;
+      Field : in Field_Number)
+      return String
+   is
       -- Empty
    begin -- Value
       case Field is
-      when 1 =>
-         return +Item.Title;
-      when 2 =>
-         return +Item.Year;
-      when 3 =>
-         return +Item.Director;
-      when 4 =>
-         return +Item.Writer;
-      when 5 =>
-         return +Item.Male_Lead;
-      when 6 =>
-         return +Item.Female_Lead;
+         when 1 =>
+            return +Item.Title;
+         when 2 =>
+            return +Item.Year;
+         when 3 =>
+            return +Item.Director;
+         when 4 =>
+            return +Item.Writer;
+         when 5 =>
+            return +Item.Male_Lead;
+         when 6 =>
+            return +Item.Female_Lead;
       end case;
    end Value;
 
-   procedure Put (Item : in out Movie_Info; Field : in Field_Number; Value : in String) is
+   procedure Put
+     (Item  : in out Movie_Info;
+      Field : in     Field_Number;
+      Value : in     String)
+   is
       -- Empty
    begin -- Put
       case Field is
-      when 1 =>
-         Item.Title.Assign (From => Value);
-      when 2 =>
-         Item.Year.Assign (From => Value);
-      when 3 =>
-         Item.Director.Assign (From => Value);
-      when 4 =>
-         Item.Writer.Assign (From => Value);
-      when 5 =>
-         Item.Male_Lead.Assign (From => Value);
-      when 6 =>
-         Item.Female_Lead.Assign (From => Value);
+         when 1 =>
+            Item.Title.Assign (From => Value);
+         when 2 =>
+            Item.Year.Assign (From => Value);
+         when 3 =>
+            Item.Director.Assign (From => Value);
+         when 4 =>
+            Item.Writer.Assign (From => Value);
+         when 5 =>
+            Item.Male_Lead.Assign (From => Value);
+         when 6 =>
+            Item.Female_Lead.Assign (From => Value);
       end case;
    end Put;
 
-   package Movie_DB is new DB_Maker (Max_Field_Length => 100,
-                                     File_Name        => "Movies",
-                                     Field_Number     => Field_Number,
-                                     Field_Name       => Field_Name,
-                                     Element          => Movie_Info,
-                                     Value            => Value,
-                                     Put              => Put);
+   package Movie_DB is new DB_Maker
+     (Max_Field_Length => 100, File_Name => "Movies", Field_Number => Field_Number, Field_Name => Field_Name,
+      Element          => Movie_Info, Value => Value, Put => Put);
 begin -- Movies
    null;
 end Movies;

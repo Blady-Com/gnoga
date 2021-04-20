@@ -48,12 +48,9 @@ package body New_Score_Dialog_Pkg is
 --          (Win   : access New_Score_Dialog_Record'Class;
 --           Event : Gdk_Event) return Boolean;
       procedure On_Enter_Key (Object : in out Gnoga.Gui.Base.Base_Type'Class);
-      procedure On_OK_Button_Clicked
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class);
-      procedure On_New_Score_Dialog_Show
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class);
-      procedure On_New_Score_Dialog_Hide
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+      procedure On_OK_Button_Clicked (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+      procedure On_New_Score_Dialog_Show (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+      procedure On_New_Score_Dialog_Hide (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
    end Callbacks;
 
@@ -72,49 +69,37 @@ package body New_Score_Dialog_Pkg is
 --           return True;
 --        end On_New_Score_Dialog_Delete;
 
-      procedure On_Enter_Key
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-      is
+      procedure On_Enter_Key (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
          pragma Unreferenced (Object);
          use Scores_Window_pkg;
       begin
          if not New_Score_Dialog.Hidden then
             --           Hide (New_Score_Dialog);
             New_Score_Dialog.Hidden;
-            Set_Score
-              (New_Score_Dialog.Name_Entry.Value,
-               Block_Engine.Get_Score (Main_Window.Engine.all));
+            Set_Score (New_Score_Dialog.Name_Entry.Value, Block_Engine.Get_Score (Main_Window.Engine.all));
             --           Show_All (Scores_Win);
             Scores_Win.Hidden (False);
          end if;
       end On_Enter_Key;
 
-      procedure On_OK_Button_Clicked
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-      is
+      procedure On_OK_Button_Clicked (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
          pragma Unreferenced (Object);
          use Scores_Window_pkg;
       begin
 --           Hide (New_Score_Dialog);
          New_Score_Dialog.Hidden;
-         Set_Score
-           (New_Score_Dialog.Name_Entry.Value,
-            Block_Engine.Get_Score (Main_Window.Engine.all));
+         Set_Score (New_Score_Dialog.Name_Entry.Value, Block_Engine.Get_Score (Main_Window.Engine.all));
 --           Show_All (Scores_Win);
          Scores_Win.Hidden (False);
       end On_OK_Button_Clicked;
 
-      procedure On_New_Score_Dialog_Show
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-      is
+      procedure On_New_Score_Dialog_Show (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
          pragma Unreferenced (Object);
       begin
          Main_Window.Pause (True);
       end On_New_Score_Dialog_Show;
 
-      procedure On_New_Score_Dialog_Hide
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-      is
+      procedure On_New_Score_Dialog_Hide (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
          pragma Unreferenced (Object);
       begin
          Main_Window.Pause (False);

@@ -28,11 +28,11 @@
 --------------------------------------------------------------------------------
 with Ada.Unchecked_Conversion;
 with Ada.Numerics.Elementary_Functions;
-with Ada.Integer_Text_Io;    use Ada.Integer_Text_Io;
+with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 
 with Othello_Pkg.Callbacks;
 
-with Othello_Types;          use Othello_Types;
+with Othello_Types; use Othello_Types;
 
 with Gnoga.Application.Multi_Connect;
 
@@ -43,13 +43,12 @@ package body Othello_Pkg is
    Player_Move   : constant Othello_Types.Bead_Color := Blue;
    Computer_Move : constant Othello_Types.Bead_Color := Red;
 
-   type Possible_Moves_Record is
-      record
-         Row    : Othello_Types.Valid_Row;
-         Column : Othello_Types.Valid_Column;
-         Check  : Integer;
-         Side   : Integer;
-      end record;
+   type Possible_Moves_Record is record
+      Row    : Othello_Types.Valid_Row;
+      Column : Othello_Types.Valid_Column;
+      Check  : Integer;
+      Side   : Integer;
+   end record;
    type Possible_Moves_Matrix is array (Positive range <>) of Possible_Moves_Record;
 
    -----------------------
@@ -58,63 +57,59 @@ package body Othello_Pkg is
    type Othello_Integer is mod 256;
 
    ----------------------------------------------------------------------------
-   procedure Beep(Othello : in out Othello_Types.Othello_Record'Class)
-   is
+   procedure Beep (Othello : in out Othello_Types.Othello_Record'Class) is
       --Bell : constant Character := Ada.Characters.Latin_1.Bel;
    begin
-      if Othello.Main_Statusbar.Text(1..7) /= "Invalid" then
-         Othello.Main_Statusbar.Text("Invalid Move.  " & Othello.Main_Statusbar.Text);
+      if Othello.Main_Statusbar.Text (1 .. 7) /= "Invalid" then
+         Othello.Main_Statusbar.Text ("Invalid Move.  " & Othello.Main_Statusbar.Text);
       end if;
       --Ada.Text_Io.Put (Bell);
    end Beep;
 
    ----------------------------------------------------------------------------
-   procedure Put_Bead
-      (Location : in out Othello_Types.Cell_Record)
-   is
+   procedure Put_Bead (Location : in out Othello_Types.Cell_Record) is
 
    begin
 
       if Location.Cell = Blue then
-         Location.Pixmap.Background_Color("Blue");
+         Location.Pixmap.Background_Color ("Blue");
       else
-         Location.Pixmap.Background_Color("Red");
+         Location.Pixmap.Background_Color ("Red");
       end if;
 
    end Put_Bead;
    ----------------------------------------------------------------------------
-   procedure Remove_Bead (Location : in out Othello_Types.Cell_Record)
-   is
+   procedure Remove_Bead (Location : in out Othello_Types.Cell_Record) is
    begin
-      Location.Pixmap.Background_Color(Location.Button.Background_Color);
+      Location.Pixmap.Background_Color (Location.Button.Background_Color);
    end Remove_Bead;
    ----------------------------------------------------------------------------
-   procedure Flip_Bead (Location : in out Cell_Record)
-   is
+   procedure Flip_Bead (Location : in out Cell_Record) is
    begin
       Remove_Bead (Location);
       Put_Bead (Location);
    end Flip_Bead;
    ----------------------------------------------------------------------------
-   function Check_Move_1 (This_Board : in Board_Matrix;
-                          Row        : in Othello_Types.Valid_Row;
-                          Column     : in Othello_Types.Valid_Column;
-                          Dx         : in Integer;
-                          Dy         : in Integer;
-                          Player     : in Bead_Color)
-                         return Integer
+   function Check_Move_1
+     (This_Board : in Board_Matrix;
+      Row        : in Othello_Types.Valid_Row;
+      Column     : in Othello_Types.Valid_Column;
+      Dx         : in Integer;
+      Dy         : in Integer;
+      Player     : in Bead_Color)
+      return Integer
    is
       DRow    : Integer := Integer (Row);
       DColumn : Integer := Integer (Column);
       Factor  : Integer := 0;
    begin -- Check_Move_1
       loop
-         DRow    := DRow    + Dy;
+         DRow    := DRow + Dy;
          DColumn := DColumn + Dx;
          exit when not (DColumn in Othello_Types.Valid_Column and DRow in Othello_Types.Valid_Row);
          if This_Board (Othello_Types.Valid_Row (DRow), Othello_Types.Valid_Column (DColumn)).Cell = Empty then
             return 0;
-         elsif This_Board (Othello_Types.Valid_Row (DRow), Othello_Types.Valid_Column(DColumn)).Cell = Player then
+         elsif This_Board (Othello_Types.Valid_Row (DRow), Othello_Types.Valid_Column (DColumn)).Cell = Player then
             return Factor;
          elsif (DColumn = 1 or DColumn = 8 or DRow = 1 or DRow = 8) then
             Factor := Factor + 10;
@@ -125,31 +120,33 @@ package body Othello_Pkg is
       return 0;
    end Check_Move_1;
    ----------------------------------------------------------------------------
-   function Check_Move (This_Board : in Board_Matrix;
-                        Row        : in Othello_Types.Valid_Row;
-                        Column     : in Othello_Types.Valid_Column;
-                        Player     : in Bead_color)
-                       return Integer
+   function Check_Move
+     (This_Board : in Board_Matrix;
+      Row        : in Othello_Types.Valid_Row;
+      Column     : in Othello_Types.Valid_Column;
+      Player     : in Bead_Color)
+      return Integer
    is
    begin -- Check_Move
       if This_Board (Row, Column).Cell /= Empty then
          return 0;
       else
-         return (Check_Move_1 (This_Board, Row, Column,  0,  1, Player) +
-                 Check_Move_1 (This_Board, Row, Column,  1,  0, Player) +
-                 Check_Move_1 (This_Board, Row, Column,  0, -1, Player) +
-                 Check_Move_1 (This_Board, Row, Column, -1,  0, Player) +
-                 Check_Move_1 (This_Board, Row, Column,  1,  1, Player) +
-                 Check_Move_1 (This_Board, Row, Column,  1, -1, Player) +
-                 Check_Move_1 (This_Board, Row, Column, -1,  1, Player) +
-                 Check_Move_1 (This_Board, Row, Column, -1, -1, Player));
+         return
+           (Check_Move_1 (This_Board, Row, Column, 0, 1, Player) +
+            Check_Move_1 (This_Board, Row, Column, 1, 0, Player) +
+            Check_Move_1 (This_Board, Row, Column, 0, -1, Player) +
+            Check_Move_1 (This_Board, Row, Column, -1, 0, Player) +
+            Check_Move_1 (This_Board, Row, Column, 1, 1, Player) +
+            Check_Move_1 (This_Board, Row, Column, 1, -1, Player) +
+            Check_Move_1 (This_Board, Row, Column, -1, 1, Player) +
+            Check_Move_1 (This_Board, Row, Column, -1, -1, Player));
       end if;
    end Check_Move;
    ----------------------------------------------------------------------------
    function Count_Bead
-      (Playing_Board : in Othello_Types.Board_Matrix;
-       Color         : in Bead_Color)
-       return integer
+     (Playing_Board : in Othello_Types.Board_Matrix;
+      Color         : in Bead_Color)
+      return Integer
    is
       Count : Integer := 0;
    begin
@@ -165,30 +162,31 @@ package body Othello_Pkg is
 
    ----------------------------------------------------------------------------
    procedure Update_Count
-      (Othello       : in out Othello_Types.Othello_Record'Class;
-       Playing_Board : in out Othello_Types.Board_Matrix)
+     (Othello       : in out Othello_Types.Othello_Record'Class;
+      Playing_Board : in out Othello_Types.Board_Matrix)
    is
-      S          : String (1 .. 2);
+      S : String (1 .. 2);
    begin
-      Put (S, Count_Bead (Playing_Board,Blue));
-      Othello.Blue_Statusbar.Text("Blue = " & S);
+      Put (S, Count_Bead (Playing_Board, Blue));
+      Othello.Blue_Statusbar.Text ("Blue = " & S);
 
-      Put (S, Count_Bead (Playing_Board,Red));
-      Othello.Red_Statusbar.Text("Red = " & S);
+      Put (S, Count_Bead (Playing_Board, Red));
+      Othello.Red_Statusbar.Text ("Red = " & S);
    end Update_Count;
    ----------------------------------------------------------------------------
-   procedure Put_Move_1 (This_Board : in out Board_Matrix;
-                         Row        : in     Othello_Types.Valid_Row;
-                         Column     : in     Othello_Types.Valid_Column;
-                         Dx         : in     Integer;
-                         Dy         : in     Integer;
-                         Player     : in     Bead_Color)
+   procedure Put_Move_1
+     (This_Board : in out Board_Matrix;
+      Row        : in     Othello_Types.Valid_Row;
+      Column     : in     Othello_Types.Valid_Column;
+      Dx         : in     Integer;
+      Dy         : in     Integer;
+      Player     : in     Bead_Color)
    is
       DRow    : Integer := Integer (Row);
       DColumn : Integer := Integer (Column);
    begin
       loop
-         DRow    := DRow    + Dy;
+         DRow    := DRow + Dy;
          DColumn := DColumn + Dx;
          exit when not (DColumn in Othello_Types.Valid_Column and DRow in Othello_Types.Valid_Row);
          if This_Board (DRow, DColumn).Cell = Empty or This_Board (DRow, DColumn).Cell = Player then
@@ -202,11 +200,12 @@ package body Othello_Pkg is
       end loop;
    end Put_Move_1;
    ----------------------------------------------------------------------------
-   procedure Put_Move (Othello    : in out Othello_Types.Othello_Record'Class;
-                       This_Board : in out Board_Matrix;
-                       Row        : in     Othello_Types.Valid_Row;
-                       Column     : in     Othello_Types.Valid_Column;
-                       Player     : in     Bead_Color)
+   procedure Put_Move
+     (Othello    : in out Othello_Types.Othello_Record'Class;
+      This_Board : in out Board_Matrix;
+      Row        : in     Othello_Types.Valid_Row;
+      Column     : in     Othello_Types.Valid_Column;
+      Player     : in     Bead_Color)
    is
    begin
       This_Board (Row, Column).Cell := Player;
@@ -224,13 +223,14 @@ package body Othello_Pkg is
       end loop;
    end Put_Move;
    ----------------------------------------------------------------------------
-   procedure Copy_Board (Target_Board :    out Board_Matrix;
-                         Source_Board : in     Board_Matrix;
-                         Flag         : in     Boolean := True)
+   procedure Copy_Board
+     (Target_Board :    out Board_Matrix;
+      Source_Board : in     Board_Matrix;
+      Flag         : in     Boolean := True)
    is
       procedure Copy_Cell
-         (Source : in  Othello_Types.Cell_Record;
-          Target : out Othello_Types.Cell_Record)
+        (Source : in     Othello_Types.Cell_Record;
+         Target :    out Othello_Types.Cell_Record)
       is
       begin
          Target.Cell          := Source.Cell;
@@ -242,54 +242,57 @@ package body Othello_Pkg is
    begin
       for I in Othello_Types.Valid_Row loop
          for J in Othello_Types.Valid_Column loop
-            Copy_Cell
-               (Source => Source_Board(I,J),
-                Target => Target_Board(I,J));
+            Copy_Cell (Source => Source_Board (I, J), Target => Target_Board (I, J));
             --Target_Board (I, J) := Source_Board (I, J);
             Target_Board (I, J).Flag := Flag;
          end loop;
       end loop;
    end Copy_Board;
    ----------------------------------------------------------------------------
-   function No_Take (This_Board : in Board_Matrix;
-                     Row        : in Othello_Types.Valid_Row;
-                     Column     : in Othello_Types.Valid_Column)
-                    return Boolean
+   function No_Take
+     (This_Board : in Board_Matrix;
+      Row        : in Othello_Types.Valid_Row;
+      Column     : in Othello_Types.Valid_Column)
+      return Boolean
    is
 
-      function No_Take_1 (This_Board : in Board_Matrix;
-                          Row        : in Othello_Types.Valid_Row;
-                          Column     : in Othello_Types.Valid_Column;
-                          Dx         : in Integer;
-                          Dy         : in Integer)
-                         return Boolean
+      function No_Take_1
+        (This_Board : in Board_Matrix;
+         Row        : in Othello_Types.Valid_Row;
+         Column     : in Othello_Types.Valid_Column;
+         Dx         : in Integer;
+         Dy         : in Integer)
+         return Boolean
       is
          ----------------------------------------------------------------------
-         function No_Take_2 (This_Board : in Board_Matrix;
-                             Row        : in Othello_Types.Valid_Row;
-                             Column     : in Othello_Types.Valid_Column;
-                             Dx         : in Integer;
-                             Dy         : in Integer)
-                            return Othello_Types.Cell_Status
+         function No_Take_2
+           (This_Board : in Board_Matrix;
+            Row        : in Othello_Types.Valid_Row;
+            Column     : in Othello_Types.Valid_Column;
+            Dx         : in Integer;
+            Dy         : in Integer)
+            return Othello_Types.Cell_Status
          is
             DRow    : Integer := Row;
-            DColumn : integer := Column;
+            DColumn : Integer := Column;
          begin -- No_Take_2
-            DRow    := DRow    + Dy;
+            DRow    := DRow + Dy;
             DColumn := DColumn + Dx;
             if DRow in Othello_Types.Valid_Row and DColumn in Othello_Types.Valid_Column then
                while This_Board (DRow, DColumn).Cell = Empty loop
-                  DRow    := DRow    + Dy;
+                  DRow    := DRow + Dy;
                   DColumn := DColumn + Dx;
-                  if (DRow < 1 or DRow > 8 or DColumn < 1 or DColumn > 8) or else
-                    This_Board (DRow, DColumn).Cell = Empty then
+                  if (DRow < 1 or DRow > 8 or DColumn < 1 or DColumn > 8)
+                    or else This_Board (DRow, DColumn).Cell = Empty
+                  then
                      return Player_Move;
                   end if;
                end loop;
             end if;
-            while (DRow >= 1 and DRow <= 8 and DColumn >= 1 and DColumn <= 8) and then
-              This_Board (DRow, DColumn).Cell = Computer_Move loop
-               DRow    := DRow    + Dy;
+            while (DRow >= 1 and DRow <= 8 and DColumn >= 1 and DColumn <= 8)
+              and then This_Board (DRow, DColumn).Cell = Computer_Move
+            loop
+               DRow    := DRow + Dy;
                DColumn := DColumn + Dx;
             end loop;
             if DRow < 1 or DRow > 8 or DColumn < 1 or DColumn > 8 then
@@ -301,26 +304,24 @@ package body Othello_Pkg is
          C1, C2 : Othello_Types.Cell_Status;
 
       begin -- No_Take_1
-         C1 := No_Take_2 (This_Board, Row, Column,  Dx,  Dy);
+         C1 := No_Take_2 (This_Board, Row, Column, Dx, Dy);
          C2 := No_Take_2 (This_Board, Row, Column, -Dx, -Dy);
-         return not ((C1 = Player_Move and C2 = Empty) or
-                     (C1 = Empty and C2 = Player_Move));
+         return not ((C1 = Player_Move and C2 = Empty) or (C1 = Empty and C2 = Player_Move));
       end No_Take_1;
 
    begin -- No_Take
-      return (No_Take_1 (This_Board, Row, Column, 0,  1) and
-              No_Take_1 (This_Board, Row, Column, 1,  1) and
-              No_Take_1 (This_Board, Row, Column, 1,  0) and
-              No_Take_1 (This_Board, Row, Column, 1, -1));
+      return
+        (No_Take_1 (This_Board, Row, Column, 0, 1) and No_Take_1 (This_Board, Row, Column, 1, 1) and
+         No_Take_1 (This_Board, Row, Column, 1, 0) and No_Take_1 (This_Board, Row, Column, 1, -1));
    end No_Take;
    ----------------------------------------------------------------------------
    function Side_Move
-      (Othello       : in out Othello_Types.Othello_Record'Class;
-       Playing_Board : in out Othello_Types.Board_Matrix;
-       Row           : in Othello_Types.Valid_Row;
-       Column        : in Othello_Types.Valid_Column;
-       Computer      : in Bead_Color)
-       return Integer
+     (Othello       : in out Othello_Types.Othello_Record'Class;
+      Playing_Board : in out Othello_Types.Board_Matrix;
+      Row           : in     Othello_Types.Valid_Row;
+      Column        : in     Othello_Types.Valid_Column;
+      Computer      : in     Bead_Color)
+      return Integer
    is
       Dummy_Board : Board_Matrix;
       Ok, Dkl     : Integer;
@@ -329,7 +330,7 @@ package body Othello_Pkg is
       Oside       : Othello_Integer;
    begin
       Copy_Board (Dummy_Board, Playing_Board, False);
-      Put_Move (Othello,Dummy_Board, Row, Column, Computer);
+      Put_Move (Othello, Dummy_Board, Row, Column, Computer);
 
       if Row = Othello_Types.Valid_Row'First or Row = Othello_Types.Valid_Row'Last then
          Side := Side + 1;
@@ -394,7 +395,7 @@ package body Othello_Pkg is
          Side := Side + 1;
       end if;
 
-      if (Column = Othello_Types.Valid_Column'First  + 1) or (Column = Othello_Types.Valid_Column'Last - 1) then
+      if (Column = Othello_Types.Valid_Column'First + 1) or (Column = Othello_Types.Valid_Column'Last - 1) then
          S    := S - 1;
          Side := Side + 1;
       end if;
@@ -404,22 +405,22 @@ package body Othello_Pkg is
       end if;
 
       if (Row = Othello_Types.Valid_Row'First + 2) or (Row = Othello_Types.Valid_Row'Last - 2) then
-         S    := S + 1;
+         S := S + 1;
       end if;
 
-      if (Column = Othello_Types.Valid_Column'First  + 2) or (Column = Othello_Types.Valid_Column'Last - 2) then
-         S    := S + 1;
+      if (Column = Othello_Types.Valid_Column'First + 2) or (Column = Othello_Types.Valid_Column'Last - 2) then
+         S := S + 1;
       end if;
 
       return S;
    end Side_Move;
    ----------------------------------------------------------------------------
    procedure Get_Possible_Moves
-      (Othello        : in out Othello_Types.Othello_Record'Class;
-       Playing_Board  : in out Othello_Types.Board_Matrix;
-       Computer       : in     Bead_Color;
-       Possible_Moves :    out Possible_Moves_Matrix;
-       Factor         :    out Integer)
+     (Othello        : in out Othello_Types.Othello_Record'Class;
+      Playing_Board  : in out Othello_Types.Board_Matrix;
+      Computer       : in     Bead_Color;
+      Possible_Moves :    out Possible_Moves_Matrix;
+      Factor         :    out Integer)
    is
       K : Integer := 1;
    begin
@@ -430,31 +431,32 @@ package body Othello_Pkg is
             if Possible_Moves (K).Check > 0 then
                Possible_Moves (K).Row    := I;
                Possible_Moves (K).Column := J;
-               Possible_Moves (K).Side   := Side_Move (Othello,Playing_Board,I, J, Computer);
-               Factor := Factor + 1;
-               K      := K + 1;
+               Possible_Moves (K).Side   := Side_Move (Othello, Playing_Board, I, J, Computer);
+               Factor                    := Factor + 1;
+               K                         := K + 1;
             end if;
          end loop;
       end loop;
    end Get_Possible_Moves;
    ----------------------------------------------------------------------------
-   procedure Pick_Move (Possible_Moves : in     Possible_Moves_Matrix;
-                        Board          : in     Othello_Types.Board_Matrix;
-                        Row            :    out Othello_Types.Valid_Row;
-                        Column         :    out Othello_Types.Valid_Column)
+   procedure Pick_Move
+     (Possible_Moves : in     Possible_Moves_Matrix;
+      Board          : in     Othello_Types.Board_Matrix;
+      Row            :    out Othello_Types.Valid_Row;
+      Column         :    out Othello_Types.Valid_Column)
    is
       package Math renames Ada.Numerics.Elementary_Functions;
 
       type Weight_Set is array (Othello_Types.Valid_Row, Othello_Types.Valid_Column) of Float;
 
-      Weight : constant Weight_Set := (1 | 8 => (1 | 8 => 21.0, 2 .. 7 => 18.0),
-                                       2 | 7 => (1 | 8 => 18.0, 2 | 7 => 3.0, 3 .. 6 => 6.0),
-                                       3 | 6 => (1 | 8 => 18.0, 2 | 7 => 6.0, 3 | 6 => 12.0, 4 .. 5 => 9.0),
-                                       4 | 5 => (1 | 8 => 18.0, 2 | 7 => 6.0, 3 .. 6 => 9.0) );
+      Weight : constant Weight_Set :=
+        (1 | 8 => (1 | 8 => 21.0, 2 .. 7 => 18.0), 2 | 7 => (1 | 8 => 18.0, 2 | 7 => 3.0, 3 .. 6 => 6.0),
+         3 | 6 => (1 | 8 => 18.0, 2 | 7 => 6.0, 3 | 6 => 12.0, 4 .. 5 => 9.0),
+         4 | 5 => (1 | 8 => 18.0, 2 | 7 => 6.0, 3 .. 6 => 9.0));
 
-      Count : constant Float := Float (Count_Bead (Board, Blue) + Count_Bead (Board, Red) );
+      Count : constant Float := Float (Count_Bead (Board, Blue) + Count_Bead (Board, Red));
       Fp    : constant Float := Math.Exp (-Count / 48.0); -- Factor for positioning weight
-      Fm    : constant Float := 1.0 - Fp;                 -- Factor for material weight (Check component of Possible_Moves)
+      Fm : constant Float := 1.0 - Fp;                 -- Factor for material weight (Check component of Possible_Moves)
       -- Factors give more weight to positioning early and to material later
 
       Wt         : Float; -- Total weighting
@@ -464,26 +466,27 @@ package body Othello_Pkg is
          raise Program_Error with "Pick_Move: No possible moves";
       end if;
 
-      Row := Possible_Moves (Possible_Moves'First).Row;
-      Column := Possible_Moves (Possible_Moves'First).Column;
+      Row        := Possible_Moves (Possible_Moves'First).Row;
+      Column     := Possible_Moves (Possible_Moves'First).Column;
       Max_Weight := Fm * Float (Possible_Moves (Possible_Moves'First).Check) + Fp * Weight (Row, Column);
 
-      Find_Max : for I in Possible_Moves'First + 1 .. Possible_Moves'Last loop
+      Find_Max :
+      for I in Possible_Moves'First + 1 .. Possible_Moves'Last loop
          Wt := Fm * Float (Possible_Moves (I).Check) + Fp * Weight (Possible_Moves (I).Row, Possible_Moves (I).Column);
 
          if Wt > Max_Weight then
-            Row := Possible_Moves (I).Row;
-            Column := Possible_Moves (I).Column;
+            Row        := Possible_Moves (I).Row;
+            Column     := Possible_Moves (I).Column;
             Max_Weight := Wt;
          end if;
       end loop Find_Max;
    end Pick_Move;
    ----------------------------------------------------------------------------
    procedure Computer_Make_Move
-      (Othello       : in out Othello_Types.Othello_Record'Class;
-       Playing_Board : in out Othello_Types.Board_Matrix;
-       Whose_Move    : in out Othello_Types.Bead_Color;
-       Game_Over     : in out Boolean)
+     (Othello       : in out Othello_Types.Othello_Record'Class;
+      Playing_Board : in out Othello_Types.Board_Matrix;
+      Whose_Move    : in out Othello_Types.Bead_Color;
+      Game_Over     : in out Boolean)
    is
       Row             : Othello_Types.Valid_Row;
       Column          : Othello_Types.Valid_Column;
@@ -491,99 +494,89 @@ package body Othello_Pkg is
       Computer_Factor : Integer;
       Player_Factor   : Integer;
    begin
-      Othello.Main_Statusbar.Text("Computer Move");
+      Othello.Main_Statusbar.Text ("Computer Move");
 
-      Get_Possible_Moves (Othello,Playing_Board,Computer_Move, Possible_Moves, Computer_Factor);
+      Get_Possible_Moves (Othello, Playing_Board, Computer_Move, Possible_Moves, Computer_Factor);
       if Computer_Factor > 0 then
          Pick_Move (Possible_Moves (1 .. Computer_Factor), Playing_Board, Row, Column);
-         Put_Move (Othello,Playing_Board, Row, Column, Computer_Move);
+         Put_Move (Othello, Playing_Board, Row, Column, Computer_Move);
       end if;
-      Get_Possible_Moves (Othello,Playing_Board, Player_Move, Possible_Moves, Player_Factor);
+      Get_Possible_Moves (Othello, Playing_Board, Player_Move, Possible_Moves, Player_Factor);
       if Player_Factor > 0 then
          Whose_Move := Player_Move;
-         Othello.Main_Statusbar.Text("Your Move");
+         Othello.Main_Statusbar.Text ("Your Move");
       else
-         Get_Possible_Moves (Othello,Playing_Board,Computer_Move, Possible_Moves, Computer_Factor);
+         Get_Possible_Moves (Othello, Playing_Board, Computer_Move, Possible_Moves, Computer_Factor);
          if Computer_Factor > 0 then
-            Othello.Main_Statusbar.Text("You must pass!");
+            Othello.Main_Statusbar.Text ("You must pass!");
          else
             declare
-               Blue_Count : Integer := Count_Bead (Playing_Board,Blue);
-               Red_Count  : Integer := Count_Bead (Playing_Board,Red);
+               Blue_Count : Integer := Count_Bead (Playing_Board, Blue);
+               Red_Count  : Integer := Count_Bead (Playing_Board, Red);
             begin
                if Blue_Count = Red_Count then
-                  Othello.Main_Statusbar.Text("Tie");
+                  Othello.Main_Statusbar.Text ("Tie");
                elsif Blue_Count > Red_Count then
-                  Othello.Main_Statusbar.Text("You Win!");
+                  Othello.Main_Statusbar.Text ("You Win!");
                else
-                  Othello.Main_Statusbar.Text("You Lose");
+                  Othello.Main_Statusbar.Text ("You Lose");
                end if;
                Game_Over := True;
-            end ;
+            end;
          end if;
       end if;
    end Computer_Make_Move;
    ----------------------------------------------------------------------------
    procedure Pass
-      (Othello       : in out Othello_Types.Othello_Record'Class;
-       Playing_Board : in out Othello_Types.Board_Matrix;
-       Whose_Move    : in out Othello_Types.Bead_Color;
-       Game_Over     : in out Boolean)
+     (Othello       : in out Othello_Types.Othello_Record'Class;
+      Playing_Board : in out Othello_Types.Board_Matrix;
+      Whose_Move    : in out Othello_Types.Bead_Color;
+      Game_Over     : in out Boolean)
    is
    begin
       Computer_Make_Move
-         (Othello       => Othello,
-          Playing_Board => Playing_Board,
-          Whose_Move    => Whose_Move,
-          Game_Over     => Game_Over);
-      Update_Count
-         (Othello       => Othello,
-          Playing_Board => Playing_Board);
+        (Othello => Othello, Playing_Board => Playing_Board, Whose_Move => Whose_Move, Game_Over => Game_Over);
+      Update_Count (Othello => Othello, Playing_Board => Playing_Board);
    end Pass;
    ----------------------------------------------------------------------------
    ----------------------------------------------------------------------------
 
    procedure Make_Move
-      (Othello       : in out Othello_Types.Othello_Record'Class;
-       Playing_Board : in out Othello_Types.Board_Matrix;
-       Whose_Move    : in out Othello_Types.Bead_Color;
-       Game_Over     : in out Boolean;
-       Row           : in     Othello_Types.Valid_Row;
-       Column        : in     Othello_Types.Valid_Column)
+     (Othello       : in out Othello_Types.Othello_Record'Class;
+      Playing_Board : in out Othello_Types.Board_Matrix;
+      Whose_Move    : in out Othello_Types.Bead_Color;
+      Game_Over     : in out Boolean;
+      Row           : in     Othello_Types.Valid_Row;
+      Column        : in     Othello_Types.Valid_Column)
    is
 
    begin
       if Game_Over = True then
          null; -- do nothing if game is over
       elsif Playing_Board (Row, Column).Cell /= Othello_Types.Empty then
-         Beep(Othello);
+         Beep (Othello);
       else
          if Whose_Move = Computer_Move then
-            Beep(Othello);
+            Beep (Othello);
          else
             if Check_Move (Playing_Board, Row, Column, Player_Move) > 0 then
-               Put_Move (Othello,Playing_Board, Row, Column, Player_Move);
+               Put_Move (Othello, Playing_Board, Row, Column, Player_Move);
                --Set_Cursor (Left_Pointer);
                Whose_Move := Computer_Move;
                Computer_Make_Move
-                  (Othello       => Othello,
-                   Playing_Board => Playing_Board,
-                   Whose_Move    => Whose_Move,
-                   Game_Over     => Game_Over);
+                 (Othello => Othello, Playing_Board => Playing_Board, Whose_Move => Whose_Move, Game_Over => Game_Over);
             else
-               Beep(Othello);
+               Beep (Othello);
             end if;
          end if;
       end if;
-      Update_Count
-         (Othello       => Othello,
-          Playing_Board => Playing_Board);
+      Update_Count (Othello => Othello, Playing_Board => Playing_Board);
    end Make_Move;
 
    ----------------------------------------------------------------------------
    procedure Setup_Board
-      (Othello       : in out Othello_Types.Othello_Record'Class;
-       Playing_Board : in out Othello_Types.Board_Matrix)
+     (Othello       : in out Othello_Types.Othello_Record'Class;
+      Playing_Board : in out Othello_Types.Board_Matrix)
    is
    begin
       for Row in Othello_Types.Valid_Row loop
@@ -611,26 +604,21 @@ package body Othello_Pkg is
       Playing_Board (5, 4).Cell := Blue;
       Put_Bead (Playing_Board (5, 4));
 
-      Othello.Main_Statusbar.Text("Your Move");
-      Update_Count
-         (Othello       => Othello,
-          Playing_Board => Playing_Board);
+      Othello.Main_Statusbar.Text ("Your Move");
+      Update_Count (Othello => Othello, Playing_Board => Playing_Board);
    end Setup_Board;
    ----------------------------------------------------------------------------
    procedure New_Game
-      (Othello       : in out Othello_Types.Othello_Record'Class;
-       Playing_Board : in out Othello_Types.Board_Matrix;
-       Whose_Move    : in out Othello_Types.Bead_Color;
-       Game_Over     : in out Boolean)
+     (Othello       : in out Othello_Types.Othello_Record'Class;
+      Playing_Board : in out Othello_Types.Board_Matrix;
+      Whose_Move    : in out Othello_Types.Bead_Color;
+      Game_Over     : in out Boolean)
    is
    begin
       Whose_Move := Player_Move;
       Game_Over  := False;
-      Setup_Board
-         (Othello       => Othello,
-          Playing_Board => Playing_Board);
+      Setup_Board (Othello => Othello, Playing_Board => Playing_Board);
    end New_Game;
-
 
    procedure Initialize is
 
@@ -642,8 +630,7 @@ package body Othello_Pkg is
       Gnoga.Application.Multi_Connect.Initialize;
 
       Gnoga.Application.Multi_Connect.On_Connect_Handler
-         (Event => Othello_Pkg.Callbacks.On_Connect'Access,
-          Path  => "default");
+        (Event => Othello_Pkg.Callbacks.On_Connect'Access, Path => "default");
 
       Gnoga.Application.Multi_Connect.Message_Loop;
    end Initialize;

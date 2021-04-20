@@ -46,23 +46,22 @@ package body Password_Gen.UI is
    procedure On_Length_Change (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Ptr := App_Ptr (Object.Connection_Data);
    begin -- On_Length_Change
-      App.Length_Img.Value (Value => String'(App.Length.Value) );
+      App.Length_Img.Value (Value => String'(App.Length.Value));
    exception -- On_Length_Change
-   when E : others =>
-      Gnoga.Log (Message => "On_Length_Change: " & Ada.Exceptions.Exception_Information (E) );
+      when E : others =>
+         Gnoga.Log (Message => "On_Length_Change: " & Ada.Exceptions.Exception_Information (E));
    end On_Length_Change;
 
    procedure On_Generate (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Ptr := App_Ptr (Object.Connection_Data);
    begin -- On_Generate
-      App.Result.Value (Value => Password_Generation.Generate (App.Domain.Value,
-                                                               App.Master.Value,
-                                                               App.Length.Value,
-                                                               App.Symbol.Value,
-                                                               App.Hash_Symbol.Checked) );
+      App.Result.Value
+        (Value =>
+           Password_Generation.Generate
+             (App.Domain.Value, App.Master.Value, App.Length.Value, App.Symbol.Value, App.Hash_Symbol.Checked));
    exception -- On_Generate
-   when E : others =>
-      Gnoga.Log (Message => "On_Generate: " & Ada.Exceptions.Exception_Information (E) );
+      when E : others =>
+         Gnoga.Log (Message => "On_Generate: " & Ada.Exceptions.Exception_Information (E));
    end On_Generate;
 
    End_Message : constant String := "Password Generator ended.";
@@ -78,12 +77,13 @@ package body Password_Gen.UI is
       App.Window.Close;
       App.Window.Close_Connection;
    exception -- On_Quit
-   when E : others =>
-      Gnoga.Log (Message => "On_Quit: " & Ada.Exceptions.Exception_Information (E) );
+      when E : others =>
+         Gnoga.Log (Message => "On_Quit: " & Ada.Exceptions.Exception_Information (E));
    end On_Quit;
 
-   procedure On_Connect (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-                         Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+   procedure On_Connect
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App : constant App_Ptr := new App_Info;
    begin -- On_Connect
@@ -112,16 +112,18 @@ package body Password_Gen.UI is
       App.Symbol.Create (Form => App.Input);
       App.Symbol_Label.Create (Form => App.Input, Label_For => App.Symbol, Content => "Symbol:");
       App.Symbol.Add_Option (Value => Password_Generation.No_Symbol, Text => Password_Generation.No_Symbol);
-      App.Symbol.Add_Option (Value => Password_Generation.Auto_Symbol, Text => Password_Generation.Auto_Symbol, Selected => True);
+      App.Symbol.Add_Option
+        (Value => Password_Generation.Auto_Symbol, Text => Password_Generation.Auto_Symbol, Selected => True);
 
-      All_Symbols : for I in Password_Generation.Symbol_Set'Range loop
+      All_Symbols :
+      for I in Password_Generation.Symbol_Set'Range loop
          App.Symbol.Add_Option
-            (Value => (1 => Password_Generation.Symbol_Set (I) ), Text => (1 => Password_Generation.Symbol_Set (I) ) );
+           (Value => (1 => Password_Generation.Symbol_Set (I)), Text => (1 => Password_Generation.Symbol_Set (I)));
       end loop All_Symbols;
 
       App.Hash_Symbol.Create (Form => App.Input, Checked => True);
       App.Hash_Lable.Create
-         (Form => App.Input, Label_For => App.Hash_Symbol, Content => "Include Symbol in hash", Auto_Place => False);
+        (Form => App.Input, Label_For => App.Hash_Symbol, Content => "Include Symbol in hash", Auto_Place => False);
       App.Input.New_Line;
       App.Result.Create (Form => App.Input);
       App.Result.Font (Family => "monospace");
@@ -133,8 +135,8 @@ package body Password_Gen.UI is
       App.Quit.Create (Parent => App.Input, Content => "Quit");
       App.Quit.On_Click_Handler (Handler => On_Quit'Access);
    exception -- On_Connect
-   when E : others =>
-      Gnoga.Log (Message => "On_Connect: " & Ada.Exceptions.Exception_Information (E) );
+      when E : others =>
+         Gnoga.Log (Message => "On_Connect: " & Ada.Exceptions.Exception_Information (E));
    end On_Connect;
 begin -- Password_Gen.UI
    Gnoga.Application.Title (Name => "Password Generator");
@@ -143,8 +145,8 @@ begin -- Password_Gen.UI
    Gnoga.Application.Multi_Connect.On_Connect_Handler (Event => On_Connect'Access);
    Gnoga.Application.Multi_Connect.Message_Loop;
 exception -- Password_Gen.UI
-when E : others =>
-   Gnoga.Log (Message => Ada.Exceptions.Exception_Information (E) );
+   when E : others =>
+      Gnoga.Log (Message => Ada.Exceptions.Exception_Information (E));
 end Password_Gen.UI;
 --
 -- This is free software; you can redistribute it and/or modify it under

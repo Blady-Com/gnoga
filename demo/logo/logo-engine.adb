@@ -23,7 +23,8 @@ package body Logo.Engine is
 
    function Decode
      (Line       : String;
-      Primitives : Logo.Parser.Primitive_Tables.Dictionary) return Instruction
+      Primitives : Logo.Parser.Primitive_Tables.Dictionary)
+      return Instruction
    is
       Copy   : aliased String := Line;
       Code   : Parsers.String_Source.Source (Copy'Access);
@@ -38,8 +39,7 @@ package body Logo.Engine is
             Logo.Parser.Get_Blank (Code, Got_It);
             if Got_It then
                declare
-                  Pointer : Integer :=
-                    Parsers.String_Source.Get_Pointer (Code);
+                  Pointer : Integer := Parsers.String_Source.Get_Pointer (Code);
                begin
                   Strings_Edit.Integers.Get (Line, Pointer, Instr.Arg1);
                end;
@@ -70,13 +70,10 @@ package body Logo.Engine is
          when left =>
             View.Turtle.Rotate_Rel (-Instr.Arg1, -10.0, -10.0, ST);
          when help =>
-            View.Console.Put_Line
-            (logo_messages.logo_Strings.Format_CPYR (View.Locale));
-            View.Console.Put_Line
-            (logo_messages.logo_Strings.Format_HETX (View.Locale));
+            View.Console.Put_Line (logo_messages.logo_Strings.Format_CPYR (View.Locale));
+            View.Console.Put_Line (logo_messages.logo_Strings.Format_HETX (View.Locale));
          when others =>
-            View.Console.Put_Line
-            (logo_messages.logo_Strings.Format_SERR (View.Locale));
+            View.Console.Put_Line (logo_messages.logo_Strings.Format_SERR (View.Locale));
       end case;
    end Action;
 

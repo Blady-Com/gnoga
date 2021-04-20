@@ -10,11 +10,11 @@
 ------------------------------------------------------------------------------
 
 package Snake is
-   Title        : constant String := "Sparky the Snake";
+   Title : constant String := "Sparky the Snake";
 
    --  Game Display
-   Display_Width   : constant := 400;
-   Display_Height  : constant := 400;
+   Display_Width  : constant := 400;
+   Display_Height : constant := 400;
 
    --  Snake Parameters
    Initial_Length : constant := 5;

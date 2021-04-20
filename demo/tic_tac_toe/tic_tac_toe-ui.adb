@@ -14,14 +14,14 @@ with Gnoga.Gui.View.Grid;
 with Gnoga.Gui.Window;
 
 package body Tic_Tac_Toe.UI is
-   subtype Row_ID    is Integer range 1 .. 3;
+   subtype Row_ID is Integer range 1 .. 3;
    subtype Column_ID is Integer range 1 .. 3;
 
    type Piece_ID is (X, O, Empty);
 
    type Board_Set is array (Row_ID, Column_ID) of Piece_ID;
 
-   Empty_Board : constant Board_Set := (Row_ID => (Column_ID => Empty) );
+   Empty_Board : constant Board_Set := (Row_ID => (Column_ID => Empty));
 
    type Button_Set is array (Row_ID, Column_ID) of Gnoga.Gui.Element.Common.Button_Type;
 
@@ -51,15 +51,15 @@ package body Tic_Tac_Toe.UI is
       Quit        : Gnoga.Gui.Element.Common.Button_Type;
 
       Board         : Board_Set;
-      Player        : Piece_ID := X;
-      Computer      : Piece_ID := O;
+      Player        : Piece_ID      := X;
+      Computer      : Piece_ID      := O;
       Player_Mark   : Square_String := X_Mark;
       Computer_Mark : Square_String := O_Mark;
-      Num_Won       : Natural := 0;
-      Num_Lost      : Natural := 0;
-      Num_Kat       : Natural := 0;
-      Player_Move   : Natural := 0;
-      Computer_Move : Natural := 0;
+      Num_Won       : Natural       := 0;
+      Num_Lost      : Natural       := 0;
+      Num_Kat       : Natural       := 0;
+      Player_Move   : Natural       := 0;
+      Computer_Move : Natural       := 0;
    end record;
 
    type App_Ptr is access all App_Info;
@@ -70,7 +70,10 @@ package body Tic_Tac_Toe.UI is
    Kat_Game  : constant String := "Kat game";
 
    package Logic is
-      procedure Process_Player_Move (App : in out App_Info; Row : in Row_ID; Column : in Column_ID);
+      procedure Process_Player_Move
+        (App    : in out App_Info;
+         Row    : in     Row_ID;
+         Column : in     Column_ID);
       -- Respond to Player moving to (Row, Column)
 
       procedure Reset (App : in out App_Info);
@@ -82,8 +85,8 @@ package body Tic_Tac_Toe.UI is
    procedure Square_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       Name : constant String := Object.ID;
 
-      Row    : constant Row_ID    := Integer'Value (Name (Name'First .. Name'First) );
-      Column : constant Column_ID := Integer'Value (Name (Name'Last  .. Name'Last) );
+      Row    : constant Row_ID    := Integer'Value (Name (Name'First .. Name'First));
+      Column : constant Column_ID := Integer'Value (Name (Name'Last .. Name'Last));
 
       App : constant App_Ptr := App_Ptr (Object.Connection_Data);
    begin -- Square_Click
@@ -109,19 +112,27 @@ package body Tic_Tac_Toe.UI is
       App.Window.Close;
       App.Window.Close_Connection;
    exception -- On_Quit
-   when E : others =>
-      Gnoga.Log (Message => "On_Quit: " & Ada.Exceptions.Exception_Information (E) );
+      when E : others =>
+         Gnoga.Log (Message => "On_Quit: " & Ada.Exceptions.Exception_Information (E));
    end On_Quit;
 
-   procedure On_Connect (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-                         Connection  : access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+   procedure On_Connect
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      function Image (Row : Row_ID; Column : Column_ID) return String;
+      function Image
+        (Row    : Row_ID;
+         Column : Column_ID)
+         return String;
       -- Returns a 2-Character String of the form "RC", where
       --    R is the image of Row
       --    C is the image of Column
 
-      function Image (Row : Row_ID; Column : Column_ID) return String is
+      function Image
+        (Row    : Row_ID;
+         Column : Column_ID)
+         return String
+      is
          Row_Image    : constant String := Integer'Image (Row);
          Column_Image : constant String := Integer'Image (Column);
       begin -- Image
@@ -141,13 +152,15 @@ package body Tic_Tac_Toe.UI is
       App.Left_View.Text_Alignment (Value => Gnoga.Gui.Element.Center);
       App.Board := Empty_Board;
 
-      Square_Rows : for Row in App.Square'Range (1) loop
-         Square_Columns : for Column in App.Square'Range (2) loop
-            App.Square (Row, Column).Create (Parent => App.Left_View, Content => Empty_Mark, ID => Image (Row, Column) );
+      Square_Rows :
+      for Row in App.Square'Range (1) loop
+         Square_Columns :
+         for Column in App.Square'Range (2) loop
+            App.Square (Row, Column).Create (Parent => App.Left_View, Content => Empty_Mark, ID => Image (Row, Column));
             App.Square (Row, Column).Overflow (Value => Gnoga.Gui.Element.Hidden);
             App.Square (Row, Column).Vertical_Align (Value => Gnoga.Gui.Element.Middle);
-            App.Square (Row, Column).Minimum_Width  (Value => Button_Size);
-            App.Square (Row, Column).Maximum_Width  (Value => Button_Size);
+            App.Square (Row, Column).Minimum_Width (Value => Button_Size);
+            App.Square (Row, Column).Maximum_Width (Value => Button_Size);
             App.Square (Row, Column).Minimum_Height (Value => Button_Size);
             App.Square (Row, Column).Maximum_Height (Value => Button_Size);
             App.Square (Row, Column).Text_Alignment (Value => Gnoga.Gui.Element.Center);
@@ -179,7 +192,7 @@ package body Tic_Tac_Toe.UI is
       App.Control.New_Line;
       App.First_Check.Create (Form => App.Control, Checked => False);
       App.First_Label.Create
-         (Form => App.Control, Label_For => App.First_Check, Content => "Computer moves 1st", Auto_Place => False);
+        (Form => App.Control, Label_For => App.First_Check, Content => "Computer moves 1st", Auto_Place => False);
       App.Control.New_Line;
       App.Again.Create (Parent => App.Control, Content => "New Game");
       App.Again.On_Click_Handler (Handler => New_Game'Access);
@@ -187,8 +200,8 @@ package body Tic_Tac_Toe.UI is
       App.Quit.Create (Parent => App.Control, Content => "Quit");
       App.Quit.On_Click_Handler (Handler => On_Quit'Access);
    exception -- On_Connect
-   when E : others =>
-      Gnoga.Log (Message => "On_Connect: " & Ada.Exceptions.Exception_Information (E) );
+      when E : others =>
+         Gnoga.Log (Message => "On_Connect: " & Ada.Exceptions.Exception_Information (E));
    end On_Connect;
 begin -- Tic_Tac_Toe.UI
    Gnoga.Application.Title (Name => "Tic-Tac-Toe");
@@ -197,8 +210,8 @@ begin -- Tic_Tac_Toe.UI
    Gnoga.Application.Multi_Connect.On_Connect_Handler (Event => On_Connect'Access);
    Gnoga.Application.Multi_Connect.Message_Loop;
 exception -- Tic_Tac_Toe.UI
-when E : others =>
-   Gnoga.Log (Message => Ada.Exceptions.Exception_Information (E) );
+   when E : others =>
+      Gnoga.Log (Message => Ada.Exceptions.Exception_Information (E));
 end Tic_Tac_Toe.UI;
 --
 -- This is free software; you can redistribute it and/or modify it under

@@ -47,12 +47,9 @@ package body About_Dialog_Pkg is
 --          (Win   : access About_Dialog_Record'Class;
 --           Event : Gdk_Event) return Boolean;
 --  procedure On_OK_Button_Clicked (Button : access Gtk_Button_Record'Class);
-      procedure On_OK_Button_Clicked
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class);
-      procedure On_About_Dialog_Show
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class);
-      procedure On_About_Dialog_Hide
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+      procedure On_OK_Button_Clicked (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+      procedure On_About_Dialog_Show (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+      procedure On_About_Dialog_Hide (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
    end Callbacks;
 
@@ -68,26 +65,20 @@ package body About_Dialog_Pkg is
 --           return True;
 --        end On_About_Dialog_Delete;
 
-      procedure On_OK_Button_Clicked
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-      is
+      procedure On_OK_Button_Clicked (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
          pragma Unreferenced (Object);
       begin
          --           Hide (About_Dialog);
          About_Dialog.Hidden;
       end On_OK_Button_Clicked;
 
-      procedure On_About_Dialog_Show
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-      is
+      procedure On_About_Dialog_Show (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       begin
          About_Dialog_Record (Object).Pause_Status := Main_Window.Game_Paused;
          Main_Window.Pause (True);
       end On_About_Dialog_Show;
 
-      procedure On_About_Dialog_Hide
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-      is
+      procedure On_About_Dialog_Hide (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       begin
          Main_Window.Pause (About_Dialog_Record (Object).Pause_Status);
       end On_About_Dialog_Hide;
@@ -125,16 +116,13 @@ package body About_Dialog_Pkg is
 --
 --        Gtk_New (Alg, 0.5, 0.5, 0.0, 0.0);
 --        Gtk_New (Lbl, "Send comments to: dulio@users.sourceforge.net");
-      Win.Put_Line ("Send comments to: " &
-                      "http://sourceforge.net/p/gnoga/mailman/gnoga-list");
+      Win.Put_Line ("Send comments to: " & "http://sourceforge.net/p/gnoga/mailman/gnoga-list");
 --        Add (Alg, Lbl);
 --        Pack_Start (Box, Alg);
 --
 --        Gtk_New (Alg, 0.5, 0.5, 0.0, 0.0);
 --        Gtk_New (Lbl, "Copyright (C) 2003 Dulio Matos Leite de C. e Silva");
-      Win.Put_Line
-      ("Based on GTKAda LinXtris" &
-       " copyright (C) 2003 Dulio Matos Leite de C. e Silva");
+      Win.Put_Line ("Based on GTKAda LinXtris" & " copyright (C) 2003 Dulio Matos Leite de C. e Silva");
 --        Modify_Font (Lbl, From_String ("8"));
 --        Add (Alg, Lbl);
 --        Pack_Start (Box, Alg);

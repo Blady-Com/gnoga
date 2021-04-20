@@ -46,14 +46,18 @@ private
      (X     : Integer;
       Y     : Integer;
       Color : Block_Engine.Color);
-   function X_Drawing_Coordinate (X : Integer) return Integer;
-   function Y_Drawing_Coordinate (Y : Integer) return Integer;
+   function X_Drawing_Coordinate
+     (X : Integer)
+      return Integer;
+   function Y_Drawing_Coordinate
+     (Y : Integer)
+      return Integer;
    function Color_To_Pix
-     (Color : Block_Engine.Color) return
-     Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+     (Color : Block_Engine.Color)
+      return Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
    function Color_To_Prev_Pix
-     (Color : Block_Engine.Color) return
-     Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+     (Color : Block_Engine.Color)
+      return Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
    procedure Process_And_Draw;
    procedure Do_Animation;
    procedure Do_Line_Completed_Animation;

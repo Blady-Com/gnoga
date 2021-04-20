@@ -18,7 +18,10 @@ package body Localize.Parser is
 
    use type Content_Maps.Cursor;
 
-   procedure Parse_Strings_File (File_Name : String; Content : out Property_List) is
+   procedure Parse_Strings_File
+     (File_Name :     String;
+      Content   : out Property_List)
+   is
       type State_Type is (None, In_Comment, In_Key, In_Value, Equal, Semi_Colon);
 
       Raw_File : UXStrings.Text_IO.File_Type;
@@ -108,10 +111,16 @@ package body Localize.Parser is
       end loop;
    end Parse_Strings_File;
 
-   procedure Write_Strings_File (File_Name : String; Content : Property_List) is
+   procedure Write_Strings_File
+     (File_Name : String;
+      Content   : Property_List)
+   is
       Raw_File : UXStrings.Text_IO.File_Type;
 
-      procedure Escaped_Put (Str : String; Multi_Comment : Boolean := False) is
+      procedure Escaped_Put
+        (Str           : String;
+         Multi_Comment : Boolean := False)
+      is
       begin
          for I in 1 .. Length (Str) loop
             if Element (Str, I) = Ada.Characters.Wide_Wide_Latin_1.HT then
@@ -160,7 +169,10 @@ package body Localize.Parser is
       UXStrings.Text_IO.Close (Raw_File);
    end Write_Strings_File;
 
-   procedure Parse_Properties_File (File_Name : String; Content : out Property_List) is
+   procedure Parse_Properties_File
+     (File_Name :     String;
+      Content   : out Property_List)
+   is
       type State_Type is (None, In_Comment, In_Key, In_Value, Equal);
 
       Raw_File : UXStrings.Text_IO.File_Type;
@@ -266,20 +278,31 @@ package body Localize.Parser is
       end loop;
    end Parse_Properties_File;
 
-   procedure Write_Properties_File (File_Name : String; Content : Property_List) is
+   procedure Write_Properties_File
+     (File_Name : String;
+      Content   : Property_List)
+   is
       Raw_File : UXStrings.Text_IO.File_Type;
 
       type Escape_Space_Type is (No, Start, Full);
 
-      procedure Escaped_Write (Str : String; Escape_Space : Escape_Space_Type; Multi_Comment : Boolean := False) is
+      procedure Escaped_Write
+        (Str           : String;
+         Escape_Space  : Escape_Space_Type;
+         Multi_Comment : Boolean := False)
+      is
          Space : Boolean := Escape_Space = Start;
          use UXStrings.Formatting;
          use all type UXStrings.Formatting.Alignment;
          function Format is new Integer_Format (Natural);
          function Format_U16
-           (Item    :    Natural; Base : in Number_Base := 16; PutPlus : in Boolean := False; Field : in Natural := 4;
-            Justify : in Alignment := Right; Fill : in Character := '0') return UXString renames
-           Format;
+           (Item    :    Natural;
+            Base    : in Number_Base := 16;
+            PutPlus : in Boolean     := False;
+            Field   : in Natural     := 4;
+            Justify : in Alignment   := Right;
+            Fill    : in Character   := '0')
+            return UXString renames Format;
       begin
          for I in 1 .. Length (Str) loop
             if Element (Str, I) = Ada.Characters.Wide_Wide_Latin_1.HT then
@@ -337,7 +360,10 @@ package body Localize.Parser is
       UXStrings.Text_IO.Close (Raw_File);
    end Write_Properties_File;
 
-   procedure Read (Properties : out Property_List; File_Name : String) is
+   procedure Read
+     (Properties : out Property_List;
+      File_Name  :     String)
+   is
    begin
       if Tail (File_Name, 8, ' ') = ".strings" then
          Parse_Strings_File (File_Name, Properties);
@@ -347,7 +373,10 @@ package body Localize.Parser is
       end if;
    end Read;
 
-   procedure Write (Properties : Property_List; File_Name : String) is
+   procedure Write
+     (Properties : Property_List;
+      File_Name  : String)
+   is
    begin
       if Tail (File_Name, 8, ' ') = ".strings" then
          Write_Strings_File (File_Name, Properties);
@@ -357,7 +386,10 @@ package body Localize.Parser is
       end if;
    end Write;
 
-   function Keys (Properties : Property_List) return Key_List is
+   function Keys
+     (Properties : Property_List)
+      return Key_List
+   is
    begin
       return Result_Key_List : Key_List do
          for Index in Properties.Iterate loop
@@ -366,28 +398,43 @@ package body Localize.Parser is
       end return;
    end Keys;
 
-   function Contains (Properties : Property_List; Key : String) return Boolean is
-     (Content_Maps.Contains (Content_Maps.Map (Properties), Key));
+   function Contains
+     (Properties : Property_List;
+      Key        : String)
+      return Boolean is (Content_Maps.Contains (Content_Maps.Map (Properties), Key));
 
-   procedure Insert (Properties : in out Property_List; Key : String) is
+   procedure Insert
+     (Properties : in out Property_List;
+      Key        :        String)
+   is
    begin
       Properties.Insert (Key, (Null_UXString, Null_UXString, False));
    end Insert;
 
-   procedure Delete (Properties : in out Property_List; Key : String) is
+   procedure Delete
+     (Properties : in out Property_List;
+      Key        :        String)
+   is
    begin
       if Properties.Find (Key) /= Content_Maps.No_Element then
          Properties.Delete (Key);
       end if;
    end Delete;
 
-   procedure Rename (Properties : in out Property_List; From, To : String) is
+   procedure Rename
+     (Properties : in out Property_List;
+      From, To   :        String)
+   is
    begin
       Properties.Insert (To, Properties.Element (From));
       Properties.Delete (From);
    end Rename;
 
-   function Text (Properties : Property_List; Key : String) return String is
+   function Text
+     (Properties : Property_List;
+      Key        : String)
+      return String
+   is
    begin
       if Properties.Find (Key) = Content_Maps.No_Element then
          return "";
@@ -396,7 +443,11 @@ package body Localize.Parser is
       end if;
    end Text;
 
-   procedure Text (Properties : in out Property_List; Key : String; Value : String) is
+   procedure Text
+     (Properties : in out Property_List;
+      Key        :        String;
+      Value      :        String)
+   is
       Cursor  : constant Content_Maps.Cursor := Properties.Find (Key);
       Element : Property_Type;
    begin
@@ -410,7 +461,11 @@ package body Localize.Parser is
       end if;
    end Text;
 
-   function Comment (Properties : Property_List; Key : String) return String is
+   function Comment
+     (Properties : Property_List;
+      Key        : String)
+      return String
+   is
    begin
       if Properties.Find (Key) = Content_Maps.No_Element then
          return Null_UXString;
@@ -419,7 +474,11 @@ package body Localize.Parser is
       end if;
    end Comment;
 
-   procedure Comment (Properties : in out Property_List; Key : String; Value : String) is
+   procedure Comment
+     (Properties : in out Property_List;
+      Key        :        String;
+      Value      :        String)
+   is
       Cursor  : constant Content_Maps.Cursor := Properties.Find (Key);
       Element : Property_Type;
    begin
@@ -433,7 +492,11 @@ package body Localize.Parser is
       end if;
    end Comment;
 
-   function Modified (Properties : Property_List; Key : String) return Boolean is
+   function Modified
+     (Properties : Property_List;
+      Key        : String)
+      return Boolean
+   is
    begin
       if Properties.Find (Key) = Content_Maps.No_Element then
          return False;
@@ -449,7 +512,11 @@ package body Localize.Parser is
       end loop;
    end Reset_Modified_Indicators;
 
-   function Selected_Keys (Master, Locale : Property_List; Pattern : String) return Key_List is
+   function Selected_Keys
+     (Master, Locale : Property_List;
+      Pattern        : String)
+      return Key_List
+   is
       package Keys_Sorting is new Lists.Generic_Sorting;
    begin
       if Pattern /= "" then

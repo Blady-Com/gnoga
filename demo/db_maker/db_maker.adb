@@ -57,7 +57,9 @@ package body DB_Maker is
 
    procedure Quit_Now (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   function Get_By_Index (Index : in Positive) return Element;
+   function Get_By_Index
+     (Index : in Positive)
+      return Element;
 
    procedure Transfer_Selected;
 
@@ -66,7 +68,8 @@ package body DB_Maker is
    procedure Click_Selection (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
    procedure Key_Selection
-      (Object : in out Gnoga.Gui.Base.Base_Type'Class; Keyboard_Event : in Gnoga.Gui.Base.Keyboard_Event_Record);
+     (Object         : in out Gnoga.Gui.Base.Base_Type'Class;
+      Keyboard_Event : in     Gnoga.Gui.Base.Keyboard_Event_Record);
 
    function Get_From_Fields return Element;
 
@@ -78,7 +81,9 @@ package body DB_Maker is
 
    procedure Delete_Item (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   procedure Search_From (Search_Item : in Element; Prev_Index : in Natural);
+   procedure Search_From
+     (Search_Item : in Element;
+      Prev_Index  : in Natural);
    -- Performs a search starting with at Prev_Index + 1
 
    procedure Search_Item (Object : in out Gnoga.Gui.Base.Base_Type'Class);
@@ -87,13 +92,20 @@ package body DB_Maker is
 
    procedure Reset (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   procedure Add_One (Item : in Element; Continue : out Boolean);
+   procedure Add_One
+     (Item     : in     Element;
+      Continue :    out Boolean);
    -- Add Item to Sel
 
    procedure Add_All is new Lists.Iterate (Action => Add_One);
 
-   function Get_By_Index (Index : in Positive) return Element is
-      procedure Check_One (Item : in Element; Continue : out Boolean);
+   function Get_By_Index
+     (Index : in Positive)
+      return Element
+   is
+      procedure Check_One
+        (Item     : in     Element;
+         Continue :    out Boolean);
       -- Increments Item_Num. If Item_Num = Index, sets Result to Item and Continue to False
 
       procedure Check_All is new Lists.Iterate (Action => Check_One);
@@ -101,14 +113,17 @@ package body DB_Maker is
       Item_Num : Natural := 0;
       Result   : Element;
 
-      procedure Check_One (Item : in Element; Continue : out Boolean) is
+      procedure Check_One
+        (Item     : in     Element;
+         Continue :    out Boolean)
+      is
          -- Empty
       begin -- Check_One
          Continue := True;
          Item_Num := Item_Num + 1;
 
          if Item_Num = Index then
-            Result := Item;
+            Result   := Item;
             Continue := False;
          end if;
       end Check_One;
@@ -121,8 +136,9 @@ package body DB_Maker is
    procedure Transfer_Selected is
       Item : constant Element := Get_By_Index (Sel.Selected_Index);
    begin -- Transfer_Selected
-      All_Fields : for I in Field'Range loop
-         Field (I).Text.Value (Value => Value (Item, I) );
+      All_Fields :
+      for I in Field'Range loop
+         Field (I).Text.Value (Value => Value (Item, I));
       end loop All_Fields;
    end Transfer_Selected;
 
@@ -131,8 +147,8 @@ package body DB_Maker is
    begin -- Quit_Now
       Gnoga.Application.Singleton.End_Application;
    exception -- Quit_Now
-   when E : others =>
-      Gnoga.Log (Message => "Quit_Now: " & Ada.Exceptions.Exception_Information (E) );
+      when E : others =>
+         Gnoga.Log (Message => "Quit_Now: " & Ada.Exceptions.Exception_Information (E));
    end Quit_Now;
 
    procedure Random (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -143,11 +159,11 @@ package body DB_Maker is
       Gen : Random_Item.Generator;
    begin -- Random
       Random_Item.Reset (Gen => Gen);
-      Sel.Selected (Index => Random_Item.Random (Gen) );
+      Sel.Selected (Index => Random_Item.Random (Gen));
       Transfer_Selected;
    exception -- Random
-   when E : others =>
-      Gnoga.Log (Message => "Random: " & Ada.Exceptions.Exception_Information (E) );
+      when E : others =>
+         Gnoga.Log (Message => "Random: " & Ada.Exceptions.Exception_Information (E));
    end Random;
 
    procedure Click_Selection (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -155,25 +171,27 @@ package body DB_Maker is
    begin -- Click_Selection
       Transfer_Selected;
    exception -- Click_Selection
-   when E : others =>
-      Gnoga.Log (Message => "Click_Selection: " & Ada.Exceptions.Exception_Information (E) );
+      when E : others =>
+         Gnoga.Log (Message => "Click_Selection: " & Ada.Exceptions.Exception_Information (E));
    end Click_Selection;
 
    procedure Key_Selection
-      (Object : in out Gnoga.Gui.Base.Base_Type'Class; Keyboard_Event : in Gnoga.Gui.Base.Keyboard_Event_Record)
+     (Object         : in out Gnoga.Gui.Base.Base_Type'Class;
+      Keyboard_Event : in     Gnoga.Gui.Base.Keyboard_Event_Record)
    is
       -- Empty
    begin -- Key_Selection
       Transfer_Selected;
    exception -- Key_Selection
-   when E : others =>
-      Gnoga.Log (Message => "Key_Selection: " & Ada.Exceptions.Exception_Information (E) );
+      when E : others =>
+         Gnoga.Log (Message => "Key_Selection: " & Ada.Exceptions.Exception_Information (E));
    end Key_Selection;
 
    function Get_From_Fields return Element is
       Item : Element;
    begin -- Get_From_Fields
-      All_Fields : for I in Field'Range loop
+      All_Fields :
+      for I in Field'Range loop
          Put (Item => Item, Field => I, Value => Field (I).Text.Value);
       end loop All_Fields;
 
@@ -182,7 +200,8 @@ package body DB_Maker is
 
    procedure Refresh is
    begin -- Refresh
-      Remove : for I in reverse 1 .. Sel.Length loop
+      Remove :
+      for I in reverse 1 .. Sel.Length loop
          Sel.Remove_Option (Index => I);
       end loop Remove;
 
@@ -206,8 +225,8 @@ package body DB_Maker is
       And_Rad.Checked;
       Search_From (Search_Item => Item, Prev_Index => 0);
    exception -- Add_Item
-   when E : others =>
-      Gnoga.Log (Message => "Add_Item: " & Ada.Exceptions.Exception_Information (E) );
+      when E : others =>
+         Gnoga.Log (Message => "Add_Item: " & Ada.Exceptions.Exception_Information (E));
    end Add_Item;
 
    procedure Modify (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -222,7 +241,7 @@ package body DB_Maker is
             return;
          end if;
 
-         List.Delete (Item => Get_By_Index (Sel.Selected_Index) );
+         List.Delete (Item => Get_By_Index (Sel.Selected_Index));
       end if;
 
       List.Insert (Item => Item);
@@ -230,8 +249,8 @@ package body DB_Maker is
       And_Rad.Checked;
       Search_From (Search_Item => Item, Prev_Index => 0);
    exception -- Modify
-   when E : others =>
-      Gnoga.Log (Message => "Modify: " & Ada.Exceptions.Exception_Information (E) );
+      when E : others =>
+         Gnoga.Log (Message => "Modify: " & Ada.Exceptions.Exception_Information (E));
    end Modify;
 
    procedure Delete_Item (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -247,8 +266,8 @@ package body DB_Maker is
       List.Delete (Item => Item);
       Refresh;
    exception -- Delete_Item
-   when E : others =>
-      Gnoga.Log (Message => "Delete_Item: " & Ada.Exceptions.Exception_Information (E) );
+      when E : others =>
+         Gnoga.Log (Message => "Delete_Item: " & Ada.Exceptions.Exception_Information (E));
    end Delete_Item;
 
    Search_Index : Natural := 0;
@@ -257,8 +276,13 @@ package body DB_Maker is
 
    use Ada.Characters.Handling;
 
-   procedure Search_From (Search_Item : in Element; Prev_Index : in Natural) is
-      procedure Check_One (Item : in Element; Continue : out Boolean);
+   procedure Search_From
+     (Search_Item : in Element;
+      Prev_Index  : in Natural)
+   is
+      procedure Check_One
+        (Item     : in     Element;
+         Continue :    out Boolean);
       -- Increments Index. If Index > Prev_Index and Item matches Search_Item, sets Found to True and Continue to False
 
       procedure Check_All is new Lists.Iterate (Action => Check_One);
@@ -271,7 +295,10 @@ package body DB_Maker is
 
       Or_Checked : constant Boolean := Or_Rad.Checked;
 
-      procedure Check_One (Item : in Element; Continue : out Boolean) is
+      procedure Check_One
+        (Item     : in     Element;
+         Continue :    out Boolean)
+      is
          Local : Boolean := not Or_Checked;
 
          use Ada.Characters.Handling;
@@ -284,26 +311,29 @@ package body DB_Maker is
             return;
          end if;
 
-         All_Fields : for I in Field'Range loop
-            Field_Value : declare
+         All_Fields :
+         for I in Field'Range loop
+            Field_Value :
+            declare
                Text : constant String := Value (Item, I);
             begin -- Field_Value
-               if Length (Lowered (I) ) > 0 then
+               if Length (Lowered (I)) > 0 then
                   if Or_Checked then
-                     Local := Local or Ada.Strings.Fixed.Index (To_Lower (Text), To_String (Lowered (I) ) ) > 0;
+                     Local := Local or Ada.Strings.Fixed.Index (To_Lower (Text), To_String (Lowered (I))) > 0;
                   else
-                     Local := Local and Ada.Strings.Fixed.Index (To_Lower (Text), To_String (Lowered (I) ) ) > 0;
+                     Local := Local and Ada.Strings.Fixed.Index (To_Lower (Text), To_String (Lowered (I))) > 0;
                   end if;
                end if;
             end Field_Value;
          end loop All_Fields;
 
-         Found := Local;
+         Found    := Local;
          Continue := not Local;
       end Check_One;
    begin -- Search_From
-      Fill_Lowered : for I in Lowered'Range loop
-         Lowered (I) := To_Unbounded_String (To_Lower (Value (Search_Item, I) ) );
+      Fill_Lowered :
+      for I in Lowered'Range loop
+         Lowered (I) := To_Unbounded_String (To_Lower (Value (Search_Item, I)));
       end loop Fill_Lowered;
 
       Check_All (List => List);
@@ -324,8 +354,8 @@ package body DB_Maker is
       Search_Index := 0;
       Search_From (Search_Item => Item, Prev_Index => 0);
    exception -- Search_Item
-   when E : others =>
-      Gnoga.Log (Message => "Search_Item: " & Ada.Exceptions.Exception_Information (E) );
+      when E : others =>
+         Gnoga.Log (Message => "Search_Item: " & Ada.Exceptions.Exception_Information (E));
    end Search_Item;
 
    procedure Search_More (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -333,34 +363,39 @@ package body DB_Maker is
    begin -- Search_More
       Search_From (Search_Item => Item, Prev_Index => Search_Index);
    exception -- Search_More
-   when E : others =>
-      Gnoga.Log (Message => "Search_More: " & Ada.Exceptions.Exception_Information (E) );
+      when E : others =>
+         Gnoga.Log (Message => "Search_More: " & Ada.Exceptions.Exception_Information (E));
    end Search_More;
 
    procedure Reset (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       -- Empty
    begin -- Reset
-      All_Fields : for I in Field'Range loop
+      All_Fields :
+      for I in Field'Range loop
          Field (I).Text.Value (Value => "");
       end loop All_Fields;
    exception -- Reset
-   when E : others =>
-      Gnoga.Log (Message => "Reset: " & Ada.Exceptions.Exception_Information (E) );
+      when E : others =>
+         Gnoga.Log (Message => "Reset: " & Ada.Exceptions.Exception_Information (E));
    end Reset;
 
-   procedure Add_One (Item : in Element; Continue : out Boolean) is
+   procedure Add_One
+     (Item     : in     Element;
+      Continue :    out Boolean)
+   is
       Image : Unbounded_String;
    begin -- Add_One
-      All_Fields : for I in Field'Range loop
+      All_Fields :
+      for I in Field'Range loop
          if I > Field'First then
             Append (Source => Image, New_Item => " | ");
          end if;
 
-         Append (Source   => Image, New_Item => Value (Item, I) );
+         Append (Source => Image, New_Item => Value (Item, I));
       end loop All_Fields;
 
       Continue := True;
-      Sel.Add_Option (Value => To_String (Image), Text => To_String (Image) );
+      Sel.Add_Option (Value => To_String (Image), Text => To_String (Image));
    end Add_One;
 
    Header : Unbounded_String;
@@ -374,15 +409,16 @@ begin -- DB_Maker
    Form.Create (Parent => View);
    Form.Text_Alignment (Value => Gnoga.Gui.Element.Center);
 
-   Build_Header : for I in Field_Number loop
+   Build_Header :
+   for I in Field_Number loop
       if I > Field_Number'First then
          Append (Source => Header, New_Item => " | ");
       end if;
 
-      Append (Source => Header, New_Item => Field_Name (I) );
+      Append (Source => Header, New_Item => Field_Name (I));
    end loop Build_Header;
 
-   Form.Put_Line (Message => To_String (Header) );
+   Form.Put_Line (Message => To_String (Header));
    Sel.Create (Form => Form, Visible_Lines => 20);
    Sel.On_Click_Handler (Handler => Click_Selection'Unrestricted_Access);
    Sel.On_Key_Press_Handler (Handler => Key_Selection'Unrestricted_Access);
@@ -397,13 +433,15 @@ begin -- DB_Maker
    Quit.Create (Parent => Form, Content => "Quit");
    Quit.On_Click_Handler (Handler => Quit_Now'Unrestricted_Access);
 
-   Grid.Create (Parent => View, Layout => Gnoga.Gui.View.Grid.Horizontal_Split, Fill_Parent => False, Set_Sizes => False);
+   Grid.Create
+     (Parent => View, Layout => Gnoga.Gui.View.Grid.Horizontal_Split, Fill_Parent => False, Set_Sizes => False);
    L_Form.Create (Parent => Grid.Panel (1, 1).all);
    L_Form.Text_Alignment (Value => Gnoga.Gui.Element.Right);
 
-   Create_Fields : for I in Field'Range loop
+   Create_Fields :
+   for I in Field'Range loop
       Field (I).Text.Create (Form => L_Form, Size => 50);
-      Field (I).Label.Create (Form => L_Form, Label_For => Field (I).Text, Content => Field_Name (I) );
+      Field (I).Label.Create (Form => L_Form, Label_For => Field (I).Text, Content => Field_Name (I));
 
       if I < Field'Last then
          L_Form.New_Line;
@@ -438,8 +476,8 @@ begin -- DB_Maker
    Count.Value (Value => Sel.Length);
    Gnoga.Application.Singleton.Message_Loop;
 exception -- DB_Maker
-when E : others =>
-   Gnoga.Log (Message => Ada.Exceptions.Exception_Information (E) );
+   when E : others =>
+      Gnoga.Log (Message => Ada.Exceptions.Exception_Information (E));
 end DB_Maker;
 --
 -- This is free software; you can redistribute it and/or modify it under

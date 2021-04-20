@@ -46,9 +46,7 @@ package body Main_Window_Pkg.Callbacks is
 --        Gtk.Main.Main_Quit;
 --     end On_Main_Window_Destroy;
 
-   procedure On_Item_Game_Quit_Pressed
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Item_Game_Quit_Pressed (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       pragma Unreferenced (Object);
    begin
       --        Gtk.Main.Main_Quit;
@@ -74,17 +72,13 @@ package body Main_Window_Pkg.Callbacks is
       Game_Engine.Process_Key_Press (Main_Window_Record (Win), Event);
    end On_Main_Window_Key_Pressed;
 
-   procedure On_Item_Game_New_Pressed
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Item_Game_New_Pressed (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       pragma Unreferenced (Object);
    begin
       Game_Engine.New_Game;
    end On_Item_Game_New_Pressed;
 
-   procedure On_Item_Game_Pause_Pressed
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Item_Game_Pause_Pressed (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       pragma Unreferenced (Object);
    begin
       if Main_Window.Exists_Game then
@@ -92,27 +86,21 @@ package body Main_Window_Pkg.Callbacks is
       end if;
    end On_Item_Game_Pause_Pressed;
 
-   procedure On_Item_Settings_Preferences_Pressed
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Item_Settings_Preferences_Pressed (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       pragma Unreferenced (Object);
    begin
       --        Show_All (Pref_Win);
       Pref_Win.Hidden (False);
    end On_Item_Settings_Preferences_Pressed;
 
-   procedure On_Item_Help_About_Pressed
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Item_Help_About_Pressed (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       pragma Unreferenced (Object);
    begin
 --        Show_All (About_Dialog);
       About_Dialog.Hidden (False);
    end On_Item_Help_About_Pressed;
 
-   procedure On_Item_Game_Scores_Pressed
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Item_Game_Scores_Pressed (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       pragma Unreferenced (Object);
    begin
       --        Show_All (Scores_Win);

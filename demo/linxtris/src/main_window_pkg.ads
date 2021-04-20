@@ -64,42 +64,24 @@ package Main_Window_Pkg is
 --        Item_Help_Submenu         : Gtk_Menu;
       Item_Help_About       : Gnoga.Gui.Element.Common.Button_Type;
       Box                   : Gnoga.Gui.View.Grid.Grid_View_Type;
-      Blue_Pix              :
-      Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
-      Green_Pix             :
-      Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
-      Red_Pix               :
-      Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
-      Grey_Pix              :
-      Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
-      Blank_Pix             :
-      Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
-      Yellow_Pix            :
-      Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
-      Magenta_Pix           :
-      Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
-      Cyan_Pix              :
-      Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
-      Ghost_Pix             :
-      Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
-      White_Pix             :
-      Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
-      Blue_Prev_Pix         :
-      Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
-      Green_Prev_Pix        :
-      Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
-      Red_Prev_Pix          :
-      Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
-      Grey_Prev_Pix         :
-      Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
-      Yellow_Prev_Pix       :
-      Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
-      Magenta_Prev_Pix      :
-      Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
-      Cyan_Prev_Pix         :
-      Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
-      Blank_Prev_Pix        :
-      Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+      Blue_Pix              : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+      Green_Pix             : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+      Red_Pix               : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+      Grey_Pix              : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+      Blank_Pix             : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+      Yellow_Pix            : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+      Magenta_Pix           : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+      Cyan_Pix              : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+      Ghost_Pix             : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+      White_Pix             : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+      Blue_Prev_Pix         : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+      Green_Prev_Pix        : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+      Red_Prev_Pix          : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+      Grey_Prev_Pix         : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+      Yellow_Prev_Pix       : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+      Magenta_Prev_Pix      : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+      Cyan_Prev_Pix         : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
+      Blank_Prev_Pix        : Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access;
       Score_Label           : Gnoga.Gui.View.View_Type;
       Level_Label           : Gnoga.Gui.View.View_Type;
       Pieces_Label          : Gnoga.Gui.View.View_Type;
@@ -129,7 +111,9 @@ package Main_Window_Pkg is
 
    procedure Gtk_New (Win : out Main_Window_Type);
    procedure Initialize (Win : access Main_Window_Record'Class);
-   procedure Pause (Win : access Main_Window_Record'Class; Value : Boolean);
+   procedure Pause
+     (Win   : access Main_Window_Record'Class;
+      Value : Boolean);
 private
    procedure Initialize_Pixmaps (Win : access Main_Window_Record'Class);
 end Main_Window_Pkg;

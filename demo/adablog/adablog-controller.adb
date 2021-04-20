@@ -27,12 +27,12 @@ package body AdaBlog.Controller is
       Message_Area : Element.Common.DIV_Type;
       User_Login   : Element.Common.Button_Type;
 
-      username     : Element.Form.Text_Type;
-      password     : Element.Form.Text_Type;
-      pass2        : Element.Form.Text_Type;
-      verify       : Element.Common.DIV_Type;
+      username : Element.Form.Text_Type;
+      password : Element.Form.Text_Type;
+      pass2    : Element.Form.Text_Type;
+      verify   : Element.Common.DIV_Type;
 
-      User         : AdaBlog.Model.Users.Active_Record;
+      User : AdaBlog.Model.Users.Active_Record;
    begin
       Main_Window.Attach (Object.Connection_ID);
       Message_Area.Attach_Using_Parent (Main_Window, "message");
@@ -47,10 +47,7 @@ package body AdaBlog.Controller is
       verify.Attach_Using_Parent (Main_Window, "verify-pass");
       verify.Display ("inline");
 
-      if
-        String'(password.Value) /= String'(pass2.Value) or
-        pass2.Value = ""
-      then
+      if String'(password.Value) /= String'(pass2.Value) or pass2.Value = "" then
          Message_Area.Text ("Please verify password.");
          return;
       end if;
@@ -90,11 +87,9 @@ package body AdaBlog.Controller is
       username.Attach_Using_Parent (Main_Window, "username");
       password.Attach_Using_Parent (Main_Window, "pass");
 
-      User.Find_Where (Where      =>
-                         "username ='" & username.Value & "'" &
-                         " AND " &
-                         "pass ='" & password.Value & "'",
-                       Create_New => False);
+      User.Find_Where
+        (Where      => "username ='" & username.Value & "'" & " AND " & "pass ='" & password.Value & "'",
+         Create_New => False);
       User.Value ("last_session", Value => Main_Window.Gnoga_Session_ID);
       User.Save;
 
@@ -104,10 +99,9 @@ package body AdaBlog.Controller is
          Message_Area.Text ("Invalid Login");
    end On_User_Login;
 
-   procedure On_Submit_Entry (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
-      User        : AdaBlog.Model.Users.Active_Record;
-      Entries     : AdaBlog.Model.Blog_Entries.Active_Record;
+   procedure On_Submit_Entry (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
+      User    : AdaBlog.Model.Users.Active_Record;
+      Entries : AdaBlog.Model.Blog_Entries.Active_Record;
 
       Main_Window : aliased Window.Window_Type;
       Text        : Gnoga.Gui.Element.Form.Text_Area_Type;
@@ -127,15 +121,14 @@ package body AdaBlog.Controller is
 
    procedure Index
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       Content_Area : Element.Common.DIV_Type;
       Left_Area    : Element.Common.DIV_Type;
       User_Login   : Element.Common.Button_Type;
       Create_User  : Element.Common.Button_Type;
 
-      User         : AdaBlog.Model.Users.Active_Record;
+      User : AdaBlog.Model.Users.Active_Record;
 
       procedure Display_Row (Row : Gnoga.Types.Data_Map_Type);
 
@@ -148,21 +141,17 @@ package body AdaBlog.Controller is
 
       Main_Window.Disable_Auto_Set_View;
 
-      Content_Area.Create (Parent  => Main_Window, ID => "main-body");
+      Content_Area.Create (Parent => Main_Window, ID => "main-body");
 
       AdaBlog.Connection.Iterate
-        (SQL     => "select username, entry_date, entry_text " &
-           "from users, blog_entries " &
+        (SQL =>
+           "select username, entry_date, entry_text " & "from users, blog_entries " &
            "where users.id=blog_entries.user_id",
          Process => Display_Row'Unrestricted_Access);
 
-      View.User_Panel (Main_Window => Main_Window,
-                       Panel       => Left_Area,
-                       User_Record => User.Values);
+      View.User_Panel (Main_Window => Main_Window, Panel => Left_Area, User_Record => User.Values);
 
-      View.Template (Main_Window => Main_Window,
-                     Content     => Content_Area,
-                     Left_Panel  => Left_Area);
+      View.Template (Main_Window => Main_Window, Content => Content_Area, Left_Panel => Left_Area);
 
       User_Login.Attach_Using_Parent (Main_Window, "login-button");
       User_Login.On_Click_Handler (On_User_Login'Access);
@@ -175,15 +164,14 @@ package body AdaBlog.Controller is
 
    procedure New_Entry
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      User         : AdaBlog.Model.Users.Active_Record;
+      User : AdaBlog.Model.Users.Active_Record;
 
       Content_Area : Element.Common.DIV_Type;
       Left_Area    : Element.Common.DIV_Type;
 
-      Submit       : Element.Common.Button_Type;
+      Submit : Element.Common.Button_Type;
    begin
       User.Find_Where ("last_session ='" & Main_Window.Gnoga_Session_ID & "'");
 
@@ -194,16 +182,11 @@ package body AdaBlog.Controller is
 
       Main_Window.Disable_Auto_Set_View;
 
-      View.New_Entry_Form (Main_Window => Main_Window,
-                           Content     => Content_Area);
+      View.New_Entry_Form (Main_Window => Main_Window, Content => Content_Area);
 
-      View.User_Panel (Main_Window => Main_Window,
-                       Panel       => Left_Area,
-                       User_Record => User.Values);
+      View.User_Panel (Main_Window => Main_Window, Panel => Left_Area, User_Record => User.Values);
 
-      View.Template (Main_Window => Main_Window,
-                     Content     => Content_Area,
-                     Left_Panel  => Left_Area);
+      View.Template (Main_Window => Main_Window, Content => Content_Area, Left_Panel => Left_Area);
 
       Submit.Attach_Using_Parent (Main_Window, "submit_entry");
       Submit.On_Click_Handler (On_Submit_Entry'Access);
@@ -213,8 +196,7 @@ package body AdaBlog.Controller is
 
    procedure Log_Out
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
       User : AdaBlog.Model.Users.Active_Record;
@@ -229,12 +211,8 @@ package body AdaBlog.Controller is
       Main_Window.Location.URL ("/");
    end Log_Out;
 begin
-   Application.Multi_Connect.On_Connect_Handler (Index'Unrestricted_Access,
-                                             "default");
-   Application.Multi_Connect.On_Connect_Handler (Index'Unrestricted_Access,
-                                             "main");
-   Application.Multi_Connect.On_Connect_Handler (New_Entry'Unrestricted_Access,
-                                             "new_entry");
-   Application.Multi_Connect.On_Connect_Handler (Log_Out'Unrestricted_Access,
-                                             "logout");
+   Application.Multi_Connect.On_Connect_Handler (Index'Unrestricted_Access, "default");
+   Application.Multi_Connect.On_Connect_Handler (Index'Unrestricted_Access, "main");
+   Application.Multi_Connect.On_Connect_Handler (New_Entry'Unrestricted_Access, "new_entry");
+   Application.Multi_Connect.On_Connect_Handler (Log_Out'Unrestricted_Access, "logout");
 end AdaBlog.Controller;

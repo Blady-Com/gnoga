@@ -21,7 +21,8 @@ package Logo.Engine is
 
    function Decode
      (Line       : String;
-      Primitives : Logo.Parser.Primitive_Tables.Dictionary) return Instruction;
+      Primitives : Logo.Parser.Primitive_Tables.Dictionary)
+      return Instruction;
 
    procedure Action
      (Instr : Instruction;

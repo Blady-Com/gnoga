@@ -8,9 +8,7 @@ package Gnoga_Extras is
       Label : Gnoga.Gui.Element.Form.Label_Type;
    end record;
 
-   type Labeled_Check_Box_Type is new Gnoga.Gui.Element.Form
-     .Check_Box_Type with
-   record
+   type Labeled_Check_Box_Type is new Gnoga.Gui.Element.Form.Check_Box_Type with record
       Label : Gnoga.Gui.Element.Form.Label_Type;
    end record;
 

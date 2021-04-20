@@ -11,12 +11,13 @@ package Snake.Connection is
 
    procedure Start_Game (Main_Window : in out Window_Type'Class);
 
-   procedure On_Key_Down (Object : in out Base_Type'Class;
-                          Key    : in     Keyboard_Event_Record);
+   procedure On_Key_Down
+     (Object : in out Base_Type'Class;
+      Key    : in     Keyboard_Event_Record);
 
    procedure On_Connect_Default
      (Main_Window : in out Window_Type'Class;
-      Connection  : access Connection_Holder_Type);
+      Connection  :        access Connection_Holder_Type);
    --  Handle user connection to default page
 
 end Snake.Connection;

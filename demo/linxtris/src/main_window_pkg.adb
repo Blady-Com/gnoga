@@ -57,30 +57,16 @@ package body Main_Window_Pkg is
       Gnoga.Application.Title ("LinXtris GNOGA");
       Gnoga.Application.Singleton.Initialize (Win.all);
       Win.Table.Create
-      (Win.all,
-       ((Gnoga.Gui.View.Grid.COL,
-         Gnoga.Gui.View.Grid.COL,
-         Gnoga.Gui.View.Grid.COL,
-         Gnoga.Gui.View.Grid.COL),
-        (Gnoga.Gui.View.Grid.COL,
-         Gnoga.Gui.View.Grid.COL,
-         Gnoga.Gui.View.Grid.COL,
-         Gnoga.Gui.View.Grid.COL)));
+        (Win.all,
+         ((Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
+          (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL)));
 --        Gtk.Menu_Bar.Gtk_New (Win.Menu_Bar);
       Win.Menu_Bar.Create
-      (Win.Table.Panel (1, 1).all,
-       ((Gnoga.Gui.View.Grid.COL,
-         Gnoga.Gui.View.Grid.COL,
-         Gnoga.Gui.View.Grid.COL),
-        (Gnoga.Gui.View.Grid.COL,
-         Gnoga.Gui.View.Grid.COL,
-         Gnoga.Gui.View.Grid.COL),
-        (Gnoga.Gui.View.Grid.COL,
-         Gnoga.Gui.View.Grid.COL,
-         Gnoga.Gui.View.Grid.COL),
-        (Gnoga.Gui.View.Grid.COL,
-         Gnoga.Gui.View.Grid.COL,
-         Gnoga.Gui.View.Grid.COL)));
+        (Win.Table.Panel (1, 1).all,
+         ((Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
+          (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
+          (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
+          (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL)));
       --        Gtk.Menu_Item.Gtk_New_With_Mnemonic (Win.Item_Game, "_Game");
 --        Gtk.Menu_Bar.Add (Win.Menu_Bar, Win.Item_Game);
 --        Gtk.Menu.Gtk_New (Win.Item_Game_Submenu);
@@ -112,8 +98,7 @@ package body Main_Window_Pkg is
 --          Win.Item_Settings_Submenu);
 --        Gtk.Menu_Item.Gtk_New_With_Mnemonic
 --          (Win.Item_Settings_Preferences, "_Preferences");
-      Win.Item_Settings_Preferences.Create
-      (Win.Menu_Bar.Panel (1, 2).all, "Preferences");
+      Win.Item_Settings_Preferences.Create (Win.Menu_Bar.Panel (1, 2).all, "Preferences");
       --        Gtk.Menu.Add (Win.Item_Settings_Submenu,
 --                            Win.Item_Settings_Preferences);
 --
@@ -171,17 +156,11 @@ package body Main_Window_Pkg is
 --        Gtk.Box.Gtk_New_Vbox (Win.Box);
 --        Gtk.Table.Attach (Win.Table, Win.Box, 1, 2, 1, 2, Xpadding => 10);
       Win.Box.Create
-      (Win.Table.Panel (2, 2).all,
-       ((1 => Gnoga.Gui.View.Grid.COL),
-        (1 => Gnoga.Gui.View.Grid.COL),
-        (1 => Gnoga.Gui.View.Grid.COL),
-        (1 => Gnoga.Gui.View.Grid.COL),
-        (1 => Gnoga.Gui.View.Grid.COL),
-        (1 => Gnoga.Gui.View.Grid.COL),
-        (1 => Gnoga.Gui.View.Grid.COL),
-        (1 => Gnoga.Gui.View.Grid.COL),
-        (1 => Gnoga.Gui.View.Grid.COL),
-        (1 => Gnoga.Gui.View.Grid.COL)));
+        (Win.Table.Panel (2, 2).all,
+         ((1 => Gnoga.Gui.View.Grid.COL), (1 => Gnoga.Gui.View.Grid.COL), (1 => Gnoga.Gui.View.Grid.COL),
+          (1 => Gnoga.Gui.View.Grid.COL), (1 => Gnoga.Gui.View.Grid.COL), (1 => Gnoga.Gui.View.Grid.COL),
+          (1 => Gnoga.Gui.View.Grid.COL), (1 => Gnoga.Gui.View.Grid.COL), (1 => Gnoga.Gui.View.Grid.COL),
+          (1 => Gnoga.Gui.View.Grid.COL)));
 --
 --        Double_Buffer.Gtk_New (Win.Prev_Screen);
       Win.Prev_Screen.Create (Win.Table.Panel (1, 2).all, 85, 85);
@@ -265,8 +244,7 @@ package body Main_Window_Pkg is
 --        Gtk.Label.Gtk_New (Win.Record_Label,
 --          Integer'Image (Scores_Window_pkg.Get_Maximum_Score));
       Win.Record_Label.Create (Win.Box.Panel (10, 1).all);
-      Win.Record_Label.Text
-      (Integer'Image (Scores_Window_pkg.Get_Maximum_Score));
+      Win.Record_Label.Text (Integer'Image (Scores_Window_pkg.Get_Maximum_Score));
 --        Gtk.Label.Set_Alignment (Win.Record_Label, 0.5, 0.0);
 --        Gtk.Frame.Gtk_New (Frame);
 --        Gtk.Frame.Set_Shadow_Type (Frame, Gtk.Enums.Shadow_In);
@@ -320,16 +298,14 @@ package body Main_Window_Pkg is
 --          (Win.Item_Game_Scores,
 --           "activate",
 --      Menu_Item_Callback.To_Marshaller (On_Item_Game_Scores_Pressed'Access));
-      Win.Item_Game_Scores.On_Click_Handler
-      (On_Item_Game_Scores_Pressed'Access);
+      Win.Item_Game_Scores.On_Click_Handler (On_Item_Game_Scores_Pressed'Access);
 --
 --      Menu_Item_Callback.Connect
 --          (Win.Item_Settings_Preferences,
 --           "activate",
 --      Menu_Item_Callback.To_Marshaller
 --        (On_Item_Settings_Preferences_Pressed'Access));
-      Win.Item_Settings_Preferences.On_Click_Handler
-      (On_Item_Settings_Preferences_Pressed'Access);
+      Win.Item_Settings_Preferences.On_Click_Handler (On_Item_Settings_Preferences_Pressed'Access);
 --
 --      Menu_Item_Callback.Connect
 --          (Win.Item_Help_About,
@@ -344,7 +320,7 @@ package body Main_Window_Pkg is
    procedure Initialize_Pixmaps (Win : access Main_Window_Record'Class) is
       Xpm_Name : Unbounded_String;
       Xpm_Data : Gnoga.Types.Pixel_Data_Access;
-      Dummy_Cr       : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
+      Dummy_Cr : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
 --        Err      : Glib.Error.GError;
       use Gnoga.Gui.Element.Canvas.Context_2D;
    begin
@@ -352,8 +328,7 @@ package body Main_Window_Pkg is
 
       if Argument_Count = 2 then
          if Argument (1) = "-data_dir" then
-            Data_Dir := To_Unbounded_String (Argument (2)) &
-              GNAT.Directory_Operations.Dir_Separator;
+            Data_Dir := To_Unbounded_String (Argument (2)) & GNAT.Directory_Operations.Dir_Separator;
          end if;
       end if;
 
@@ -362,159 +337,134 @@ package body Main_Window_Pkg is
       Xpm_Name := Data_Dir & "pixmaps/blue.xpm";
       New_From_XPM (Xpm_Data, To_String (Xpm_Name));
       Win.Blue_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Dummy_Cr.Create_Image_Data (Win.Blue_Pix.all, Xpm_Data'Length (1),
-                            Xpm_Data'Length (2));
+      Dummy_Cr.Create_Image_Data (Win.Blue_Pix.all, Xpm_Data'Length (1), Xpm_Data'Length (2));
       Win.Blue_Pix.Data (Xpm_Data.all);
       Free (Xpm_Data);
 
       Xpm_Name := Data_Dir & "pixmaps/green.xpm";
       New_From_XPM (Xpm_Data, To_String (Xpm_Name));
       Win.Green_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Dummy_Cr.Create_Image_Data (Win.Green_Pix.all, Xpm_Data'Length (1),
-                            Xpm_Data'Length (2));
+      Dummy_Cr.Create_Image_Data (Win.Green_Pix.all, Xpm_Data'Length (1), Xpm_Data'Length (2));
       Win.Green_Pix.Data (Xpm_Data.all);
       Free (Xpm_Data);
 
       Xpm_Name := Data_Dir & "pixmaps/red.xpm";
       New_From_XPM (Xpm_Data, To_String (Xpm_Name));
       Win.Red_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Dummy_Cr.Create_Image_Data (Win.Red_Pix.all, Xpm_Data'Length (1),
-                            Xpm_Data'Length (2));
+      Dummy_Cr.Create_Image_Data (Win.Red_Pix.all, Xpm_Data'Length (1), Xpm_Data'Length (2));
       Win.Red_Pix.Data (Xpm_Data.all);
       Free (Xpm_Data);
 
       Xpm_Name := Data_Dir & "pixmaps/yellow.xpm";
       New_From_XPM (Xpm_Data, To_String (Xpm_Name));
-      Win.Yellow_Pix :=
-        new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Dummy_Cr.Create_Image_Data (Win.Yellow_Pix.all, Xpm_Data'Length (1),
-                            Xpm_Data'Length (2));
+      Win.Yellow_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Dummy_Cr.Create_Image_Data (Win.Yellow_Pix.all, Xpm_Data'Length (1), Xpm_Data'Length (2));
       Win.Yellow_Pix.Data (Xpm_Data.all);
       Free (Xpm_Data);
 
       Xpm_Name := Data_Dir & "pixmaps/grey.xpm";
       New_From_XPM (Xpm_Data, To_String (Xpm_Name));
       Win.Grey_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Dummy_Cr.Create_Image_Data (Win.Grey_Pix.all, Xpm_Data'Length (1),
-                            Xpm_Data'Length (2));
+      Dummy_Cr.Create_Image_Data (Win.Grey_Pix.all, Xpm_Data'Length (1), Xpm_Data'Length (2));
       Win.Grey_Pix.Data (Xpm_Data.all);
       Free (Xpm_Data);
 
       Xpm_Name := Data_Dir & "pixmaps/blank.xpm";
       New_From_XPM (Xpm_Data, To_String (Xpm_Name));
       Win.Blank_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Dummy_Cr.Create_Image_Data (Win.Blank_Pix.all, Xpm_Data'Length (1),
-                            Xpm_Data'Length (2));
+      Dummy_Cr.Create_Image_Data (Win.Blank_Pix.all, Xpm_Data'Length (1), Xpm_Data'Length (2));
       Win.Blank_Pix.Data (Xpm_Data.all);
       Free (Xpm_Data);
 
       Xpm_Name := Data_Dir & "pixmaps/cyan.xpm";
       New_From_XPM (Xpm_Data, To_String (Xpm_Name));
       Win.Cyan_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Dummy_Cr.Create_Image_Data (Win.Cyan_Pix.all, Xpm_Data'Length (1),
-                            Xpm_Data'Length (2));
+      Dummy_Cr.Create_Image_Data (Win.Cyan_Pix.all, Xpm_Data'Length (1), Xpm_Data'Length (2));
       Win.Cyan_Pix.Data (Xpm_Data.all);
       Free (Xpm_Data);
 
       Xpm_Name := Data_Dir & "pixmaps/magenta.xpm";
       New_From_XPM (Xpm_Data, To_String (Xpm_Name));
-      Win.Magenta_Pix :=
-        new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Dummy_Cr.Create_Image_Data (Win.Magenta_Pix.all, Xpm_Data'Length (1),
-                            Xpm_Data'Length (2));
+      Win.Magenta_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Dummy_Cr.Create_Image_Data (Win.Magenta_Pix.all, Xpm_Data'Length (1), Xpm_Data'Length (2));
       Win.Magenta_Pix.Data (Xpm_Data.all);
       Free (Xpm_Data);
 
       Xpm_Name := Data_Dir & "pixmaps/ghost.xpm";
       New_From_XPM (Xpm_Data, To_String (Xpm_Name));
       Win.Ghost_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Dummy_Cr.Create_Image_Data (Win.Ghost_Pix.all, Xpm_Data'Length (1),
-                            Xpm_Data'Length (2));
+      Dummy_Cr.Create_Image_Data (Win.Ghost_Pix.all, Xpm_Data'Length (1), Xpm_Data'Length (2));
       Win.Ghost_Pix.Data (Xpm_Data.all);
       Free (Xpm_Data);
 
       Xpm_Name := Data_Dir & "pixmaps/white.xpm";
       New_From_XPM (Xpm_Data, To_String (Xpm_Name));
       Win.White_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Dummy_Cr.Create_Image_Data (Win.White_Pix.all, Xpm_Data'Length (1),
-                            Xpm_Data'Length (2));
+      Dummy_Cr.Create_Image_Data (Win.White_Pix.all, Xpm_Data'Length (1), Xpm_Data'Length (2));
       Win.White_Pix.Data (Xpm_Data.all);
       Free (Xpm_Data);
 
       Xpm_Name := Data_Dir & "pixmaps/blue_prev.xpm";
       New_From_XPM (Xpm_Data, To_String (Xpm_Name));
-      Win.Blue_Prev_Pix :=
-        new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Dummy_Cr.Create_Image_Data (Win.Blue_Prev_Pix.all, Xpm_Data'Length (1),
-                            Xpm_Data'Length (2));
+      Win.Blue_Prev_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Dummy_Cr.Create_Image_Data (Win.Blue_Prev_Pix.all, Xpm_Data'Length (1), Xpm_Data'Length (2));
       Win.Blue_Prev_Pix.Data (Xpm_Data.all);
       Free (Xpm_Data);
 
       Xpm_Name := Data_Dir & "pixmaps/green_prev.xpm";
       New_From_XPM (Xpm_Data, To_String (Xpm_Name));
-      Win.Green_Prev_Pix :=
-        new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Dummy_Cr.Create_Image_Data (Win.Green_Prev_Pix.all, Xpm_Data'Length (1),
-                            Xpm_Data'Length (2));
+      Win.Green_Prev_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Dummy_Cr.Create_Image_Data (Win.Green_Prev_Pix.all, Xpm_Data'Length (1), Xpm_Data'Length (2));
       Win.Green_Prev_Pix.Data (Xpm_Data.all);
       Free (Xpm_Data);
 
       Xpm_Name := Data_Dir & "pixmaps/red_prev.xpm";
       New_From_XPM (Xpm_Data, To_String (Xpm_Name));
-      Win.Red_Prev_Pix :=
-        new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Dummy_Cr.Create_Image_Data (Win.Red_Prev_Pix.all, Xpm_Data'Length (1),
-                            Xpm_Data'Length (2));
+      Win.Red_Prev_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Dummy_Cr.Create_Image_Data (Win.Red_Prev_Pix.all, Xpm_Data'Length (1), Xpm_Data'Length (2));
       Win.Red_Prev_Pix.Data (Xpm_Data.all);
       Free (Xpm_Data);
 
       Xpm_Name := Data_Dir & "pixmaps/yellow_prev.xpm";
       New_From_XPM (Xpm_Data, To_String (Xpm_Name));
-      Win.Yellow_Prev_Pix :=
-        new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Dummy_Cr.Create_Image_Data (Win.Yellow_Prev_Pix.all, Xpm_Data'Length (1),
-                            Xpm_Data'Length (2));
+      Win.Yellow_Prev_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Dummy_Cr.Create_Image_Data (Win.Yellow_Prev_Pix.all, Xpm_Data'Length (1), Xpm_Data'Length (2));
       Win.Yellow_Prev_Pix.Data (Xpm_Data.all);
       Free (Xpm_Data);
 
       Xpm_Name := Data_Dir & "pixmaps/grey_prev.xpm";
       New_From_XPM (Xpm_Data, To_String (Xpm_Name));
-      Win.Grey_Prev_Pix :=
-        new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Dummy_Cr.Create_Image_Data (Win.Grey_Prev_Pix.all, Xpm_Data'Length (1),
-                            Xpm_Data'Length (2));
+      Win.Grey_Prev_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Dummy_Cr.Create_Image_Data (Win.Grey_Prev_Pix.all, Xpm_Data'Length (1), Xpm_Data'Length (2));
       Win.Grey_Prev_Pix.Data (Xpm_Data.all);
       Free (Xpm_Data);
 
       Xpm_Name := Data_Dir & "pixmaps/cyan_prev.xpm";
       New_From_XPM (Xpm_Data, To_String (Xpm_Name));
-      Win.Cyan_Prev_Pix :=
-        new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Dummy_Cr.Create_Image_Data (Win.Cyan_Prev_Pix.all, Xpm_Data'Length (1),
-                            Xpm_Data'Length (2));
+      Win.Cyan_Prev_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Dummy_Cr.Create_Image_Data (Win.Cyan_Prev_Pix.all, Xpm_Data'Length (1), Xpm_Data'Length (2));
       Win.Cyan_Prev_Pix.Data (Xpm_Data.all);
       Free (Xpm_Data);
 
       Xpm_Name := Data_Dir & "pixmaps/magenta_prev.xpm";
       New_From_XPM (Xpm_Data, To_String (Xpm_Name));
-      Win.Magenta_Prev_Pix :=
-        new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Dummy_Cr.Create_Image_Data (Win.Magenta_Prev_Pix.all, Xpm_Data'Length (1),
-                            Xpm_Data'Length (2));
+      Win.Magenta_Prev_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Dummy_Cr.Create_Image_Data (Win.Magenta_Prev_Pix.all, Xpm_Data'Length (1), Xpm_Data'Length (2));
       Win.Magenta_Prev_Pix.Data (Xpm_Data.all);
       Free (Xpm_Data);
 
       Xpm_Name := Data_Dir & "pixmaps/blank_prev.xpm";
       New_From_XPM (Xpm_Data, To_String (Xpm_Name));
-      Win.Blank_Prev_Pix :=
-        new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
-      Dummy_Cr.Create_Image_Data (Win.Blank_Prev_Pix.all, Xpm_Data'Length (1),
-                            Xpm_Data'Length (2));
+      Win.Blank_Prev_Pix := new Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Type;
+      Dummy_Cr.Create_Image_Data (Win.Blank_Prev_Pix.all, Xpm_Data'Length (1), Xpm_Data'Length (2));
       Win.Blank_Prev_Pix.Data (Xpm_Data.all);
       Free (Xpm_Data);
    end Initialize_Pixmaps;
 
-   procedure Pause (Win : access Main_Window_Record'Class; Value : Boolean) is
+   procedure Pause
+     (Win   : access Main_Window_Record'Class;
+      Value : Boolean)
+   is
    begin
       Win.Game_Paused := Value;
       if Value then

@@ -18,5 +18,6 @@ project Random_Int is
 
    package Binder renames Settings.Binder;
    package Linker renames Settings.Linker;
+   package Pretty_Printer renames Settings.Pretty_Printer;
 
 end Random_Int;

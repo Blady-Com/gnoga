@@ -63,8 +63,7 @@
 --   for specific details on how to create and run the applet.
 
 with Gnoga.Types.Colors;
-with connectfour_messages.connectfour_Strings;
-use connectfour_messages.connectfour_Strings;
+with connectfour_messages.connectfour_Strings; use connectfour_messages.connectfour_Strings;
 
 package body ConnectFour is
    ------------------------
@@ -148,12 +147,8 @@ package body ConnectFour is
    type Column_Breaks_Array_Type is array (1 .. Num_Columns) of Integer;
 
    Column_Breaks : constant Column_Breaks_Array_Type :=
-     (Integer (1.25 * Circle_Width),
-      Integer (2.5 * Circle_Width),
-      Integer (3.75 * Circle_Width),
-      Integer (5.00 * Circle_Width),
-      Integer (6.25 * Circle_Width),
-      Integer (7.5 * Circle_Width),
+     (Integer (1.25 * Circle_Width), Integer (2.5 * Circle_Width), Integer (3.75 * Circle_Width),
+      Integer (5.00 * Circle_Width), Integer (6.25 * Circle_Width), Integer (7.5 * Circle_Width),
       Integer (8.75 * Circle_Width));
 
    ----------------------
@@ -240,10 +235,8 @@ package body ConnectFour is
                --             If current location and row, column+1;
                --                row, column+2; and
                --                row, column+3 belong to who
-               if (Board (Row, Column) = Who) and
-                 (Board (Row, Column + 1) = Who) and
-                 (Board (Row, Column + 2) = Who) and
-                 (Board (Row, Column + 3) = Who)
+               if (Board (Row, Column) = Who) and (Board (Row, Column + 1) = Who) and
+                 (Board (Row, Column + 2) = Who) and (Board (Row, Column + 3) = Who)
                then
 
                   --                Set Won to true
@@ -260,10 +253,8 @@ package body ConnectFour is
                --             If current location and row+1, column;
                --                row+2, column; and
                --                row+3, column belong to who
-               if (Board (Row, Column) = Who) and
-                 (Board (Row + 1, Column) = Who) and
-                 (Board (Row + 2, Column) = Who) and
-                 (Board (Row + 3, Column) = Who)
+               if (Board (Row, Column) = Who) and (Board (Row + 1, Column) = Who) and
+                 (Board (Row + 2, Column) = Who) and (Board (Row + 3, Column) = Who)
                then
 
                   --                Set Won to true
@@ -280,10 +271,8 @@ package body ConnectFour is
                --             If current location and row-1, column+1;
                --                row-2, column+2;
                --                and row-3,column+3 belong to who
-               if (Board (Row, Column) = Who) and
-                 (Board (Row - 1, Column + 1) = Who) and
-                 (Board (Row - 2, Column + 2) = Who) and
-                 (Board (Row - 3, Column + 3) = Who)
+               if (Board (Row, Column) = Who) and (Board (Row - 1, Column + 1) = Who) and
+                 (Board (Row - 2, Column + 2) = Who) and (Board (Row - 3, Column + 3) = Who)
                then
 
                   --                Set Won to true
@@ -300,10 +289,8 @@ package body ConnectFour is
                --             If current location and row+1, column+1;
                --                row+2, column+2;
                --                and row+3,column+3 belong to who
-               if (Board (Row, Column) = Who) and
-                 (Board (Row + 1, Column + 1) = Who) and
-                 (Board (Row + 2, Column + 2) = Who) and
-                 (Board (Row + 3, Column + 3) = Who)
+               if (Board (Row, Column) = Who) and (Board (Row + 1, Column + 1) = Who) and
+                 (Board (Row + 2, Column + 2) = Who) and (Board (Row + 3, Column + 3) = Who)
                then
 
                   --                Set Won to true
@@ -325,8 +312,13 @@ package body ConnectFour is
 
    --  Checks to see if the game has ended in a tie (all columns are full)
 
-   procedure Check_Tie (Board : in Board_Array_Type; Is_Tie : out Boolean);
-   procedure Check_Tie (Board : in Board_Array_Type; Is_Tie : out Boolean) is
+   procedure Check_Tie
+     (Board  : in     Board_Array_Type;
+      Is_Tie :    out Boolean);
+   procedure Check_Tie
+     (Board  : in     Board_Array_Type;
+      Is_Tie :    out Boolean)
+   is
 
    begin
 
@@ -349,7 +341,9 @@ package body ConnectFour is
 
    --  Uses lookahead and live tuple heuristic
 
-   procedure Computer_Turn (Board : in Board_Array_Type; Column : out Integer);
+   procedure Computer_Turn
+     (Board  : in     Board_Array_Type;
+      Column :    out Integer);
    procedure Computer_Turn
      (Board  : in     Board_Array_Type;
       Column :    out Integer)
@@ -359,12 +353,7 @@ package body ConnectFour is
       type Column_Breaks_Array_Type is array (1 .. Num_Columns) of Integer;
 
       type Value_Type is -- need two ties for symmetry
-        (Illegal,
-         Win_For_User,
-         Tie_For_User,
-         Unknown,
-         Tie_For_Computer,
-         Win_For_Computer);
+        (Illegal, Win_For_User, Tie_For_User, Unknown, Tie_For_Computer, Win_For_Computer);
 
       type Value_Array_Type is array (1 .. Num_Columns) of Value_Type;
 
@@ -395,10 +384,12 @@ package body ConnectFour is
 
       function Find_Best_Result
         (Evaluations : in Value_Array_Type;
-         Who         :    Player_Kind) return Value_Type;
+         Who         :    Player_Kind)
+         return Value_Type;
       function Find_Best_Result
         (Evaluations : in Value_Array_Type;
-         Who         :    Player_Kind) return Value_Type
+         Who         :    Player_Kind)
+         return Value_Type
       is
          Best_Result : Value_Type;
       begin
@@ -406,9 +397,7 @@ package body ConnectFour is
             --  find "largest" move
             Best_Result := Win_For_User;
             for I in Evaluations'Range loop
-               if Evaluations (I) > Best_Result and
-                 Evaluations (I) /= Illegal
-               then
+               if Evaluations (I) > Best_Result and Evaluations (I) /= Illegal then
                   Best_Result := Evaluations (I);
                end if;
             end loop;
@@ -416,9 +405,7 @@ package body ConnectFour is
             --  Who = User, find "smallest" move
             Best_Result := Win_For_Computer;
             for I in Evaluations'Range loop
-               if Evaluations (I) < Best_Result and
-                 Evaluations (I) /= Illegal
-               then
+               if Evaluations (I) < Best_Result and Evaluations (I) /= Illegal then
                   Best_Result := Evaluations (I);
                end if;
             end loop;
@@ -431,8 +418,13 @@ package body ConnectFour is
       -- Weighting_Function --
       ------------------------
 
-      function Weighting_Function (Arg : in Integer) return Integer;
-      function Weighting_Function (Arg : in Integer) return Integer is
+      function Weighting_Function
+        (Arg : in Integer)
+         return Integer;
+      function Weighting_Function
+        (Arg : in Integer)
+         return Integer
+      is
       begin
          return (Arg * Arg * Arg);
          --  use cubic for now
@@ -443,9 +435,11 @@ package body ConnectFour is
       ----------------------------
 
       function Evaluate_Unknown_Board
-        (Board : in Board_Array_Type) return Integer;
+        (Board : in Board_Array_Type)
+         return Integer;
       function Evaluate_Unknown_Board
-        (Board : in Board_Array_Type) return Integer
+        (Board : in Board_Array_Type)
+         return Integer
       is
          Owner                                   : Player_Kind;
          Cell                                    : Player_Kind;
@@ -470,9 +464,7 @@ package body ConnectFour is
                      if Owner = None and Cell /= None then
                         Owner := Cell;
                      end if;
-                     if (Cell = User and Owner = Computer) or
-                       (Cell = Computer and Owner = User)
-                     then
+                     if (Cell = User and Owner = Computer) or (Cell = Computer and Owner = User) then
                         User_Count     := 0;
                         Computer_Count := 0;
                         Dead           := True;
@@ -487,10 +479,7 @@ package body ConnectFour is
                   --  Computer count is positive, User count is negative so
                   --  that larger values are better for computer
 
-                  Board_Value :=
-                    Board_Value +
-                    Weighting_Function (Computer_Count) -
-                    Weighting_Function (User_Count);
+                  Board_Value := Board_Value + Weighting_Function (Computer_Count) - Weighting_Function (User_Count);
 
                end if;
 
@@ -507,9 +496,7 @@ package body ConnectFour is
                      if Owner = None and Cell /= None then
                         Owner := Cell;
                      end if;
-                     if (Cell = User and Owner = Computer) or
-                       (Cell = Computer and Owner = User)
-                     then
+                     if (Cell = User and Owner = Computer) or (Cell = Computer and Owner = User) then
                         User_Count     := 0;
                         Computer_Count := 0;
                         Dead           := True;
@@ -520,10 +507,7 @@ package body ConnectFour is
                         Computer_Count := Computer_Count + 1;
                      end if;
                   end loop;
-                  Board_Value :=
-                    Board_Value +
-                    Weighting_Function (Computer_Count) -
-                    Weighting_Function (User_Count);
+                  Board_Value := Board_Value + Weighting_Function (Computer_Count) - Weighting_Function (User_Count);
                end if;
 
                --          (checking diagonal tuples up to right)
@@ -539,9 +523,7 @@ package body ConnectFour is
                      if Owner = None and Cell /= None then
                         Owner := Cell;
                      end if;
-                     if (Cell = User and Owner = Computer) or
-                       (Cell = Computer and Owner = User)
-                     then
+                     if (Cell = User and Owner = Computer) or (Cell = Computer and Owner = User) then
                         User_Count     := 0;
                         Computer_Count := 0;
                         Dead           := True;
@@ -552,10 +534,7 @@ package body ConnectFour is
                         Computer_Count := Computer_Count + 1;
                      end if;
                   end loop;
-                  Board_Value :=
-                    Board_Value +
-                    Weighting_Function (Computer_Count) -
-                    Weighting_Function (User_Count);
+                  Board_Value := Board_Value + Weighting_Function (Computer_Count) - Weighting_Function (User_Count);
                end if;
 
                --          (checking diagonal tuples down to right)
@@ -571,9 +550,7 @@ package body ConnectFour is
                      if Owner = None and Cell /= None then
                         Owner := Cell;
                      end if;
-                     if (Cell = User and Owner = Computer) or
-                       (Cell = Computer and Owner = User)
-                     then
+                     if (Cell = User and Owner = Computer) or (Cell = Computer and Owner = User) then
                         User_Count     := 0;
                         Computer_Count := 0;
                         Dead           := True;
@@ -584,10 +561,7 @@ package body ConnectFour is
                         Computer_Count := Computer_Count + 1;
                      end if;
                   end loop;
-                  Board_Value :=
-                    Board_Value +
-                    Weighting_Function (Computer_Count) -
-                    Weighting_Function (User_Count);
+                  Board_Value := Board_Value + Weighting_Function (Computer_Count) - Weighting_Function (User_Count);
                end if;
 
             end loop;
@@ -604,11 +578,13 @@ package body ConnectFour is
       function Evaluate_Board
         (Board          : in Board_Array_Type;
          Who_Just_Moved : in Player_Kind;
-         Current_Depth  : in Integer) return Value_Type;
+         Current_Depth  : in Integer)
+         return Value_Type;
       function Evaluate_Board
         (Board          : in Board_Array_Type;
          Who_Just_Moved : in Player_Kind;
-         Current_Depth  : in Integer) return Value_Type
+         Current_Depth  : in Integer)
+         return Value_Type
       is
          Computer_Won, User_Won, Is_Tie : Boolean;
          Value                          : Value_Type;
@@ -652,19 +628,13 @@ package body ConnectFour is
                if Board (1, Col) = None then
 
                   Make_New_Board (New_Board, Board, Who_Moves_Next, Col);
-                  Evaluations (Col) :=
-                    Evaluate_Board
-                      (New_Board,
-                       Who_Moves_Next,
-                       Current_Depth - 1);
+                  Evaluations (Col) := Evaluate_Board (New_Board, Who_Moves_Next, Current_Depth - 1);
 
                   --  a/b pruning
 
-                  exit when Evaluations (Col) = Win_For_Computer and
-                    Who_Moves_Next = Computer;
+                  exit when Evaluations (Col) = Win_For_Computer and Who_Moves_Next = Computer;
 
-                  exit when Evaluations (Col) = Win_For_User and
-                    Who_Moves_Next = User;
+                  exit when Evaluations (Col) = Win_For_User and Who_Moves_Next = User;
 
                else
                   Evaluations (Col) := Illegal;
@@ -682,10 +652,12 @@ package body ConnectFour is
 
       function Find_Best_Move
         (Evaluations : in Value_Array_Type;
-         Who         :    Player_Kind) return Integer;
+         Who         :    Player_Kind)
+         return Integer;
       function Find_Best_Move
         (Evaluations : in Value_Array_Type;
-         Who         :    Player_Kind) return Integer
+         Who         :    Player_Kind)
+         return Integer
       is
          Best_Move   : Integer;
          Best_Result : Value_Type;
@@ -694,9 +666,7 @@ package body ConnectFour is
             --  find "largest" move
             Best_Result := Win_For_User;
             for I in Evaluations'Range loop
-               if Evaluations (I) > Best_Result and
-                 Evaluations (I) /= Illegal
-               then
+               if Evaluations (I) > Best_Result and Evaluations (I) /= Illegal then
                   Best_Result := Evaluations (I);
                   Best_Move   := I;
                end if;
@@ -705,9 +675,7 @@ package body ConnectFour is
             --  Who = User, find "smallest" move
             Best_Result := Win_For_Computer;
             for I in Evaluations'Range loop
-               if Evaluations (I) < Best_Result and
-                 Evaluations (I) /= Illegal
-               then
+               if Evaluations (I) < Best_Result and Evaluations (I) /= Illegal then
                   Best_Result := Evaluations (I);
                   Best_Move   := I;
                end if;
@@ -754,8 +722,7 @@ package body ConnectFour is
       for Col in Board'Range (2) loop
          if Board (1, Col) = None then
             Make_New_Board (New_Board, Board, Computer, Col);
-            Evaluations (Col) :=
-              Evaluate_Board (New_Board, Computer, Lookahead_Depth);
+            Evaluations (Col) := Evaluate_Board (New_Board, Computer, Lookahead_Depth);
 
             --  a/b pruning
 
@@ -788,7 +755,7 @@ package body ConnectFour is
 
          Find_All_Unknowns (Evaluations, Moves_To_Unknown, Count_Unknowns);
 
-         Max_Value := -1000;
+         Max_Value := -1_000;
          for I in 1 .. Count_Unknowns loop
             Make_New_Board (New_Board, Board, Computer, Moves_To_Unknown (I));
             Value := Evaluate_Unknown_Board (New_Board);
@@ -836,9 +803,7 @@ package body ConnectFour is
       This.Tie          := False;
       This.Ignore_Turn  := False;
       This.User_Turn    := True;
-      Gnoga.Gui.Window.Browser_Status_Bar
-        (This.Main_Window.all,
-         Format_CPYR (This.Locale));
+      Gnoga.Gui.Window.Browser_Status_Bar (This.Main_Window.all, Format_CPYR (This.Locale));
       Repaint (This);
       This.Put_Line (Format_DEVP (This.Locale));
       This.Put_Line (Format_INFO (This.Locale));
@@ -1018,11 +983,8 @@ package body ConnectFour is
          end case;
 
          Draw_Circle
-           (X      => X_First + Integer (Float (Column - 1) * X_Space),
-            Y      => Y_First + Integer (Float (Row - 1) * Y_Space),
-            Radius => Circle_Radius,
-            Hue    => Color,
-            Filled => True);
+           (X => X_First + Integer (Float (Column - 1) * X_Space), Y => Y_First + Integer (Float (Row - 1) * Y_Space),
+            Radius => Circle_Radius, Hue => Color, Filled => True);
       end Draw_Position;
 
 ------------------------------------------------------------------------
@@ -1042,55 +1004,27 @@ package body ConnectFour is
       begin
          --  change the screen color if the game is over.
          if This.User_Won or This.Tie then
-            Draw_Box
-              (X1     => 0,
-               Y1     => 0,
-               X2     => 499,
-               Y2     => 299,
-               Hue    => Gnoga.Types.Colors.Pink,
-               Filled => True);
+            Draw_Box (X1 => 0, Y1 => 0, X2 => 499, Y2 => 299, Hue => Gnoga.Types.Colors.Pink, Filled => True);
          elsif This.Computer_Won then
-            Draw_Box
-              (X1     => 0,
-               Y1     => 0,
-               X2     => 499,
-               Y2     => 299,
-               Hue    => Gnoga.Types.Colors.Gray,
-               Filled => True);
+            Draw_Box (X1 => 0, Y1 => 0, X2 => 499, Y2 => 299, Hue => Gnoga.Types.Colors.Gray, Filled => True);
          else
-            Draw_Box
-              (X1     => 0,
-               Y1     => 0,
-               X2     => 499,
-               Y2     => 299,
-               Hue    => Gnoga.Types.Colors.Light_Gray,
-               Filled => True);
+            Draw_Box (X1 => 0, Y1 => 0, X2 => 499, Y2 => 299, Hue => Gnoga.Types.Colors.Light_Gray, Filled => True);
          end if;
 
          --    Print column numbers
          for Column in 1 .. Num_Columns loop
             Display_Text
-              (X =>
-                 X_First +
-                 Integer (Float (Column - 1) * X_Space) -
-                 Title_Offset,
-               Y => Title_Height,
+              (X => X_First + Integer (Float (Column - 1) * X_Space) - Title_Offset, Y => Title_Height,
 
                Text => Character'Val (Column + 48) & "");
             --  Draw vertical line between columns
             if Column < Num_Columns then
                Draw_Line
-                 (X1  => Column_Breaks (Column),
-                  Y1  => Ytop,
-                  X2  => Column_Breaks (Column),
-                  Y2  => Ybottom,
+                 (X1  => Column_Breaks (Column), Y1 => Ytop, X2 => Column_Breaks (Column), Y2 => Ybottom,
                   Hue => Gnoga.Types.Colors.Black);
             end if;
             for Row in 1 .. Num_Rows loop
-               Draw_Position
-                 (Who    => Board (Row, Column),
-                  Row    => Row,
-                  Column => Column);
+               Draw_Position (Who => Board (Row, Column), Row => Row, Column => Column);
             end loop;
          end loop;
 
@@ -1153,7 +1087,10 @@ package body ConnectFour is
    -- GetAppletInfo --
    -------------------
 
-   function GetAppletInfo (This : access Typ) return String is
+   function GetAppletInfo
+     (This : access Typ)
+      return String
+   is
    begin
       return Format_INFO (This.Locale);
    end GetAppletInfo;
@@ -1173,7 +1110,7 @@ package body ConnectFour is
 
 --        D      : access Java.Awt.Dimension.Typ'Class := Getsize (This);
       Column, Dummy_Row : Integer;
-      Self        : constant access Typ := Typ (This)'Access;
+      Self              : constant access Typ := Typ (This)'Access;
    begin
       --  need to do this before checking won, since we use
       --  this for user won.
@@ -1189,52 +1126,33 @@ package body ConnectFour is
          Self.Ignore_Turn  := False;
          if Self.User_Turn then
             Self.User_Turn := False;
-            Gnoga.Gui.Window.Browser_Status_Bar
-              (Self.Main_Window.all,
-               Format_IAMT (Self.Locale));
+            Gnoga.Gui.Window.Browser_Status_Bar (Self.Main_Window.all, Format_IAMT (Self.Locale));
             --          Let computer take turn
             Computer_Turn (Board => Self.Board, Column => Column);
 
             --    Place computer disk in the column
-            Place_Disk
-              (Board  => Self.Board,
-               Column => Column,
-               Who    => Computer,
-               Row    => Dummy_Row);
+            Place_Disk (Board => Self.Board, Column => Column, Who => Computer, Row => Dummy_Row);
          else
             Self.User_Turn := True;
          end if;
          Repaint (Self);
-         Gnoga.Gui.Window.Browser_Status_Bar
-           (Self.Main_Window.all,
-            Format_CPYR (Self.Locale));
+         Gnoga.Gui.Window.Browser_Status_Bar (Self.Main_Window.all, Format_CPYR (Self.Locale));
          return;
       end if;
 
-      Gnoga.Gui.Window.Browser_Status_Bar
-        (Self.Main_Window.all,
-         Format_IAMT (Self.Locale));
+      Gnoga.Gui.Window.Browser_Status_Bar (Self.Main_Window.all, Format_IAMT (Self.Locale));
       --          Let computer take turn
       Computer_Turn (Board => Self.Board, Column => Column);
 
       --    Place computer disk in the column
-      Place_Disk
-        (Board  => Self.Board,
-         Column => Column,
-         Who    => Computer,
-         Row    => Dummy_Row);
+      Place_Disk (Board => Self.Board, Column => Column, Who => Computer, Row => Dummy_Row);
       --          Check if computer won
-      Check_Won
-        (Board => Self.Board,
-         Who   => Computer,
-         Won   => Self.Computer_Won);
+      Check_Won (Board => Self.Board, Who => Computer, Won => Self.Computer_Won);
 
       --       Check for a Tie
       Check_Tie (Board => Self.Board, Is_Tie => Self.Tie);
       Repaint (Self);
-      Gnoga.Gui.Window.Browser_Status_Bar
-        (Self.Main_Window.all,
-         Format_CPYR (Self.Locale));
+      Gnoga.Gui.Window.Browser_Status_Bar (Self.Main_Window.all, Format_CPYR (Self.Locale));
    end mouseReleased;
 
    ------------------
@@ -1251,7 +1169,7 @@ package body ConnectFour is
 
 --        D      : access Java.Awt.Dimension.Typ'Class := Getsize (This);
       Column, Dummy_Row : Integer;
-      Self        : constant access Typ := Typ (This)'Access;
+      Self              : constant access Typ := Typ (This)'Access;
    begin
       --  don't place disk if game over
       if Self.User_Won or Self.Computer_Won or Self.Tie then
@@ -1278,20 +1196,14 @@ package body ConnectFour is
       end if;
 
       --    Place user disk in the column
-      Place_Disk
-        (Board  => Self.Board,
-         Column => Column,
-         Who    => User,
-         Row    => Dummy_Row);
+      Place_Disk (Board => Self.Board, Column => Column, Who => User, Row => Dummy_Row);
       --          Check if user won
       Check_Won (Board => Self.Board, Who => User, Won => Self.User_Won);
       Check_Tie (Board => Self.Board, Is_Tie => Self.Tie);
       if Self.User_Won or Self.Tie then
          Self.Ignore_Turn := True;
       else
-         Gnoga.Gui.Window.Browser_Status_Bar
-           (Self.Main_Window.all,
-            Format_IAMT (Self.Locale));
+         Gnoga.Gui.Window.Browser_Status_Bar (Self.Main_Window.all, Format_IAMT (Self.Locale));
       end if;
       Repaint (Self);
    end mousePressed;

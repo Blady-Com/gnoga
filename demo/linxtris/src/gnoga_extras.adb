@@ -8,8 +8,7 @@ package body Gnoga_Extras is
      (Element : in out View_Type;
       Value   : in     Boolean := True)
    is
-      Already_Hidden : constant Boolean :=
-        Gnoga.Gui.View.View_Type (Element).Hidden;
+      Already_Hidden : constant Boolean := Gnoga.Gui.View.View_Type (Element).Hidden;
       use type Gnoga.Gui.Base.Action_Event;
    begin
       if Already_Hidden and not Value and Element.Show_Handler /= null then

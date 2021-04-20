@@ -16,9 +16,12 @@ package body Localize.View is
    ------------
 
    overriding procedure Create
-     (Grid   : in out Default_View_Type; Parent : in out Gnoga.Gui.Base.Base_Type'Class;
-      Layout : in Gnoga.Gui.View.Grid.Grid_Rows_Type; Fill_Parent : in Boolean := True; Set_Sizes : in Boolean := True;
-      ID     : in     String := "")
+     (Grid        : in out Default_View_Type;
+      Parent      : in out Gnoga.Gui.Base.Base_Type'Class;
+      Layout      : in     Gnoga.Gui.View.Grid.Grid_Rows_Type;
+      Fill_Parent : in     Boolean := True;
+      Set_Sizes   : in     Boolean := True;
+      ID          : in     String  := "")
    is
    begin
       Gnoga.Gui.View.Grid.Grid_View_Type (Grid).Create (Parent, Layout, Fill_Parent, Set_Sizes, ID);

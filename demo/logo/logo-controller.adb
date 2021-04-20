@@ -27,8 +27,7 @@ package body Logo.Controller is
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      View : constant Logo.View.Default_View_Access :=
-        Logo.View.Default_View_Access (Object.Parent.Parent);
+      View : constant Logo.View.Default_View_Access := Logo.View.Default_View_Access (Object.Parent.Parent);
    begin
       View.Label_Text.Put_Line ("Click");
 --        gnoga.log(ada.Tags.Expanded_Name(Object.Parent.Parent'tag));
@@ -42,22 +41,17 @@ package body Logo.Controller is
    begin
       accept Start;
       loop
-         View.Console.Put
-         (logo_messages.logo_Strings.Format_ACTN (View.Locale));
-         Logo.Engine.Action
-           (Logo.Engine.Decode (View.Console.Get_Line, View.Primitives),
-            View);
+         View.Console.Put (logo_messages.logo_Strings.Format_ACTN (View.Locale));
+         Logo.Engine.Action (Logo.Engine.Decode (View.Console.Get_Line, View.Primitives), View);
       end loop;
    end Interpreter;
 
    procedure Default
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  :        access Gnoga.Application.Multi_Connect
-        .Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
-      View : constant Logo.View.Default_View_Access :=
-        new Logo.View.Default_View_Type;
+      View   : constant Logo.View.Default_View_Access := new Logo.View.Default_View_Type;
       Worker : Interpreter (View);
    begin
       View.Dynamic;
@@ -65,10 +59,8 @@ package body Logo.Controller is
       Gnoga.Gui.Plugin.Ace_Editor.Load_Ace_Editor (Main_Window);
 
       View.Locale :=
-        ZanyBlue.Text.Locales.Make_Locale_Narrow
-          (Gnoga.Gui.Navigator.Language (Main_Window) & ".ISO8859-1");
-      Main_Window.Document.Title
-      (logo_messages.logo_Strings.Format_TITL (View.Locale));
+        ZanyBlue.Text.Locales.Make_Locale_Narrow (Gnoga.Gui.Navigator.Language (Main_Window) & ".ISO8859-1");
+      Main_Window.Document.Title (logo_messages.logo_Strings.Format_TITL (View.Locale));
 --        Gnoga.Server.Connection.HTML_On_Close
 --          (Main_Window.Connection_ID,
 --           logo_messages.logo_Strings.Format_APPE (View.Locale));
@@ -81,7 +73,5 @@ package body Logo.Controller is
    end Default;
 
 begin
-   Gnoga.Application.Multi_Connect.On_Connect_Handler
-     (Default'Access,
-      "default");
+   Gnoga.Application.Multi_Connect.On_Connect_Handler (Default'Access, "default");
 end Logo.Controller;

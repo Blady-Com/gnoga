@@ -40,7 +40,10 @@ package body User_IF is
    type App_Ptr is access all App_Info;
 
    protected type Sequentialize is
-      entry Respond (Action : in Action_ID; App_Data : in App_Ptr; Cell : in Field.Cell_Location := (Row => 1, Column => 1) );
+      entry Respond
+        (Action   : in Action_ID;
+         App_Data : in App_Ptr;
+         Cell     : in Field.Cell_Location := (Row => 1, Column => 1));
    end Sequentialize;
 
    type App_Info is new Gnoga.Types.Connection_Data_Type with record
@@ -83,11 +86,9 @@ package body User_IF is
 
    type Level_List is array (Positive range <>) of Level_Info;
 
-   Levels : constant Level_List := (1 => (Name => " 50", Mines =>  50),
-                                    2 => (Name => "100", Mines => 100),
-                                    3 => (Name => "150", Mines => 150),
-                                    4 => (Name => "200", Mines => 200),
-                                    5 => (Name => "250", Mines => 250) );
+   Levels : constant Level_List :=
+     (1 => (Name => " 50", Mines => 50), 2 => (Name => "100", Mines => 100), 3 => (Name => "150", Mines => 150),
+      4 => (Name => "200", Mines => 200), 5 => (Name => "250", Mines => 250));
 
    Default_Level : constant := 2;
 
@@ -97,12 +98,12 @@ package body User_IF is
       -- null;
    begin -- Show_Game_Over
       case Field.Operations.Game_State (App_Data.Field) is
-      when Field.Operations.Won =>
-         App_Data.Game_Over.Text (Value => You_Won_Message);
-      when Field.Operations.Lost =>
-         App_Data.Game_Over.Text (Value => You_Lost_Message);
-      when Field.Operations.In_Progress =>
-         null;
+         when Field.Operations.Won =>
+            App_Data.Game_Over.Text (Value => You_Won_Message);
+         when Field.Operations.Lost =>
+            App_Data.Game_Over.Text (Value => You_Lost_Message);
+         when Field.Operations.In_Progress =>
+            null;
       end case;
    end Show_Game_Over;
    pragma Inline (Show_Game_Over);
@@ -111,7 +112,12 @@ package body User_IF is
 
    Button_Size : constant := 30;
 
-   procedure Display (App_Data : in App_Ptr; Cell : in Field.Cell_Location; Text : in Cell_String; Stepped : in Boolean) is
+   procedure Display
+     (App_Data : in App_Ptr;
+      Cell     : in Field.Cell_Location;
+      Text     : in Cell_String;
+      Stepped  : in Boolean)
+   is
       -- null;
    begin -- Display
       App_Data.Button (Cell.Row, Cell.Column).Text (Value => Text);
@@ -127,7 +133,7 @@ package body User_IF is
          end if;
 
          App_Data.Button (Cell.Row, Cell.Column).Shadow
-            (Horizontal_Position => "1px", Vertical_Position => "1px", Inset_Shadow => True);
+           (Horizontal_Position => "1px", Vertical_Position => "1px", Inset_Shadow => True);
       end if;
 
       if Field.Operations.Game_State (App_Data.Field) /= Field.Operations.In_Progress then
@@ -136,40 +142,50 @@ package body User_IF is
    end Display;
    pragma Inline (Display);
 
-   procedure Display_Blank (Data : in Gnoga.Types.Pointer_To_Connection_Data_Class; Cell : in Field.Cell_Location) is
+   procedure Display_Blank
+     (Data : in Gnoga.Types.Pointer_to_Connection_Data_Class;
+      Cell : in Field.Cell_Location)
+   is
       App_Data : constant App_Ptr := App_Ptr (Data);
    begin -- Display_Blank
       Display (App_Data => App_Data, Cell => Cell, Text => " ", Stepped => False);
    end Display_Blank;
 
-   procedure Display_Count (Data     : in Gnoga.Types.Pointer_To_Connection_Data_Class;
-                            Count    : in Field.Valid_Count;
-                            Stepped  : in Boolean;
-                            Cell     : in Field.Cell_Location)
+   procedure Display_Count
+     (Data    : in Gnoga.Types.Pointer_to_Connection_Data_Class;
+      Count   : in Field.Valid_Count;
+      Stepped : in Boolean;
+      Cell    : in Field.Cell_Location)
    is
       Zero_Pos : constant := Character'Pos ('0');
 
       App_Data : constant App_Ptr := App_Ptr (Data);
    begin -- Display_Count
-      Display (App_Data => App_Data,
-               Cell     => Cell,
-               Text     => Character'Val (Zero_Pos + Count) & "",
-               Stepped  => Stepped);
+      Display (App_Data => App_Data, Cell => Cell, Text => Character'Val (Zero_Pos + Count) & "", Stepped => Stepped);
    end Display_Count;
 
-   procedure Display_Mark (Data : in Gnoga.Types.Pointer_To_Connection_Data_Class; Cell : in Field.Cell_Location) is
+   procedure Display_Mark
+     (Data : in Gnoga.Types.Pointer_to_Connection_Data_Class;
+      Cell : in Field.Cell_Location)
+   is
       App_Data : constant App_Ptr := App_Ptr (Data);
    begin -- Display_Mark
       Display (App_Data => App_Data, Cell => Cell, Text => "M", Stepped => False);
    end Display_Mark;
 
-   procedure Display_Mine (Data : in Gnoga.Types.Pointer_To_Connection_Data_Class; Cell : in Field.Cell_Location) is
+   procedure Display_Mine
+     (Data : in Gnoga.Types.Pointer_to_Connection_Data_Class;
+      Cell : in Field.Cell_Location)
+   is
       App_Data : constant App_Ptr := App_Ptr (Data);
    begin -- Display_Mine
       Display (App_Data => App_Data, Cell => Cell, Text => Exploded, Stepped => True);
    end Display_Mine;
 
-   procedure Display_To_Go (Data : in Gnoga.Types.Pointer_To_Connection_Data_Class; To_Go : in Integer) is
+   procedure Display_To_Go
+     (Data  : in Gnoga.Types.Pointer_to_Connection_Data_Class;
+      To_Go : in Integer)
+   is
       Image : constant String := Integer'Image (To_Go);
 
       App_Data : constant App_Ptr := App_Ptr (Data);
@@ -177,26 +193,34 @@ package body User_IF is
       App_Data.Mines_Left.Text (Value => Image);
    end Display_To_Go;
 
-   procedure Reset_Screen (Data : in Gnoga.Types.Pointer_To_Connection_Data_Class) is
+   procedure Reset_Screen (Data : in Gnoga.Types.Pointer_to_Connection_Data_Class) is
       App_Data : constant App_Ptr := App_Ptr (Data);
    begin -- Reset_Screen
       App_Data.Mines_Left.Text (Value => "0");
-      App_Data.Game_Over.Text  (Value => "");
+      App_Data.Game_Over.Text (Value => "");
 
-      Button_Row : for Row in Field.Valid_Row loop
-         Button_Column : for Column in Field.Valid_Column loop
-            Display_Blank (Data => Data, Cell => (Row => Row, Column => Column) );
+      Button_Row :
+      for Row in Field.Valid_Row loop
+         Button_Column :
+         for Column in Field.Valid_Column loop
+            Display_Blank (Data => Data, Cell => (Row => Row, Column => Column));
          end loop Button_Column;
       end loop Button_Row;
    end Reset_Screen;
 
-   function Auto_Marking (Data : Gnoga.Types.Pointer_To_Connection_Data_Class) return Boolean is
+   function Auto_Marking
+     (Data : Gnoga.Types.Pointer_to_Connection_Data_Class)
+      return Boolean
+   is
       App_Data : constant App_Ptr := App_Ptr (Data);
    begin -- Auto_Marking
       return Boolean (App_Data.Auto_Marking_Desired);
    end Auto_Marking;
 
-   function Extended_Stepping (Data : in Gnoga.Types.Pointer_To_Connection_Data_Class) return Boolean is
+   function Extended_Stepping
+     (Data : in Gnoga.Types.Pointer_to_Connection_Data_Class)
+      return Boolean
+   is
       App_Data : constant App_Ptr := App_Ptr (Data);
    begin -- Extended_Stepping
       return Boolean (App_Data.Extended_Stepping_Desired);
@@ -223,23 +247,25 @@ package body User_IF is
    procedure Button_Press (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       Name : constant String := Object.ID;
 
-      Row    : constant Field.Valid_Row    := Field.Valid_Row'Value    (Name (Name'First    .. Name'First + 1) );
-      Column : constant Field.Valid_Column := Field.Valid_Column'Value (Name (Name'Last - 1 .. Name'Last) );
+      Row    : constant Field.Valid_Row    := Field.Valid_Row'Value (Name (Name'First .. Name'First + 1));
+      Column : constant Field.Valid_Column := Field.Valid_Column'Value (Name (Name'Last - 1 .. Name'Last));
 
       App_Data : constant App_Ptr := App_Ptr (Object.Connection_Data);
    begin -- Button_Press
-      App_Data.Sequentializer.Respond (Action => Button_Press, App_Data => App_Data, Cell => (Row => Row, Column => Column) );
+      App_Data.Sequentializer.Respond
+        (Action => Button_Press, App_Data => App_Data, Cell => (Row => Row, Column => Column));
    end Button_Press;
 
    procedure Right_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       Name : constant String := Object.ID;
 
-      Row    : constant Field.Valid_Row    := Field.Valid_Row'Value    (Name (Name'First    .. Name'First + 1) );
-      Column : constant Field.Valid_Column := Field.Valid_Column'Value (Name (Name'Last - 1 .. Name'Last) );
+      Row    : constant Field.Valid_Row    := Field.Valid_Row'Value (Name (Name'First .. Name'First + 1));
+      Column : constant Field.Valid_Column := Field.Valid_Column'Value (Name (Name'Last - 1 .. Name'Last));
 
       App_Data : constant App_Ptr := App_Ptr (Object.Connection_Data);
    begin -- Right_Click
-      App_Data.Sequentializer.Respond (Action => Right_Click, App_Data => App_Data, Cell => (Row => Row, Column => Column) );
+      App_Data.Sequentializer.Respond
+        (Action => Right_Click, App_Data => App_Data, Cell => (Row => Row, Column => Column));
    end Right_Click;
 
    procedure When_Restart_Button (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -252,76 +278,49 @@ package body User_IF is
       App_Data : constant App_Ptr := App_Ptr (Object.Connection_Data);
 
       Rules : constant String :=
-         "The object of the game is to mark all cells containing " &
-         "mines and to step on all cells that do not contain a " &
-         "mine." & Latin_1.LF &
-         Latin_1.LF &
-         "The game is played on a rectangular field of 16 x 30 " &
-         "cells. A number of mines are hidden within the field." & Latin_1.LF &
-         Latin_1.LF &
-         "Some of the cells have numbers on them. The numbers represent " &
-         "the total number of mines in that cell and its " &
-         "immediate neighbors. As you play the game, additional cells " &
-         "will become numbered." & Latin_1.LF &
-         Latin_1.LF &
-         "You step on a cell by clicking on it. You mark a cell by right " &
-         "clicking on it. A marked cell has an M on it. Marking a " &
-         "marked cell unmarks it. You can only mark or step " &
-         "on a cell with a number on it." & Latin_1.LF &
-         Latin_1.LF &
-         "When you step on a cell, an auto-stepping algorithm " &
-         "automatically steps on any of its neighbors that " &
-         "obviously do not contain mines. Since this is then " &
-         "done for the neighbors of the stepped-on neighbors, " &
-         "the auto-stepping algorithm will spread across areas " &
-         "of the field that obviously do not contain mines. The " &
-         "auto-stepping algorithm is invoked even if the cell is " &
-         "already stepped on. This can be useful to clear around " &
-         "a new mark." & Latin_1.LF &
-         Latin_1.LF &
-         "If you step on a cell containing a mine, either " &
-         "directly or indirectly through the auto-stepping " &
-         "algorithm, the cell shows an X, and the game is over." &
-         Latin_1.LF &
-         Latin_1.LF &
-         "The game is over when you step on a mine, or when you " &
-         "have marked all mines and stepped on all other cells. " &
-         "If you win, '" & You_Won_Message & "' appears below the " &
-         "'Quit' button. If you lose, '" & You_Lost_Message &
-         "' appears there." & Latin_1.LF &
-         Latin_1.LF &
-         "At the top right of the field is a number. At the " &
-         "start of a game this is the number of mines in the " &
-         "field. Each time you mark a cell, this number is " &
-         "decreased by one. Each time you unmark a marked cell, " &
-         "this number is increased by one. If you successfully " &
-         "complete a game, this number will be zero." & Latin_1.LF &
-         Latin_1.LF &
-         "The 'New Game' button starts a new game. Any game in " &
-         "progress is abandoned." & Latin_1.LF &
-         Latin_1.LF &
-         "The level drop-down allows you to choose how many mines " &
-         "will be in the field at the start of the next game. You " &
-         "can choose from" & Levels (Levels'First).Name & " to " &
-         Levels (Levels'Last).Name & " mines. This goes into effect " &
-         "the next time you start a new game. At higher numbers of " &
-         "mines, it may not be possible to win the game without luck." & Latin_1.LF &
-         Latin_1.LF &
-         "The 'Auto Mark' check box enables an auto-marking " &
-         "algorithm that marks any cells that obviously contain " &
-         "a mine. At lower levels, the game does not present much " &
-         "of an intellectual challenge with this option. At higher " &
-         "levels, it's very difficult to play without this option." & Latin_1.LF &
-         Latin_1.LF &
-         "The 'Auto Step after Mark' check box enables the auto-" &
-         "stepping algorithm after a cell is marked, either " &
-         "directly or indirectly through the auto-marking " &
-         "algorithm." & Latin_1.LF & Latin_1.LF &
-         "The 'Mark' check box is for use with touch screens or other " &
-         "systems for which right clicking is difficult or impossible. " &
-         "When this box is not checked, clicking on a cells steps on the " &
-         "cell. When this box is checked, clicking on a cell marks or " &
-         "unmarks the cell.";
+        "The object of the game is to mark all cells containing " &
+        "mines and to step on all cells that do not contain a " & "mine." & Latin_1.LF & Latin_1.LF &
+        "The game is played on a rectangular field of 16 x 30 " &
+        "cells. A number of mines are hidden within the field." & Latin_1.LF & Latin_1.LF &
+        "Some of the cells have numbers on them. The numbers represent " &
+        "the total number of mines in that cell and its " &
+        "immediate neighbors. As you play the game, additional cells " & "will become numbered." & Latin_1.LF &
+        Latin_1.LF & "You step on a cell by clicking on it. You mark a cell by right " &
+        "clicking on it. A marked cell has an M on it. Marking a " &
+        "marked cell unmarks it. You can only mark or step " & "on a cell with a number on it." & Latin_1.LF &
+        Latin_1.LF & "When you step on a cell, an auto-stepping algorithm " &
+        "automatically steps on any of its neighbors that " & "obviously do not contain mines. Since this is then " &
+        "done for the neighbors of the stepped-on neighbors, " &
+        "the auto-stepping algorithm will spread across areas " &
+        "of the field that obviously do not contain mines. The " &
+        "auto-stepping algorithm is invoked even if the cell is " &
+        "already stepped on. This can be useful to clear around " & "a new mark." & Latin_1.LF & Latin_1.LF &
+        "If you step on a cell containing a mine, either " & "directly or indirectly through the auto-stepping " &
+        "algorithm, the cell shows an X, and the game is over." & Latin_1.LF & Latin_1.LF &
+        "The game is over when you step on a mine, or when you " &
+        "have marked all mines and stepped on all other cells. " & "If you win, '" & You_Won_Message &
+        "' appears below the " & "'Quit' button. If you lose, '" & You_Lost_Message & "' appears there." & Latin_1.LF &
+        Latin_1.LF & "At the top right of the field is a number. At the " &
+        "start of a game this is the number of mines in the " & "field. Each time you mark a cell, this number is " &
+        "decreased by one. Each time you unmark a marked cell, " &
+        "this number is increased by one. If you successfully " & "complete a game, this number will be zero." &
+        Latin_1.LF & Latin_1.LF & "The 'New Game' button starts a new game. Any game in " & "progress is abandoned." &
+        Latin_1.LF & Latin_1.LF & "The level drop-down allows you to choose how many mines " &
+        "will be in the field at the start of the next game. You " & "can choose from" & Levels (Levels'First).Name &
+        " to " & Levels (Levels'Last).Name & " mines. This goes into effect " &
+        "the next time you start a new game. At higher numbers of " &
+        "mines, it may not be possible to win the game without luck." & Latin_1.LF & Latin_1.LF &
+        "The 'Auto Mark' check box enables an auto-marking " &
+        "algorithm that marks any cells that obviously contain " &
+        "a mine. At lower levels, the game does not present much " &
+        "of an intellectual challenge with this option. At higher " &
+        "levels, it's very difficult to play without this option." & Latin_1.LF & Latin_1.LF &
+        "The 'Auto Step after Mark' check box enables the auto-" &
+        "stepping algorithm after a cell is marked, either " & "directly or indirectly through the auto-marking " &
+        "algorithm." & Latin_1.LF & Latin_1.LF & "The 'Mark' check box is for use with touch screens or other " &
+        "systems for which right clicking is difficult or impossible. " &
+        "When this box is not checked, clicking on a cells steps on the " &
+        "cell. When this box is checked, clicking on a cell marks or " & "unmarks the cell.";
    begin -- Rules_Pressed
       App_Data.Window.Alert (Message => Rules);
    end Rules_Pressed;
@@ -329,24 +328,27 @@ package body User_IF is
    procedure About_Pressed (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App_Data : constant App_Ptr := App_Ptr (Object.Connection_Data);
    begin -- About_Pressed
-      App_Data.Window.Alert (Message => "Mine Detector" & Latin_1.LF &
-                               		"Copyright (C) 2015 by" & Latin_1.LF &
-                               		"PragmAda Software Engineering" & Latin_1.LF &
-                               		"Released as Free Software under the terms" & Latin_1.LF &
-                               		"of the GNU Public License" & Latin_1.LF &
-                               		'"' & "Ada Inside" & '"');
+      App_Data.Window.Alert
+        (Message =>
+           "Mine Detector" & Latin_1.LF & "Copyright (C) 2015 by" & Latin_1.LF & "PragmAda Software Engineering" &
+           Latin_1.LF & "Released as Free Software under the terms" & Latin_1.LF & "of the GNU Public License" &
+           Latin_1.LF & '"' & "Ada Inside" & '"');
    end About_Pressed;
 
-   function Image (Row : Field.Valid_Row; Column : Field.Valid_Column) return String is
+   function Image
+     (Row    : Field.Valid_Row;
+      Column : Field.Valid_Column)
+      return String
+   is
    -- Returns a 4-Character String of the form "RRCC", where
    --    RR is the zero-filled image of Row
    --    CC is the zero-filled image of Column
-      Row_Image    : String   := Field.Valid_Row'Image    (Row);
+      Row_Image    : String   := Field.Valid_Row'Image (Row);
       Column_Image : String   := Field.Valid_Column'Image (Column);
       Row_First    : Positive := Row_Image'First;
       Column_First : Positive := Column_Image'First;
    begin -- Image
-      Row_Image (Row_Image'First) := '0';
+      Row_Image (Row_Image'First)       := '0';
       Column_Image (Column_Image'First) := '0';
 
       if Row >= 10 then
@@ -363,15 +365,17 @@ package body User_IF is
    procedure Create_Level_Option_Menu (App_Data : in out App_Info) is
       -- null;
    begin -- Create_Level_Option_Menu
-      Add_Options : for I in Levels'range loop
+      Add_Options :
+      for I in Levels'range loop
          App_Data.Level.Add_Option (Value => Levels (I).Name, Text => Levels (I).Name);
       end loop Add_Options;
 
       App_Data.Level.Selected (Index => Default_Level);
    end Create_Level_Option_Menu;
 
-   procedure On_Connect (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-                         Connection  : Access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+   procedure On_Connect
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App_Data : constant App_Ptr := new App_Info;
    begin -- On_Connect
@@ -379,19 +383,23 @@ package body User_IF is
       Main_Window.Connection_Data (Data => App_Data);
       Field.Operations.Set_Mine_Count (Field => App_Data.Field, New_Mine_Count => Levels (Default_Level).Mines);
       Main_Window.Buffer_Connection;
-      App_Data.Big_View.Create (Parent => Main_Window, Layout => Gnoga.Gui.View.Grid.Horizontal_Split, Set_Sizes => False);
+      App_Data.Big_View.Create
+        (Parent => Main_Window, Layout => Gnoga.Gui.View.Grid.Horizontal_Split, Set_Sizes => False);
       App_Data.Big_View.Background_Color (Enum => Gnoga.Types.Colors.Light_Blue);
       App_Data.Left_View.Create (Parent => App_Data.Big_View.Panel (1, 1).all);
       App_Data.Left_View.Hidden;
       App_Data.Left_View.Background_Color (Enum => Gnoga.Types.Colors.Light_Blue);
 
-      Button_Row    : for Row in App_Data.Button'Range(1) loop
-         Button_Column : for Column in App_Data.Button'Range (2) loop
-            App_Data.Button (Row, Column).Create (Parent => App_Data.Left_View, Content => " ", ID => Image (Row, Column) );
+      Button_Row :
+      for Row in App_Data.Button'Range (1) loop
+         Button_Column :
+         for Column in App_Data.Button'Range (2) loop
+            App_Data.Button (Row, Column).Create
+              (Parent => App_Data.Left_View, Content => " ", ID => Image (Row, Column));
             App_Data.Button (Row, Column).Overflow (Value => Gnoga.Gui.Element.Hidden);
             App_Data.Button (Row, Column).Vertical_Align (Value => Gnoga.Gui.Element.Middle);
-            App_Data.Button (Row, Column).Minimum_Width  (Value => Button_Size);
-            App_Data.Button (Row, Column).Maximum_Width  (Value => Button_Size);
+            App_Data.Button (Row, Column).Minimum_Width (Value => Button_Size);
+            App_Data.Button (Row, Column).Maximum_Width (Value => Button_Size);
             App_Data.Button (Row, Column).Minimum_Height (Value => Button_Size);
             App_Data.Button (Row, Column).Maximum_Height (Value => Button_Size);
             App_Data.Button (Row, Column).Text_Alignment (Value => Gnoga.Gui.Element.Center);
@@ -426,14 +434,15 @@ package body User_IF is
       App_Data.Mark_Check.Checked (Value => False);
       App_Data.Mark_Check.On_Click_Handler (Handler => Mark_Toggle'Access);
       App_Data.Mark_Label.Create
-         (Form => App_Data.Mark_Form, Label_For => App_Data.Mark_Check, Content => "Auto Mark", Auto_Place => False);
+        (Form => App_Data.Mark_Form, Label_For => App_Data.Mark_Check, Content => "Auto Mark", Auto_Place => False);
       App_Data.Step_Form.Create (Parent => App_Data.Right_View);
       App_Data.Step_Form.Display (Value => "block");
       App_Data.Step_Check.Create (Form => App_Data.Step_Form);
       App_Data.Step_Check.Checked (Value => False);
       App_Data.Step_Check.On_Click_Handler (Handler => Step_Toggle'Access);
       App_Data.Step_Label.Create
-         (Form => App_Data.Step_Form, Label_For => App_Data.Step_Check, Content => "Auto Step after Mark", Auto_Place => False);
+        (Form       => App_Data.Step_Form, Label_For => App_Data.Step_Check, Content => "Auto Step after Mark",
+         Auto_Place => False);
       App_Data.Rules.Create (Parent => App_Data.Right_View, Content => "Rules");
       App_Data.Rules.Display (Value => "block");
       App_Data.Rules.On_Click_Handler (Handler => Rules_Pressed'Access);
@@ -448,7 +457,7 @@ package body User_IF is
       App_Data.Mode_Check.Create (Form => App_Data.Mode_Form);
       App_Data.Mode_Check.Checked (Value => False);
       App_Data.Mode_Label.Create
-         (Form => App_Data.Mode_Form, Label_For => App_Data.Mode_Check, Content => "Mark", Auto_Place => False);
+        (Form => App_Data.Mode_Form, Label_For => App_Data.Mode_Check, Content => "Mark", Auto_Place => False);
       App_Data.Game_Over.Create (Parent => App_Data.Right_View, Content => You_Won_Message);
       App_Data.Game_Over.Width (Value => 100);
       App_Data.Game_Over.Text_Alignment (Value => Gnoga.Gui.Element.Center);
@@ -460,12 +469,15 @@ package body User_IF is
    End_Message : constant String := "Mine Detector ended.";
 
    protected body Sequentialize is
-      entry Respond (Action : in Action_ID; App_Data : in App_Ptr; Cell : in Field.Cell_Location := (Row => 1, Column => 1) )
-      when True is
+      entry Respond
+        (Action   : in Action_ID;
+         App_Data : in App_Ptr;
+         Cell     : in Field.Cell_Location := (Row => 1, Column => 1)) when True
+      is
          View : Gnoga.Gui.View.View_Type;
       begin -- Respond
          case Action is
-         when Button_Press =>
+            when Button_Press =>
                if Field.Operations.Game_State (App_Data.Field) /= Field.Operations.In_Progress then
                   Show_Game_Over (App_Data => App_Data);
                elsif App_Data.Mode_Check.Checked then
@@ -473,22 +485,22 @@ package body User_IF is
                else
                   Field.Operations.Step (Field => App_Data.Field, Cell => Cell);
                end if;
-         when Right_Click =>
+            when Right_Click =>
                if Field.Operations.Game_State (App_Data.Field) /= Field.Operations.In_Progress then
                   Show_Game_Over (App_Data => App_Data);
                else
                   Field.Operations.Mark (Field => App_Data.Field, Cell => Cell);
                end if;
-         when Restart =>
-            Field.Operations.Set_Mine_Count
-               (Field => App_Data.Field, New_Mine_Count => Levels (App_Data.Level.Selected_Index).Mines);
-            Field.Operations.Reset (Field => App_Data.Field);
-         when Quit =>
-            App_Data.Big_View.Remove;
-            View.Create (Parent => App_Data.Window.all);
-            View.Put_Line (Message => End_Message);
-            App_Data.Window.Close;
-            App_Data.Window.Close_Connection;
+            when Restart =>
+               Field.Operations.Set_Mine_Count
+                 (Field => App_Data.Field, New_Mine_Count => Levels (App_Data.Level.Selected_Index).Mines);
+               Field.Operations.Reset (Field => App_Data.Field);
+            when Quit =>
+               App_Data.Big_View.Remove;
+               View.Create (Parent => App_Data.Window.all);
+               View.Put_Line (Message => End_Message);
+               App_Data.Window.Close;
+               App_Data.Window.Close_Connection;
          end case;
       end Respond;
    end Sequentialize;
@@ -496,7 +508,7 @@ begin -- User_IF
    Gnoga.Application.Title (Name => "Mine Detector");
    Gnoga.Application.HTML_On_Close (HTML => End_Message);
    Gnoga.Application.Multi_Connect.Initialize;
-   Gnoga.Application.Multi_Connect.On_Connect_Handler (Event => On_Connect'Access, Path  => "default");
+   Gnoga.Application.Multi_Connect.On_Connect_Handler (Event => On_Connect'Access, Path => "default");
    Gnoga.Application.Multi_Connect.Message_Loop;
 end User_IF;
 --

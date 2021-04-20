@@ -46,8 +46,7 @@ package ConnectFour is
    --  computer and User means that the circle has been selected by the user.
 
    --  data type for the Connect Four board
-   type Board_Array_Type is
-     array (1 .. Num_Rows, 1 .. Num_Columns) of Player_Kind;
+   type Board_Array_Type is array (1 .. Num_Rows, 1 .. Num_Columns) of Player_Kind;
 
    --  Adding these discriminants to a type is the magic way of
    --  telling JVM-GNAT that you are implementing these interfaces.
@@ -57,7 +56,7 @@ package ConnectFour is
 --        I_ImageObserver : java.awt.image.ImageObserver.Ref;
 --        I_MouseListener : Java.Awt.Event.Mouselistener.Ref;
 --        I_Accessible    : Javax.Accessibility.Accessible.Ref)
-       is new Gnoga.Gui.View.View_Type with record
+      is new Gnoga.Gui.View.View_Type with record
       User_Turn   : Boolean;
       The_Canvas  : Gnoga.Gui.Element.Canvas.Canvas_Type;
       Main_Window : Gnoga.Gui.Window.Window_Access;
@@ -78,7 +77,9 @@ package ConnectFour is
    --  The following are the specifications for the overridden
    --  methods from the Applet and MouseListener interfaces
 
-   function GetAppletInfo (This : access Typ) return String;
+   function GetAppletInfo
+     (This : access Typ)
+      return String;
 
    procedure Init (This : access Typ);
 

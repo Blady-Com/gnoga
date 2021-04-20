@@ -76,7 +76,7 @@ package body Game_Engine is
       Y     : Integer;
       Color : Block_Engine.Color)
    is
-      Dummy_Cr     : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
+      Dummy_Cr : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
    begin
       if Y > 20 then
          return;
@@ -90,9 +90,7 @@ package body Game_Engine is
 --           Gdouble (Y_Drawing_Coordinate (Y) + Gint (Main_Window.Delta_Y)));
 --        Cairo.Paint (Cr);
       Dummy_Cr.Put_Image_Data
-      (Color_To_Pix (Color).all, X_Drawing_Coordinate
-         (X), Y_Drawing_Coordinate (Y) +
-       Main_Window.Delta_Y);
+        (Color_To_Pix (Color).all, X_Drawing_Coordinate (X), Y_Drawing_Coordinate (Y) + Main_Window.Delta_Y);
 --        Cairo.Destroy (Cr);
 --        Gdk.Drawable.Draw_Drawable( Get_Pixmap( Main_Window.Game_Screen ),
 --                       Main_Window.GC, Color_To_Pix(Color),
@@ -108,13 +106,11 @@ package body Game_Engine is
       use Block_Engine;
    begin
       if Main_Window.Continuous_Movement then
-         Main_Window.Delta_Y :=
-           (24 * Main_Window.Down_Count) / Main_Window.Max_Down_Count - 24;
+         Main_Window.Delta_Y := (24 * Main_Window.Down_Count) / Main_Window.Max_Down_Count - 24;
          for I in 1 .. 4 loop
             if Block_Engine.Piece_Y (Main_Window.Engine.all, I) < 20 then
                if Block_Engine.Get_Position_Color
-                   (Main_Window.Engine.all,
-                    Block_Engine.Piece_X (Main_Window.Engine.all, I),
+                   (Main_Window.Engine.all, Block_Engine.Piece_X (Main_Window.Engine.all, I),
                     Block_Engine.Piece_Y (Main_Window.Engine.all, I) + 1) /=
                  Block_Engine.Blank
                then
@@ -128,8 +124,7 @@ package body Game_Engine is
       end if;
       for i in 1 .. 4 loop
          Paint_Piece_Block
-           (Block_Engine.Piece_X (Main_Window.Engine.all, i),
-            Block_Engine.Piece_Y (Main_Window.Engine.all, i),
+           (Block_Engine.Piece_X (Main_Window.Engine.all, i), Block_Engine.Piece_Y (Main_Window.Engine.all, i),
             Block_Engine.Get_Piece_Color (Main_Window.Engine.all));
       end loop;
    end Paint_Piece;
@@ -138,15 +133,13 @@ package body Game_Engine is
    begin
       for i in 1 .. 10 loop
          for j in 1 .. 20 loop
-            Paint_Block (i, j, Block_Engine.Get_Position_Color
-                         (Main_Window.Engine.all, i, j));
+            Paint_Block (i, j, Block_Engine.Get_Position_Color (Main_Window.Engine.all, i, j));
          end loop;
       end loop;
       if Block_Engine.Get_Has_Ghost (Main_Window.Engine.all) then
          for i in 1 .. 4 loop
             Paint_Block
-              (Block_Engine.Ghost_X (Main_Window.Engine.all, i),
-               Block_Engine.Ghost_Y (Main_Window.Engine.all, i),
+              (Block_Engine.Ghost_X (Main_Window.Engine.all, i), Block_Engine.Ghost_Y (Main_Window.Engine.all, i),
                Block_Engine.Ghost);
          end loop;
       end if;
@@ -158,7 +151,7 @@ package body Game_Engine is
       Y     : Integer;
       Color : Block_Engine.Color)
    is
-      Dummy_Cr     : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
+      Dummy_Cr : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
    begin
 --        Cr := Cairo.Create (Get_Pixmap (Main_Window.Game_Screen));
       Dummy_Cr.Get_Drawing_Context_2D (Main_Window.Game_Screen);
@@ -168,9 +161,7 @@ package body Game_Engine is
 --           Gdouble (X_Drawing_Coordinate (X)),
 --           Gdouble (Y_Drawing_Coordinate (Y)));
 --        Cairo.Paint (Cr);
-      Dummy_Cr.Put_Image_Data
-        (Color_To_Pix (Color).all, X_Drawing_Coordinate (X),
-         Y_Drawing_Coordinate (Y));
+      Dummy_Cr.Put_Image_Data (Color_To_Pix (Color).all, X_Drawing_Coordinate (X), Y_Drawing_Coordinate (Y));
 --        Cairo.Destroy (Cr);
 --        Gdk.Drawable.Draw_Pixmap( Get_Pixmap( Main_Window.Game_Screen ),
 --                                  Main_Window.GC, Color_To_Pix(Color),
@@ -181,9 +172,14 @@ package body Game_Engine is
 --                                );
    end Paint_Block;
 
-   procedure Paint_White_Block (X : Integer; Y : Integer);
-   procedure Paint_White_Block (X : Integer; Y : Integer) is
-      Dummy_Cr     : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
+   procedure Paint_White_Block
+     (X : Integer;
+      Y : Integer);
+   procedure Paint_White_Block
+     (X : Integer;
+      Y : Integer)
+   is
+      Dummy_Cr : Gnoga.Gui.Element.Canvas.Context_2D.Context_2D_Type;
    begin
 --        Cr := Cairo.Create (Get_Pixmap (Main_Window.Game_Screen));
       Dummy_Cr.Get_Drawing_Context_2D (Main_Window.Game_Screen);
@@ -194,9 +190,7 @@ package body Game_Engine is
 --           Gdouble (Y_Drawing_Coordinate (Y)));
 --        Cairo.Paint (Cr);
       Dummy_Cr.Put_Image_Data
-      (Main_Window.White_Pix.all, X_Drawing_Coordinate
-         (X), Y_Drawing_Coordinate (Y) +
-       Main_Window.Delta_Y);
+        (Main_Window.White_Pix.all, X_Drawing_Coordinate (X), Y_Drawing_Coordinate (Y) + Main_Window.Delta_Y);
 --        Cairo.Destroy (Cr);
 --        Gdk.Drawable.Draw_Drawable( Get_Pixmap( Main_Window.Game_Screen ),
 --                                    Main_Window.GC, Main_Window.White_Pix,
@@ -207,19 +201,25 @@ package body Game_Engine is
 --                                  );
    end Paint_White_Block;
 
-   function X_Drawing_Coordinate (X : Integer) return Integer is
+   function X_Drawing_Coordinate
+     (X : Integer)
+      return Integer
+   is
    begin
       return 24 * (X - 1);
    end X_Drawing_Coordinate;
 
-   function Y_Drawing_Coordinate (Y : Integer) return Integer is
+   function Y_Drawing_Coordinate
+     (Y : Integer)
+      return Integer
+   is
    begin
       return 480 - 24 * Y;
    end Y_Drawing_Coordinate;
 
    function Color_To_Pix
-     (Color : Block_Engine.Color) return
-     Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access
+     (Color : Block_Engine.Color)
+      return Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access
    is
    begin
       case Color is
@@ -245,8 +245,8 @@ package body Game_Engine is
    end Color_To_Pix;
 
    function Color_To_Prev_Pix
-     (Color : Block_Engine.Color) return
-     Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access
+     (Color : Block_Engine.Color)
+      return Gnoga.Gui.Element.Canvas.Context_2D.Image_Data_Access
    is
    begin
       case Color is
@@ -287,8 +287,7 @@ package body Game_Engine is
 --           0.0);
 --        Cairo.Paint (Cr);
       Dummy_Cr.Put_Image_Data
-        (Color_To_Prev_Pix (Block_Engine.Get_Next_Piece_Color
-         (Main_Window.Engine.all)).all, 0, 0);
+        (Color_To_Prev_Pix (Block_Engine.Get_Next_Piece_Color (Main_Window.Engine.all)).all, 0, 0);
 --        Cairo.Destroy (Cr);
 --        Gdk.Drawable.Draw_Drawable( Get_Pixmap( Main_Window.Prev_Screen ),
 --                                    Main_Window.GC,
@@ -321,9 +320,7 @@ package body Game_Engine is
       Main_Window.Exists_Game := False;
       --     Gtk.Menu_Item.Set_Sensitive (Main_Window.Item_Game_Pause, False);
       Main_Window.Item_Game_Pause.Disabled;
-      if Block_Engine.Get_Score (Main_Window.Engine.all) >
-        Get_Minimum_Score
-      then
+      if Block_Engine.Get_Score (Main_Window.Engine.all) > Get_Minimum_Score then
          --           Show_All (New_Score_Dialog);
          New_Score_Dialog.Hidden (False);
       else
@@ -343,9 +340,7 @@ package body Game_Engine is
       Main_Window.Level_Label.Text (Integer'Image (Level));
       Main_Window.Pieces_Label.Text (Integer'Image (Pieces));
       Main_Window.Lines_Label.Text (Integer'Image (Lines));
-      if (Block_Engine.Get_Lines_Completed (Main_Window.Engine.all) > 0) and
-        Main_Window.Animation
-      then
+      if (Block_Engine.Get_Lines_Completed (Main_Window.Engine.all) > 0) and Main_Window.Animation then
          Main_Window.On_Animation   := True;
          Main_Window.Animation_Kind := Line_Completed_Animation;
       end if;
@@ -354,8 +349,7 @@ package body Game_Engine is
          declare
             Tmp : constant Integer := Main_Window.Max_Down_Count;
          begin
-            Main_Window.Max_Down_Count :=
-              Integer (Float (Main_Window.Max_Down_Count) / 1.35);
+            Main_Window.Max_Down_Count := Integer (Float (Main_Window.Max_Down_Count) / 1.35);
             if Main_Window.Max_Down_Count = Tmp then
                Main_Window.Max_Down_Count := Main_Window.Max_Down_Count / 2;
             end if;
@@ -412,9 +406,8 @@ package body Game_Engine is
    procedure Do_Line_Completed_Animation is
       Base_Line, Lines : Natural;
    begin
-      Base_Line :=
-        Block_Engine.Get_Lowest_Line_Completed (Main_Window.Engine.all);
-      Lines := Block_Engine.Get_Lines_Completed (Main_Window.Engine.all);
+      Base_Line                   := Block_Engine.Get_Lowest_Line_Completed (Main_Window.Engine.all);
+      Lines                       := Block_Engine.Get_Lines_Completed (Main_Window.Engine.all);
       Main_Window.Animation_Count := Main_Window.Animation_Count + 1;
       if Main_Window.Animation_Count = 1 then
          for J in Base_Line .. (Base_Line + Lines - 1) loop
@@ -424,13 +417,7 @@ package body Game_Engine is
          end loop;
          for j in Base_Line .. 20 loop
             for i in 1 .. 10 loop
-               Paint_Block
-                 (i,
-                  j + Lines,
-                  Block_Engine.Get_Position_Color
-                    (Main_Window.Engine.all,
-                     i,
-                     j));
+               Paint_Block (i, j + Lines, Block_Engine.Get_Position_Color (Main_Window.Engine.all, i, j));
             end loop;
          end loop;
 --           Main_Window.Game_Screen.Queue_Draw;
@@ -475,7 +462,9 @@ package body Game_Engine is
    end Do_Game_Over_Animation;
 
    task type Action_Task is
-      entry Start (Interval : Duration; Action : TO_Action_Type);
+      entry Start
+        (Interval : Duration;
+         Action   : TO_Action_Type);
    end Action_Task;
    type Action_Task_Access is access Action_Task;
 
@@ -483,7 +472,9 @@ package body Game_Engine is
       AT_Interval : Duration;
       AT_Action   : TO_Action_Type;
    begin
-      accept Start (Interval : Duration; Action : TO_Action_Type) do
+      accept Start
+        (Interval : Duration;
+         Action   : TO_Action_Type) do
          AT_Interval := Interval;
          AT_Action   := Action;
       end Start;
@@ -500,9 +491,8 @@ package body Game_Engine is
       entry Add
         (Interval :     Duration;
          Action   :     TO_Action_Type;
-         ID       : out Natural)
-        when TO_ID = 0
-        is
+         ID       : out Natural) when TO_ID = 0
+      is
       begin
          TO_ID := 1;
          ID    := TO_ID;
@@ -525,7 +515,7 @@ package body Game_Engine is
 --        Gtk.Menu_Item.Set_Sensitive (Main_Window.Item_Game_Pause);
       Main_Window.Item_Game_Pause.Disabled (False);
       Main_Window.Exists_Game := True;
-      Main_Window.Game_Quit := False;
+      Main_Window.Game_Quit   := False;
       Main_Window.Pause (False);
       Game_Engine.Clear_Screen;
 --        Main_Window.Game_Screen.Queue_Draw;
@@ -536,9 +526,8 @@ package body Game_Engine is
       Main_Window.Down_Count     := 0;
       Main_Window.Max_Down_Count := 40;
       while Initial_Level > 1 loop
-         Main_Window.Max_Down_Count :=
-           Integer (Float (Main_Window.Max_Down_Count) / 1.35);
-         Initial_Level := Initial_Level - 1;
+         Main_Window.Max_Down_Count := Integer (Float (Main_Window.Max_Down_Count) / 1.35);
+         Initial_Level              := Initial_Level - 1;
       end loop;
       Main_Window.Down_Timeout_Interval := 0.020; -- milliseconds
 
@@ -551,12 +540,8 @@ package body Game_Engine is
 --        Main_Window.Down_Timeout_ID :=
 --          Glib.Main.Timeout_Add (Main_Window.Down_Timeout_Interval,
 --             Auto_Down_Timeout'Access);
-      Time_out.Add
-        (Main_Window.Down_Timeout_Interval,
-         Auto_Down_Timeout'Access,
-         Main_Window.Down_Timeout_ID);
-      Main_Window.Record_Label.Text
-      (Integer'Image (Scores_Window_pkg.Get_Maximum_Score));
+      Time_out.Add (Main_Window.Down_Timeout_Interval, Auto_Down_Timeout'Access, Main_Window.Down_Timeout_ID);
+      Main_Window.Record_Label.Text (Integer'Image (Scores_Window_pkg.Get_Maximum_Score));
    end New_Game;
 
 --     function Process_Key_Press

@@ -14,5 +14,6 @@ project Leaves is
 
    package Binder renames Settings.Binder;
    package Linker renames Settings.Linker;
+   package Pretty_Printer renames Settings.Pretty_Printer;
 
 end Leaves;

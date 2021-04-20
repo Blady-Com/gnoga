@@ -26,30 +26,45 @@ with Ada.Numerics.Discrete_Random;
 
 package body Block_Engine is
    --  Public Section
-   function Piece_X (The : Object; i : Integer) return Integer is
+   function Piece_X
+     (The : Object;
+      i   : Integer)
+      return Integer
+   is
    begin
       return The.Piece (i).X;
    end Piece_X;
 
-   function Piece_Y (The : Object; i : Integer) return Integer is
+   function Piece_Y
+     (The : Object;
+      i   : Integer)
+      return Integer
+   is
    begin
       return The.Piece (i).Y;
    end Piece_Y;
 
-   function Ghost_X (The : Object; i : Integer) return Integer is
+   function Ghost_X
+     (The : Object;
+      i   : Integer)
+      return Integer
+   is
    begin
       return The.Ghost (i).X;
    end Ghost_X;
 
-   function Ghost_Y (The : Object; i : Integer) return Integer is
+   function Ghost_Y
+     (The : Object;
+      i   : Integer)
+      return Integer
+   is
    begin
       return The.Ghost (i).Y;
    end Ghost_Y;
 
    package Random_Shape_Pkg is
 
-      package Shape_Random is new Ada.Numerics.Discrete_Random
-        (Piece_Shape_Type);
+      package Shape_Random is new Ada.Numerics.Discrete_Random (Piece_Shape_Type);
 
       Shape_Vector : array (Piece_Shape_Type'Range) of Piece_Shape_Type;
       Shape_Gen    : Shape_Random.Generator;
@@ -81,8 +96,7 @@ package body Block_Engine is
 
    end Random_Shape_Pkg;
 
-   function Random_Shape return Piece_Shape_Type renames
-     Random_Shape_Pkg.Random_Shape;
+   function Random_Shape return Piece_Shape_Type renames Random_Shape_Pkg.Random_Shape;
 
    procedure Init (The : in out Object) is
       Dummy_OK : Boolean;
@@ -110,7 +124,10 @@ package body Block_Engine is
       The.Bonus_Completed := The.Initial_Lines;
    end Init;
 
-   procedure Set_Next_Move (The : in out Object; To : Move) is
+   procedure Set_Next_Move
+     (The : in out Object;
+      To  :        Move)
+   is
    begin
       The.Next_Move := To;
    end Set_Next_Move;
@@ -120,82 +137,130 @@ package body Block_Engine is
       The.Auto_Down := True;
    end Set_Auto_Down;
 
-   function Get_Pieces_Number (The : Object) return Integer is
+   function Get_Pieces_Number
+     (The : Object)
+      return Integer
+   is
    begin
       return The.Pieces_Number;
    end Get_Pieces_Number;
 
-   function Get_Piece_Color (The : Object) return Color is
+   function Get_Piece_Color
+     (The : Object)
+      return Color
+   is
    begin
       return The.Piece_Color;
    end Get_Piece_Color;
 
-   function Get_Next_Piece_Color (The : Object) return Color is
+   function Get_Next_Piece_Color
+     (The : Object)
+      return Color
+   is
    begin
       return Shape_To_Color (The.Next_Piece_Shape);
    end Get_Next_Piece_Color;
 
-   function Get_Score (The : Object) return Integer is
+   function Get_Score
+     (The : Object)
+      return Integer
+   is
    begin
       return The.Score;
    end Get_Score;
 
-   function Get_Level (The : Object) return Integer is
+   function Get_Level
+     (The : Object)
+      return Integer
+   is
    begin
       return The.Level;
    end Get_Level;
 
-   procedure Set_Has_Ghost (The : in out Object; To : Boolean) is
+   procedure Set_Has_Ghost
+     (The : in out Object;
+      To  :        Boolean)
+   is
    begin
       The.Has_Ghost := To;
    end Set_Has_Ghost;
 
-   function Get_Has_Ghost (The : in Object) return Boolean is
+   function Get_Has_Ghost
+     (The : in Object)
+      return Boolean
+   is
    begin
       return The.Has_Ghost;
    end Get_Has_Ghost;
 
-   function Get_Initial_Level (The : Object) return Integer is
+   function Get_Initial_Level
+     (The : Object)
+      return Integer
+   is
    begin
       return The.Initial_Level;
    end Get_Initial_Level;
 
-   function Get_Lines_Completed (The : Object) return Integer is
+   function Get_Lines_Completed
+     (The : Object)
+      return Integer
+   is
    begin
       return The.Lines_Completed;
    end Get_Lines_Completed;
 
-   function Get_Lowest_Line_Completed (The : Object) return Integer is
+   function Get_Lowest_Line_Completed
+     (The : Object)
+      return Integer
+   is
    begin
       return The.Lowest_Line_Completed;
    end Get_Lowest_Line_Completed;
 
-   function Get_Lines_Number (The : Object) return Integer is
+   function Get_Lines_Number
+     (The : Object)
+      return Integer
+   is
    begin
       return The.Lines_Number;
    end Get_Lines_Number;
 
-   function Game_Over (The : Object) return Boolean is
+   function Game_Over
+     (The : Object)
+      return Boolean
+   is
    begin
       return The.Game_Is_Over;
    end Game_Over;
 
-   function Level_Changed (The : Object) return Boolean is
+   function Level_Changed
+     (The : Object)
+      return Boolean
+   is
    begin
       return The.Level_Has_Changed;
    end Level_Changed;
 
-   procedure Set_Initial_Level (The : in out Object; To : Positive) is
+   procedure Set_Initial_Level
+     (The : in out Object;
+      To  :        Positive)
+   is
    begin
       The.Initial_Level := To;
    end Set_Initial_Level;
 
-   procedure Set_Initial_Lines (The : in out Object; To : Natural) is
+   procedure Set_Initial_Lines
+     (The : in out Object;
+      To  :        Natural)
+   is
    begin
       The.Initial_Lines := To;
    end Set_Initial_Lines;
 
-   function Get_Initial_Lines (The : Object) return Integer is
+   function Get_Initial_Lines
+     (The : Object)
+      return Integer
+   is
    begin
       return The.Initial_Lines;
    end Get_Initial_Lines;
@@ -203,18 +268,25 @@ package body Block_Engine is
    function Get_Position_Color
      (The : Object;
       X   : Positive;
-      Y   : Positive) return Color
+      Y   : Positive)
+      return Color
    is
    begin
       return The.Block_Color (X, Y);
    end Get_Position_Color;
 
-   procedure Set_Random_Piece_Color (The : in out Object; To : Boolean) is
+   procedure Set_Random_Piece_Color
+     (The : in out Object;
+      To  :        Boolean)
+   is
    begin
       The.Random_Piece_Color := To;
    end Set_Random_Piece_Color;
 
-   function Get_Random_Piece_Color (The : in Object) return Boolean is
+   function Get_Random_Piece_Color
+     (The : in Object)
+      return Boolean
+   is
    begin
       return The.Random_Piece_Color;
    end Get_Random_Piece_Color;
@@ -230,9 +302,7 @@ package body Block_Engine is
       loop
          for I in The.Ghost'Range loop
             exit Outer_Loop when (The.Ghost (I).Y = 1);
-            exit Outer_Loop when
-              (The.Block_Color (The.Ghost (I).X, The.Ghost (I).Y - 1) /=
-               Blank);
+            exit Outer_Loop when (The.Block_Color (The.Ghost (I).X, The.Ghost (I).Y - 1) /= Blank);
          end loop;
          for I in The.Ghost'Range loop
             The.Ghost (I).Y := The.Ghost (I).Y - 1;
@@ -240,15 +310,16 @@ package body Block_Engine is
       end loop Outer_Loop;
    end Set_Ghost;
 
-   function Piece_Can_Move_Down (The : in Object) return Boolean is
+   function Piece_Can_Move_Down
+     (The : in Object)
+      return Boolean
+   is
    begin
       for i in The.Piece'Range loop
          if The.Piece (i).Y - 1 not in The.Block_Color'Range (2) then
             return False;
          end if;
-         if The.Block_Color (The.Piece (i).X, The.Piece (i).Y - 1) /=
-           Blank
-         then
+         if The.Block_Color (The.Piece (i).X, The.Piece (i).Y - 1) /= Blank then
             return False;
          end if;
       end loop;
@@ -266,8 +337,7 @@ package body Block_Engine is
       if The.Next_Move = Drop then
          Drop (The);
          for i in 1 .. 4 loop
-            The.Block_Color (The.Piece (i).X, The.Piece (i).Y) :=
-              The.Piece_Color;
+            The.Block_Color (The.Piece (i).X, The.Piece (i).Y) := The.Piece_Color;
          end loop;
          The.Score := The.Score + 3 * The.Level + The.Bonus_Down;
          Put_Piece (The, Can_Move);
@@ -286,8 +356,7 @@ package body Block_Engine is
          if not Can_Move then
             The.Score := The.Score + 3 * The.Level + The.Bonus_Down;
             for i in 1 .. 4 loop
-               The.Block_Color (The.Piece (i).X, The.Piece (i).Y) :=
-                 The.Piece_Color;
+               The.Block_Color (The.Piece (i).X, The.Piece (i).Y) := The.Piece_Color;
             end loop;
             Put_Piece (The, Can_Move);
             if not Can_Move then
@@ -338,9 +407,7 @@ package body Block_Engine is
          if The.Piece (i).X + 1 not in The.Block_Color'Range (1) then
             return;
          end if;
-         if The.Block_Color (The.Piece (i).X + 1, The.Piece (i).Y) /=
-           Blank
-         then
+         if The.Block_Color (The.Piece (i).X + 1, The.Piece (i).Y) /= Blank then
             return;
          end if;
       end loop;
@@ -355,9 +422,7 @@ package body Block_Engine is
          if The.Piece (i).X - 1 not in The.Block_Color'Range (1) then
             return;
          end if;
-         if The.Block_Color (The.Piece (i).X - 1, The.Piece (i).Y) /=
-           Blank
-         then
+         if The.Block_Color (The.Piece (i).X - 1, The.Piece (i).Y) /= Blank then
             return;
          end if;
       end loop;
@@ -367,16 +432,17 @@ package body Block_Engine is
       return;
    end Move_Left;
 
-   procedure Move_Down (The : in out Object; Success : out Boolean) is
+   procedure Move_Down
+     (The     : in out Object;
+      Success :    out Boolean)
+   is
    begin
       for i in The.Piece'Range loop
          if The.Piece (i).Y - 1 not in The.Block_Color'Range (2) then
             Success := False;
             return;
          end if;
-         if The.Block_Color (The.Piece (i).X, The.Piece (i).Y - 1) /=
-           Blank
-         then
+         if The.Block_Color (The.Piece (i).X, The.Piece (i).Y - 1) /= Blank then
             Success := False;
             return;
          end if;
@@ -394,9 +460,7 @@ package body Block_Engine is
             if The.Piece (i).Y - 1 not in The.Block_Color'Range (2) then
                return;
             end if;
-            if The.Block_Color (The.Piece (i).X, The.Piece (i).Y - 1) /=
-              Blank
-            then
+            if The.Block_Color (The.Piece (i).X, The.Piece (i).Y - 1) /= Blank then
                for j in The.Piece'Range loop
                   return;
                end loop;
@@ -435,24 +499,18 @@ package body Block_Engine is
          when Piece_I | Piece_S | Piece_Z =>
             if the.Piece (2).X = the.Piece (1).X then
                for i in (the.Piece'First + 1) .. (the.Piece'Last) loop
-                  Tmp (i).X :=
-                    the.Piece (1).Y - the.Piece (i).Y + the.Piece (1).X;
-                  Tmp (i).Y :=
-                    the.Piece (i).X - the.Piece (1).X + the.Piece (1).Y;
+                  Tmp (i).X := the.Piece (1).Y - the.Piece (i).Y + the.Piece (1).X;
+                  Tmp (i).Y := the.Piece (i).X - the.Piece (1).X + the.Piece (1).Y;
                end loop;
             else
                for i in (the.Piece'First + 1) .. (the.Piece'Last) loop
-                  Tmp (i).X :=
-                    -the.Piece (1).Y + the.Piece (i).Y + the.Piece (1).X;
-                  Tmp (i).Y :=
-                    -the.Piece (i).X + the.Piece (1).X + the.Piece (1).Y;
+                  Tmp (i).X := -the.Piece (1).Y + the.Piece (i).Y + the.Piece (1).X;
+                  Tmp (i).Y := -the.Piece (i).X + the.Piece (1).X + the.Piece (1).Y;
                end loop;
             end if;
       end case;
       for i in the.Piece'Range loop
-         if (Tmp (i).X not in the.Block_Color'Range (1)) or
-           (Tmp (i).Y not in the.Block_Color'Range (2))
-         then
+         if (Tmp (i).X not in the.Block_Color'Range (1)) or (Tmp (i).Y not in the.Block_Color'Range (2)) then
             return;
          end if;
          if the.Block_Color (Tmp (i).X, Tmp (i).Y) /= Blank then
@@ -475,9 +533,7 @@ package body Block_Engine is
       j                   := 1;
       while j <= The.Block_Color'Last (2) loop
          i := 1;
-         while (The.Block_Color (i, j) /= Blank) and
-           (i <= The.Block_Color'Last (1))
-         loop
+         while (The.Block_Color (i, j) /= Blank) and (i <= The.Block_Color'Last (1)) loop
             i := i + 1;
             if i = The.Block_Color'Last (1) + 1 then
                exit;
@@ -517,12 +573,16 @@ package body Block_Engine is
    end Check_Completed_Lines;
 
    function Get_Completed_Lines_Number
-     (The : Object) return Lines_Indication
+     (The : Object)
+      return Lines_Indication
    is
    begin
       return The.Completed_Lines_List;
    end Get_Completed_Lines_Number;
-   procedure Put_Piece (The : in out Object; Success : out Boolean) is
+   procedure Put_Piece
+     (The     : in out Object;
+      Success :    out Boolean)
+   is
    begin
 
       if The.Next_Piece_Shape = Piece_I then
@@ -643,7 +703,10 @@ package body Block_Engine is
       Success           := True;
    end Put_Piece;
 
-   function Shape_To_Color (Shape : Piece_Shape_Type) return Color is
+   function Shape_To_Color
+     (Shape : Piece_Shape_Type)
+      return Color
+   is
    begin
       case Shape is
          when Piece_I =>

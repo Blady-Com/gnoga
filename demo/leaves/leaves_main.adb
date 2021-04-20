@@ -54,20 +54,34 @@ procedure Leaves_main is
    use Gnoga.Gui.Plugin.Pixi.Sprite;
    use Gnoga.Gui.View;
 
-   function Bitmap (c : Cell) return String is
+   function Bitmap
+     (c : Cell)
+      return String
+   is
    begin
       case c is
-         when empty => return "";
-         when tile_1  => return "d_0536.png";
-         when tile_2  => return "d_0537.png";
-         when tile_3  => return "d_0544.png";
-         when tile_4  => return "d_0541.png";
-         when tile_5  => return "d_0540.png";
-         when tile_6  => return "d_0542.png";
-         when tile_7  => return "d_0543.png";
-         when tile_8  => return "d_0539.png";
-         when tile_9  => return "d_0545.png";
-         when tile_10 => return "d_0546.png";
+         when empty =>
+            return "";
+         when tile_1 =>
+            return "d_0536.png";
+         when tile_2 =>
+            return "d_0537.png";
+         when tile_3 =>
+            return "d_0544.png";
+         when tile_4 =>
+            return "d_0541.png";
+         when tile_5 =>
+            return "d_0540.png";
+         when tile_6 =>
+            return "d_0542.png";
+         when tile_7 =>
+            return "d_0543.png";
+         when tile_8 =>
+            return "d_0539.png";
+         when tile_9 =>
+            return "d_0545.png";
+         when tile_10 =>
+            return "d_0546.png";
       end case;
    end Bitmap;
 
@@ -99,33 +113,37 @@ procedure Leaves_main is
       App.Btn_Down_pos := null_cell_pos;
    end Unclick;
 
-   cell_size    : constant := 68;
-   cell_padding : constant := 1;
-   grid_width   : constant := 2;
+   cell_size        : constant := 68;
+   cell_padding     : constant := 1;
+   grid_width       : constant := 2;
    cell_size_padded : constant := cell_size + cell_padding * 2 + grid_width;
 
-   function Pix_hor_pos (cp : Cell_pos) return Integer is
+   function Pix_hor_pos
+     (cp : Cell_pos)
+      return Integer
+   is
    begin
       return grid_width + (cp.x - 1) * cell_size_padded;
    end Pix_hor_pos;
 
-   function Pix_ver_pos (cp : Cell_pos) return Integer is
+   function Pix_ver_pos
+     (cp : Cell_pos)
+      return Integer
+   is
    begin
       return grid_width + (cp.y - 1) * cell_size_padded;
    end Pix_ver_pos;
 
-   procedure Create_tile_sprite (App : in out Game_App_Data; cp : Cell_pos) is
+   procedure Create_tile_sprite
+     (App : in out Game_App_Data;
+      cp  :        Cell_pos)
+   is
       cl : constant Cell := App.My_Board (cp.x, cp.y);
    begin
       if cl = empty then
          return;
       end if;
-      App.Sprite (cp.x, cp.y).Create (
-         App.C,
-         "img/" & Bitmap (cl),
-         Column => Pix_hor_pos (cp),
-         Row    => Pix_ver_pos (cp)
-      );
+      App.Sprite (cp.x, cp.y).Create (App.C, "img/" & Bitmap (cl), Column => Pix_hor_pos (cp), Row => Pix_ver_pos (cp));
    end Create_tile_sprite;
 
    trace : constant Boolean := True;
@@ -137,14 +155,17 @@ procedure Leaves_main is
       end if;
    end Game_log;
 
-   procedure Swap_tiles (App : in out Game_App_Data; c1, c2 : Cell_pos) is
-      swap_time : constant := 0.2;
-      dx : constant Integer := cell_size_padded * (c2.x - c1.x);
-      dy : constant Integer := cell_size_padded * (c2.y - c1.y);
-      vx : constant Velocity_Type := Velocity_Type (dx) / swap_time;
-      vy : constant Velocity_Type := Velocity_Type (dy) / swap_time;
+   procedure Swap_tiles
+     (App    : in out Game_App_Data;
+      c1, c2 :        Cell_pos)
+   is
+      swap_time          : constant               := 0.2;
+      dx                 : constant Integer       := cell_size_padded * (c2.x - c1.x);
+      dy                 : constant Integer       := cell_size_padded * (c2.y - c1.y);
+      vx                 : constant Velocity_Type := Velocity_Type (dx) / swap_time;
+      vy                 : constant Velocity_Type := Velocity_Type (dy) / swap_time;
       ox1, oy1, ox2, oy2 : Integer;
-      aux : Cell;
+      aux                : Cell;
    begin
       Game_log ("Swapping: (" & c1.x'Img & c1.y'Img & ") and (" & c2.x'Img & c2.y'Img & ")");
       Unclick (App);
@@ -160,7 +181,7 @@ procedure Leaves_main is
       App.Sprite (c1.x, c1.y).Locate (ox2, oy2);
       App.Sprite (c2.x, c2.y).Locate (ox1, oy1);
       --  Swap the board's contents
-      aux := App.My_Board (c1.x, c1.y);
+      aux                       := App.My_Board (c1.x, c1.y);
       App.My_Board (c1.x, c1.y) := App.My_Board (c2.x, c2.y);
       App.My_Board (c2.x, c2.y) := aux;
       --  Swap the sprites themselves (Delete & Re-Create)
@@ -176,21 +197,17 @@ procedure Leaves_main is
    procedure Process_matches (App : in out Game_App_Data) is
       ma : constant Match_list := Matches (App.My_Board);
       use Ada.Numerics.Float_Random;
-      gen : Generator;
+      gen                : Generator;
       animation_slowdown : constant := 1;
       --
       procedure Show_matches is
          fx : array (ma'Range) of Sprite_Type;
       begin
          for tch in ma'Range loop
-            fx (tch).Create (
-               App.C,
-               "img/" & To_Lower (Match_kind'Image (ma (tch).kind)) & ".png",
-               Column => Pix_hor_pos (ma (tch).pos),
-               Row    => Pix_ver_pos (ma (tch).pos),
-               Column_Velocity => 6.0 * (Random (gen) - 0.5),
-               Row_Velocity    => Random (gen) - 4.0
-            );
+            fx (tch).Create
+              (App.C, "img/" & To_Lower (Match_kind'Image (ma (tch).kind)) & ".png",
+               Column          => Pix_hor_pos (ma (tch).pos), Row => Pix_ver_pos (ma (tch).pos),
+               Column_Velocity => 6.0 * (Random (gen) - 0.5), Row_Velocity => Random (gen) - 4.0);
          end loop;
          Game_log ("[--Delay--] Show matches");
          delay 0.41;
@@ -215,11 +232,11 @@ procedure Leaves_main is
       procedure New_tiles is
          no_more_move : Boolean;
          procedure Visual_gravity_step is
-            gl : constant Gravity_list := Gravity_step (App.My_Board, level_probs);
+            gl                        : constant Gravity_list := Gravity_step (App.My_Board, level_probs);
             dx, dy, dst, dmax, nx, ny : Float;
-            vx, vy : Velocity_Type;
-            fall_time_one_cell : constant := 0.19 * animation_slowdown;
-            stopped : Natural := 0;
+            vx, vy                    : Velocity_Type;
+            fall_time_one_cell        : constant              := 0.19 * animation_slowdown;
+            stopped                   : Natural               := 0;
          begin
             no_more_move := gl'Length = 0;
             if no_more_move then
@@ -234,9 +251,9 @@ procedure Leaves_main is
                end if;
                Create_tile_sprite (App, (g.to.x, g.to.y));
                App.Sprite (g.to.x, g.to.y).Locate (Row => Pix_ver_pos (g.from), Column => Pix_hor_pos (g.from));
-               dx := Float (Pix_hor_pos (g.to) - Pix_hor_pos (g.from));
-               dy := Float (Pix_ver_pos (g.to) - Pix_ver_pos (g.from));
-               dst := Float'Max (abs dx, abs dy);  --  Actually always = dy
+               dx   := Float (Pix_hor_pos (g.to) - Pix_hor_pos (g.from));
+               dy   := Float (Pix_ver_pos (g.to) - Pix_ver_pos (g.from));
+               dst  := Float'Max (abs dx, abs dy);  --  Actually always = dy
                dmax := Float'Max (dmax, dst);
                if dst < 1.0 then
                   nx := 0.0;
@@ -283,18 +300,22 @@ procedure Leaves_main is
      (Object      : in out Gnoga.Gui.Base.Base_Type'Class;
       Mouse_Event : in     Gnoga.Gui.Base.Mouse_Event_Record);
 
-   procedure Check_match (App : in out Game_App_Data; swap_1, swap_2 : Cell_pos) is
+   procedure Check_match
+     (App            : in out Game_App_Data;
+      swap_1, swap_2 :        Cell_pos)
+   is
    begin
       App.My_Canvas.On_Mouse_Down_Handler (null);
       --  Un-display choice highlighter
       App.Tile_choice.Finalize;
       Game_log ("Trying to swap: (" & swap_1.x'Img & swap_1.y'Img & ") and (" & swap_2.x'Img & swap_2.y'Img & ")");
-      if swap_1.x in App.My_Board'Range (1) and then swap_1.y in App.My_Board'Range (2) and then
-         swap_2.x in App.My_Board'Range (1) and then swap_2.y in App.My_Board'Range (2) and then
-         App.My_Board (swap_1.x, swap_1.y) in Movable_tile and then
-         App.My_Board (swap_2.x, swap_2.y) in Movable_tile and then
-         ((abs (swap_1.x - swap_2.x) = 1 and swap_1.y = swap_2.y) or
-          (abs (swap_1.y - swap_2.y) = 1 and swap_1.x = swap_2.x))
+      if swap_1.x in App.My_Board'Range (1) and then swap_1.y in App.My_Board'Range (2)
+        and then swap_2.x in App.My_Board'Range (1) and then swap_2.y in App.My_Board'Range (2)
+        and then App.My_Board (swap_1.x, swap_1.y) in Movable_tile
+        and then App.My_Board (swap_2.x, swap_2.y) in Movable_tile
+        and then
+        ((abs (swap_1.x - swap_2.x) = 1 and swap_1.y = swap_2.y) or
+         (abs (swap_1.y - swap_2.y) = 1 and swap_1.x = swap_2.x))
       then
          Swap_tiles (App, swap_1, swap_2);
          if Find_any_match (App.My_Board) then
@@ -313,8 +334,7 @@ procedure Leaves_main is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  :        access Gnoga.Application.Multi_Connect
-        .Connection_Holder_Type);
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
 
    procedure Mouse_Move
      (Object      : in out Gnoga.Gui.Base.Base_Type'Class;
@@ -325,10 +345,9 @@ procedure Leaves_main is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  :        access Gnoga.Application.Multi_Connect
-        .Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-   pragma Unreferenced (Connection);
+      pragma Unreferenced (Connection);
       App : constant App_Access := new Game_App_Data (13, 7);
       G   : Plugin.Pixi.Graphics.Graphics_Type;
    begin
@@ -341,24 +360,19 @@ procedure Leaves_main is
 
       Plugin.Pixi.Load_PIXI (Main_Window);
 
-      App.My_Canvas.Create (
-        App.Main_Window.all,
-        grid_width + App.My_Board'Length (1) * cell_size_padded,
-        grid_width + App.My_Board'Length (2) * cell_size_padded
-      );
+      App.My_Canvas.Create
+        (App.Main_Window.all, grid_width + App.My_Board'Length (1) * cell_size_padded,
+         grid_width + App.My_Board'Length (2) * cell_size_padded);
       App.My_Canvas.Border;
-      App.My_Canvas.Place_Inside_Bottom_Of
-      (App.Main_Window.Document.Body_Element.all);
+      App.My_Canvas.Place_Inside_Bottom_Of (App.Main_Window.Document.Body_Element.all);
       App.My_Canvas.On_Mouse_Down_Handler (Mouse_Down'Unrestricted_Access);
 
       Fill (App.My_Board, level_probs);
       Unclick (App.all);
 
-      App.A.Create (
-        App.My_Canvas,
-        grid_width + App.My_Board'Length (1) * cell_size_padded,
-        grid_width + App.My_Board'Length (2) * cell_size_padded
-      );
+      App.A.Create
+        (App.My_Canvas, grid_width + App.My_Board'Length (1) * cell_size_padded,
+         grid_width + App.My_Board'Length (2) * cell_size_padded);
       App.R.Create (App.A);
       App.C.Create (App.A);
       G.Create (App.C);
@@ -387,7 +401,10 @@ procedure Leaves_main is
 --  XX on loop exit XX      Connection.Hold;
    end On_Connect;
 
-   function Locate_cell (mx, my : Natural) return Cell_pos is
+   function Locate_cell
+     (mx, my : Natural)
+      return Cell_pos
+   is
    begin
       return (1 + mx / cell_size_padded, 1 + my / cell_size_padded);
    end Locate_cell;
@@ -400,19 +417,14 @@ procedure Leaves_main is
    begin
       App.Btn_Down_pix_x := Mouse_Event.X;
       App.Btn_Down_pix_y := Mouse_Event.Y;
-      App.Btn_Down_pos := Locate_cell (App.Btn_Down_pix_x, App.Btn_Down_pix_y);
+      App.Btn_Down_pos   := Locate_cell (App.Btn_Down_pix_x, App.Btn_Down_pix_y);
       --  Un-display previous choice highlighter
       App.Tile_choice.Finalize;
       --  Highlight new choice
-      if App.Btn_Down_pos.x in App.My_Board'Range (1) and then
-         App.Btn_Down_pos.y in App.My_Board'Range (2)
-      then
-         App.Tile_choice.Create (
-            App.C,
-            "img/select.png",
-            Column => Pix_hor_pos (App.Btn_Down_pos) - 2,
-            Row    => Pix_ver_pos (App.Btn_Down_pos) - 2
-         );
+      if App.Btn_Down_pos.x in App.My_Board'Range (1) and then App.Btn_Down_pos.y in App.My_Board'Range (2) then
+         App.Tile_choice.Create
+           (App.C, "img/select.png", Column => Pix_hor_pos (App.Btn_Down_pos) - 2,
+            Row                             => Pix_ver_pos (App.Btn_Down_pos) - 2);
       else
          App.Btn_Down_pos := null_cell_pos;
       end if;
@@ -425,10 +437,10 @@ procedure Leaves_main is
      (Object      : in out Gnoga.Gui.Base.Base_Type'Class;
       Mouse_Event : in     Gnoga.Gui.Base.Mouse_Event_Record)
    is
-      App : constant App_Access := App_Access (Object.Connection_Data);
-      dx, dy : Integer;
-      target_cell : Cell_pos := Locate_cell (Mouse_Event.X, Mouse_Event.Y);
-      slide : Boolean := False;
+      App         : constant App_Access := App_Access (Object.Connection_Data);
+      dx, dy      : Integer;
+      target_cell : Cell_pos            := Locate_cell (Mouse_Event.X, Mouse_Event.Y);
+      slide       : Boolean             := False;
    begin
       Game_log ("Mouse Move" & Mouse_Event.X'Img & Mouse_Event.Y'Img);
       if App.Btn_Down_pos = null_cell_pos then
@@ -475,9 +487,7 @@ procedure Leaves_main is
          Game_log ("Click");
          App.Click_1_pos := App.Click_2_pos;
          App.Click_2_pos := App.Btn_Up_pos;
-         if not (App.Click_2_pos.x in App.My_Board'Range (1) and then
-                 App.Click_2_pos.y in App.My_Board'Range (2))
-         then
+         if not (App.Click_2_pos.x in App.My_Board'Range (1) and then App.Click_2_pos.y in App.My_Board'Range (2)) then
             App.Click_2_pos := null_cell_pos;
          end if;
          if App.Click_1_pos = App.Click_2_pos then
@@ -490,13 +500,10 @@ procedure Leaves_main is
    end Mouse_Up;
 
 begin
-   Application.Multi_Connect.Initialize
-     (Event => On_Connect'Unrestricted_Access,
-      Boot  => "debug.html");
+   Application.Multi_Connect.Initialize (Event => On_Connect'Unrestricted_Access, Boot => "debug.html");
 
    Application.Title ("Plant mania");
-   Application.HTML_On_Close
-     ("<b>Connection to Application has been terminated</b>");
+   Application.HTML_On_Close ("<b>Connection to Application has been terminated</b>");
 
    Application.Multi_Connect.Message_Loop;
 end Leaves_main;

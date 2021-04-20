@@ -24,8 +24,7 @@ package body Logo.View is
       ID          : in     String  := "")
    is
    begin
-      Gnoga.Gui.View.Grid.Grid_View_Type (Grid).Create
-      (Parent, Layout, Fill_Parent, Set_Sizes, ID);
+      Gnoga.Gui.View.Grid.Grid_View_Type (Grid).Create (Parent, Layout, Fill_Parent, Set_Sizes, ID);
 
       Grid.Panel (1, 1).Border;
       Grid.Panel (1, 2).Border;

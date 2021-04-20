@@ -56,17 +56,13 @@ package body Preferences_Window_Pkg is
 --          (Win   : access Preferences_Window_Record'Class;
 --           Event : Gdk_Event) return Boolean;
 
-      procedure On_OK_Button_Clicked
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+      procedure On_OK_Button_Clicked (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-      procedure On_Pref_Window_Show
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+      procedure On_Pref_Window_Show (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-      procedure On_Pref_Window_Hide
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+      procedure On_Pref_Window_Hide (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-      procedure On_Range_Change
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+      procedure On_Range_Change (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
    end Callbacks;
 
@@ -82,9 +78,7 @@ package body Preferences_Window_Pkg is
 --           return True;
 --        end On_Pref_Window_Delete;
 
-      procedure On_OK_Button_Clicked
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-      is
+      procedure On_OK_Button_Clicked (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
          pragma Unreferenced (Object);
          Level, Lines : Integer;
       begin
@@ -100,37 +94,27 @@ package body Preferences_Window_Pkg is
          else
             Game_Engine.Clear_Prev;
          end if;
-         Block_Engine.Set_Has_Ghost
-           (Main_Window.Engine.all,
-            Pref_Win.Ghost_Check.Checked);
+         Block_Engine.Set_Has_Ghost (Main_Window.Engine.all, Pref_Win.Ghost_Check.Checked);
          Set_Preferences;
          --           Hide (Pref_Win);
          Pref_Win.Hidden;
       end On_OK_Button_Clicked;
 
-      procedure On_Pref_Window_Show
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-      is
+      procedure On_Pref_Window_Show (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       begin
-         Preferences_Window_Record (Object).Pause_Status :=
-           Main_Window.Game_Paused;
+         Preferences_Window_Record (Object).Pause_Status := Main_Window.Game_Paused;
          Main_Window.Pause (True);
          Get_Preferences;
       end On_Pref_Window_Show;
 
-      procedure On_Pref_Window_Hide
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-      is
+      procedure On_Pref_Window_Hide (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       begin
          Main_Window.Pause (Preferences_Window_Record (Object).Pause_Status);
       end On_Pref_Window_Hide;
 
-      procedure On_Range_Change
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-      is
+      procedure On_Range_Change (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       begin
-         Gnoga_Extras.Labeled_Range_Type (Object).Label.Text
-         (Gnoga_Extras.Labeled_Range_Type (Object).Value);
+         Gnoga_Extras.Labeled_Range_Type (Object).Label.Text (Gnoga_Extras.Labeled_Range_Type (Object).Value);
       end On_Range_Change;
 
    end Callbacks;
@@ -204,8 +188,7 @@ package body Preferences_Window_Pkg is
 --          Xpadding => 5, Ypadding => 5);
 --        Set_Active (Win.Preview_Check, True);
       Win.Preview_Check.Create (Form);
-      Win.Preview_Check.Label.Create
-      (Form, Win.Preview_Check, "Piece Preview", False);
+      Win.Preview_Check.Label.Create (Form, Win.Preview_Check, "Piece Preview", False);
       Win.Preview_Check.Checked (True);
       Form.New_Line;
 --
@@ -214,8 +197,7 @@ package body Preferences_Window_Pkg is
 --          Ypadding => 5);
 --        Set_Active (Win.Cont_Move_Check, True);
       Win.Cont_Move_Check.Create (Form);
-      Win.Cont_Move_Check.Label.Create
-      (Form, Win.Cont_Move_Check, "Continuous Movement", False);
+      Win.Cont_Move_Check.Label.Create (Form, Win.Cont_Move_Check, "Continuous Movement", False);
       Win.Cont_Move_Check.Checked (True);
       Form.New_Line;
 --
@@ -224,8 +206,7 @@ package body Preferences_Window_Pkg is
 --          Ypadding => 5);
 --        Set_Active (Win.Animation_Check, True);
       Win.Animation_Check.Create (Form);
-      Win.Animation_Check.Label.Create
-      (Form, Win.Animation_Check, "Animation", False);
+      Win.Animation_Check.Label.Create (Form, Win.Animation_Check, "Animation", False);
       Win.Animation_Check.Checked (True);
       Form.New_Line;
 --
@@ -233,8 +214,7 @@ package body Preferences_Window_Pkg is
 --        Attach (Table, Win.Ghost_Check, 0, 2, 5, 6, Xpadding => 5,
 --          Ypadding => 5);
       Win.Ghost_Check.Create (Form);
-      Win.Ghost_Check.Label.Create
-      (Form, Win.Ghost_Check, "Ghost Mode", False);
+      Win.Ghost_Check.Label.Create (Form, Win.Ghost_Check, "Ghost Mode", False);
       Win.Ghost_Check.Checked (True);
 --
 --        Gtk_New_Hseparator (sep);
@@ -278,10 +258,9 @@ package body Preferences_Window_Pkg is
 
    procedure Get_Preferences is
       use Preferences_IO;
-      Filename : constant String :=
-        To_String (Main_Window_Pkg.Data_Dir & "preferences");
-      File : File_Type;
-      Pref : Preferences_Type;
+      Filename : constant String := To_String (Main_Window_Pkg.Data_Dir & "preferences");
+      File     : File_Type;
+      Pref     : Preferences_Type;
       procedure Create_File;
       procedure Create_File is
       begin
@@ -298,12 +277,8 @@ package body Preferences_Window_Pkg is
          when Name_Error =>
             Create_File;
       end;
-      Block_Engine.Set_Initial_Level
-        (Main_Window.Engine.all,
-         Pref.Initial_Level);
-      Block_Engine.Set_Initial_Lines
-        (Main_Window.Engine.all,
-         Pref.Initial_Lines);
+      Block_Engine.Set_Initial_Level (Main_Window.Engine.all, Pref.Initial_Level);
+      Block_Engine.Set_Initial_Lines (Main_Window.Engine.all, Pref.Initial_Lines);
       Main_Window.Continuous_Movement := Pref.Continuous_Movement;
       Main_Window.Animation           := Pref.Animation;
       Main_Window.Piece_Preview       := Pref.Piece_Preview;
@@ -321,20 +296,17 @@ package body Preferences_Window_Pkg is
 
    procedure Set_Preferences is
       use Preferences_IO;
-      Filename : constant String :=
-        To_String (Main_Window_Pkg.Data_Dir & "preferences");
-      File : File_Type;
-      pref : Preferences_Type;
+      Filename : constant String := To_String (Main_Window_Pkg.Data_Dir & "preferences");
+      File     : File_Type;
+      pref     : Preferences_Type;
    begin
       Open (File, Out_File, Filename);
-      pref.Initial_Level :=
-        Block_Engine.Get_Initial_Level (Main_Window.Engine.all);
-      pref.Initial_Lines :=
-        Block_Engine.Get_Initial_Lines (Main_Window.Engine.all);
+      pref.Initial_Level       := Block_Engine.Get_Initial_Level (Main_Window.Engine.all);
+      pref.Initial_Lines       := Block_Engine.Get_Initial_Lines (Main_Window.Engine.all);
       pref.Continuous_Movement := Main_Window.Continuous_Movement;
       pref.Animation           := Main_Window.Animation;
       pref.Piece_Preview       := Main_Window.Piece_Preview;
-      pref.Ghost := Block_Engine.Get_Has_Ghost (Main_Window.Engine.all);
+      pref.Ghost               := Block_Engine.Get_Has_Ghost (Main_Window.Engine.all);
       Write (File, pref);
       Close (File);
    end Set_Preferences;

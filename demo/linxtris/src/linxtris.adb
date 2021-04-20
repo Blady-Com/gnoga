@@ -43,8 +43,8 @@ begin
    Clear_Screen;
    Clear_Prev;
 --     Gtk.Main.Main;
-   exception
-      when E : others =>
-         Gnoga.Log ("LinXtris Error:");
-         Gnoga.Log (Ada.Exceptions.Exception_Information (E));
+exception
+   when E : others =>
+      Gnoga.Log ("LinXtris Error:");
+      Gnoga.Log (Ada.Exceptions.Exception_Information (E));
 end LinXtris;

@@ -37,7 +37,7 @@ with Gnoga.Gui.View.Grid;
 
 package Othello_Types is
 
-   subtype Valid_Row    is Positive range 1 .. 8; -- Size of the mine field
+   subtype Valid_Row is Positive range 1 .. 8; -- Size of the mine field
    subtype Valid_Column is Positive range 1 .. 8;
 
    -- Even though this is normally a button, I am implementing this as a
@@ -49,14 +49,13 @@ package Othello_Types is
    end record;
 
    type Cell_Status is (Empty, Blue, Red);
-   type Cell_Record is
-      record
-         Cell         : Cell_Status := Empty;
-         Button       : Cell_Button;
-         Pixmap       : Gnoga.Gui.View.View_Type; -- using a view type instead
-         Flag         : Boolean := True;
-         Button_Setup : Boolean := False;
-      end record;
+   type Cell_Record is record
+      Cell         : Cell_Status := Empty;
+      Button       : Cell_Button;
+      Pixmap       : Gnoga.Gui.View.View_Type; -- using a view type instead
+      Flag         : Boolean     := True;
+      Button_Setup : Boolean     := False;
+   end record;
 
    -- Removed top level menus.  Implementing the menu as a row of buttons
    type Othello_Record is tagged limited record
@@ -77,24 +76,22 @@ package Othello_Types is
 
    type Board_Matrix is array (Valid_Row, Valid_Column) of Cell_Record;
 
-
    subtype Bead_Color is Cell_Status;
 
    -- This is what each user's data looks like
    type App_Data_Type is new Gnoga.Types.Connection_Data_Type with record
-      Window        : Gnoga.Gui.Window.Pointer_To_Window_Class;
-      Window_View   : Gnoga.Gui.View.View_Type;
-      Main_View     : Gnoga.Gui.View.View_Type;
+      Window      : Gnoga.Gui.Window.Pointer_To_Window_Class;
+      Window_View : Gnoga.Gui.View.View_Type;
+      Main_View   : Gnoga.Gui.View.View_Type;
 
-      Othello       : Othello_Record;
+      Othello : Othello_Record;
 
       Playing_Board : Board_Matrix;
       Whose_Move    : Bead_Color := Blue;
       Game_Over     : Boolean    := False;
-      end record;
+   end record;
 
    type App_Data_Access is access all App_Data_Type;
 
    End_Message : constant String := "Ada Othello ended.";
 end Othello_Types;
-

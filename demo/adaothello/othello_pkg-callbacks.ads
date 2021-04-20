@@ -32,27 +32,20 @@ with Gnoga.Application.Multi_Connect;
 
 package Othello_Pkg.Callbacks is
 
-   procedure On_File1_Activate
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_File1_Activate (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   procedure On_New_Game1_Activate
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_New_Game1_Activate (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   procedure On_Pass1_Activate
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Pass1_Activate (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   procedure On_Exit1_Activate
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Exit1_Activate (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   procedure On_Help1_Activate
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Help1_Activate (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   procedure On_About1_Activate
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_About1_Activate (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
    procedure On_Connect
-      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-       Connection  : access
-          Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
 
 end Othello_Pkg.Callbacks;

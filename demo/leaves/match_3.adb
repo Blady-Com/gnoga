@@ -25,11 +25,14 @@
 --  NB: this is the MIT License, as found 12-Sep-2007 on the site
 --  http://www.opensource.org/licenses/mit-license.php
 
-with Ada.Numerics.Float_Random;         use Ada.Numerics.Float_Random;
+with Ada.Numerics.Float_Random; use Ada.Numerics.Float_Random;
 
 package body Match_3 is
 
-   function Find_any_match (b : Board) return Boolean is
+   function Find_any_match
+     (b : Board)
+      return Boolean
+   is
    begin
       for x in b'Range (1) loop
          for y in b'Range (2) loop
@@ -54,11 +57,15 @@ package body Match_3 is
       return False;
    end Find_any_match;
 
-   function Random_cell (gen : Generator; p : Tile_prob) return Cell is
+   function Random_cell
+     (gen : Generator;
+      p   : Tile_prob)
+      return Cell
+   is
       v, vt : Prob;
-      res : Cell;
+      res   : Cell;
    begin
-      v := Prob (Random (gen));
+      v  := Prob (Random (gen));
       vt := 0.0;
       --  This is for having b (x, y) set in the 0-prob. case where v = 1.
       res := Simple_tile'Last;
@@ -72,7 +79,10 @@ package body Match_3 is
       return res;
    end Random_cell;
 
-   procedure Fill (b : in out Board; p : Tile_prob) is
+   procedure Fill
+     (b : in out Board;
+      p :        Tile_prob)
+   is
       gen : Generator;
    begin
       Reset (gen);
@@ -86,10 +96,13 @@ package body Match_3 is
       end loop;
    end Fill;
 
-   function Matches (b : Board) return Match_list is
-      ma : Match_list (1 .. b'Length (1) * b'Length (2));
-      nm : Match_kind;
-      n : Natural := 0;
+   function Matches
+     (b : Board)
+      return Match_list
+   is
+      ma    : Match_list (1 .. b'Length (1) * b'Length (2));
+      nm    : Match_kind;
+      n     : Natural := 0;
       found : Boolean;
       --  Variable 'seen' is to prevent multiple-searching [[and multiple-counting matches]]
       seen : array (b'Range (1), b'Range (2)) of Boolean := (others => (others => False));
@@ -103,15 +116,15 @@ package body Match_3 is
                   exit when b (x2, y) /= b (x, y) or seen (x2, y);
                   if x2 = x + 2 then
                      seen (x + 1, y) := True;
-                     seen (x2, y) := True;
-                     found := True;
-                     nm := Hor_3;
+                     seen (x2, y)    := True;
+                     found           := True;
+                     nm              := Hor_3;
                   elsif x2 = x + 3 then
                      seen (x2, y) := True;
-                     nm := Hor_4;
+                     nm           := Hor_4;
                   elsif x2 >= x + 4 then
                      seen (x2, y) := True;
-                     nm := Hor_5p;
+                     nm           := Hor_5p;
                   end if;
                end loop;
                if not found then
@@ -120,20 +133,20 @@ package body Match_3 is
                      exit when b (x, y2) /= b (x, y) or seen (x, y2);
                      if y2 = y + 2 then
                         seen (x, y + 1) := True;
-                        seen (x, y2) := True;
-                        found := True;
-                        nm := Ver_3;
+                        seen (x, y2)    := True;
+                        found           := True;
+                        nm              := Ver_3;
                      elsif y2 = y + 3 then
                         seen (x, y2) := True;
-                        nm := Ver_4;
+                        nm           := Ver_4;
                      elsif y2 >= y + 4 then
                         seen (x, y2) := True;
-                        nm := Ver_5p;
+                        nm           := Ver_5p;
                      end if;
                   end loop;
                end if;
                if found then
-                  n := n + 1;
+                  n      := n + 1;
                   ma (n) := (nm, (x, y));
                end if;
             end if;
@@ -142,9 +155,12 @@ package body Match_3 is
       return ma (1 .. n);
    end Matches;
 
-   procedure Empty_matching_cells (b : in out Board; ma : Match_list)  is
+   procedure Empty_matching_cells
+     (b  : in out Board;
+      ma :        Match_list)
+   is
       x, y : Integer;
-      c : Cell;
+      c    : Cell;
    begin
       for n in ma'Range loop
          case ma (n).kind is
@@ -166,16 +182,20 @@ package body Match_3 is
       end loop;
    end Empty_matching_cells;
 
-   function Gravity_step (b : Board; p : Tile_prob) return Gravity_list is
-      gl : Gravity_list (1 .. b'Length (1) * (b'Length (2) ** 2));
-      n : Natural := 0;
-      gen : Generator;
-      bsim : Board := b;
+   function Gravity_step
+     (b : Board;
+      p : Tile_prob)
+      return Gravity_list
+   is
+      gl              : Gravity_list (1 .. b'Length (1) * (b'Length (2)**2));
+      n               : Natural := 0;
+      gen             : Generator;
+      bsim            : Board   := b;
       found_in_column : Boolean;
       --
       procedure Single_move (gi : Gravity_item) is
       begin
-         n := n + 1;
+         n      := n + 1;
          gl (n) := gi;
          if gi.from.y > 0 then
             bsim (gi.from.x, gi.from.y) := empty;
@@ -236,7 +256,10 @@ package body Match_3 is
       return gl (1 .. n);
    end Gravity_step;
 
-   procedure Apply_gravity_moves (b : in out Board; gl : Gravity_list) is
+   procedure Apply_gravity_moves
+     (b  : in out Board;
+      gl :        Gravity_list)
+   is
    begin
       for g of gl loop
          if g.from.y > 0 then

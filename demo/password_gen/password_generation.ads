@@ -35,8 +35,13 @@ package Password_Generation is
    No_Symbol   : constant String := "None";
    Auto_Symbol : constant String := "Auto";
 
-   function Generate (Domain : String; Master : String; Length : Length_Value; Symbol : String; Hash_Symbol : Boolean := True)
-   return String;
+   function Generate
+     (Domain      : String;
+      Master      : String;
+      Length      : Length_Value;
+      Symbol      : String;
+      Hash_Symbol : Boolean := True)
+      return String;
    -- Generates a password of length Length from Domain, Master, and Symbol
    -- See the discussion above
    -- Domain is the domain for which the password is being generated

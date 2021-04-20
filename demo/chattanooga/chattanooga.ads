@@ -54,8 +54,12 @@ package Chattanooga is
 
    type App_Ptr is access all App_Info;
 
-   function "+" (Right : String) return Unbounded_String renames To_Unbounded_String;
-   function "+" (Right : Unbounded_String) return String renames To_String;
+   function "+"
+     (Right : String)
+      return Unbounded_String renames To_Unbounded_String;
+   function "+"
+     (Right : Unbounded_String)
+      return String renames To_String;
 end Chattanooga;
 --
 -- This is free software; you can redistribute it and/or modify it under

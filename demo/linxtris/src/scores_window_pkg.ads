@@ -47,7 +47,9 @@ package Scores_Window_pkg is
    procedure Initialize (Win : access Scores_Window_Record'Class);
 
    procedure Get_Scores;
-   procedure Set_Score (Name : String; Score : Natural);
+   procedure Set_Score
+     (Name  : String;
+      Score : Natural);
    function Get_Minimum_Score return Natural;
    function Get_Maximum_Score return Natural;
    Minimum_Score : Natural := 0;

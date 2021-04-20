@@ -50,12 +50,9 @@ package body Scores_Window_pkg is
 --        function On_Scores_Window_Delete
 --          (Win   : access Scores_Window_Record'Class;
 --           Event : Gdk_Event) return Boolean;
-      procedure On_OK_Button_Clicked
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class);
-      procedure On_Scores_Window_Show
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class);
-      procedure On_Scores_Window_Hide
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+      procedure On_OK_Button_Clicked (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+      procedure On_Scores_Window_Show (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+      procedure On_Scores_Window_Hide (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
    end Callbacks;
 
@@ -71,9 +68,7 @@ package body Scores_Window_pkg is
 --           return True;
 --        end On_Scores_Window_Delete;
 
-      procedure On_OK_Button_Clicked
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-      is
+      procedure On_OK_Button_Clicked (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
          pragma Unreferenced (Object);
       begin
          --           Hide (Scores_Win);
@@ -83,18 +78,14 @@ package body Scores_Window_pkg is
          end if;
       end On_OK_Button_Clicked;
 
-      procedure On_Scores_Window_Show
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-      is
+      procedure On_Scores_Window_Show (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       begin
          Scores_Window_Record (Object).Pause_Status := Main_Window.Game_Paused;
          Main_Window.Pause (True);
          Get_Scores;
       end On_Scores_Window_Show;
 
-      procedure On_Scores_Window_Hide
-        (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-      is
+      procedure On_Scores_Window_Hide (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       begin
          Main_Window.Pause (Scores_Window_Record (Object).Pause_Status);
       end On_Scores_Window_Hide;
@@ -124,20 +115,14 @@ package body Scores_Window_pkg is
 
       --        Gtk_New (Table, 13, 2, False);
       Table.Create
-      (Win.all,
-       ((Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
-        (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
-        (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
-        (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
-        (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
-        (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
-        (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
-        (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
-        (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
-        (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
-        (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
-        (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
-        (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL)));
+        (Win.all,
+         ((Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL), (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
+          (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL), (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
+          (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL), (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
+          (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL), (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
+          (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL), (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
+          (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL), (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL),
+          (Gnoga.Gui.View.Grid.COL, Gnoga.Gui.View.Grid.COL)));
 --        Set_Border_Width (Table, 10);
 --        Set_Row_Spacings (Table, 7);
 
@@ -216,10 +201,9 @@ package body Scores_Window_pkg is
 
    function Get_Maximum_Score return Natural is
       use Scores_IO;
-      Filename : constant String :=
-        To_String (Main_Window_Pkg.Data_Dir & "scores");
-      File : File_Type;
-      scr  : Score_Type;
+      Filename : constant String := To_String (Main_Window_Pkg.Data_Dir & "scores");
+      File     : File_Type;
+      scr      : Score_Type;
    begin
       Open (File, In_File, Filename);
       Read (File, scr);
@@ -236,14 +220,16 @@ package body Scores_Window_pkg is
       return Minimum_Score;
    end Get_Minimum_Score;
 
-   procedure Set_Score (Name : String; Score : Natural) is
+   procedure Set_Score
+     (Name  : String;
+      Score : Natural)
+   is
       use Scores_IO;
-      Filename : constant String :=
-        To_String (Main_Window_Pkg.Data_Dir & "scores");
-      File : File_Type;
-      scr  : Score_Type;
-      I    : Scores_IO.Count := 10;
-      J    : Scores_IO.Count;
+      Filename : constant String := To_String (Main_Window_Pkg.Data_Dir & "scores");
+      File     : File_Type;
+      scr      : Score_Type;
+      I        : Scores_IO.Count := 10;
+      J        : Scores_IO.Count;
    begin
       Open (File, Inout_File, Filename);
       loop
@@ -289,10 +275,9 @@ package body Scores_Window_pkg is
 
    procedure Get_Scores is
       use Scores_IO;
-      Filename : constant String :=
-        To_String (Main_Window_Pkg.Data_Dir & "scores");
-      File : File_Type;
-      scr  : Score_Type;
+      Filename : constant String := To_String (Main_Window_Pkg.Data_Dir & "scores");
+      File     : File_Type;
+      scr      : Score_Type;
       procedure Create_File;
       procedure Create_File is
       begin

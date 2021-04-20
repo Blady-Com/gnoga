@@ -32,10 +32,15 @@ package body Localize.Controller is
    procedure On_Delete (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure On_Rename (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   function Modified (Properties : Localize.Parser.Property_List; Key : String) return Character is
-     (if Localize.Parser.Modified (Properties, Key) then '*' else ' ');
-   function Not_In (Properties : Localize.Parser.Property_List; Key : String; Tag : Character) return Character is
-     (if not Localize.Parser.Contains (Properties, Key) then Tag else ' ');
+   function Modified
+     (Properties : Localize.Parser.Property_List;
+      Key        : String)
+      return Character is (if Localize.Parser.Modified (Properties, Key) then '*' else ' ');
+   function Not_In
+     (Properties : Localize.Parser.Property_List;
+      Key        : String;
+      Tag        : Character)
+      return Character is (if not Localize.Parser.Contains (Properties, Key) then Tag else ' ');
 
    procedure On_Exit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       View : constant Localize.View.Default_View_Access :=

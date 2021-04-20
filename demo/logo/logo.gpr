@@ -13,8 +13,12 @@ project Logo is
       for Executable ("logo-main.adb") use "logo";
    end Builder;
 
-   package Compiler renames Settings.Compiler;
+   package Compiler is
+      for Default_Switches ("Ada") use Settings.Compiler'Default_Switches ("Ada") & "-gnatyN";
+   end Compiler;
+
    package Binder renames Settings.Binder;
    package Linker renames Settings.Linker;
+   package Pretty_Printer renames Settings.Pretty_Printer;
 
 end Logo;

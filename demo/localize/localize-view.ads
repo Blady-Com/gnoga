@@ -52,8 +52,11 @@ package Localize.View is
    type Pointer_to_Default_View_Class is access all Default_View_Type'Class;
 
    overriding procedure Create
-     (Grid   : in out Default_View_Type; Parent : in out Gnoga.Gui.Base.Base_Type'Class;
-      Layout : in Gnoga.Gui.View.Grid.Grid_Rows_Type; Fill_Parent : in Boolean := True; Set_Sizes : in Boolean := True;
-      ID     : in     String := "");
+     (Grid        : in out Default_View_Type;
+      Parent      : in out Gnoga.Gui.Base.Base_Type'Class;
+      Layout      : in     Gnoga.Gui.View.Grid.Grid_Rows_Type;
+      Fill_Parent : in     Boolean := True;
+      Set_Sizes   : in     Boolean := True;
+      ID          : in     String  := "");
 
 end Localize.View;

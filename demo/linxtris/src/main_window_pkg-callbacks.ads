@@ -45,23 +45,17 @@ package Main_Window_Pkg.Callbacks is
 --     procedure On_Main_Window_Destroy
 --       (Win : access Main_Window_Record'Class);
 
-   procedure On_Item_Game_Quit_Pressed
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Item_Game_Quit_Pressed (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   procedure On_Item_Game_New_Pressed
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Item_Game_New_Pressed (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   procedure On_Item_Game_Pause_Pressed
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Item_Game_Pause_Pressed (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   procedure On_Item_Game_Scores_Pressed
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Item_Game_Scores_Pressed (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   procedure On_Item_Settings_Preferences_Pressed
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Item_Settings_Preferences_Pressed (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   procedure On_Item_Help_About_Pressed
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class);
+   procedure On_Item_Help_About_Pressed (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
 --     function On_Main_Window_Key_Pressed
 --       (Win   : access Main_Window_Record'Class;

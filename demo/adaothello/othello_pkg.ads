@@ -36,23 +36,23 @@ package Othello_Pkg is
 private
 
    procedure New_Game
-      (Othello       : in out Othello_Types.Othello_Record'Class;
-       Playing_Board : in out Othello_Types.Board_Matrix;
-       Whose_Move    : in out Othello_Types.Bead_Color;
-       Game_Over     : in out Boolean);
+     (Othello       : in out Othello_Types.Othello_Record'Class;
+      Playing_Board : in out Othello_Types.Board_Matrix;
+      Whose_Move    : in out Othello_Types.Bead_Color;
+      Game_Over     : in out Boolean);
 
    procedure Pass
-      (Othello       : in out Othello_Types.Othello_Record'Class;
-       Playing_Board : in out Othello_Types.Board_Matrix;
-       Whose_Move    : in out Othello_Types.Bead_Color;
-       Game_Over     : in out Boolean);
+     (Othello       : in out Othello_Types.Othello_Record'Class;
+      Playing_Board : in out Othello_Types.Board_Matrix;
+      Whose_Move    : in out Othello_Types.Bead_Color;
+      Game_Over     : in out Boolean);
 
    procedure Make_Move
-      (Othello       : in out Othello_Types.Othello_Record'Class;
-       Playing_Board : in out Othello_Types.Board_Matrix;
-       Whose_Move    : in out Othello_Types.Bead_Color;
-       Game_Over     : in out Boolean;
-       Row           : in     Othello_Types.Valid_Row;
-       Column        : in     Othello_Types.Valid_Column);
+     (Othello       : in out Othello_Types.Othello_Record'Class;
+      Playing_Board : in out Othello_Types.Board_Matrix;
+      Whose_Move    : in out Othello_Types.Bead_Color;
+      Game_Over     : in out Boolean;
+      Row           : in     Othello_Types.Valid_Row;
+      Column        : in     Othello_Types.Valid_Column);
 
 end Othello_Pkg;

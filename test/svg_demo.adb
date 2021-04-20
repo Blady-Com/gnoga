@@ -13,24 +13,21 @@ procedure SVG_Demo is
    use Gnoga.Gui;
    use Gnoga.Gui.Element;
 
-   type App_Data is new Connection_Data_Type with
-      record
-         Main_Window : Window.Pointer_To_Window_Class;
-         Console     : View.Console.Console_View_Type;
-         B           : Common.Button_Type;
-         S           : aliased SVG.SVG_Type;
-         Box         : Element_Type;
-      end record;
+   type App_Data is new Connection_Data_Type with record
+      Main_Window : Window.Pointer_To_Window_Class;
+      Console     : View.Console.Console_View_Type;
+      B           : Common.Button_Type;
+      S           : aliased SVG.SVG_Type;
+      Box         : Element_Type;
+   end record;
    type App_Access is access all App_Data;
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
 
-   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Console.Put_Line ("Clicked!");
@@ -38,8 +35,7 @@ procedure SVG_Demo is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
       App : constant App_Access := new App_Data;
@@ -69,13 +65,10 @@ procedure SVG_Demo is
    end On_Connect;
 
 begin
-   Application.Multi_Connect.Initialize
-     (Event => On_Connect'Unrestricted_Access,
-      Boot  => "debug.html");
+   Application.Multi_Connect.Initialize (Event => On_Connect'Unrestricted_Access, Boot => "debug.html");
 
    Application.Title ("Test App for Gnoga");
-   Application.HTML_On_Close
-     ("<b>Connection to Application has been terminated</b>");
+   Application.HTML_On_Close ("<b>Connection to Application has been terminated</b>");
 
 --     Application.Open_URL;
 

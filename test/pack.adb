@@ -15,9 +15,9 @@ procedure Pack is
    Main_View   : Gnoga.Gui.View.Grid.Grid_View_Type;
    Split_View  : Gnoga.Gui.View.Grid.Grid_View_Type;
 
-   Form_Grid   : Gnoga.Gui.View.Grid.Grid_View_Type;
-   L1, L2, L3  : Common.Span_Type;
-   B1, B2, B3  : Common.Button_Type;
+   Form_Grid  : Gnoga.Gui.View.Grid.Grid_View_Type;
+   L1, L2, L3 : Common.Span_Type;
+   B1, B2, B3 : Common.Button_Type;
 
    A_View   : Gnoga.Gui.View.View_Type;
    A_Button : Common.Button_Type;
@@ -36,41 +36,27 @@ begin
 
    Gnoga.Application.Singleton.Initialize (Main_Window, Boot => "ajax.html");
 
-   Main_View.Create (Main_Window,
-                     ((COL, SPN),
-                      (COL, COL),
-                      (COL, SPN)),
-                     Set_Sizes => True);
+   Main_View.Create (Main_Window, ((COL, SPN), (COL, COL), (COL, SPN)), Set_Sizes => True);
 
    Main_View.Panel (1, 1).Box_Height ("10%");
    Main_View.Panel (1, 1).Background_Color (To_RGBA (Pink));
 
    --  Demonstrate packing left and right
 
-   Common.Button_Access
-     (Main_View.Panel (1, 1).New_Element
-      ("Menu_Item_1", new Common.Button_Type)).Create
-       (Main_View.Panel (1, 1).all, "Item 1");
+   Common.Button_Access (Main_View.Panel (1, 1).New_Element ("Menu_Item_1", new Common.Button_Type)).Create
+     (Main_View.Panel (1, 1).all, "Item 1");
 
-   Common.Button_Access
-     (Main_View.Panel (1, 1).New_Element
-      ("Menu_Item_2", new Common.Button_Type)).Create
-       (Main_View.Panel (1, 1).all, "Item 2");
+   Common.Button_Access (Main_View.Panel (1, 1).New_Element ("Menu_Item_2", new Common.Button_Type)).Create
+     (Main_View.Panel (1, 1).all, "Item 2");
 
-   Common.Button_Access
-     (Main_View.Panel (1, 1).New_Element
-      ("Menu_Item_3", new Common.Button_Type)).Create
-       (Main_View.Panel (1, 1).all, "Item 3");
+   Common.Button_Access (Main_View.Panel (1, 1).New_Element ("Menu_Item_3", new Common.Button_Type)).Create
+     (Main_View.Panel (1, 1).all, "Item 3");
 
-   Common.Button_Access
-     (Main_View.Panel (1, 1).New_Element
-      ("Menu_Item_4", new Common.Button_Type)).Create
-       (Main_View.Panel (1, 1).all, "Item 4");
+   Common.Button_Access (Main_View.Panel (1, 1).New_Element ("Menu_Item_4", new Common.Button_Type)).Create
+     (Main_View.Panel (1, 1).all, "Item 4");
 
-   Common.Button_Access
-     (Main_View.Panel (1, 1).New_Element
-      ("Menu_Item_5", new Common.Button_Type)).Create
-       (Main_View.Panel (1, 1).all, "Item 5");
+   Common.Button_Access (Main_View.Panel (1, 1).New_Element ("Menu_Item_5", new Common.Button_Type)).Create
+     (Main_View.Panel (1, 1).all, "Item 5");
 
    Main_View.Panel (1, 1).Element ("Menu_Item_4").Layout_Float (Right);
    Main_View.Panel (1, 1).Element ("Menu_Item_5").Layout_Float (Right);
@@ -81,12 +67,8 @@ begin
    Main_View.Panel (2, 1).Box_Width ("30%");
    Main_View.Panel (2, 1).Resizable (Horizontal);
 
-   Form_Grid.Create (Main_View.Panel (2, 1).all,
-                     ((COL, COL),
-                      (COL, COL),
-                      (COL, COL)),
-                     Fill_Parent => False,
-                     Set_Sizes => False);
+   Form_Grid.Create
+     (Main_View.Panel (2, 1).all, ((COL, COL), (COL, COL), (COL, COL)), Fill_Parent => False, Set_Sizes => False);
 
    Form_Grid.Panel (1, 1).Padding ("5px", "5px", "5px", "5px");
    Form_Grid.Panel (2, 1).Padding ("5px", "5px", "5px", "5px");

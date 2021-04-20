@@ -10,44 +10,46 @@ with Gnoga.Gui.View.Docker;
 procedure Align is
    use Gnoga.Gui.Element;
 
-   procedure On_Move (Object : in out Gnoga.Gui.Base.Base_Type'Class;
-                      Event  : in     Gnoga.Gui.Base.Mouse_Event_Record);
+   procedure On_Move
+     (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+      Event  : in     Gnoga.Gui.Base.Mouse_Event_Record);
    procedure Dec_Change (Element : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure Calculate (Element : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure Radio_Select (Element : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   Main_Window    : Gnoga.Gui.Window.Window_Type;
-   Main_View      : Gnoga.Gui.View.View_Type;
+   Main_Window : Gnoga.Gui.Window.Window_Type;
+   Main_View   : Gnoga.Gui.View.View_Type;
 
-   F              : Form.Form_Type;
+   F : Form.Form_Type;
 
-   Number_Choice  : Form.Text_Type;
-   Choice_Label   : Form.Label_Type;
-   Factor_Button  : Form.Submit_Button_Type;
+   Number_Choice : Form.Text_Type;
+   Choice_Label  : Form.Label_Type;
+   Factor_Button : Form.Submit_Button_Type;
 
    Calc_Dec       : Form.Check_Box_Type;
    Calc_Dec_Label : Form.Label_Type;
 
-   Dec_Range      : Form.Range_Type;
-   Range_Value    : Form.Label_Type;
+   Dec_Range   : Form.Range_Type;
+   Range_Value : Form.Label_Type;
 
-   Game_View      : Gnoga.Gui.View.Docker.Docker_View_Type;
-   Grid_Box       : aliased Gnoga.Gui.View.View_Type;
-   Control_Box    : aliased Gnoga.Gui.View.View_Type;
-   Mouse_Box      : Gnoga.Gui.View.View_Type;
+   Game_View   : Gnoga.Gui.View.Docker.Docker_View_Type;
+   Grid_Box    : aliased Gnoga.Gui.View.View_Type;
+   Control_Box : aliased Gnoga.Gui.View.View_Type;
+   Mouse_Box   : Gnoga.Gui.View.View_Type;
 
    type Radio_Array is array (1 .. 5) of Form.Radio_Button_Type;
 
-   Radios         : Radio_Array;
-   Radio_Group    : Radio_Array;
+   Radios      : Radio_Array;
+   Radio_Group : Radio_Array;
 
    type Button_Column is array (1 .. 15) of Common.Button_Type;
    type Button_Grid is array (1 .. 15) of Button_Column;
 
-   Buttons        : Button_Grid;
+   Buttons : Button_Grid;
 
-   procedure On_Move (Object : in out Gnoga.Gui.Base.Base_Type'Class;
-                      Event  : in     Gnoga.Gui.Base.Mouse_Event_Record)
+   procedure On_Move
+     (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+      Event  : in     Gnoga.Gui.Base.Mouse_Event_Record)
    is
       pragma Unreferenced (Object);
    begin
@@ -88,33 +90,22 @@ begin
    F.Create (Main_View);
    F.On_Submit_Handler (Calculate'Unrestricted_Access);
 
-   Number_Choice.Create (Form  => F,
-                         Size  => 20,
-                         Value => "");
-   Choice_Label.Create (Form      => F,
-                        Label_For => Number_Choice,
-                        Content   => "Enter a number:");
-   Factor_Button.Create (Form  => F,
-                         Value => "Factorial");
+   Number_Choice.Create (Form => F, Size => 20, Value => "");
+   Choice_Label.Create (Form => F, Label_For => Number_Choice, Content => "Enter a number:");
+   Factor_Button.Create (Form => F, Value => "Factorial");
 
    F.New_Line;
 
    Calc_Dec.Create (Form => F);
-   Calc_Dec_Label.Create (Form       => F,
-                          Label_For  => Calc_Dec,
-                          Content    => "Calculate Decimal",
-                          Auto_Place => False);
+   Calc_Dec_Label.Create (Form => F, Label_For => Calc_Dec, Content => "Calculate Decimal", Auto_Place => False);
 
    F.New_Line;
 
-   Dec_Range.Create (Form  => F);
+   Dec_Range.Create (Form => F);
    Dec_Range.Minimum (0);
    Dec_Range.Maximum (10);
    Dec_Range.Value (0);
-   Range_Value.Create (Form       => F,
-                       Label_For  => Dec_Range,
-                       Content    => "0",
-                       Auto_Place => False);
+   Range_Value.Create (Form => F, Label_For => Dec_Range, Content => "0", Auto_Place => False);
    F.Put (" Decimal(s)");
 
    Dec_Range.On_Change_Handler (Dec_Change'Unrestricted_Access);
@@ -177,9 +168,12 @@ begin
    Main_Window.Buffer_Connection (False);
 
    Control_Box.Create (Game_View);
-   Control_Box.Put ("<button>Push Me</button>"); Control_Box.New_Line;
-   Control_Box.Put ("<button>Push Me</button>"); Control_Box.New_Line;
-   Control_Box.Put ("<button>Push Me</button>"); Control_Box.New_Line;
+   Control_Box.Put ("<button>Push Me</button>");
+   Control_Box.New_Line;
+   Control_Box.Put ("<button>Push Me</button>");
+   Control_Box.New_Line;
+   Control_Box.Put ("<button>Push Me</button>");
+   Control_Box.New_Line;
 
    Game_View.Left_Dock (Grid_Box'Unchecked_Access);
    Game_View.Right_Dock (Control_Box'Unchecked_Access);

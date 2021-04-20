@@ -13,79 +13,65 @@ procedure Test_Modal_Dialog is
    use Gnoga;
 
    --  This type define the page layout
-   type App_Data (Main_Window : access Gnoga.Gui.Window.Window_Type'Class) is
-      new Gnoga.Types.Connection_Data_Type
-   with
-      record
-         Top_Level_View : Gnoga.Gui.View.View_Type;
-         Modal          : Gnoga.Gui.Modal_Dialog.Dialog_Type;
+   type App_Data (Main_Window : access Gnoga.Gui.Window.Window_Type'Class) is new Gnoga.Types.Connection_Data_Type with
+   record
+      Top_Level_View : Gnoga.Gui.View.View_Type;
+      Modal          : Gnoga.Gui.Modal_Dialog.Dialog_Type;
 --           Modal          : Gnoga.Gui.View.Modal_Dialog.Dialog_Type;
-         Modal_View     : Gnoga.Gui.View.View_Type;
-         Show_Dlg_Bttn  : Gnoga.Gui.Element.Common.Button_Type;
-         Hide_Dlg_Bttn  : Gnoga.Gui.Element.Common.Button_Type;
+      Modal_View    : Gnoga.Gui.View.View_Type;
+      Show_Dlg_Bttn : Gnoga.Gui.Element.Common.Button_Type;
+      Hide_Dlg_Bttn : Gnoga.Gui.Element.Common.Button_Type;
 
-         Modal2          : Gnoga.Gui.Modal_Dialog.Dialog_Type;
+      Modal2 : Gnoga.Gui.Modal_Dialog.Dialog_Type;
 --           Modal2          : Gnoga.Gui.View.Modal_Dialog.Dialog_Type;
-         Modal_View2     : Gnoga.Gui.View.View_Type;
-         Show_Dlg_Bttn2  : Gnoga.Gui.Element.Common.Button_Type;
-         Hide_Dlg_Bttn2  : Gnoga.Gui.Element.Common.Button_Type;
+      Modal_View2    : Gnoga.Gui.View.View_Type;
+      Show_Dlg_Bttn2 : Gnoga.Gui.Element.Common.Button_Type;
+      Hide_Dlg_Bttn2 : Gnoga.Gui.Element.Common.Button_Type;
 
-         Grid            : Gnoga.Gui.View.Grid.Grid_View_Type;
-         Grid_Top        : Gnoga.Gui.View.View_Type;
-         Grid_Left       : Gnoga.Gui.View.View_Type;
-         Grid_Right      : Gnoga.Gui.View.View_Type;
+      Grid       : Gnoga.Gui.View.Grid.Grid_View_Type;
+      Grid_Top   : Gnoga.Gui.View.View_Type;
+      Grid_Left  : Gnoga.Gui.View.View_Type;
+      Grid_Right : Gnoga.Gui.View.View_Type;
 
-         Modal3          : Gnoga.Gui.Modal_Dialog.Dialog_Type;
+      Modal3 : Gnoga.Gui.Modal_Dialog.Dialog_Type;
 --           Modal3          : Gnoga.Gui.View.Modal_Dialog.Dialog_Type;
-         Modal_View3     : Gnoga.Gui.View.View_Type;
-         Show_Dlg_Bttn3  : Gnoga.Gui.Element.Common.Button_Type;
-         Hide_Dlg_Bttn3  : Gnoga.Gui.Element.Common.Button_Type;
-      end record;
+      Modal_View3    : Gnoga.Gui.View.View_Type;
+      Show_Dlg_Bttn3 : Gnoga.Gui.Element.Common.Button_Type;
+      Hide_Dlg_Bttn3 : Gnoga.Gui.Element.Common.Button_Type;
+   end record;
    type App_Access is access all App_Data;
 
-   procedure On_Show_Dlg_Click
-      (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Show_Dlg_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Modal.Show;
    end On_Show_Dlg_Click;
 
-   procedure On_Hide_Dlg_Click
-      (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Hide_Dlg_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Modal.Show (False);
    end On_Hide_Dlg_Click;
 
-   procedure On_Show_Dlg_Click2
-      (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Show_Dlg_Click2 (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Modal2.Show;
    end On_Show_Dlg_Click2;
 
-   procedure On_Hide_Dlg_Click2
-      (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Hide_Dlg_Click2 (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Modal2.Show (False);
    end On_Hide_Dlg_Click2;
 
-   procedure On_Show_Dlg_Click3
-      (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Show_Dlg_Click3 (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Modal3.Show;
    end On_Show_Dlg_Click3;
 
-   procedure On_Hide_Dlg_Click3
-      (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Hide_Dlg_Click3 (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Modal3.Show (False);
@@ -93,9 +79,8 @@ procedure Test_Modal_Dialog is
 
    --  This procedure is called each time a connection is made.
    procedure On_Connect
-      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-       Connection  : access
-          Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+     (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
       --  This is deallocated when the connection closes
@@ -111,12 +96,8 @@ procedure Test_Modal_Dialog is
       App.Top_Level_View.Hidden;
       App.Top_Level_View.Put_Line ("Hello World");
       App.Grid.Create
-         (Parent      => App.Top_Level_View,
-          Layout      =>
-             (1 => (COL, SPN),
-              2 => (COL, COL)),
-          Fill_Parent => True,
-          Set_Sizes   => True);
+        (Parent    => App.Top_Level_View, Layout => (1 => (COL, SPN), 2 => (COL, COL)), Fill_Parent => True,
+         Set_Sizes => True);
 
       App.Grid_Top.Create (App.Grid.Panel (1, 1).all);
       App.Grid_Left.Create (App.Grid.Panel (2, 1).all);
@@ -170,13 +151,10 @@ procedure Test_Modal_Dialog is
 
    end On_Connect;
 begin
-   Application.Multi_Connect.Initialize
-     (Event => On_Connect'Unrestricted_Access,
-      Boot  => "debug.html");
+   Application.Multi_Connect.Initialize (Event => On_Connect'Unrestricted_Access, Boot => "debug.html");
 
    Application.Title ("Test App for Gnoga");
-   Application.HTML_On_Close
-     ("<b>Connection to Application has been terminated</b>");
+   Application.HTML_On_Close ("<b>Connection to Application has been terminated</b>");
 
    Application.Multi_Connect.Message_Loop;
 end Test_Modal_Dialog;

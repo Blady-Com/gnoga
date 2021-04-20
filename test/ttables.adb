@@ -11,26 +11,23 @@ procedure TTables is
    use Gnoga.Gui;
    use Gnoga.Gui.Element;
 
-   type App_Data is new Connection_Data_Type with
-      record
-         Main_Window : Window.Pointer_To_Window_Class;
-         Console     : aliased View.Console.Console_View_Type;
-         My_Table    : Table.Table_Type;
-      end record;
+   type App_Data is new Connection_Data_Type with record
+      Main_Window : Window.Pointer_To_Window_Class;
+      Console     : aliased View.Console.Console_View_Type;
+      My_Table    : Table.Table_Type;
+   end record;
    type App_Access is access all App_Data;
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
-      App     : constant App_Access := new App_Data;
+      App : constant App_Access := new App_Data;
    begin
       Main_Window.Connection_Data (App);
       App.Main_Window := Main_Window'Unchecked_Access;
@@ -40,7 +37,7 @@ procedure TTables is
 
       declare
          head : constant Table.Table_Header_Access := new Table.Table_Header_Type;
-         row  : constant Table.Table_Row_Access := new Table.Table_Row_Type;
+         row  : constant Table.Table_Row_Access    := new Table.Table_Row_Type;
       begin
          head.Dynamic;
          head.Create (App.My_Table);
@@ -48,8 +45,7 @@ procedure TTables is
 
          for cols in 1 .. 5 loop
             declare
-               col : constant Table.Table_Heading_Access :=
-                       new Table.Table_Heading_Type;
+               col : constant Table.Table_Heading_Access := new Table.Table_Heading_Type;
             begin
                col.Dynamic;
                col.Create (row.all, cols'Img);
@@ -66,8 +62,7 @@ procedure TTables is
 
             for cols in 1 .. 5 loop
                declare
-                  col : constant Table.Table_Column_Access :=
-                          new Table.Table_Column_Type;
+                  col : constant Table.Table_Column_Access := new Table.Table_Column_Type;
                begin
                   col.Dynamic;
                   col.Create (row.all, cols'Img);
@@ -80,13 +75,10 @@ procedure TTables is
    end On_Connect;
 
 begin
-   Application.Multi_Connect.Initialize
-     (Event => On_Connect'Unrestricted_Access,
-      Boot  => "debug.html");
+   Application.Multi_Connect.Initialize (Event => On_Connect'Unrestricted_Access, Boot => "debug.html");
 
    Application.Title ("Test App for Gnoga");
-   Application.HTML_On_Close
-     ("<b>Connection to Application has been terminated</b>");
+   Application.HTML_On_Close ("<b>Connection to Application has been terminated</b>");
 
 --     Application.Open_URL;
 

@@ -33,13 +33,11 @@ procedure Sprite_Test is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  :        access Gnoga.Application.Multi_Connect
-        .Connection_Holder_Type);
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  :        access Gnoga.Application.Multi_Connect
-        .Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App : constant App_Access := new App_Data;
       C   : aliased Context_2D.Context_2D_Type;
@@ -55,17 +53,13 @@ procedure Sprite_Test is
 
       App.Main_Window := Main_Window'Unchecked_Access;
 
-      Button1.Create
-      (Parent                                           =>
-         Main_Window.Document.Body_Element.all, Content =>
-         "Go faster!");
+      Button1.Create (Parent => Main_Window.Document.Body_Element.all, Content => "Go faster!");
       Button1.Place_Inside_Top_Of (Main_Window.Document.Body_Element.all);
       Button1.On_Click_Handler (On_Click'Unrestricted_Access);
 
       App.My_Canvas.Create (Main_Window, 400, 400);
       App.My_Canvas.Border;
-      App.My_Canvas.Place_Inside_Bottom_Of
-      (App.Main_Window.Document.Body_Element.all);
+      App.My_Canvas.Place_Inside_Bottom_Of (App.Main_Window.Document.Body_Element.all);
 
       C.Get_Drawing_Context_2D (App.My_Canvas);
 
@@ -78,23 +72,10 @@ procedure Sprite_Test is
       C.Font (Height => "40px");
       C.Fill_Text ("Hello World!", 100, 100);
 
-      C.Get_Image_Data
-      (Image_Data       =>
-         Img_Dat, Left =>
-         100, Top       =>
-         70, Width      =>
-         45, Height     =>
-         40);
+      C.Get_Image_Data (Image_Data => Img_Dat, Left => 100, Top => 70, Width => 45, Height => 40);
 
       Trigger (600);
-      Create
-        (App.SP1,
-         App.My_Canvas'Unchecked_Access,
-         Img_Dat,
-         10,
-         10,
-         5,
-         10);
+      Create (App.SP1, App.My_Canvas'Unchecked_Access, Img_Dat, 10, 10, 5, 10);
       while not Coincidence (App.SP1, 110, 210, 20) loop
          delay 0.1;
       end loop;
@@ -113,21 +94,9 @@ procedure Sprite_Test is
       Gnoga.Log ("Distance:" & Distance (App.SP1, 100, 100)'Img);
       Delete (App.SP1);
 
-      C.Get_Image_Data
-      (Image_Data       =>
-         Img_Dat1, Left =>
-         100, Top       =>
-         70, Width      =>
-         45, Height     =>
-         40);
+      C.Get_Image_Data (Image_Data => Img_Dat1, Left => 100, Top => 70, Width => 45, Height => 40);
 
-      C.Get_Image_Data
-      (Image_Data       =>
-         Img_Dat2, Left =>
-         150, Top       =>
-         70, Width      =>
-         45, Height     =>
-         40);
+      C.Get_Image_Data (Image_Data => Img_Dat2, Left => 150, Top => 70, Width => 45, Height => 40);
 
       Create (App.SP1, App.My_Canvas'Unchecked_Access, Img_Dat1, 150, 10);
       Create (App.SP2, App.My_Canvas'Unchecked_Access, Img_Dat2, 150, 100);
@@ -167,13 +136,10 @@ procedure Sprite_Test is
    end On_Connect;
 
 begin
-   Application.Multi_Connect.Initialize
-     (Event => On_Connect'Unrestricted_Access,
-      Boot  => "debug.html");
+   Application.Multi_Connect.Initialize (Event => On_Connect'Unrestricted_Access, Boot => "debug.html");
 
    Application.Title ("Test App for Gnoga");
-   Application.HTML_On_Close
-     ("<b>Connection to Application has been terminated</b>");
+   Application.HTML_On_Close ("<b>Connection to Application has been terminated</b>");
 
    Application.Multi_Connect.Message_Loop;
 end Sprite_Test;

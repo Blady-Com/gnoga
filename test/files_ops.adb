@@ -24,7 +24,8 @@ procedure Files_Ops is
    type App_Access is access all App_Data;
 
    procedure On_Load
-     (Object : in out Gnoga.Gui.Base.Base_Type'Class; Event : String)
+     (Object : in out Gnoga.Gui.Base.Base_Type'Class;
+      Event  :        String)
    is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
@@ -46,15 +47,11 @@ procedure Files_Ops is
    procedure On_Change (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
-      App.Main_View.Put_Line
-        ("Files count = " & App.Mon_Fichier_Mult.File_Count'Image);
+      App.Main_View.Put_Line ("Files count = " & App.Mon_Fichier_Mult.File_Count'Image);
       for I in 1 .. App.Mon_Fichier_Mult.File_Count loop
+         App.Main_View.Put_Line ("File (" & I'image & ") = " & App.Mon_Fichier_Mult.File_Name (Index => I));
          App.Main_View.Put_Line
-           ("File (" & I'image & ") = " &
-            App.Mon_Fichier_Mult.File_Name (Index => I));
-         App.Main_View.Put_Line
-           ("File (" & I'image & ") = " &
-            App.Mon_Fichier_Mult.File_WebkitRelativePath (Index => I));
+           ("File (" & I'image & ") = " & App.Mon_Fichier_Mult.File_WebkitRelativePath (Index => I));
       end loop;
    end On_Change;
 
@@ -70,8 +67,7 @@ procedure Files_Ops is
       App.Mon_Bouton_Envoi.Create (App.Mon_Formulaire, "Upload");
       App.Mon_Bouton_RAZ.Create (App.Mon_Formulaire, "Reset");
       App.Mon_Formulaire.New_Line;
-      App.Mon_Texte_Multi.Create
-        (App.Mon_Formulaire, 40, 8, Value => "Text...");
+      App.Mon_Texte_Multi.Create (App.Mon_Formulaire, 40, 8, Value => "Text...");
       App.Reader.Create (Main_Window);
       App.Reader.On_Load_Handler (On_Load'Unrestricted_Access);
       App.Mon_Formulaire.New_Line;
@@ -84,18 +80,15 @@ procedure Files_Ops is
 
 begin
    Gnoga.Application.Title ("Files Operations");
-   Gnoga.Application.HTML_On_Close
-     ("<b>Connection to Application has been terminated</b>");
+   Gnoga.Application.HTML_On_Close ("<b>Connection to Application has been terminated</b>");
 
    --     Gnoga.Application.Open_URL ("http://127.0.0.1:8080");
-   Gnoga.Application.Singleton.Initialize (Main_Window, Port => 8080);
+   Gnoga.Application.Singleton.Initialize (Main_Window, Port => 8_080);
 
    Formulaires (new App_Data);
 
    Gnoga.Application.Singleton.Message_Loop;
 exception
    when E : others =>
-      Gnoga.Log
-        (Ada.Exceptions.Exception_Name (E) & " - " &
-         Ada.Exceptions.Exception_Message (E));
+      Gnoga.Log (Ada.Exceptions.Exception_Name (E) & " - " & Ada.Exceptions.Exception_Message (E));
 end Files_Ops;

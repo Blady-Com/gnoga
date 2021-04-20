@@ -53,17 +53,13 @@ procedure Singleton is
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       use Gnoga.Gui.Element;
    begin
       Gnoga.Log ("Visible = " & Element_Type (Object).Visible'Img);
-      Gnoga.Log ("Screen.Available_Height = " &
-                   Gnoga.Gui.Screen.Available_Height (M)'Img);
-      Gnoga.Log ("Screen.Height = " &
-                   Gnoga.Gui.Screen.Height (M)'Img);
-      Gnoga.Log ("Color = " &
-                   Gnoga.Types.To_String (Element_Type (Object).Color));
+      Gnoga.Log ("Screen.Available_Height = " & Gnoga.Gui.Screen.Available_Height (M)'Img);
+      Gnoga.Log ("Screen.Height = " & Gnoga.Gui.Screen.Height (M)'Img);
+      Gnoga.Log ("Color = " & Gnoga.Types.To_String (Element_Type (Object).Color));
       Gnoga.Log ("Height = " & Element_Type (Object).Height'Img);
       Gnoga.Log ("Width = " & Element_Type (Object).Width'Img);
       Element_Type (Object).Color ("green");
@@ -90,12 +86,9 @@ procedure Singleton is
    end On_Destroy;
 begin
    Gnoga.Application.Title ("Test App for Gnoga");
-   Gnoga.Application.HTML_On_Close
-     ("<b>Connection to Application has been terminated</b>");
+   Gnoga.Application.HTML_On_Close ("<b>Connection to Application has been terminated</b>");
 
-   Gnoga.Application.Gtk_Window.Initialize (Port   => 8080,
-                                            Width  => 800,
-                                            Height => 600);
+   Gnoga.Application.Gtk_Window.Initialize (Port => 8_080, Width => 800, Height => 600);
 
    Gnoga.Application.Singleton.Initialize (Main_Window => M, Verbose => False);
    M.On_Destroy_Handler (On_Destroy'Unrestricted_Access);
@@ -106,13 +99,9 @@ begin
    Gnoga.Log ("the app boot file will be served.");
    Gnoga.Log ("path on url : " & M.Location.Path_Name);
    Gnoga.Log ("page_id can be set using http://url:8080?page_id=xxx");
-   Gnoga.Log ("page_id = " &
-                Gnoga.Server.Connection.Form_Parameter
-                (M.Connection_ID, "page_id"));
+   Gnoga.Log ("page_id = " & Gnoga.Server.Connection.Form_Parameter (M.Connection_ID, "page_id"));
 
-   Gnoga.Log ("User Agent = " &
-                Gnoga.Gui.Navigator.User_Agent
-                (M));
+   Gnoga.Log ("User Agent = " & Gnoga.Gui.Navigator.User_Agent (M));
 
    M.Disable_Auto_Set_View;
    T.Create (M, "<h1>Hello World!</h1>");
@@ -127,13 +116,13 @@ begin
    T.On_Click_Handler (On_Click'Unrestricted_Access);
    B.On_Click_Handler (End_App'Unrestricted_Access);
 
-   C.Start;
+   C.start;
 
    Gnoga.Application.Singleton.Message_Loop;
 
    Gnoga.Log ("Message loop released.");
 
-   C.Stop;
+   C.stop;
 
    Gnoga.Application.Gtk_Window.Finalize;
 

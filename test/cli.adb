@@ -13,7 +13,7 @@ procedure CLI is
 
    task type Main_Loop is
       entry Start (A : App_Access);
-   end;
+   end Main_Loop;
 
    type App_Data is new Connection_Data_Type with record
       Main_Window : Window.Pointer_To_Window_Class;
@@ -29,7 +29,7 @@ procedure CLI is
       select
          accept Start (A : App_Access) do
             App := A;
-         end ;
+         end Start;
       or
          terminate;
       end select;
@@ -50,17 +50,15 @@ procedure CLI is
          Application.Multi_Connect.End_Application;
       end if;
       Gnoga.Log ("End " & App.Main_Window.Connection_ID'Image);
-   end;
+   end Main_Loop;
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  :        access Gnoga.Application.Multi_Connect
-      .Connection_Holder_Type);
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  :        access Gnoga.Application.Multi_Connect
-      .Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
 
@@ -82,9 +80,7 @@ procedure CLI is
    end On_Connect;
 
 begin
-   Application.Multi_Connect.Initialize
-     (Event => On_Connect'Unrestricted_Access,
-      Boot  => "debug.html");
+   Application.Multi_Connect.Initialize (Event => On_Connect'Unrestricted_Access, Boot => "debug.html");
 
    Application.Title ("Editor");
    --     Application.HTML_On_Close
@@ -92,4 +88,3 @@ begin
 
    Application.Multi_Connect.Message_Loop;
 end CLI;
-

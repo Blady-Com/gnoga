@@ -1,4 +1,3 @@
-
 --  To use this app, run: db_active setup
 --  then run again: db_active
 
@@ -25,44 +24,26 @@ procedure DB_Active is
 
    Connection : Gnoga.Server.Database.Connection_Access;
 
-   procedure Migrations
-     (M : in out Gnoga.Server.Migration.Migration_Collection);
+   procedure Migrations (M : in out Gnoga.Server.Migration.Migration_Collection);
 
-   procedure Migrations
-     (M : in out Gnoga.Server.Migration.Migration_Collection)
-   is
+   procedure Migrations (M : in out Gnoga.Server.Migration.Migration_Collection) is
    begin
       M.Add_Migration_Up
-        ("CREATE TABLE `users`" &
-           " (" & Connection.ID_Field_String & "," &
-           "  lastname VARCHAR(80)," &
-           "  firstname VARCHAR(80))");
-      M.Add_Migration_Down
-        ("DROP TABLE `users`");
+        ("CREATE TABLE `users`" & " (" & Connection.ID_Field_String & "," & "  lastname VARCHAR(80)," &
+         "  firstname VARCHAR(80))");
+      M.Add_Migration_Down ("DROP TABLE `users`");
+
+      M.Add_Migration_Up ("INSERT INTO users (`lastname`, `firstname`) " & "VALUES ('Taft','Tucker')");
+      M.Add_Migration_Down ("delete from users");
+      M.Add_Migration_Up ("INSERT INTO users (`lastname`, `firstname`) " & "VALUES ('Dewar','Robert')");
+      M.Add_Migration_Down ("delete from users");
+      M.Add_Migration_Up ("INSERT INTO users (`lastname`, `firstname`) " & "VALUES ('Botton','David')");
+      M.Add_Migration_Down ("delete from users");
 
       M.Add_Migration_Up
-        ("INSERT INTO users (`lastname`, `firstname`) " &
-           "VALUES ('Taft','Tucker')");
-      M.Add_Migration_Down
-        ("delete from users");
-      M.Add_Migration_Up
-        ("INSERT INTO users (`lastname`, `firstname`) " &
-           "VALUES ('Dewar','Robert')");
-      M.Add_Migration_Down
-        ("delete from users");
-      M.Add_Migration_Up
-        ("INSERT INTO users (`lastname`, `firstname`) " &
-           "VALUES ('Botton','David')");
-      M.Add_Migration_Down
-        ("delete from users");
-
-      M.Add_Migration_Up
-        ("CREATE TABLE `foods`" &
-           " (" & Connection.ID_Field_String & "," &
-           "  user_id Integer," &
-           "  food VARCHAR(80))");
-      M.Add_Migration_Down
-        ("DROP TABLE `foods`");
+        ("CREATE TABLE `foods`" & " (" & Connection.ID_Field_String & "," & "  user_id Integer," &
+         "  food VARCHAR(80))");
+      M.Add_Migration_Down ("DROP TABLE `foods`");
 
    end Migrations;
 
@@ -73,10 +54,7 @@ begin
 
    Connection := Gnoga.Server.Database.SQLite.Connect ("active_test.db");
 
-   if
-     Gnoga.Server.Migration.Migrations_Handled_Command_Line
-       (Connection, Migrations'Unrestricted_Access)
-   then
+   if Gnoga.Server.Migration.Migrations_Handled_Command_Line (Connection, Migrations'Unrestricted_Access) then
       GNAT.OS_Lib.OS_Exit (0);
    end if;
 
@@ -90,16 +68,14 @@ begin
    V.Put_Line ("Using Gnoga.Server.Model.Table");
 
    declare
-      package Users is new Model.Table
-        ("users", Connection);
+      package Users is new Model.Table ("users", Connection);
 
-      package Foods is new Model.Table
-        ("foods", Connection);
+      package Foods is new Model.Table ("foods", Connection);
 
       Records : Model.Queries.Active_Record_Array.Vector;
 
-      A_User  : Users.Active_Record;
-      A_Food  : Foods.Active_Record;
+      A_User : Users.Active_Record;
+      A_Food : Foods.Active_Record;
    begin
       A_User.Find_Where ("lastname='Botton'");
       A_Food.Value ("user_id", A_User.Value ("id"));
@@ -129,23 +105,19 @@ begin
             F2 : Foods.Active_Record;
          begin
             V.Put_Line ("Record : " & i'Img);
-            V.Put_Line ("First Name : " &
-                          Records.Element (i).Value ("firstname"));
-            V.Put_Line ("Last Name : " &
-                          Records.Element (i).Value ("lastname"));
+            V.Put_Line ("First Name : " & Records.Element (i).Value ("firstname"));
+            V.Put_Line ("Last Name : " & Records.Element (i).Value ("lastname"));
 
             --  One to Many Users -> Foods
             F := Foods.Find_Items (Parent => Records.Element (i));
             for j in F.First_Index .. F.Last_Index loop
-               V.Put_Line ("He Likes : " &
-                             F.Element (j).Value ("food"));
+               V.Put_Line ("He Likes : " & F.Element (j).Value ("food"));
             end loop;
 
             --  One to One Users -> Foods
             F2.Find_Item (Parent => Records.Element (i));
             if F2.Value ("id") /= "" then
-               V.Put_Line ("The first thing he liked was " &
-                             F2.Value ("food"));
+               V.Put_Line ("The first thing he liked was " & F2.Value ("food"));
             end if;
 
          end;
@@ -157,6 +129,5 @@ begin
    Gnoga.Application.Singleton.Message_Loop;
 exception
    when E : others =>
-      Gnoga.Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                   Ada.Exceptions.Exception_Message (E));
+      Gnoga.Log (Ada.Exceptions.Exception_Name (E) & " - " & Ada.Exceptions.Exception_Message (E));
 end DB_Active;

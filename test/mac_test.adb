@@ -15,8 +15,7 @@ procedure Mac_Test is
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       pragma Unreferenced (Object);
    begin
       MacGap.System_Beep (Main_Window);
@@ -46,10 +45,8 @@ begin
    Button.On_Click_Handler (On_Click'Unrestricted_Access);
 
    Main_View.Put_Line ("Hello World in a Mac App!");
-   Main_View.Put_Line ("Documents path = " &
-                         MacGap.Documents_Path (Main_Window));
-   Main_View.Put_Line ("Temp path = " &
-                         MacGap.Temp_Path (Main_Window)  & "log.txt");
+   Main_View.Put_Line ("Documents path = " & MacGap.Documents_Path (Main_Window));
+   Main_View.Put_Line ("Temp path = " & MacGap.Temp_Path (Main_Window) & "log.txt");
 
 --   MacGap.Open_URL (Main_Window, "http://www.google.com");
 

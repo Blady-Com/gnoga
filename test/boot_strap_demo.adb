@@ -16,25 +16,22 @@ procedure Boot_Strap_Demo is
    use Gnoga.Gui.Element;
    use Gnoga.Gui.Plugin;
 
-   type App_Data is new Connection_Data_Type with
-      record
-         Main_Window : Window.Pointer_To_Window_Class;
-         Nav_Bar     : Section.Section_Type;
-         M_Container : Boot_Strap.Fluid_Container_Type;
-         J_Container : Boot_Strap.Container_Type;
-         C_Container : Boot_Strap.Container_Type;
-      end record;
+   type App_Data is new Connection_Data_Type with record
+      Main_Window : Window.Pointer_To_Window_Class;
+      Nav_Bar     : Section.Section_Type;
+      M_Container : Boot_Strap.Fluid_Container_Type;
+      J_Container : Boot_Strap.Container_Type;
+      C_Container : Boot_Strap.Container_Type;
+   end record;
    type App_Access is access all App_Data;
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
       App : constant App_Access := new App_Data;
@@ -52,8 +49,7 @@ procedure Boot_Strap_Demo is
 
       App.Nav_Bar.Create (Main_Window, Section.Nav);
       App.Nav_Bar.Add_Class ("navbar navbar-inverse");
-      App.Nav_Bar.Place_Inside_Top_Of
-        (Main_Window.Document.Body_Element.all);
+      App.Nav_Bar.Place_Inside_Top_Of (Main_Window.Document.Body_Element.all);
 
       App.M_Container.Create (App.Nav_Bar);
 
@@ -85,30 +81,20 @@ procedure Boot_Strap_Demo is
          Nav_Menu.Create (Nav_Links);
          Nav_Menu.Add_Class ("nav navbar-nav");
 
-         List.List_Item_Access
-           (Nav_Menu.New_Element
-              ("item1", new List.List_Item_Type)). Create
-             (Nav_Menu, "<a href='#'>Item 1</a>");
-         List.List_Item_Access
-           (Nav_Menu.New_Element
-              ("item2", new List.List_Item_Type)). Create
-             (Nav_Menu, "<a href='#'>Item 1</a>");
-         List.List_Item_Access
-           (Nav_Menu.New_Element
-              ("item3", new List.List_Item_Type)). Create
-             (Nav_Menu, "<a href='#'>Item 1</a>");
+         List.List_Item_Access (Nav_Menu.New_Element ("item1", new List.List_Item_Type)).Create
+           (Nav_Menu, "<a href='#'>Item 1</a>");
+         List.List_Item_Access (Nav_Menu.New_Element ("item2", new List.List_Item_Type)).Create
+           (Nav_Menu, "<a href='#'>Item 1</a>");
+         List.List_Item_Access (Nav_Menu.New_Element ("item3", new List.List_Item_Type)).Create
+           (Nav_Menu, "<a href='#'>Item 1</a>");
 
          Nav_Right.Create (Nav_Links);
          Nav_Right.Add_Class ("nav navbar-nav navbar-right");
 
-         List.List_Item_Access
-           (Nav_Right.New_Element
-              ("item1", new List.List_Item_Type)). Create
-             (Nav_Right, "<a href='#'>Sign Up</a>");
-         List.List_Item_Access
-           (Nav_Right.New_Element
-              ("item2", new List.List_Item_Type)). Create
-             (Nav_Right, "<a href='#'>Login</a>");
+         List.List_Item_Access (Nav_Right.New_Element ("item1", new List.List_Item_Type)).Create
+           (Nav_Right, "<a href='#'>Sign Up</a>");
+         List.List_Item_Access (Nav_Right.New_Element ("item2", new List.List_Item_Type)).Create
+           (Nav_Right, "<a href='#'>Login</a>");
 
       end;
 
@@ -121,8 +107,7 @@ procedure Boot_Strap_Demo is
          J.Create
            (App.J_Container,
             "<H1>Gnoga <small>The GNU Omnificent GUI for Ada</small></H1>" &
-              "The Ada Open-Source Mission-Critical Cloud, Desktop and" &
-              " Mobile Application Development Framework");
+            "The Ada Open-Source Mission-Critical Cloud, Desktop and" & " Mobile Application Development Framework");
       end;
 
       App.C_Container.Create (Main_Window);
@@ -159,13 +144,10 @@ procedure Boot_Strap_Demo is
    end On_Connect;
 
 begin
-   Application.Multi_Connect.Initialize
-     (Event => On_Connect'Unrestricted_Access,
-      Boot  => "boot_bootstrap3.html");
+   Application.Multi_Connect.Initialize (Event => On_Connect'Unrestricted_Access, Boot => "boot_bootstrap3.html");
 
    Application.Title ("Test App for Gnoga");
-   Application.HTML_On_Close
-     ("<b>Connection to Application has been terminated</b>");
+   Application.HTML_On_Close ("<b>Connection to Application has been terminated</b>");
 
 --     Application.Open_URL;
 

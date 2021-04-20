@@ -41,48 +41,33 @@ procedure Tree is
       View_Type (View).Create (Parent, ID);
       View.Width (200);
 
-      Unordered_List_Access
-        (View.New_Element ("root", new Unordered_List_Type)).Create
-      (View);
+      Unordered_List_Access (View.New_Element ("root", new Unordered_List_Type)).Create (View);
 
-      List.List_Item_Access
-        (View.New_Element ("node1", new List_Item_Type)).Create
-      (Unordered_List_Type'Class (View.Element ("root").all), "node1");
-      View.Element ("node1").Attribute
-      ("data-jstree", "{""icon"":""/img/gnoga_tiny.png""," &
-       """disabled"":true}");
-      List.List_Item_Access
-        (View.New_Element ("node2", new List_Item_Type)).Create
-      (Unordered_List_Type'Class (View.Element ("root").all), "node2");
-      List.List_Item_Access
-        (View.New_Element ("node3", new List_Item_Type)).Create
-      (Unordered_List_Type'Class (View.Element ("root").all), "node3");
+      List.List_Item_Access (View.New_Element ("node1", new List_Item_Type)).Create
+        (Unordered_List_Type'Class (View.Element ("root").all), "node1");
+      View.Element ("node1").Attribute ("data-jstree", "{""icon"":""/img/gnoga_tiny.png""," & """disabled"":true}");
+      List.List_Item_Access (View.New_Element ("node2", new List_Item_Type)).Create
+        (Unordered_List_Type'Class (View.Element ("root").all), "node2");
+      List.List_Item_Access (View.New_Element ("node3", new List_Item_Type)).Create
+        (Unordered_List_Type'Class (View.Element ("root").all), "node3");
 
-      Unordered_List_Access
-        (View.New_Element ("branch1", new Unordered_List_Type)).Create
-      (View);
-      View.Element ("branch1").Place_Inside_Bottom_Of
-      (View.Element ("node3").all);
+      Unordered_List_Access (View.New_Element ("branch1", new Unordered_List_Type)).Create (View);
+      View.Element ("branch1").Place_Inside_Bottom_Of (View.Element ("node3").all);
       View.Element ("node3").Add_Class ("jstree-open");
 
-      List.List_Item_Access
-        (View.New_Element ("b1-node1", new List_Item_Type)).Create
-      (Unordered_List_Type'Class (View.Element ("branch1").all), "b1-node1");
-      List.List_Item_Access
-        (View.New_Element ("b1-node2", new List_Item_Type)).Create
-      (Unordered_List_Type'Class (View.Element ("branch1").all), "b1-node2");
+      List.List_Item_Access (View.New_Element ("b1-node1", new List_Item_Type)).Create
+        (Unordered_List_Type'Class (View.Element ("branch1").all), "b1-node1");
+      List.List_Item_Access (View.New_Element ("b1-node2", new List_Item_Type)).Create
+        (Unordered_List_Type'Class (View.Element ("branch1").all), "b1-node2");
 
       View.jQuery_Execute ("jstree()");
 
       View.Bind_Event
-      (Event                           =>
-         "select_node.jstree", Message =>
-         "", Eval                      =>
-         "var i, j, r = [];" &
-         "for(i = 0, j = data.selected.length; i < j; i++) {" &
-         "r.push(data.instance.get_node(data.selected[i]).text);" &
-         "}", Script =>
-         "r.join(', ')");
+        (Event => "select_node.jstree", Message => "",
+         Eval  =>
+           "var i, j, r = [];" & "for(i = 0, j = data.selected.length; i < j; i++) {" &
+           "r.push(data.instance.get_node(data.selected[i]).text);" & "}",
+         Script => "r.join(', ')");
    end Create;
 
    overriding procedure On_Message
@@ -102,8 +87,7 @@ procedure Tree is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  :        access Gnoga.Application.Multi_Connect
-        .Connection_Holder_Type);
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
 
    procedure On_Open
      (Object : in out Gnoga.Gui.Base.Base_Type'Class;
@@ -133,18 +117,13 @@ procedure Tree is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  :        access Gnoga.Application.Multi_Connect
-        .Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
-      Main_View : constant Pointer_To_View_Class     := new View_Type;
-      Tree_View : constant Pointer_To_Tree_Text_View :=
-        new Tree_Test_View_Type;
-      Tree, Sub_Tree : Gnoga.Gui.Plugin.JSTree.JSTree_Access;
-      Node1,
-      Node2,
-      Node3,
-      Node_Item : Gnoga.Gui.Plugin.JSTree.JSTree_Item_Access;
+      Main_View                      : constant Pointer_To_View_Class     := new View_Type;
+      Tree_View                      : constant Pointer_To_Tree_Text_View := new Tree_Test_View_Type;
+      Tree, Sub_Tree                 : Gnoga.Gui.Plugin.JSTree.JSTree_Access;
+      Node1, Node2, Node3, Node_Item : Gnoga.Gui.Plugin.JSTree.JSTree_Item_Access;
    begin
       Main_View.Dynamic;
       Main_View.Create (Main_Window);
@@ -168,8 +147,7 @@ procedure Tree is
 
       Display_Tree (Tree);
 
-      Main_View.Put_Line
-      ("Subprograms in hierarchie with dynamic memory creation:");
+      Main_View.Put_Line ("Subprograms in hierarchie with dynamic memory creation:");
 
       New_Root_Tree (Tree, "Root2", Main_View.all);
       -- Create the main tree
@@ -185,84 +163,56 @@ procedure Tree is
       Tree.On_Select_Node_Handler (On_Select'Unrestricted_Access);
       Tree.On_Deselect_Node_Handler (On_Select'Unrestricted_Access);
 
-      Display_Tree
-        (Tree,
-         (Core   => (Themes => (Dots => False, others => <>), others => <>),
-          others => <>));
+      Display_Tree (Tree, (Core => (Themes => (Dots => False, others => <>), others => <>), others => <>));
 
       Main_View.Put_Line ("Subprograms with plain type parameters:");
 
       Add_Root_Tree
         (Gnoga.Gui.Plugin.JSTree.JSTree_Access
-           (Main_View.New_Element
-            ("Root3", new Gnoga.Gui.Plugin.JSTree.JSTree_Type)).all,
+           (Main_View.New_Element ("Root3", new Gnoga.Gui.Plugin.JSTree.JSTree_Type)).all,
          Main_View.all);
 
       Add_Item
-        (Gnoga.Gui.Plugin.JSTree.JSTree_Access
-           (Main_View.Element ("Root3")).all,
-         "Node31",
+        (Gnoga.Gui.Plugin.JSTree.JSTree_Access (Main_View.Element ("Root3")).all, "Node31",
          Gnoga.Gui.Plugin.JSTree.JSTree_Item_Access
-           (Main_View.New_Element
-            ("Node31", new Gnoga.Gui.Plugin.JSTree.JSTree_Item_Type)).all);
+           (Main_View.New_Element ("Node31", new Gnoga.Gui.Plugin.JSTree.JSTree_Item_Type)).all);
 
       Add_Item
-        (Gnoga.Gui.Plugin.JSTree.JSTree_Access
-           (Main_View.Element ("Root3")).all,
-         "Node32",
+        (Gnoga.Gui.Plugin.JSTree.JSTree_Access (Main_View.Element ("Root3")).all, "Node32",
          Gnoga.Gui.Plugin.JSTree.JSTree_Item_Access
-           (Main_View.New_Element
-            ("Node32", new Gnoga.Gui.Plugin.JSTree.JSTree_Item_Type)).all);
+           (Main_View.New_Element ("Node32", new Gnoga.Gui.Plugin.JSTree.JSTree_Item_Type)).all);
 
       Add_Sub_Tree_Item
-        (Gnoga.Gui.Plugin.JSTree.JSTree_Access
-           (Main_View.Element ("Root3")).all,
-         "Node33",
+        (Gnoga.Gui.Plugin.JSTree.JSTree_Access (Main_View.Element ("Root3")).all, "Node33",
          Gnoga.Gui.Plugin.JSTree.JSTree_Item_Access
-           (Main_View.New_Element
-            ("Node33", new Gnoga.Gui.Plugin.JSTree.JSTree_Item_Type)).all,
+           (Main_View.New_Element ("Node33", new Gnoga.Gui.Plugin.JSTree.JSTree_Item_Type)).all,
          Gnoga.Gui.Plugin.JSTree.JSTree_Access
-           (Main_View.New_Element
-            ("Node33", new Gnoga.Gui.Plugin.JSTree.JSTree_Type)).all);
+           (Main_View.New_Element ("Node33", new Gnoga.Gui.Plugin.JSTree.JSTree_Type)).all);
 
       Add_Item
-        (Gnoga.Gui.Plugin.JSTree.JSTree_Access
-           (Main_View.Element ("Node33")).all,
-         "B3-Node1",
+        (Gnoga.Gui.Plugin.JSTree.JSTree_Access (Main_View.Element ("Node33")).all, "B3-Node1",
          Gnoga.Gui.Plugin.JSTree.JSTree_Item_Access
-           (Main_View.New_Element
-            ("B3-Node1", new Gnoga.Gui.Plugin.JSTree.JSTree_Item_Type)).all);
+           (Main_View.New_Element ("B3-Node1", new Gnoga.Gui.Plugin.JSTree.JSTree_Item_Type)).all);
 
       Add_Item
-        (Gnoga.Gui.Plugin.JSTree.JSTree_Access
-           (Main_View.Element ("Node33")).all,
-         "B3-Node2",
+        (Gnoga.Gui.Plugin.JSTree.JSTree_Access (Main_View.Element ("Node33")).all, "B3-Node2",
          Gnoga.Gui.Plugin.JSTree.JSTree_Item_Access
-           (Main_View.New_Element
-            ("B3-Node2", new Gnoga.Gui.Plugin.JSTree.JSTree_Item_Type)).all);
+           (Main_View.New_Element ("B3-Node2", new Gnoga.Gui.Plugin.JSTree.JSTree_Item_Type)).all);
 
       Add_Sub_Tree
-        (Gnoga.Gui.Plugin.JSTree.JSTree_Access
-           (Main_View.Element ("Root3")).all,
-         Gnoga.Gui.Plugin.JSTree.JSTree_Item_Access
-           (Main_View.Element ("B3-Node2")).all,
+        (Gnoga.Gui.Plugin.JSTree.JSTree_Access (Main_View.Element ("Root3")).all,
+         Gnoga.Gui.Plugin.JSTree.JSTree_Item_Access (Main_View.Element ("B3-Node2")).all,
          Gnoga.Gui.Plugin.JSTree.JSTree_Access
-           (Main_View.New_Element
-            ("Node34", new Gnoga.Gui.Plugin.JSTree.JSTree_Type)).all);
+           (Main_View.New_Element ("Node34", new Gnoga.Gui.Plugin.JSTree.JSTree_Type)).all);
 
       Add_Item
-        (Gnoga.Gui.Plugin.JSTree.JSTree_Access
-           (Main_View.Element ("Node34")).all,
-         "B4-Node1",
+        (Gnoga.Gui.Plugin.JSTree.JSTree_Access (Main_View.Element ("Node34")).all, "B4-Node1",
          Gnoga.Gui.Plugin.JSTree.JSTree_Item_Access
-           (Main_View.New_Element
-            ("B4-Node1", new Gnoga.Gui.Plugin.JSTree.JSTree_Item_Type)).all);
+           (Main_View.New_Element ("B4-Node1", new Gnoga.Gui.Plugin.JSTree.JSTree_Item_Type)).all);
 
       Display_Tree
-        (Gnoga.Gui.Plugin.JSTree.JSTree_Access
-           (Main_View.Element ("Root3")).all,
-         (Plugins => (ContextMenu => True, DragAndDrop => True, others => <>),
-          others  => <>));
+        (Gnoga.Gui.Plugin.JSTree.JSTree_Access (Main_View.Element ("Root3")).all,
+         (Plugins => (ContextMenu => True, DragAndDrop => True, others => <>), others => <>));
 
       Main_View.Put_Line ("Original types and list subprograms:");
 
@@ -273,9 +223,7 @@ procedure Tree is
       Main_View.Put_Line ("Some more text");
    end On_Connect;
 begin
-   Application.Multi_Connect.Initialize
-     (Event => On_Connect'Unrestricted_Access,
-      Boot  => "debug.html");
+   Application.Multi_Connect.Initialize (Event => On_Connect'Unrestricted_Access, Boot => "debug.html");
 
    Application.Title ("Test App for Gnoga");
 --     Application.HTML_On_Close

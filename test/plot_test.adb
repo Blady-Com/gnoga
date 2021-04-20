@@ -19,8 +19,7 @@ procedure Plot_Test is
    View : Gnoga.Gui.View.View_Type;
    Plot : Gnoga.Gui.Element.Canvas.Context_2D.Plotting.Plot_Info;
    Quit : Gnoga.Gui.Element.Common.Button_Type;
-   List : Gnoga.Gui.Element.Canvas.Context_2D.Plotting.Point_List
-     (1 .. Integer (20 * X_Limit) + 5);
+   List : Gnoga.Gui.Element.Canvas.Context_2D.Plotting.Point_List (1 .. Integer (20 * X_Limit) + 5);
    Last : Positive := List'Last;
 
    procedure On_Quit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -37,21 +36,19 @@ begin -- Plot_Test
    View.Create (Parent => Win);
    View.Text_Alignment (Value => Gnoga.Gui.Element.Center);
    Plot.Create
-     (Parent => View, Width => 500, Height => 500, X_Min => -X_Limit,
-      X_Max => X_Limit, Y_Min => -Y_Limit, Y_Max => Y_Limit);
+     (Parent => View, Width => 500, Height => 500, X_Min => -X_Limit, X_Max => X_Limit, Y_Min => -Y_Limit,
+      Y_Max  => Y_Limit);
    Plot.Border;
    View.New_Line;
    Plot.Axes (Interval => 1.0, Length => 10);
    Plot.Point (Position => (X => -1.0, Y => 1.5), Color => "green");
-   Plot.Point (Position => (X =>  0.0, Y => 1.5), Color => "green");
-   Plot.Point (Position => (X =>  1.0, Y => 1.5), Color => "green");
-   Plot.Line (From  => (X => -X_Limit, Y => Y_Limit),
-              To    => (X => X_Limit, Y => -Y_Limit),
-              Color => "blue");
-   List (List'First) := (X => -X_Limit,
-                         Y => Math.Sin (-X_Limit) / (-X_Limit));
+   Plot.Point (Position => (X => 0.0, Y => 1.5), Color => "green");
+   Plot.Point (Position => (X => 1.0, Y => 1.5), Color => "green");
+   Plot.Line (From => (X => -X_Limit, Y => Y_Limit), To => (X => X_Limit, Y => -Y_Limit), Color => "blue");
+   List (List'First) := (X => -X_Limit, Y => Math.Sin (-X_Limit) / (-X_Limit));
 
-   All_Points : for I in List'First + 1 .. List'Last loop
+   All_Points :
+   for I in List'First + 1 .. List'Last loop
       List (I).X := List (I - 1).X + 0.1;
 
       if List (I).X = 0.0 then

@@ -15,18 +15,16 @@ procedure Layouts is
    use Gnoga.Gui;
    use Gnoga.Gui.Element;
 
-   type App_Data is new Connection_Data_Type with
-      record
-         Main_Window : Window.Pointer_To_Window_Class;
-         Docks       : Gnoga.Gui.View.Docker.Docker_View_Type;
-         View        : aliased Gnoga.Gui.View.Card.Card_View_Type;
-      end record;
+   type App_Data is new Connection_Data_Type with record
+      Main_Window : Window.Pointer_To_Window_Class;
+      Docks       : Gnoga.Gui.View.Docker.Docker_View_Type;
+      View        : aliased Gnoga.Gui.View.Card.Card_View_Type;
+   end record;
    type App_Access is access all App_Data;
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       Click_Count : Common.Span_Type;
       Count       : Natural;
    begin
@@ -40,13 +38,11 @@ procedure Layouts is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
       App    : App_Access := new App_Data;
@@ -68,7 +64,7 @@ procedure Layouts is
       Dex := new View.Docker.Docker_View_Type;
       Dex.Dynamic;
       Dex.Create (App.Docks);
-      App.Docks.Fill_Dock (View.Pointer_To_View_Base_Class(Dex));
+      App.Docks.Fill_Dock (View.Pointer_To_View_Base_Class (Dex));
 
       --  Prevent backspace from causing browser to go to previous page
       Stop_B := new Common.DIV_Type;
@@ -83,11 +79,9 @@ procedure Layouts is
 
       Tabs := new View.Card.Tab_Type;
       Tabs.Dynamic;
-      Tabs.Create (Parent       => Dex.all,
-                   Card_View    => App.View,
-                   Text_Color   => Gnoga.Types.Colors.Black,
-                   Tab_Color    => Gnoga.Types.Colors.Blue,
-                   Select_Color => Gnoga.Types.Colors.Light_Blue);
+      Tabs.Create
+        (Parent    => Dex.all, Card_View => App.View, Text_Color => Gnoga.Types.Colors.Black,
+         Tab_Color => Gnoga.Types.Colors.Blue, Select_Color => Gnoga.Types.Colors.Light_Blue);
 
       Tab := new View.Card.Tab_Item_Type;
       Tab.Dynamic;
@@ -98,35 +92,35 @@ procedure Layouts is
       Tab.Create (Tabs.all, "2", "Card 2");
       Tab.On_Click_Handler (On_Click'Unrestricted_Access);
 
-      Dex.Top_Dock (View.Pointer_To_View_Base_Class(Tabs));
+      Dex.Top_Dock (View.Pointer_To_View_Base_Class (Tabs));
 
       V := new View.View_Type;
       V.Dynamic;
       V.Create (App.Docks);
       V.Background_Color ("Black");
       V.Put_Line ("Here");
-      App.Docks.Top_Dock (View.Pointer_To_View_Base_Class(V));
+      App.Docks.Top_Dock (View.Pointer_To_View_Base_Class (V));
 
       V := new View.View_Type;
       V.Dynamic;
       V.Create (App.Docks);
       V.Background_Color ("Green");
       V.Put_Line ("Here");
-      App.Docks.Bottom_Dock (View.Pointer_To_View_Base_Class(V));
+      App.Docks.Bottom_Dock (View.Pointer_To_View_Base_Class (V));
 
       V := new View.View_Type;
       V.Dynamic;
       V.Create (App.Docks);
       V.Background_Color ("Blue");
       V.Put_Line ("Here");
-      App.Docks.Left_Dock (View.Pointer_To_View_Base_Class(V));
+      App.Docks.Left_Dock (View.Pointer_To_View_Base_Class (V));
 
       V := new View.View_Type;
       V.Dynamic;
       V.Create (App.Docks);
       V.Background_Color ("Yellow");
       V.Put_Line ("Here");
-      App.Docks.Right_Dock (View.Pointer_To_View_Base_Class(V));
+      App.Docks.Right_Dock (View.Pointer_To_View_Base_Class (V));
 
       Card_1 := new View.Console.Console_View_Type;
       Card_1.Dynamic;
@@ -144,13 +138,10 @@ procedure Layouts is
    end On_Connect;
 
 begin
-   Application.Multi_Connect.Initialize
-     (Event => On_Connect'Unrestricted_Access,
-      Boot  => "debug.html");
+   Application.Multi_Connect.Initialize (Event => On_Connect'Unrestricted_Access, Boot => "debug.html");
 
    Application.Title ("Test App for Gnoga");
-   Application.HTML_On_Close
-     ("<b>Connection to Application has been terminated</b>");
+   Application.HTML_On_Close ("<b>Connection to Application has been terminated</b>");
 
 --     Application.Open_URL;
 

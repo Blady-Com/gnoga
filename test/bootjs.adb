@@ -15,25 +15,21 @@ procedure BootJS is
    use Gnoga.Gui;
    use Gnoga.Gui.Element;
 
-   type App_Data is new Connection_Data_Type with
-      record
-         Main_Window : Window.Pointer_To_Window_Class;
-         Page        : aliased Gnoga.Gui.View.View_Type;
-      end record;
+   type App_Data is new Connection_Data_Type with record
+      Main_Window : Window.Pointer_To_Window_Class;
+      Page        : aliased Gnoga.Gui.View.View_Type;
+   end record;
    type App_Access is access all App_Data;
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
    procedure On_BootJS_Demo_Page
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  :
-      access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
 
-   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Main_Window.Alert ("You clicked on me!");
@@ -41,8 +37,7 @@ procedure BootJS is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       App : constant App_Access := new App_Data;
 
@@ -71,8 +66,7 @@ procedure BootJS is
 
    procedure On_BootJS_Demo_Page
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  :
-      access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
       App       : constant App_Access := new App_Data;
@@ -93,24 +87,19 @@ procedure BootJS is
          App.Page.Element (N).Color ("orange");
       end loop;
 
-      App.Page.Element ("my_button").On_Click_Handler
-        (On_Click'Unrestricted_Access);
+      App.Page.Element ("my_button").On_Click_Handler (On_Click'Unrestricted_Access);
    end On_BootJS_Demo_Page;
 
 begin
    Application.Multi_Connect.Initialize;
 
-   Application.Multi_Connect.On_Connect_Handler
-     (Event => On_Connect'Unrestricted_Access,
-      Path  => "default");
+   Application.Multi_Connect.On_Connect_Handler (Event => On_Connect'Unrestricted_Access, Path => "default");
 
    Application.Multi_Connect.On_Connect_Handler
-     (Event => On_BootJS_Demo_Page'Unrestricted_Access,
-      Path  => "bootjs_demo.html");
+     (Event => On_BootJS_Demo_Page'Unrestricted_Access, Path => "bootjs_demo.html");
 
    Application.Title ("Test App for Gnoga");
-   Application.HTML_On_Close
-     ("<b>Connection to Application has been terminated</b>");
+   Application.HTML_On_Close ("<b>Connection to Application has been terminated</b>");
 
    Application.Open_URL;
 

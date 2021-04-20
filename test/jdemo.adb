@@ -17,30 +17,29 @@ procedure jDemo is
    use Gnoga.Gui.Element;
    use Gnoga.Gui.Plugin;
 
-   type App_Data is new Connection_Data_Type with
-      record
-         Main_Window : Window.Pointer_To_Window_Class;
-         Console     : aliased View.Console.Console_View_Type;
-         Box         : Common.DIV_Type;
-         Box2        : Common.DIV_Type;
-         Sorter      : aliased List.Ordered_List_Type;
-         Button      : Common.Button_Type;
-         Menu        : aliased List.Unordered_List_Type;
-         Sub_Menu    : aliased List.Unordered_List_Type;
-         Tools       : aliased jQueryUI.Widget.Accordion_Type;
-         Dialog      : aliased jQueryUI.Widget.Dialog_Type;
-      end record;
+   type App_Data is new Connection_Data_Type with record
+      Main_Window : Window.Pointer_To_Window_Class;
+      Console     : aliased View.Console.Console_View_Type;
+      Box         : Common.DIV_Type;
+      Box2        : Common.DIV_Type;
+      Sorter      : aliased List.Ordered_List_Type;
+      Button      : Common.Button_Type;
+      Menu        : aliased List.Unordered_List_Type;
+      Sub_Menu    : aliased List.Unordered_List_Type;
+      Tools       : aliased jQueryUI.Widget.Accordion_Type;
+      Dialog      : aliased jQueryUI.Widget.Dialog_Type;
+   end record;
    type App_Access is access all App_Data;
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    procedure On_Menu_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
-   procedure On_Drop (Object    : in out Gnoga.Gui.Base.Base_Type'Class;
-                      Event     : in     String;
-                      Message   : in     String;
-                      Continue  : out    Boolean);
+   procedure On_Drop
+     (Object   : in out Gnoga.Gui.Base.Base_Type'Class;
+      Event    : in     String;
+      Message  : in     String;
+      Continue :    out Boolean);
 
-   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       declare
@@ -64,8 +63,7 @@ procedure jDemo is
          C.Free;
       end;
 
-      jQueryUI.Toggle_With_Effect (Element            => App.Box,
-                                   Effect_Name        => "explode");
+      jQueryUI.Toggle_With_Effect (Element => App.Box, Effect_Name => "explode");
       App.Dialog.Open;
    end On_Click;
 
@@ -75,10 +73,11 @@ procedure jDemo is
       App.Console.Put_Line ("Menu Clicked - " & Element_Type (Object).Text);
    end On_Menu_Click;
 
-   procedure On_Drop (Object    : in out Gnoga.Gui.Base.Base_Type'Class;
-                      Event     : in     String;
-                      Message   : in     String;
-                      Continue  : out    Boolean)
+   procedure On_Drop
+     (Object   : in out Gnoga.Gui.Base.Base_Type'Class;
+      Event    : in     String;
+      Message  : in     String;
+      Continue :    out Boolean)
    is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
@@ -113,19 +112,20 @@ procedure jDemo is
       Log ("Dialog Closed");
    end On_Close;
 
-   procedure On_Move (Object      : in out Gnoga.Gui.Base.Base_Type'Class;
-                      Mouse_Event : in     Gnoga.Gui.Base.Mouse_Event_Record);
+   procedure On_Move
+     (Object      : in out Gnoga.Gui.Base.Base_Type'Class;
+      Mouse_Event : in     Gnoga.Gui.Base.Mouse_Event_Record);
 
-   procedure On_Move (Object      : in out Gnoga.Gui.Base.Base_Type'Class;
-                      Mouse_Event : in     Gnoga.Gui.Base.Mouse_Event_Record)
+   procedure On_Move
+     (Object      : in out Gnoga.Gui.Base.Base_Type'Class;
+      Mouse_Event : in     Gnoga.Gui.Base.Mouse_Event_Record)
    is
       pragma Unreferenced (Mouse_Event);
       procedure Act (E : in out Element_Type'Class);
 
       procedure Act (E : in out Element_Type'Class) is
       begin
-         E.Text ("X =" & E.Offset_From_Left'Img &
-                   " Y = " & E.Offset_From_Top'Img);
+         E.Text ("X =" & E.Offset_From_Left'Img & " Y = " & E.Offset_From_Top'Img);
       end Act;
    begin
       Act (Element_Type (Object));
@@ -133,13 +133,11 @@ procedure jDemo is
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type);
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       pragma Unreferenced (Connection);
       App : constant App_Access := new App_Data;
@@ -152,9 +150,7 @@ procedure jDemo is
       --
       --        jQueryUI.Load_jQueryUI (Main_Window);
 
-      Main_Window.Document.Body_Element.Font
-        (Family  => "Verdana, Arial",
-         Height  => "10px");
+      Main_Window.Document.Body_Element.Font (Family => "Verdana, Arial", Height => "10px");
 
       jQueryUI.Widget.Turn_On_Tool_Tips (Main_Window);
 
@@ -169,15 +165,9 @@ procedure jDemo is
 
       App.Sorter.Create (App.Console);
 
-      List.List_Item_Access
-        (App.Sorter.New_Element
-           ("1", new List.List_Item_Type)).Create (App.Sorter, "Item 1");
-      List.List_Item_Access
-        (App.Sorter.New_Element
-           ("2", new List.List_Item_Type)).Create (App.Sorter, "Item 2");
-      List.List_Item_Access
-        (App.Sorter.New_Element
-           ("3", new List.List_Item_Type)).Create (App.Sorter, "Item 3");
+      List.List_Item_Access (App.Sorter.New_Element ("1", new List.List_Item_Type)).Create (App.Sorter, "Item 1");
+      List.List_Item_Access (App.Sorter.New_Element ("2", new List.List_Item_Type)).Create (App.Sorter, "Item 2");
+      List.List_Item_Access (App.Sorter.New_Element ("3", new List.List_Item_Type)).Create (App.Sorter, "Item 3");
 
       jQueryUI.Make_Draggable (App.Box);
 
@@ -206,52 +196,34 @@ procedure jDemo is
 
       App.Menu.Create (App.Console);
 
-      List.List_Item_Access
-        (App.Menu.New_Element
-           ("1", new List.List_Item_Type)).Create (App.Menu, "Item 1");
+      List.List_Item_Access (App.Menu.New_Element ("1", new List.List_Item_Type)).Create (App.Menu, "Item 1");
       List.List_Item_Access (App.Menu.Element ("1")).Value ("4");
 
-      App.Menu.Element ("1").On_Click_Handler
-        (On_Menu_Click'Unrestricted_Access);
+      App.Menu.Element ("1").On_Click_Handler (On_Menu_Click'Unrestricted_Access);
 
-      List.List_Item_Access
-        (App.Menu.New_Element
-           ("2", new List.List_Item_Type)).Create (App.Menu, "Item 2");
+      List.List_Item_Access (App.Menu.New_Element ("2", new List.List_Item_Type)).Create (App.Menu, "Item 2");
 
-      App.Menu.Element ("2").On_Click_Handler
-        (On_Menu_Click'Unrestricted_Access);
+      App.Menu.Element ("2").On_Click_Handler (On_Menu_Click'Unrestricted_Access);
 
-      List.List_Item_Access
-        (App.Menu.New_Element
-           ("3", new List.List_Item_Type)).Create (App.Menu, "Item 3");
+      List.List_Item_Access (App.Menu.New_Element ("3", new List.List_Item_Type)).Create (App.Menu, "Item 3");
 
-      App.Menu.Element ("3").On_Click_Handler
-        (On_Menu_Click'Unrestricted_Access);
+      App.Menu.Element ("3").On_Click_Handler (On_Menu_Click'Unrestricted_Access);
 
       App.Sub_Menu.Create (App.Menu.Element ("2").all);
       App.Sub_Menu.Place_Inside_Bottom_Of (App.Menu.Element ("2").all);
 
-      List.List_Item_Access
-        (App.Sub_Menu.New_Element
-           ("1", new List.List_Item_Type)).Create (App.Sub_Menu, "SItem 1");
+      List.List_Item_Access (App.Sub_Menu.New_Element ("1", new List.List_Item_Type)).Create (App.Sub_Menu, "SItem 1");
       List.List_Item_Access (App.Sub_Menu.Element ("1")).Value ("4");
 
-      App.Sub_Menu.Element ("1").On_Click_Handler
-        (On_Menu_Click'Unrestricted_Access);
+      App.Sub_Menu.Element ("1").On_Click_Handler (On_Menu_Click'Unrestricted_Access);
 
-      List.List_Item_Access
-        (App.Sub_Menu.New_Element
-           ("2", new List.List_Item_Type)).Create (App.Sub_Menu, "SItem 2");
+      List.List_Item_Access (App.Sub_Menu.New_Element ("2", new List.List_Item_Type)).Create (App.Sub_Menu, "SItem 2");
 
-      App.Sub_Menu.Element ("2").On_Click_Handler
-        (On_Menu_Click'Unrestricted_Access);
+      App.Sub_Menu.Element ("2").On_Click_Handler (On_Menu_Click'Unrestricted_Access);
 
-      List.List_Item_Access
-        (App.Sub_Menu.New_Element
-           ("3", new List.List_Item_Type)).Create (App.Sub_Menu, "SItem 3");
+      List.List_Item_Access (App.Sub_Menu.New_Element ("3", new List.List_Item_Type)).Create (App.Sub_Menu, "SItem 3");
 
-      App.Sub_Menu.Element ("3").On_Click_Handler
-        (On_Menu_Click'Unrestricted_Access);
+      App.Sub_Menu.Element ("3").On_Click_Handler (On_Menu_Click'Unrestricted_Access);
 
       jQueryUI.Widget.Make_Menu (App.Menu);
       App.Menu.Width (100);
@@ -263,22 +235,13 @@ procedure jDemo is
       App.Tools.Height (400);
 
       App.Tools.Create_Section ("Section 1");
-      Common.DIV_Access
-        (App.Tools.New_Element
-           ("S1", new Common.DIV_Type)).Create
-          (App.Tools, "Section 1 View");
+      Common.DIV_Access (App.Tools.New_Element ("S1", new Common.DIV_Type)).Create (App.Tools, "Section 1 View");
 
       App.Tools.Create_Section ("Section 2");
-      Common.DIV_Access
-        (App.Tools.New_Element
-           ("S2", new Common.DIV_Type)).Create
-          (App.Tools, "Section 2 View");
+      Common.DIV_Access (App.Tools.New_Element ("S2", new Common.DIV_Type)).Create (App.Tools, "Section 2 View");
 
       App.Tools.Create_Section ("Section 3");
-      Common.DIV_Access
-        (App.Tools.New_Element
-           ("S3", new Common.DIV_Type)).Create
-          (App.Tools, "Section 3 View");
+      Common.DIV_Access (App.Tools.New_Element ("S3", new Common.DIV_Type)).Create (App.Tools, "Section 3 View");
 
       App.Tools.Element ("S2").Font (Height => "10px");
 
@@ -305,13 +268,9 @@ procedure jDemo is
          T.Width (400);
       end;
 
-      App.Dialog.Create (Parent          => App.Console,
-                         Title           => "About jDemo",
-                         Content         => "Hello World!",
-                         Height          => 300,
-                         Width           => 300,
-                         Position_My     => "top",
-                         Position_At     => "center top+5%");
+      App.Dialog.Create
+        (Parent      => App.Console, Title => "About jDemo", Content => "Hello World!", Height => 300, Width => 300,
+         Position_My => "top", Position_At => "center top+5%");
 --                         Resizable       => True,
 --                           Minimum_Height  => ,
 --                           Minimum_Width   => ,
@@ -324,45 +283,30 @@ procedure jDemo is
       App.Dialog.On_Open_Handler (On_Open'Unrestricted_Access);
       App.Dialog.On_Close_Handler (On_Close'Unrestricted_Access);
 
-      jQueryUI.Widget.Progress_Bar_Access
-        (App.Dialog.New_Element
-           ("progress", new jQueryUI.Widget.Progress_Bar_Type)). Create
-          (Parent  => App.Dialog,
-           Value   => 35,
-           Maximum => 100);
+      jQueryUI.Widget.Progress_Bar_Access (App.Dialog.New_Element ("progress", new jQueryUI.Widget.Progress_Bar_Type))
+        .Create
+        (Parent => App.Dialog, Value => 35, Maximum => 100);
 
       App.Dialog.Open;
 
-      Common.Button_Access
-        (App.Dialog.New_Element ("ok", new Common.Button_Type)).Create
-          (App.Dialog, "Ok");
-      Common.Button_Access
-        (App.Dialog.Element ("ok")).Focus;
-      Common.Button_Access
-        (App.Dialog.Element ("ok")).On_Click_Handler
-          (Close_Dialog'Unrestricted_Access);
+      Common.Button_Access (App.Dialog.New_Element ("ok", new Common.Button_Type)).Create (App.Dialog, "Ok");
+      Common.Button_Access (App.Dialog.Element ("ok")).Focus;
+      Common.Button_Access (App.Dialog.Element ("ok")).On_Click_Handler (Close_Dialog'Unrestricted_Access);
 
       jQueryUI.Position
-        (App.Dialog.Element ("ok").all,
-         Target   => App.Dialog,
-         Using_My => "bottom",
-         At_Target => "center bottom-10");
+        (App.Dialog.Element ("ok").all, Target => App.Dialog, Using_My => "bottom", At_Target => "center bottom-10");
 
       for i in 35 .. 100 loop
-         jQueryUI.Widget.Progress_Bar_Access
-           (App.Dialog.Element ("progress")).Value (i);
+         jQueryUI.Widget.Progress_Bar_Access (App.Dialog.Element ("progress")).Value (i);
          delay 0.10;
       end loop;
    end On_Connect;
 
 begin
-   Application.Multi_Connect.Initialize
-     (Event => On_Connect'Unrestricted_Access,
-      Boot  => "boot_jqueryui.html");
+   Application.Multi_Connect.Initialize (Event => On_Connect'Unrestricted_Access, Boot => "boot_jqueryui.html");
 
    Application.Title ("Test App for Gnoga");
-   Application.HTML_On_Close
-     ("<b>Connection to Application has been terminated</b>");
+   Application.HTML_On_Close ("<b>Connection to Application has been terminated</b>");
 
    --     Application.Open_URL;
 

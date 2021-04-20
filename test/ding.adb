@@ -18,13 +18,10 @@ procedure Ding is
       pragma Unreferenced (Object);
    --  Empty;
    begin -- Sound_Duration
-      Gnoga.Log
-        (Message => "Sound_Duration: " & Player.Media_Source & Float'Image (Player.Media_Duration));
+      Gnoga.Log (Message => "Sound_Duration: " & Player.Media_Source & Float'Image (Player.Media_Duration));
    exception -- Sound_Duration
       when E : others =>
-         Gnoga.Log
-           (Message =>
-              "Sound_Duration: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "Sound_Duration: " & Ada.Exceptions.Exception_Information (E));
    end Sound_Duration;
 
    procedure Play_Sound (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -36,24 +33,18 @@ procedure Ding is
       Wait_For_Ready :
       loop
          Gnoga.Log
-           (Message =>
-              Integer'Image (Player.Property ("readyState")) &
-              ' ' &
-              Boolean'Image (Player.Ready_To_Play));
+           (Message => Integer'Image (Player.Property ("readyState")) & ' ' & Boolean'Image (Player.Ready_To_Play));
 
          exit Wait_For_Ready when Player.Ready_To_Play;
 
          delay 0.01;
       end loop Wait_For_Ready;
 
-      Gnoga.Log
-        (Message => "Play_Sound: " & Player.Media_Source & Float'Image (Player.Media_Duration));
+      Gnoga.Log (Message => "Play_Sound: " & Player.Media_Source & Float'Image (Player.Media_Duration));
       Player.Play;
    exception -- Play_Sound
       when E : others =>
-         Gnoga.Log
-           (Message =>
-              "Play_Sound: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "Play_Sound: " & Ada.Exceptions.Exception_Information (E));
    end Play_Sound;
 
    procedure Quit_Now (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -63,9 +54,7 @@ procedure Ding is
       Gnoga.Application.Singleton.End_Application;
    exception -- Quit_Now
       when E : others =>
-         Gnoga.Log
-           (Message =>
-              "Quit_Now: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "Quit_Now: " & Ada.Exceptions.Exception_Information (E));
    end Quit_Now;
 begin -- Ding
    Gnoga.Application.Title ("Ding");
@@ -74,8 +63,7 @@ begin -- Ding
    View.Create (Parent => Window);
    View.Text_Alignment (Value => Gnoga.Gui.Element.Center);
    Player.Create (Parent => View, Preload => True);
-   Player.On_Duration_Change_Handler
-   (Handler => Sound_Duration'Unrestricted_Access);
+   Player.On_Duration_Change_Handler (Handler => Sound_Duration'Unrestricted_Access);
    View.New_Line;
    Play.Create (Parent => View, Content => "Play");
    Play.On_Click_Handler (Handler => Play_Sound'Unrestricted_Access);

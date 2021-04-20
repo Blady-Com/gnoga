@@ -22,9 +22,10 @@ with Gnoga.Application.Singleton;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View.Console;
 
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-
 procedure Tutorial_10 is
+   use Gnoga;
+   use all type Gnoga.String;
+
    pragma Linker_Options ("-lsqlite3");
    --  This linker option is needed to link to the database engine's library.
    --  For example if using the MySQL implementation of the database bindings
@@ -126,14 +127,14 @@ begin
          Descriptions := Connection.Field_Descriptions ("users");
          for I in Descriptions.First_Index .. Descriptions.Last_Index loop
             Description := Descriptions.Element (I);
-            My_View.Put_Line ("Column Name : " & To_String (Description.Column_Name));
-            My_View.Put_Line ("Data Type   : " & To_String (Description.Data_Type));
+            My_View.Put_Line ("Column Name : " & Description.Column_Name);
+            My_View.Put_Line ("Data Type   : " & Description.Data_Type);
             My_View.Put_Line ("Field Type  : " & Gnoga.Server.Database.Field_Type (Description));
             My_View.Put_Line ("Field Opts  : " & Gnoga.Server.Database.Field_Options (Description));
-            My_View.Put_Line ("Field Size  : " & Gnoga.Server.Database.Field_Size (Description)'Img);
-            My_View.Put_Line ("Decimals    : " & Gnoga.Server.Database.Field_Decimals (Description)'Img);
-            My_View.Put_Line ("Can Be Null : " & Description.Can_Be_Null'Img);
-            My_View.Put_Line ("Default     : " & To_String (Description.Default_Value));
+            My_View.Put_Line ("Field Size  : " & Image (Gnoga.Server.Database.Field_Size (Description)));
+            My_View.Put_Line ("Decimals    : " & Image (Gnoga.Server.Database.Field_Decimals (Description)));
+            My_View.Put_Line ("Can Be Null : " & Image (Description.Can_Be_Null));
+            My_View.Put_Line ("Default     : " & Description.Default_Value);
          end loop;
 
          My_View.Put_Line

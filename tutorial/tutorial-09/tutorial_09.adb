@@ -18,6 +18,7 @@ with Tutorial_Widget; use Tutorial_Widget;
 --  For clarity it has been moved out to its own package;
 
 procedure Tutorial_09 is
+   use all type Gnoga.String;
 
    type App_Data is new Gnoga.Types.Connection_Data_Type with record
       My_Window : Gnoga.Gui.Window.Pointer_To_Window_Class;

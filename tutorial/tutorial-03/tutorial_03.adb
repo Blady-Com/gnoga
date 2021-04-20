@@ -8,8 +8,6 @@
 --  In order to help see the different approach to setting up the application
 --  we will do something similar to the previous tutorial.
 
-with Ada.Exceptions;
-
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Window;
@@ -20,6 +18,7 @@ with Gnoga.Types;
 --  Gnoga special types are found in Gnoga.Types.
 
 procedure Tutorial_03 is
+   use all type Gnoga.String;
 
    --  Since this application will be used by multiple connections, we need to
    --  track and access that connection's specific data. To do this we create
@@ -58,7 +57,7 @@ procedure Tutorial_03 is
       App.My_Window.Close_Connection;
    exception
       when E : others =>
-         Gnoga.Log (Message => "On_Exit: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "On_Exit: ", Occurrence => E);
    end On_Exit;
 
    procedure On_Connect

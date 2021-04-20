@@ -13,6 +13,7 @@ with Gnoga.Gui.Element.Form;
 with Gnoga.Gui.Element.Table;
 
 procedure Tutorial_08 is
+   use all type Gnoga.String;
 
    -------------------------------------------------------------------------
    --  My_Widget_Type
@@ -31,13 +32,13 @@ procedure Tutorial_08 is
    overriding procedure Create
      (View   : in out My_Widget_Type;
       Parent : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID     : in     String := "");
+      ID     : in     Gnoga.String := "");
    --  Used to create our custom view
 
    overriding procedure Create
      (View   : in out My_Widget_Type;
       Parent : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID     : in     String := "")
+      ID     : in     Gnoga.String := "")
    is
       use Gnoga.Gui.Element.Table;
       Layout_Table : constant Table_Access := new Table_Type;

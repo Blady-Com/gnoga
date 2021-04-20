@@ -16,6 +16,7 @@ with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.IFrame;
 
 procedure Tutorial_06 is
+   use all type Gnoga.String;
 
    type App_Data is new Gnoga.Types.Connection_Data_Type with record
       My_View   : Gnoga.Gui.View.View_Type;

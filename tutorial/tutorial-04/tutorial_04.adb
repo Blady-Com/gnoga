@@ -12,6 +12,8 @@ with Gnoga.Gui.Window;
 with Gnoga.Gui.View;
 with Gnoga.Gui.Element.Common;
 
+with UXStrings.Conversions;
+
 procedure Tutorial_04 is
 
    --  The Color_Me_Task_Type is passed in a GUI element for its discriminant.
@@ -26,6 +28,7 @@ procedure Tutorial_04 is
 
    task body Color_Me_Task_Type is
       type Colors is (red, green, blue, orange, black);
+      function Image is new UXStrings.Conversions.Scalar_Image (Colors);
 
       Current_Color : Colors := Colors'First;
    begin
@@ -34,7 +37,7 @@ procedure Tutorial_04 is
       loop
          begin
             if O.Valid then
-               O.Color (Current_Color'Img);
+               O.Color (Image (Current_Color));
 
                if Current_Color = Colors'Last then
                   Current_Color := Colors'First;

@@ -22,9 +22,10 @@ with Gnoga.Application.Singleton;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View.Console;
 
-with Ada.Containers;
-
 procedure Tutorial_11 is
+   use Gnoga;
+   use all type Gnoga.String;
+
    pragma Linker_Options ("-lsqlite3");
 
    Connection : Gnoga.Server.Database.Connection_Access;
@@ -108,16 +109,14 @@ begin
 
             Records := Users.Find_All;
 
-            My_View.Put_Line ("Records in table : " & Records.Length'Img);
+            My_View.Put_Line ("Records in table : " & Image (Natural (Records.Length)));
 
             for i in Records.First_Index .. Records.Last_Index loop
                declare
-                  use type Ada.Containers.Count_Type;
-
                   F  : Gnoga.Server.Model.Queries.Active_Record_Array.Vector;
                   F2 : Foods.Active_Record;
                begin
-                  My_View.Put_Line ("Record : " & i'Img);
+                  My_View.Put_Line ("Record : " & Image (i));
                   My_View.Put_Line ("First Name : " & Records.Element (i).Value ("firstname"));
                   My_View.Put_Line ("Last Name : " & Records.Element (i).Value ("lastname"));
 

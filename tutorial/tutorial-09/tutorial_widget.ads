@@ -3,6 +3,7 @@ with Gnoga.Gui.Element.Form;
 with Gnoga.Gui.View;
 
 package Tutorial_Widget is
+
    -------------------------------------------------------------------------
    --  My_Widget_Type
    -------------------------------------------------------------------------
@@ -17,6 +18,6 @@ package Tutorial_Widget is
    overriding procedure Create
      (View   : in out My_Widget_Type;
       Parent : in out Gnoga.Gui.Base.Base_Type'Class;
-      ID     : in     String := "");
+      ID     : in     Gnoga.String := "");
    --  Used to create our custom view
 end Tutorial_Widget;

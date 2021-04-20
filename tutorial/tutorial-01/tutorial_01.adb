@@ -20,6 +20,9 @@ with Gnoga.Gui.View.Console;
 --  page using its Put_Line method.
 
 procedure Tutorial_01 is
+   use Gnoga;
+   use all type Gnoga.String;
+
    My_Window : Gnoga.Gui.Window.Window_Type;
    --  My_Window will be connected during Initialize to the browser.
 
@@ -59,7 +62,7 @@ begin
    My_View.Put_HTML ("<H1>Hello World!</H1>");
 
    for i in 1 .. 50 loop
-      My_View.Put_Line (i'Img & " - lines and lines overflowing the window.");
+      My_View.Put_Line (Image (i) & " - lines and lines overflowing the window.");
    end loop;
 
    Gnoga.Application.Singleton.End_Application;

@@ -33,9 +33,9 @@ procedure Tutorial_07 is
    procedure Drop
      (Object    : in out Gnoga.Gui.Base.Base_Type'Class;
       X, Y      : in     Integer;
-      Drag_Text : in     String);
-   --  These three event handlers are used to show visual cues that Target
-   --  is open to accept the drop, and to actually accept the drop.
+      Drag_Text : in     Gnoga.String);
+   --  These three event handlers are used to show visual cues that Target is
+   --  open to accept the drop, and to actually accept the drop.
 
    procedure Start_Drag (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Access := App_Access (Object.Connection_Data);
@@ -64,7 +64,7 @@ procedure Tutorial_07 is
    procedure Drop
      (Object    : in out Gnoga.Gui.Base.Base_Type'Class;
       X, Y      : in     Integer;
-      Drag_Text : in     String)
+      Drag_Text : in     Gnoga.String)
    is
       pragma Unreferenced (Y, X);
       App : constant App_Access := App_Access (Object.Connection_Data);

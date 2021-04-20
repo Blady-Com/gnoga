@@ -10,8 +10,6 @@ with AdaBlog.View;
 with AdaBlog.Model;
 
 package body AdaBlog.Controller is
-   use Gnoga;
-   use Gnoga.Gui;
 
    procedure On_Create_User (Object : in out Gnoga.Gui.Base.Base_Type'Class);
    --  The create user button was clicked
@@ -23,14 +21,14 @@ package body AdaBlog.Controller is
    --  User clicked the submit button to an a blog entry.
 
    procedure On_Create_User (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      Main_Window  : aliased Window.Window_Type;
-      Message_Area : Element.Common.DIV_Type;
-      User_Login   : Element.Common.Button_Type;
+      Main_Window  : aliased Gui.Window.Window_Type;
+      Message_Area : Gui.Element.Common.DIV_Type;
+      User_Login   : Gui.Element.Common.Button_Type;
 
-      username : Element.Form.Text_Type;
-      password : Element.Form.Text_Type;
-      pass2    : Element.Form.Text_Type;
-      verify   : Element.Common.DIV_Type;
+      username : Gui.Element.Form.Text_Type;
+      password : Gui.Element.Form.Text_Type;
+      pass2    : Gui.Element.Form.Text_Type;
+      verify   : Gui.Element.Common.DIV_Type;
 
       User : AdaBlog.Model.Users.Active_Record;
    begin
@@ -47,7 +45,7 @@ package body AdaBlog.Controller is
       verify.Attach_Using_Parent (Main_Window, "verify-pass");
       verify.Display ("inline");
 
-      if String'(password.Value) /= String'(pass2.Value) or pass2.Value = "" then
+      if Gnoga.String'(password.Value) /= Gnoga.String'(pass2.Value) or pass2.Value = "" then
          Message_Area.Text ("Please verify password.");
          return;
       end if;
@@ -73,11 +71,11 @@ package body AdaBlog.Controller is
    end On_Create_User;
 
    procedure On_User_Login (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      Main_Window  : aliased Window.Window_Type;
-      Message_Area : Element.Common.DIV_Type;
+      Main_Window  : aliased Gui.Window.Window_Type;
+      Message_Area : Gui.Element.Common.DIV_Type;
 
-      username : Element.Form.Text_Type;
-      password : Element.Form.Text_Type;
+      username : Gui.Element.Form.Text_Type;
+      password : Gui.Element.Form.Text_Type;
 
       User : AdaBlog.Model.Users.Active_Record;
    begin
@@ -103,7 +101,7 @@ package body AdaBlog.Controller is
       User    : AdaBlog.Model.Users.Active_Record;
       Entries : AdaBlog.Model.Blog_Entries.Active_Record;
 
-      Main_Window : aliased Window.Window_Type;
+      Main_Window : aliased Gui.Window.Window_Type;
       Text        : Gnoga.Gui.Element.Form.Text_Area_Type;
    begin
       Main_Window.Attach (Object.Connection_ID);
@@ -123,10 +121,10 @@ package body AdaBlog.Controller is
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      Content_Area : Element.Common.DIV_Type;
-      Left_Area    : Element.Common.DIV_Type;
-      User_Login   : Element.Common.Button_Type;
-      Create_User  : Element.Common.Button_Type;
+      Content_Area : Gui.Element.Common.DIV_Type;
+      Left_Area    : Gui.Element.Common.DIV_Type;
+      User_Login   : Gui.Element.Common.Button_Type;
+      Create_User  : Gui.Element.Common.Button_Type;
 
       User : AdaBlog.Model.Users.Active_Record;
 
@@ -168,10 +166,10 @@ package body AdaBlog.Controller is
    is
       User : AdaBlog.Model.Users.Active_Record;
 
-      Content_Area : Element.Common.DIV_Type;
-      Left_Area    : Element.Common.DIV_Type;
+      Content_Area : Gui.Element.Common.DIV_Type;
+      Left_Area    : Gui.Element.Common.DIV_Type;
 
-      Submit : Element.Common.Button_Type;
+      Submit : Gui.Element.Common.Button_Type;
    begin
       User.Find_Where ("last_session ='" & Main_Window.Gnoga_Session_ID & "'");
 
@@ -211,8 +209,8 @@ package body AdaBlog.Controller is
       Main_Window.Location.URL ("/");
    end Log_Out;
 begin
-   Application.Multi_Connect.On_Connect_Handler (Index'Unrestricted_Access, "default");
-   Application.Multi_Connect.On_Connect_Handler (Index'Unrestricted_Access, "main");
+   Application.Multi_Connect.On_Connect_Handler (Controller.Index'Unrestricted_Access, "default");
+   Application.Multi_Connect.On_Connect_Handler (Controller.Index'Unrestricted_Access, "main");
    Application.Multi_Connect.On_Connect_Handler (New_Entry'Unrestricted_Access, "new_entry");
    Application.Multi_Connect.On_Connect_Handler (Log_Out'Unrestricted_Access, "logout");
 end AdaBlog.Controller;

@@ -32,7 +32,6 @@
 --  with Gtk.Label;             use Gtk.Label;
 with Block_Engine;
 --  with Glib.Main;
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Gnoga.Gui.Window;
 with Gnoga.Gui.View.Grid;
 with Gnoga.Gui.Element.Common;
@@ -107,7 +106,7 @@ package Main_Window_Pkg is
    type Main_Window_Type is access all Main_Window_Record'Class;
 
    Main_Window : Main_Window_Type;
-   Data_Dir    : Unbounded_String := To_Unbounded_String ("");
+   Data_Dir    : Gnoga.String;
 
    procedure Gtk_New (Win : out Main_Window_Type);
    procedure Initialize (Win : access Main_Window_Record'Class);

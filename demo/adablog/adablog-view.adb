@@ -1,6 +1,4 @@
 package body AdaBlog.View is
-   use Gnoga;
-   use Gnoga.Gui;
 
    procedure Display_Blog_Entry
      (Parent : in out Gnoga.Gui.Element.Common.DIV_Type'Class;
@@ -60,8 +58,8 @@ package body AdaBlog.View is
       Content     : in out Gnoga.Gui.Element.Common.DIV_Type'Class;
       Left_Panel  : in out Gnoga.Gui.Element.Common.DIV_Type'Class)
    is
-      Title_Div    : Element.Common.DIV_Type;
-      Message_Area : Element.Common.DIV_Type;
+      Title_Div    : Gnoga.Gui.Element.Common.DIV_Type;
+      Message_Area : Gnoga.Gui.Element.Common.DIV_Type;
    begin
       Main_Window.Document.Load_CSS ("/css/adablog.css");
       Main_Window.Disable_Auto_Set_View;

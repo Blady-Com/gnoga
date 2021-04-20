@@ -9,10 +9,8 @@
 -- V1.1B  2015 Jul 01     New version of Gnoga.Types.Colors
 -- V1.0B  2015 Jan 30     1st beta release, now with limited messaging area
 --
-with Ada.Characters.Handling;
-with Ada.Characters.Latin_1;
-with Ada.Exceptions;
-with Ada.Strings.Fixed;
+with Ada.Characters.Wide_Wide_Latin_1;
+with Ada.Strings;
 
 with Chattanooga.DB;
 
@@ -22,6 +20,8 @@ with Gnoga.Gui.Window;
 with Gnoga.Types.Colors;
 
 package body Chattanooga.UI is
+   use all type Gnoga.String;
+
    procedure Create_Email_Screen
      (App         : in     App_Ptr;
       Main_Window : in out Gnoga.Gui.Window.Window_Type'Class);
@@ -48,17 +48,17 @@ package body Chattanooga.UI is
 
    procedure On_Chat_Help (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   LF : constant Character := Ada.Characters.Latin_1.LF;
+   LF : constant Wide_Wide_Character := Ada.Characters.Wide_Wide_Latin_1.LF;
 
    procedure Show
-     (From     : in Unbounded_String;
+     (From     : in String;
       Message  : in String;
       App_Data : in App_Ptr;
       Ding     : in Boolean := True)
    is
       -- Empty declarative part
    begin -- Show
-      App_Data.Messaging.Value (Value => App_Data.Messaging.Value & LF & (+From) & ": " & Message);
+      App_Data.Messaging.Value (Value => App_Data.Messaging.Value & LF & From & ": " & Message);
       App_Data.Messaging.Scroll_Top (Value => Integer'Last);
 
       if Ding then
@@ -66,27 +66,27 @@ package body Chattanooga.UI is
       end if;
    exception -- Show
       when E : others =>
-         Gnoga.Log (Message => "Show: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "Show: ", Occurrence => E);
    end Show;
 
    Star_Suffix : constant String := " *";
 
    procedure New_Friend
-     (Friend    : in Unbounded_String;
+     (Friend    : in String;
       App_Data  : in App_Ptr;
       Connected : in Boolean)
    is
-      Display : Unbounded_String := Friend;
+      Display : String := Friend;
    begin -- New_Friend
       if Connected then
          Append (Source => Display, New_Item => Star_Suffix);
       end if;
 
-      App_Data.List.Add_Option (Value => +Friend, Text => +Display);
+      App_Data.List.Add_Option (Value => Friend, Text => Display);
    end New_Friend;
 
    procedure Remove_Friend
-     (Friend   : in Unbounded_String;
+     (Friend   : in String;
       App_Data : in App_Ptr)
    is
       -- Empty declarative part
@@ -102,11 +102,11 @@ package body Chattanooga.UI is
    end Remove_Friend;
 
    procedure Change_Status
-     (Friend    : in Unbounded_String;
+     (Friend    : in String;
       App_Data  : in App_Ptr;
       Connected : in Boolean)
    is
-      Display : Unbounded_String := Friend;
+      Display : String := Friend;
    begin -- Change_Status
       if Connected then
          Append (Source => Display, New_Item => Star_Suffix);
@@ -115,7 +115,7 @@ package body Chattanooga.UI is
       Find :
       for Index in 1 .. App_Data.List.Length loop
          if App_Data.List.Value (Index) = Friend then
-            App_Data.List.Text (Index => Index, Value => +Display);
+            App_Data.List.Text (Index => Index, Value => Display);
          end if;
       end loop Find;
    end Change_Status;
@@ -159,7 +159,7 @@ package body Chattanooga.UI is
       App.Chat_Title.Create (Parent => App.Chat, Content => "Chat");
       App.Chat_Title.Text_Alignment (Value => Gnoga.Gui.Element.Center);
       App.Chat_Title.Display (Value => "block");
-      App.Connect_Info.Create (Parent => App.Chat, Content => "You are connected as " & (+App.Email));
+      App.Connect_Info.Create (Parent => App.Chat, Content => "You are connected as " & (App.Email));
       App.Disconnect.Create (Parent => App.Chat, Content => "Disconnect");
       App.Disconnect.Place_After (Target => App.Connect_Info);
       App.Disconnect.On_Click_Handler (Handler => On_Disconnect'Access);
@@ -198,14 +198,14 @@ package body Chattanooga.UI is
       App.Ding.Create (Parent => App.List_Form, Source => "glass.ogg", Controls => False, Preload => True);
       App.Ding.Hidden;
       App.List_Form.On_Submit_Handler (Handler => On_Remove'Access);
-      App.Window.Document.Title (Value => "Chattanooga - " & (+App.Email));
+      App.Window.Document.Title (Value => "Chattanooga - " & (App.Email));
    end Create_Chat_Screen;
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      App : App_Ptr := new App_Info;
+      App : constant App_Ptr := new App_Info;
    begin -- On_Connect
       Main_Window.Connection_Data (Data => App);
       Create_Email_Screen (App => App, Main_Window => Main_Window);
@@ -214,34 +214,33 @@ package body Chattanooga.UI is
       DB.Remove (User => App.Email);
    exception -- On_Connect
       when E : others =>
-         Gnoga.Log (Message => "On_Connect: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "On_Connect: ", Occurrence => E);
    end On_Connect;
 
    procedure On_Connect_Submit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Ptr := App_Ptr (Object.Connection_Data);
 
-      Email : constant String :=
-        Ada.Strings.Fixed.Trim (Ada.Characters.Handling.To_Lower (App.Email_Entry.Value), Ada.Strings.Both);
+      Email : constant String := Trim (To_Lower (App.Email_Entry.Value), Ada.Strings.Both);
    begin -- On_Connect_Submit
       if Email = "" then
 
          return;
       end if;
 
-      if DB.Exists (+Email) then
+      if DB.Exists (Email) then
          App.Error.Text (Value => Email & " is already connected. Try again.");
 
          return;
       end if;
 
-      App.Email := +Email;
+      App.Email := Email;
       Create_Chat_Screen (App => App);
       DB.Add (User => App.Email, App_Data => App);
    exception -- Add
       when Constraint_Error =>
          App.Error.Text (Value => Email & " is already connected. Try again.");
       when E : others =>
-         Gnoga.Log (Message => "On_Connect_Submit: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "On_Connect_Submit: ", Occurrence => E);
    end On_Connect_Submit;
 
    procedure On_Connect_Help (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -255,7 +254,7 @@ package body Chattanooga.UI is
            "will be taken to the chat screen.");
    exception -- On_Connect_Help
       when E : others =>
-         Gnoga.Log (Message => "On_Connect_Help: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "On_Connect_Help: ", Occurrence => E);
    end On_Connect_Help;
 
    procedure On_Send (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -277,14 +276,13 @@ package body Chattanooga.UI is
       App.Message_Entry.Value (Value => "");
    exception -- On_Send
       when E : others =>
-         Gnoga.Log (Message => "On_Send: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "On_Send: ", Occurrence => E);
    end On_Send;
 
    procedure On_Add (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Ptr := App_Ptr (Object.Connection_Data);
 
-      Friend : constant String :=
-        Ada.Strings.Fixed.Trim (Ada.Characters.Handling.To_Lower (App.Friend_Entry.Value), Ada.Strings.Both);
+      Friend : constant String := Trim (To_Lower (App.Friend_Entry.Value), Ada.Strings.Both);
    begin -- On_Add
       if Friend = "" or Friend = App.Email then
          App.Friend_Entry.Value (Value => "");
@@ -292,11 +290,11 @@ package body Chattanooga.UI is
          return;
       end if;
 
-      DB.Add_Friend (User => App.Email, Friend => +Friend);
+      DB.Add_Friend (User => App.Email, Friend => Friend);
       App.Friend_Entry.Value (Value => "");
    exception -- On_Add
       when E : others =>
-         Gnoga.Log (Message => "On_Add: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "On_Add: ", Occurrence => E);
    end On_Add;
 
    procedure On_Remove (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -309,12 +307,12 @@ package body Chattanooga.UI is
          declare
             Name : constant String := App.List.Value (Index);
          begin -- Get_Name
-            DB.Remove_Friend (User => App.Email, Friend => +Name);
+            DB.Remove_Friend (User => App.Email, Friend => Name);
          end Get_Name;
       end if;
    exception -- On_Remove
       when E : others =>
-         Gnoga.Log (Message => "On_Remove: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "On_Remove: ", Occurrence => E);
    end On_Remove;
 
    End_Message : constant String := "Chattanooga ended.";
@@ -333,7 +331,7 @@ package body Chattanooga.UI is
       App.Window.Close_Connection;
    exception -- On_Disconnect
       when E : others =>
-         Gnoga.Log (Message => "On_Disconnect: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "On_Disconnect: ", Occurrence => E);
    end On_Disconnect;
 
    procedure On_Chat_Help (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -355,7 +353,7 @@ package body Chattanooga.UI is
            "disconnected in your friends' lists.");
    exception -- On_Chat_Help
       when E : others =>
-         Gnoga.Log (Message => "On_Chat_Help: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "On_Chat_Help: ", Occurrence => E);
    end On_Chat_Help;
 begin -- Chattanooga.UI
    Gnoga.Application.Title (Name => "Chattanooga");
@@ -365,7 +363,7 @@ begin -- Chattanooga.UI
    Gnoga.Application.Multi_Connect.Message_Loop;
 exception -- Chattanooga.UI
    when E : others =>
-      Gnoga.Log (Message => "UI: " & Ada.Exceptions.Exception_Information (E));
+      Gnoga.Log (Message => "UI: ", Occurrence => E);
 end Chattanooga.UI;
 --
 -- This is free software; you can redistribute it and/or modify it under

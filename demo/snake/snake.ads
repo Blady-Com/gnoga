@@ -9,8 +9,10 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Gnoga;
+
 package Snake is
-   Title : constant String := "Sparky the Snake";
+   Title : constant Gnoga.String := "Sparky the Snake";
 
    --  Game Display
    Display_Width  : constant := 400;

@@ -9,8 +9,6 @@
 -- CONTACT                      : http://blady.pagesperso-orange.fr
 -------------------------------------------------------------------------------
 
-with Ada.Exceptions;
-
 with Gnoga.Application.Multi_Connect;
 
 --  Needed to register connection in body initialization
@@ -24,5 +22,5 @@ begin
    Gnoga.Application.Multi_Connect.Message_Loop;
 exception
    when E : others =>
-      Gnoga.Log (From_Latin_1 (Ada.Exceptions.Exception_Name (E) & " - " & Ada.Exceptions.Exception_Message (E)));
+      Gnoga.Log (E);
 end Localize.Main;

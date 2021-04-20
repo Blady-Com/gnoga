@@ -1,4 +1,3 @@
-with Ada.Exceptions;
 with Ada.Numerics.Discrete_Random;
 
 with Gnoga.Application.Multi_Connect;
@@ -6,10 +5,13 @@ with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.Form;
 with Gnoga.Types;
-with Gnoga.Gui.View.Grid;
+with Gnoga.Gui.View;
 with Gnoga.Gui.Window;
 
 package body Random_Int.UI is
+   use Gnoga;
+   use all type Gnoga.String;
+
    type App_Info is new Gnoga.Types.Connection_Data_Type with record
       Window    : Gnoga.Gui.Window.Pointer_To_Window_Class;
       View      : Gnoga.Gui.View.View_Type;
@@ -34,7 +36,7 @@ package body Random_Int.UI is
    begin -- On_Generate
       Min_Error :
       begin
-         Low := Integer'Value (App.Min_Entry.Value);
+         Low := Value (App.Min_Entry.Value);
       exception -- Min_Error
          when others =>
             App.Min_Entry.Value (Value => "Error");
@@ -44,7 +46,7 @@ package body Random_Int.UI is
 
       Max_Error :
       begin
-         High := Integer'Value (App.Max_Entry.Value);
+         High := Value (App.Max_Entry.Value);
       exception -- Max_Error
          when others =>
             App.Max_Entry.Value (Value => "Error");
@@ -71,14 +73,14 @@ package body Random_Int.UI is
       begin -- Get_Value
          Random.Reset (Gen => Gen);
          Result := Random.Random (Gen);
-         App.Result.Value (Value => Integer'Image (Result));
+         App.Result.Value (Value => Image (Result));
       end Get_Value;
    exception -- On_Generate
       when E : others =>
-         Gnoga.Log (Message => "On_Generate: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "On_Generate: ", Occurrence => E);
    end On_Generate;
 
-   End_Message : constant String := "Random Integers ended.";
+   End_Message : constant Gnoga.String := "Random Integers ended.";
 
    procedure On_Quit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Ptr := App_Ptr (Object.Connection_Data);
@@ -92,16 +94,16 @@ package body Random_Int.UI is
       App.Window.Close_Connection;
    exception -- On_Quit
       when E : others =>
-         Gnoga.Log (Message => "On_Quit: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "On_Quit: ", Occurrence => E);
    end On_Quit;
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
-      Placeholder : constant String := "Enter an integer";
+      Placeholder : constant Gnoga.String := "Enter an integer";
 
-      App : App_Ptr := new App_Info;
+      App : constant App_Ptr := new App_Info;
    begin -- On_Connect
       Main_Window.Connection_Data (Data => App);
       App.Window := Main_Window'Unchecked_Access;
@@ -128,7 +130,7 @@ package body Random_Int.UI is
       App.Quit.On_Click_Handler (Handler => On_Quit'Access);
    exception -- On_Connect
       when E : others =>
-         Gnoga.Log (Message => "On_Connect: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "On_Connect: ", Occurrence => E);
    end On_Connect;
 begin -- Random_Int.UI
    Gnoga.Application.Title (Name => "Random Integers");
@@ -138,5 +140,5 @@ begin -- Random_Int.UI
    Gnoga.Application.Multi_Connect.Message_Loop;
 exception -- Random_Int.UI
    when E : others =>
-      Gnoga.Log (Message => Ada.Exceptions.Exception_Information (E));
+      Gnoga.Log (E);
 end Random_Int.UI;

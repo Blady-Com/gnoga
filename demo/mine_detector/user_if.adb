@@ -10,7 +10,7 @@
 -- V7.0 2014 Dec 01          First Gnoga version
 --
 
-with Ada.Characters.Latin_1;
+with Ada.Characters.Wide_Wide_Latin_1;
 
 with Field.Operations;
 pragma Elaborate (Field.Operations);
@@ -27,6 +27,11 @@ use Ada;
 use Ada.Characters;
 
 package body User_IF is
+   use Gnoga;
+   use all type Gnoga.String;
+
+   subtype String is Gnoga.String;
+
    Gray : constant Gnoga.Types.RGBA_Type := (Red => 224, Green => 224, Blue => 224, Alpha => 1.0);
 
    type Button_Set is array (Field.Valid_Row, Field.Valid_Column) of Gnoga.Gui.Element.Common.Button_Type;
@@ -80,7 +85,7 @@ package body User_IF is
    Exploded         : constant String := "X";
 
    type Level_Info is record
-      Name  : String (1 .. 3);
+      Name  : String;
       Mines : Natural;
    end record;
 
@@ -92,7 +97,7 @@ package body User_IF is
 
    Default_Level : constant := 2;
 
-   subtype Cell_String is String (1 .. 1);
+   subtype Cell_String is String;
 
    procedure Show_Game_Over (App_Data : in App_Ptr) is
       -- null;
@@ -161,7 +166,8 @@ package body User_IF is
 
       App_Data : constant App_Ptr := App_Ptr (Data);
    begin -- Display_Count
-      Display (App_Data => App_Data, Cell => Cell, Text => Character'Val (Zero_Pos + Count) & "", Stepped => Stepped);
+      Display
+        (App_Data => App_Data, Cell => Cell, Text => From_ASCII (Character'Val (Zero_Pos + Count)), Stepped => Stepped);
    end Display_Count;
 
    procedure Display_Mark
@@ -186,7 +192,7 @@ package body User_IF is
      (Data  : in Gnoga.Types.Pointer_to_Connection_Data_Class;
       To_Go : in Integer)
    is
-      Image : constant String := Integer'Image (To_Go);
+      Image : constant String := Gnoga.Image (To_Go);
 
       App_Data : constant App_Ptr := App_Ptr (Data);
    begin -- Display_To_Go
@@ -247,8 +253,8 @@ package body User_IF is
    procedure Button_Press (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       Name : constant String := Object.ID;
 
-      Row    : constant Field.Valid_Row    := Field.Valid_Row'Value (Name (Name'First .. Name'First + 1));
-      Column : constant Field.Valid_Column := Field.Valid_Column'Value (Name (Name'Last - 1 .. Name'Last));
+      Row    : constant Field.Valid_Row    := Value (Name.Slice (Name.First, Name.First + 1));
+      Column : constant Field.Valid_Column := Value (Name.Slice (Name.Last - 1, Name.Last));
 
       App_Data : constant App_Ptr := App_Ptr (Object.Connection_Data);
    begin -- Button_Press
@@ -259,8 +265,8 @@ package body User_IF is
    procedure Right_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       Name : constant String := Object.ID;
 
-      Row    : constant Field.Valid_Row    := Field.Valid_Row'Value (Name (Name'First .. Name'First + 1));
-      Column : constant Field.Valid_Column := Field.Valid_Column'Value (Name (Name'Last - 1 .. Name'Last));
+      Row    : constant Field.Valid_Row    := Value (Name.Slice (Name.First, Name.First + 1));
+      Column : constant Field.Valid_Column := Value (Name.Slice (Name.Last - 1, Name.Last));
 
       App_Data : constant App_Ptr := App_Ptr (Object.Connection_Data);
    begin -- Right_Click
@@ -279,45 +285,48 @@ package body User_IF is
 
       Rules : constant String :=
         "The object of the game is to mark all cells containing " &
-        "mines and to step on all cells that do not contain a " & "mine." & Latin_1.LF & Latin_1.LF &
-        "The game is played on a rectangular field of 16 x 30 " &
-        "cells. A number of mines are hidden within the field." & Latin_1.LF & Latin_1.LF &
+        "mines and to step on all cells that do not contain a " & "mine." & Wide_Wide_Latin_1.LF &
+        Wide_Wide_Latin_1.LF & "The game is played on a rectangular field of 16 x 30 " &
+        "cells. A number of mines are hidden within the field." & Wide_Wide_Latin_1.LF & Wide_Wide_Latin_1.LF &
         "Some of the cells have numbers on them. The numbers represent " &
         "the total number of mines in that cell and its " &
-        "immediate neighbors. As you play the game, additional cells " & "will become numbered." & Latin_1.LF &
-        Latin_1.LF & "You step on a cell by clicking on it. You mark a cell by right " &
+        "immediate neighbors. As you play the game, additional cells " & "will become numbered." &
+        Wide_Wide_Latin_1.LF & Wide_Wide_Latin_1.LF &
+        "You step on a cell by clicking on it. You mark a cell by right " &
         "clicking on it. A marked cell has an M on it. Marking a " &
-        "marked cell unmarks it. You can only mark or step " & "on a cell with a number on it." & Latin_1.LF &
-        Latin_1.LF & "When you step on a cell, an auto-stepping algorithm " &
+        "marked cell unmarks it. You can only mark or step " & "on a cell with a number on it." & Wide_Wide_Latin_1.LF &
+        Wide_Wide_Latin_1.LF & "When you step on a cell, an auto-stepping algorithm " &
         "automatically steps on any of its neighbors that " & "obviously do not contain mines. Since this is then " &
         "done for the neighbors of the stepped-on neighbors, " &
         "the auto-stepping algorithm will spread across areas " &
         "of the field that obviously do not contain mines. The " &
         "auto-stepping algorithm is invoked even if the cell is " &
-        "already stepped on. This can be useful to clear around " & "a new mark." & Latin_1.LF & Latin_1.LF &
-        "If you step on a cell containing a mine, either " & "directly or indirectly through the auto-stepping " &
-        "algorithm, the cell shows an X, and the game is over." & Latin_1.LF & Latin_1.LF &
-        "The game is over when you step on a mine, or when you " &
+        "already stepped on. This can be useful to clear around " & "a new mark." & Wide_Wide_Latin_1.LF &
+        Wide_Wide_Latin_1.LF & "If you step on a cell containing a mine, either " &
+        "directly or indirectly through the auto-stepping " & "algorithm, the cell shows an X, and the game is over." &
+        Wide_Wide_Latin_1.LF & Wide_Wide_Latin_1.LF & "The game is over when you step on a mine, or when you " &
         "have marked all mines and stepped on all other cells. " & "If you win, '" & You_Won_Message &
-        "' appears below the " & "'Quit' button. If you lose, '" & You_Lost_Message & "' appears there." & Latin_1.LF &
-        Latin_1.LF & "At the top right of the field is a number. At the " &
+        "' appears below the " & "'Quit' button. If you lose, '" & You_Lost_Message & "' appears there." &
+        Wide_Wide_Latin_1.LF & Wide_Wide_Latin_1.LF & "At the top right of the field is a number. At the " &
         "start of a game this is the number of mines in the " & "field. Each time you mark a cell, this number is " &
         "decreased by one. Each time you unmark a marked cell, " &
         "this number is increased by one. If you successfully " & "complete a game, this number will be zero." &
-        Latin_1.LF & Latin_1.LF & "The 'New Game' button starts a new game. Any game in " & "progress is abandoned." &
-        Latin_1.LF & Latin_1.LF & "The level drop-down allows you to choose how many mines " &
+        Wide_Wide_Latin_1.LF & Wide_Wide_Latin_1.LF & "The 'New Game' button starts a new game. Any game in " &
+        "progress is abandoned." & Wide_Wide_Latin_1.LF & Wide_Wide_Latin_1.LF &
+        "The level drop-down allows you to choose how many mines " &
         "will be in the field at the start of the next game. You " & "can choose from" & Levels (Levels'First).Name &
         " to " & Levels (Levels'Last).Name & " mines. This goes into effect " &
         "the next time you start a new game. At higher numbers of " &
-        "mines, it may not be possible to win the game without luck." & Latin_1.LF & Latin_1.LF &
+        "mines, it may not be possible to win the game without luck." & Wide_Wide_Latin_1.LF & Wide_Wide_Latin_1.LF &
         "The 'Auto Mark' check box enables an auto-marking " &
         "algorithm that marks any cells that obviously contain " &
         "a mine. At lower levels, the game does not present much " &
         "of an intellectual challenge with this option. At higher " &
-        "levels, it's very difficult to play without this option." & Latin_1.LF & Latin_1.LF &
+        "levels, it's very difficult to play without this option." & Wide_Wide_Latin_1.LF & Wide_Wide_Latin_1.LF &
         "The 'Auto Step after Mark' check box enables the auto-" &
         "stepping algorithm after a cell is marked, either " & "directly or indirectly through the auto-marking " &
-        "algorithm." & Latin_1.LF & Latin_1.LF & "The 'Mark' check box is for use with touch screens or other " &
+        "algorithm." & Wide_Wide_Latin_1.LF & Wide_Wide_Latin_1.LF &
+        "The 'Mark' check box is for use with touch screens or other " &
         "systems for which right clicking is difficult or impossible. " &
         "When this box is not checked, clicking on a cells steps on the " &
         "cell. When this box is checked, clicking on a cell marks or " & "unmarks the cell.";
@@ -330,9 +339,9 @@ package body User_IF is
    begin -- About_Pressed
       App_Data.Window.Alert
         (Message =>
-           "Mine Detector" & Latin_1.LF & "Copyright (C) 2015 by" & Latin_1.LF & "PragmAda Software Engineering" &
-           Latin_1.LF & "Released as Free Software under the terms" & Latin_1.LF & "of the GNU Public License" &
-           Latin_1.LF & '"' & "Ada Inside" & '"');
+           "Mine Detector" & Wide_Wide_Latin_1.LF & "Copyright (C) 2015 by" & Wide_Wide_Latin_1.LF &
+           "PragmAda Software Engineering" & Wide_Wide_Latin_1.LF & "Released as Free Software under the terms" &
+           Wide_Wide_Latin_1.LF & "of the GNU Public License" & Wide_Wide_Latin_1.LF & '"' & "Ada Inside" & '"');
    end About_Pressed;
 
    function Image
@@ -343,13 +352,13 @@ package body User_IF is
    -- Returns a 4-Character String of the form "RRCC", where
    --    RR is the zero-filled image of Row
    --    CC is the zero-filled image of Column
-      Row_Image    : String   := Field.Valid_Row'Image (Row);
-      Column_Image : String   := Field.Valid_Column'Image (Column);
-      Row_First    : Positive := Row_Image'First;
-      Column_First : Positive := Column_Image'First;
+      Row_Image    : String   := Image (Row, Prefix => ' ');
+      Column_Image : String   := Image (Column, Prefix => ' ');
+      Row_First    : Positive := Row_Image.First;
+      Column_First : Positive := Column_Image.First;
    begin -- Image
-      Row_Image (Row_Image'First)       := '0';
-      Column_Image (Column_Image'First) := '0';
+      Row_Image.Replace_Unicode (Row_Image.First, '0');
+      Column_Image.Replace_Unicode (Column_Image.First, '0');
 
       if Row >= 10 then
          Row_First := Row_First + 1;
@@ -359,7 +368,7 @@ package body User_IF is
          Column_First := Column_First + 1;
       end if;
 
-      return Row_Image (Row_First .. Row_Image'Last) & Column_Image (Column_First .. Column_Image'Last);
+      return Row_Image.Slice (Row_First, Row_Image.Last) & Column_Image.Slice (Column_First, Column_Image.Last);
    end Image;
 
    procedure Create_Level_Option_Menu (App_Data : in out App_Info) is
@@ -395,7 +404,7 @@ package body User_IF is
          Button_Column :
          for Column in App_Data.Button'Range (2) loop
             App_Data.Button (Row, Column).Create
-              (Parent => App_Data.Left_View, Content => " ", ID => Image (Row, Column));
+              (Parent => App_Data.Left_View, Content => " ", ID => User_IF.Image (Row, Column));
             App_Data.Button (Row, Column).Overflow (Value => Gnoga.Gui.Element.Hidden);
             App_Data.Button (Row, Column).Vertical_Align (Value => Gnoga.Gui.Element.Middle);
             App_Data.Button (Row, Column).Minimum_Width (Value => Button_Size);
@@ -472,7 +481,7 @@ package body User_IF is
       entry Respond
         (Action   : in Action_ID;
          App_Data : in App_Ptr;
-         Cell     : in Field.Cell_Location := (Row => 1, Column => 1)) when True
+         Cell     : in Field.Cell_Location := (Row => 1, Column => 1)) when Standard.True
       is
          View : Gnoga.Gui.View.View_Type;
       begin -- Respond

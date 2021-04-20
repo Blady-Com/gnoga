@@ -6,8 +6,6 @@
 --
 -- V1.0B  2015 Jan 15     1st beta release, now with autoscrolling and dings
 --
-with Ada.Strings.Unbounded;
-
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.Form;
 with Gnoga.Gui.Element.Multimedia;
@@ -16,10 +14,10 @@ with Gnoga.Gui.Window;
 with Gnoga.Types;
 
 package Chattanooga is
-   use Ada.Strings.Unbounded;
+   subtype String is Gnoga.String;
 
    type App_Info is new Gnoga.Types.Connection_Data_Type with record
-      Email  : Unbounded_String;
+      Email  : String;
       Window : Gnoga.Gui.Window.Pointer_To_Window_Class;
       View   : Gnoga.Gui.View.View_Type;
 
@@ -54,12 +52,6 @@ package Chattanooga is
 
    type App_Ptr is access all App_Info;
 
-   function "+"
-     (Right : String)
-      return Unbounded_String renames To_Unbounded_String;
-   function "+"
-     (Right : Unbounded_String)
-      return String renames To_String;
 end Chattanooga;
 --
 -- This is free software; you can redistribute it and/or modify it under

@@ -9,8 +9,6 @@
 -- CONTACT                      : http://blady.pagesperso-orange.fr
 -------------------------------------------------------------------------------
 
-with Ada.Exceptions;
-
 with Gnoga.Application.Multi_Connect;
 
 with Logo.Controller; --  Needed to register connection in body initialization
@@ -21,5 +19,5 @@ begin
    Gnoga.Application.Multi_Connect.Message_Loop;
 exception
    when E : others =>
-      Gnoga.Log (Ada.Exceptions.Exception_Name (E) & " - " & Ada.Exceptions.Exception_Message (E));
+      Gnoga.Log (E);
 end Logo.Main;

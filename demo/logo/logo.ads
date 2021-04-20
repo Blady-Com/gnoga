@@ -9,5 +9,10 @@
 -- CONTACT                      : http://blady.pagesperso-orange.fr
 -------------------------------------------------------------------------------
 
+with Gnoga;
+
 package Logo is
+   use Gnoga;
+   use all type Gnoga.String;
+   subtype String is Gnoga.String;
 end Logo;

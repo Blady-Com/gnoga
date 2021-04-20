@@ -12,86 +12,85 @@ with Chattanooga.UI;
 
 package body Chattanooga.DB is
    package User_Maps is new Ada.Containers.Hashed_Maps
-     (Key_Type        => Unbounded_String, Element_Type => User_Data, Hash => Ada.Strings.Unbounded.Hash,
-      Equivalent_Keys => "=");
+     (Key_Type => String, Element_Type => User_Data, Hash => UXStrings.Hash, Equivalent_Keys => "=");
 
    protected Control is
       procedure Add
-        (User     : in Unbounded_String;
+        (User     : in String;
          App_Data : in App_Ptr);
       function Exists
-        (User : Unbounded_String)
+        (User : String)
          return Boolean;
-      procedure Remove (User : in Unbounded_String);
+      procedure Remove (User : in String);
       function Send
-        (From    : Unbounded_String;
+        (From    : String;
          Message : String)
          return Natural;
       procedure Add_Friend
-        (User   : in Unbounded_String;
-         Friend : in Unbounded_String);
+        (User   : in String;
+         Friend : in String);
       procedure Remove_Friend
-        (User   : in Unbounded_String;
-         Friend : in Unbounded_String);
+        (User   : in String;
+         Friend : in String);
    private -- Control
       Map : User_Maps.Map;
    end Control;
 
    procedure Add
-     (User     : in Unbounded_String;
+     (User     : in String;
       App_Data : in App_Ptr)
    is
-      -- Empty declarative part
+   -- Empty declarative part
    begin -- Add
       Control.Add (User => User, App_Data => App_Data);
    end Add;
 
    function Exists
-     (User : Unbounded_String)
+     (User : String)
       return Boolean
    is
-      -- Empty declarative part
+   -- Empty declarative part
    begin -- Exists
       return Control.Exists (User);
    end Exists;
 
-   procedure Remove (User : in Unbounded_String) is
-      -- Empty declarative part
+   procedure Remove (User : in String) is
+   -- Empty declarative part
    begin -- Remove
       Control.Remove (User => User);
    end Remove;
 
    function Send
-     (From    : Unbounded_String;
+     (From    : String;
       Message : String)
       return Natural
    is
-      -- Empty declarative part
+   -- Empty declarative part
    begin -- Send
       return Control.Send (From, Message);
    end Send;
 
    procedure Add_Friend
-     (User   : in Unbounded_String;
-      Friend : in Unbounded_String)
+     (User   : in String;
+      Friend : in String)
    is
-      -- Empty declarative part
+   -- Empty declarative part
    begin -- Add_Friend
       Control.Add_Friend (User => User, Friend => Friend);
    end Add_Friend;
 
    procedure Remove_Friend
-     (User   : in Unbounded_String;
-      Friend : in Unbounded_String)
+     (User   : in String;
+      Friend : in String)
    is
-      -- Empty declarative part
+   -- Empty declarative part
    begin -- Remove_Friend
       Control.Remove_Friend (User => User, Friend => Friend);
    end Remove_Friend;
 
    protected body Control is
       procedure Add
-        (User     : in Unbounded_String;
+        (User     : in String;
          App_Data : in App_Ptr)
       is
          procedure Check_One (Position : in User_Maps.Cursor);
@@ -101,8 +100,8 @@ package body Chattanooga.DB is
          Data : User_Data;
 
          procedure Check_One (Position : in User_Maps.Cursor) is
-            Key   : constant Unbounded_String := User_Maps.Key (Position);
-            Value : constant User_Data        := User_Maps.Element (Position);
+            Key   : constant String    := User_Maps.Key (Position);
+            Value : constant User_Data := User_Maps.Element (Position);
          begin -- Check_One
             if Value.Contact.Contains (User) then
                Data.Contact.Include (New_Item => Key);
@@ -121,22 +120,22 @@ package body Chattanooga.DB is
       end Add;
 
       function Exists
-        (User : Unbounded_String)
+        (User : String)
          return Boolean
       is
-         -- Empty declarative part
+      -- Empty declarative part
       begin -- Exists
          return Map.Contains (User);
       end Exists;
 
-      procedure Remove (User : in Unbounded_String) is
+      procedure Remove (User : in String) is
          procedure Check_One (Position : in User_Maps.Cursor);
          -- if the Contact set for the user at Position contains User, changes the user at Position's friend list to show User as
          -- not connected
 
          procedure Check_One (Position : in User_Maps.Cursor) is
-            Key   : constant Unbounded_String := User_Maps.Key (Position);
-            Value : constant User_Data        := User_Maps.Element (Position);
+            Key   : constant String    := User_Maps.Key (Position);
+            Value : constant User_Data := User_Maps.Element (Position);
          begin -- Check_One
             if Value.Contact.Contains (User) then
                UI.Change_Status (Friend => User, App_Data => Value.App_Data, Connected => False);
@@ -148,7 +147,7 @@ package body Chattanooga.DB is
       end Remove;
 
       function Send
-        (From    : Unbounded_String;
+        (From    : String;
          Message : String)
          return Natural
       is
@@ -160,7 +159,7 @@ package body Chattanooga.DB is
          Count : Natural := 0;
 
          procedure Send_One (Position : in Contact_Sets.Cursor) is
-            Key : constant Unbounded_String := Contact_Sets.Element (Position);
+            Key : constant String := Contact_Sets.Element (Position);
 
             Value : User_Data;
          begin -- Send_One
@@ -177,8 +176,8 @@ package body Chattanooga.DB is
       end Send;
 
       procedure Add_Friend
-        (User   : in Unbounded_String;
-         Friend : in Unbounded_String)
+        (User   : in String;
+         Friend : in String)
       is
          Data : User_Data;
       begin -- Add_Friend
@@ -206,8 +205,8 @@ package body Chattanooga.DB is
       end Add_Friend;
 
       procedure Remove_Friend
-        (User   : in Unbounded_String;
-         Friend : in Unbounded_String)
+        (User   : in String;
+         Friend : in String)
       is
          Data : User_Data;
       begin -- Remove_Friend

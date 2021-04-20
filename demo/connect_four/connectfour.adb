@@ -66,6 +66,10 @@ with Gnoga.Types.Colors;
 with connectfour_messages.connectfour_Strings; use connectfour_messages.connectfour_Strings;
 
 package body ConnectFour is
+   use all type Gnoga.String;
+
+   subtype String is Gnoga.String;
+
    ------------------------
    -- Local Types & Data --
    ------------------------
@@ -1014,9 +1018,8 @@ package body ConnectFour is
          --    Print column numbers
          for Column in 1 .. Num_Columns loop
             Display_Text
-              (X => X_First + Integer (Float (Column - 1) * X_Space) - Title_Offset, Y => Title_Height,
-
-               Text => Character'Val (Column + 48) & "");
+              (X    => X_First + Integer (Float (Column - 1) * X_Space) - Title_Offset, Y => Title_Height,
+               Text => From_ASCII (Character'Val (Column + 48)));
             --  Draw vertical line between columns
             if Column < Num_Columns then
                Draw_Line

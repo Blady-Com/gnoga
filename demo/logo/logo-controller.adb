@@ -14,7 +14,6 @@ with Gnoga.Gui.View.Grid;
 with Gnoga.Gui.Plugin.Pixi;
 with Gnoga.Gui.Plugin.Ace_Editor;
 with Gnoga.Gui.Navigator;
-with Gnoga.Server.Connection;
 with ZanyBlue.Text.Locales;
 
 with Logo.View;

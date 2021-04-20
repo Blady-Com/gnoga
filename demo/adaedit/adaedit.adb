@@ -9,16 +9,12 @@ with Gnoga.Server.Template_Parser.Simple;
 
 with Ada.Directories;
 
-with UXStrings;
-
 procedure AdaEdit is
    use Gnoga;
    use Gnoga.Types;
    use Gnoga.Gui;
    use Gnoga.Gui.Element;
-
-   use UXStrings;
-   subtype String is UXString;
+   use all type Gnoga.String;
 
    type App_Data is new Connection_Data_Type with record
       Main_Window  : Window.Pointer_To_Window_Class;
@@ -37,7 +33,7 @@ procedure AdaEdit is
    procedure On_Change (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : constant App_Access := App_Access (Object.Connection_Data);
 
-      Fname : constant String := App.File_List.Value;
+      Fname : constant Gnoga.String := App.File_List.Value;
    begin
       if Fname (1) /= '.' and Fname (1) /= '/' then
          App.Editor.Text (Gnoga.Server.Template_Parser.Simple.Load_View (Fname));

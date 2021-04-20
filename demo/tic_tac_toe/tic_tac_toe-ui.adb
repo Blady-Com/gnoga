@@ -3,8 +3,6 @@
 --
 -- 2016 Aug 26     J. Carter      V1.0--Initial version
 --
-with Ada.Exceptions;
-
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Common;
@@ -14,6 +12,11 @@ with Gnoga.Gui.View.Grid;
 with Gnoga.Gui.Window;
 
 package body Tic_Tac_Toe.UI is
+   use Gnoga;
+   use all type Gnoga.String;
+
+   subtype String is Gnoga.String;
+
    subtype Row_ID is Integer range 1 .. 3;
    subtype Column_ID is Integer range 1 .. 3;
 
@@ -25,7 +28,7 @@ package body Tic_Tac_Toe.UI is
 
    type Button_Set is array (Row_ID, Column_ID) of Gnoga.Gui.Element.Common.Button_Type;
 
-   subtype Square_String is String (1 .. 1);
+   subtype Square_String is String;
 
    X_Mark     : constant Square_String := "X";
    O_Mark     : constant Square_String := "O";
@@ -85,8 +88,8 @@ package body Tic_Tac_Toe.UI is
    procedure Square_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       Name : constant String := Object.ID;
 
-      Row    : constant Row_ID    := Integer'Value (Name (Name'First .. Name'First));
-      Column : constant Column_ID := Integer'Value (Name (Name'Last .. Name'Last));
+      Row    : constant Row_ID    := Value (Name.Slice (Name.First, Name.First));
+      Column : constant Column_ID := Value (Name.Slice (Name.Last, Name.Last));
 
       App : constant App_Ptr := App_Ptr (Object.Connection_Data);
    begin -- Square_Click
@@ -113,7 +116,7 @@ package body Tic_Tac_Toe.UI is
       App.Window.Close_Connection;
    exception -- On_Quit
       when E : others =>
-         Gnoga.Log (Message => "On_Quit: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "On_Quit: ", Occurrence => E);
    end On_Quit;
 
    procedure On_Connect
@@ -133,15 +136,15 @@ package body Tic_Tac_Toe.UI is
          Column : Column_ID)
          return String
       is
-         Row_Image    : constant String := Integer'Image (Row);
-         Column_Image : constant String := Integer'Image (Column);
+         Row_Image    : constant String := Image (Row);
+         Column_Image : constant String := Image (Column);
       begin -- Image
-         return Row_Image (Row_Image'Last) & Column_Image (Column_Image'Last);
+         return From_Unicode (Row_Image (Row_Image.Last) & Column_Image (Column_Image.Last));
       end Image;
 
       Button_Size : constant := 100;
 
-      App : App_Ptr := new App_Info;
+      App : constant App_Ptr := new App_Info;
    begin -- On_Connect
       Main_Window.Connection_Data (Data => App);
       App.Window := Main_Window'Unchecked_Access;
@@ -156,7 +159,8 @@ package body Tic_Tac_Toe.UI is
       for Row in App.Square'Range (1) loop
          Square_Columns :
          for Column in App.Square'Range (2) loop
-            App.Square (Row, Column).Create (Parent => App.Left_View, Content => Empty_Mark, ID => Image (Row, Column));
+            App.Square (Row, Column).Create
+              (Parent => App.Left_View, Content => Empty_Mark, ID => On_Connect.Image (Row, Column));
             App.Square (Row, Column).Overflow (Value => Gnoga.Gui.Element.Hidden);
             App.Square (Row, Column).Vertical_Align (Value => Gnoga.Gui.Element.Middle);
             App.Square (Row, Column).Minimum_Width (Value => Button_Size);
@@ -201,7 +205,7 @@ package body Tic_Tac_Toe.UI is
       App.Quit.On_Click_Handler (Handler => On_Quit'Access);
    exception -- On_Connect
       when E : others =>
-         Gnoga.Log (Message => "On_Connect: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "On_Connect: ", Occurrence => E);
    end On_Connect;
 begin -- Tic_Tac_Toe.UI
    Gnoga.Application.Title (Name => "Tic-Tac-Toe");
@@ -211,7 +215,7 @@ begin -- Tic_Tac_Toe.UI
    Gnoga.Application.Multi_Connect.Message_Loop;
 exception -- Tic_Tac_Toe.UI
    when E : others =>
-      Gnoga.Log (Message => Ada.Exceptions.Exception_Information (E));
+      Gnoga.Log (E);
 end Tic_Tac_Toe.UI;
 --
 -- This is free software; you can redistribute it and/or modify it under

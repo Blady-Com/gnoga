@@ -41,9 +41,9 @@ package Logo.Parser is
       zoom);
 
    --  Token tables, UTF-8, case-insensitive
-   procedure Check_Spelling (Name : String);
+   procedure Check_Spelling (Name : Standard.String);
    function Check_Matched
-     (Source  : String;
+     (Source  : Standard.String;
       Pointer : Integer)
       return Boolean;
    package Primitive_Tables_Raw is new Tables (Primitive);

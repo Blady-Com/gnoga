@@ -28,7 +28,6 @@
 --------------------------------------------------------------------------------
 with Ada.Unchecked_Conversion;
 with Ada.Numerics.Elementary_Functions;
-with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 
 with Othello_Pkg.Callbacks;
 
@@ -37,8 +36,10 @@ with Othello_Types; use Othello_Types;
 with Gnoga.Application.Multi_Connect;
 
 package body Othello_Pkg is
-   ----------------------------------------------------------------------------
+   use Gnoga;
+   use type Gnoga.String;
 
+   ----------------------------------------------------------------------------
    -- Player color constants
    Player_Move   : constant Othello_Types.Bead_Color := Blue;
    Computer_Move : constant Othello_Types.Bead_Color := Red;
@@ -60,7 +61,7 @@ package body Othello_Pkg is
    procedure Beep (Othello : in out Othello_Types.Othello_Record'Class) is
       --Bell : constant Character := Ada.Characters.Latin_1.Bel;
    begin
-      if Othello.Main_Statusbar.Text (1 .. 7) /= "Invalid" then
+      if Othello.Main_Statusbar.Text.Slice (1, 7) /= "Invalid" then
          Othello.Main_Statusbar.Text ("Invalid Move.  " & Othello.Main_Statusbar.Text);
       end if;
       --Ada.Text_Io.Put (Bell);
@@ -165,13 +166,9 @@ package body Othello_Pkg is
      (Othello       : in out Othello_Types.Othello_Record'Class;
       Playing_Board : in out Othello_Types.Board_Matrix)
    is
-      S : String (1 .. 2);
    begin
-      Put (S, Count_Bead (Playing_Board, Blue));
-      Othello.Blue_Statusbar.Text ("Blue = " & S);
-
-      Put (S, Count_Bead (Playing_Board, Red));
-      Othello.Red_Statusbar.Text ("Red = " & S);
+      Othello.Blue_Statusbar.Text ("Blue = " & Image (Count_Bead (Playing_Board, Blue)));
+      Othello.Red_Statusbar.Text ("Red = " & Image (Count_Bead (Playing_Board, Red)));
    end Update_Count;
    ----------------------------------------------------------------------------
    procedure Put_Move_1
@@ -511,8 +508,8 @@ package body Othello_Pkg is
             Othello.Main_Statusbar.Text ("You must pass!");
          else
             declare
-               Blue_Count : Integer := Count_Bead (Playing_Board, Blue);
-               Red_Count  : Integer := Count_Bead (Playing_Board, Red);
+               Blue_Count : constant Integer := Count_Bead (Playing_Board, Blue);
+               Red_Count  : constant Integer := Count_Bead (Playing_Board, Red);
             begin
                if Blue_Count = Red_Count then
                   Othello.Main_Statusbar.Text ("Tie");
@@ -551,7 +548,7 @@ package body Othello_Pkg is
    is
 
    begin
-      if Game_Over = True then
+      if Game_Over then
          null; -- do nothing if game is over
       elsif Playing_Board (Row, Column).Cell /= Othello_Types.Empty then
          Beep (Othello);

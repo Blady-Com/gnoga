@@ -12,7 +12,7 @@ package AdaBlog.View is
    procedure New_Entry_Form
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
       Content     : in out Gnoga.Gui.Element.Common.DIV_Type'Class);
-   --  Cretes new entry form for  content
+   --  Creates new entry form for content
 
    procedure User_Panel
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;

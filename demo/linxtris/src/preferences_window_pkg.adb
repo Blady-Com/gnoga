@@ -30,14 +30,14 @@
 --  with Gtk.Handlers;          use Gtk.Handlers;
 --  with Gdk.Event;             use Gdk.Event;
 with Block_Engine;
-with Main_Window_Pkg;       use Main_Window_Pkg;
+with Main_Window_Pkg; use Main_Window_Pkg;
 with Game_Engine;
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 --  with Glib;                  use Glib;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Form;
 
 package body Preferences_Window_Pkg is
+   use all type Gnoga.String;
 
    package Callbacks is
 
@@ -258,19 +258,19 @@ package body Preferences_Window_Pkg is
 
    procedure Get_Preferences is
       use Preferences_IO;
-      Filename : constant String := To_String (Main_Window_Pkg.Data_Dir & "preferences");
+      Filename : constant Gnoga.String := Main_Window_Pkg.Data_Dir & "preferences";
       File     : File_Type;
       Pref     : Preferences_Type;
       procedure Create_File;
       procedure Create_File is
       begin
-         Create (File, Out_File, Filename);
+         Create (File, Out_File, To_UTF_8 (Filename));
          Write (File, Pref);
          Close (File);
       end Create_File;
    begin
       begin
-         Open (File, In_File, Filename);
+         Open (File, In_File, To_UTF_8 (Filename));
          Read (File, Pref);
          Close (File);
       exception
@@ -296,11 +296,11 @@ package body Preferences_Window_Pkg is
 
    procedure Set_Preferences is
       use Preferences_IO;
-      Filename : constant String := To_String (Main_Window_Pkg.Data_Dir & "preferences");
+      Filename : constant Gnoga.String := Main_Window_Pkg.Data_Dir & "preferences";
       File     : File_Type;
       pref     : Preferences_Type;
    begin
-      Open (File, Out_File, Filename);
+      Open (File, Out_File, To_UTF_8 (Filename));
       pref.Initial_Level       := Block_Engine.Get_Initial_Level (Main_Window.Engine.all);
       pref.Initial_Lines       := Block_Engine.Get_Initial_Lines (Main_Window.Engine.all);
       pref.Continuous_Movement := Main_Window.Continuous_Movement;

@@ -79,7 +79,7 @@ package ConnectFour is
 
    function GetAppletInfo
      (This : access Typ)
-      return String;
+      return Gnoga.String;
 
    procedure Init (This : access Typ);
 

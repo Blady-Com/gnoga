@@ -4,8 +4,13 @@
 --
 with DB_Maker;
 with PragmARC.B_Strings;
+with Gnoga;
 
 procedure Movies is
+   use all type Gnoga.String;
+
+   subtype String is Gnoga.String;
+
    subtype Strng is PragmARC.B_Strings.B_String (Max_Length => 100);
    use type Strng;
 
@@ -74,17 +79,17 @@ procedure Movies is
    begin -- Value
       case Field is
          when 1 =>
-            return +Item.Title;
+            return From_UTF_8 (+Item.Title);
          when 2 =>
-            return +Item.Year;
+            return From_UTF_8 (+Item.Year);
          when 3 =>
-            return +Item.Director;
+            return From_UTF_8 (+Item.Director);
          when 4 =>
-            return +Item.Writer;
+            return From_UTF_8 (+Item.Writer);
          when 5 =>
-            return +Item.Male_Lead;
+            return From_UTF_8 (+Item.Male_Lead);
          when 6 =>
-            return +Item.Female_Lead;
+            return From_UTF_8 (+Item.Female_Lead);
       end case;
    end Value;
 
@@ -97,17 +102,17 @@ procedure Movies is
    begin -- Put
       case Field is
          when 1 =>
-            Item.Title.Assign (From => Value);
+            Item.Title.Assign (From => To_UTF_8 (Value));
          when 2 =>
-            Item.Year.Assign (From => Value);
+            Item.Year.Assign (From => To_UTF_8 (Value));
          when 3 =>
-            Item.Director.Assign (From => Value);
+            Item.Director.Assign (From => To_UTF_8 (Value));
          when 4 =>
-            Item.Writer.Assign (From => Value);
+            Item.Writer.Assign (From => To_UTF_8 (Value));
          when 5 =>
-            Item.Male_Lead.Assign (From => Value);
+            Item.Male_Lead.Assign (From => To_UTF_8 (Value));
          when 6 =>
-            Item.Female_Lead.Assign (From => Value);
+            Item.Female_Lead.Assign (From => To_UTF_8 (Value));
       end case;
    end Put;
 

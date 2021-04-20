@@ -2,26 +2,28 @@
 --
 -- Copyright (C) 2017 by Jeffrey R. Carter
 --
+with Gnoga;
+
 generic -- DB_Maker
    Max_Field_Length : Positive;
-   File_Name : String; -- ".psl" will be appended
+   File_Name : Gnoga.String; -- ".psl" will be appended
 
    type Field_Number is range <>;
 
    with function Field_Name
      (Field : in Field_Number)
-      return String;
+      return Gnoga.String;
 
    type Element is private; -- Cannot contain access values
 
    with function Value
      (Item  : in Element;
       Field : in Field_Number)
-      return String;
+      return Gnoga.String;
    with procedure Put
      (Item  : in out Element;
       Field : in     Field_Number;
-      Value : in     String);
+      Value : in     Gnoga.String);
    with function "<"
      (Left  : in Element;
       Right : in Element)

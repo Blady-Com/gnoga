@@ -15,6 +15,7 @@ with Gnoga.Gui.Navigator;
 with Gnoga.Server.Connection;
 
 procedure Connect_Four is
+   use all type Gnoga.String;
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;

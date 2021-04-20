@@ -38,6 +38,7 @@ with Gnoga.Types.Key_Codes;
 with Gnoga.Application.Singleton;
 
 package body Game_Engine is
+   use Gnoga;
 
    procedure Clear_Screen is
    begin
@@ -336,10 +337,10 @@ package body Game_Engine is
       Level  := Block_Engine.Get_Level (Main_Window.Engine.all);
       Pieces := Block_Engine.Get_Pieces_Number (Main_Window.Engine.all);
       Lines  := Block_Engine.Get_Lines_Number (Main_Window.Engine.all);
-      Main_Window.Score_Label.Text (Integer'Image (Score));
-      Main_Window.Level_Label.Text (Integer'Image (Level));
-      Main_Window.Pieces_Label.Text (Integer'Image (Pieces));
-      Main_Window.Lines_Label.Text (Integer'Image (Lines));
+      Main_Window.Score_Label.Text (Image (Score));
+      Main_Window.Level_Label.Text (Image (Level));
+      Main_Window.Pieces_Label.Text (Image (Pieces));
+      Main_Window.Lines_Label.Text (Image (Lines));
       if (Block_Engine.Get_Lines_Completed (Main_Window.Engine.all) > 0) and Main_Window.Animation then
          Main_Window.On_Animation   := True;
          Main_Window.Animation_Kind := Line_Completed_Animation;
@@ -541,7 +542,7 @@ package body Game_Engine is
 --          Glib.Main.Timeout_Add (Main_Window.Down_Timeout_Interval,
 --             Auto_Down_Timeout'Access);
       Time_out.Add (Main_Window.Down_Timeout_Interval, Auto_Down_Timeout'Access, Main_Window.Down_Timeout_ID);
-      Main_Window.Record_Label.Text (Integer'Image (Scores_Window_pkg.Get_Maximum_Score));
+      Main_Window.Record_Label.Text (Image (Scores_Window_pkg.Get_Maximum_Score));
    end New_Game;
 
 --     function Process_Key_Press

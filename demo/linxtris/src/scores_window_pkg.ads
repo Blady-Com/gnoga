@@ -48,7 +48,7 @@ package Scores_Window_pkg is
 
    procedure Get_Scores;
    procedure Set_Score
-     (Name  : String;
+     (Name  : Gnoga.String;
       Score : Natural);
    function Get_Minimum_Score return Natural;
    function Get_Maximum_Score return Natural;

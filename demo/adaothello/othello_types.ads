@@ -93,5 +93,5 @@ package Othello_Types is
 
    type App_Data_Access is access all App_Data_Type;
 
-   End_Message : constant String := "Ada Othello ended.";
+   End_Message : constant Gnoga.String := "Ada Othello ended.";
 end Othello_Types;

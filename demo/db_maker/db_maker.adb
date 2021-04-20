@@ -2,11 +2,7 @@
 --
 -- Copyright (C) 2017 by Jeffrey R. Carter
 --
-with Ada.Characters.Handling;
-with Ada.Exceptions;
 with Ada.Numerics.Discrete_Random;
-with Ada.Strings.Fixed;
-with Ada.Strings.Unbounded;
 
 with Gnoga.Application.Singleton;
 with Gnoga.Gui.Base;
@@ -18,6 +14,10 @@ with Gnoga.Gui.Window;
 with PragmARC.Persistent_Skip_List_Unbounded;
 
 package body DB_Maker is
+   use all type Gnoga.String;
+
+   subtype String is Gnoga.String;
+
    Full_Name : constant String := File_Name & ".psl";
 
    package Lists is new PragmARC.Persistent_Skip_List_Unbounded (Element => Element);
@@ -53,7 +53,7 @@ package body DB_Maker is
    And_Lbl : Gnoga.Gui.Element.Form.Label_Type;
    Srch_Mr : Gnoga.Gui.Element.Common.Button_Type;
    Clear   : Gnoga.Gui.Element.Common.Button_Type;
-   List    : Lists.Persistent_Skip_List := Lists.Open_List (Full_Name);
+   List    : Lists.Persistent_Skip_List := Lists.Open_List (To_UTF_8 (Full_Name));
 
    procedure Quit_Now (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
@@ -148,7 +148,7 @@ package body DB_Maker is
       Gnoga.Application.Singleton.End_Application;
    exception -- Quit_Now
       when E : others =>
-         Gnoga.Log (Message => "Quit_Now: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "Quit_Now: ", Occurrence => E);
    end Quit_Now;
 
    procedure Random (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -163,7 +163,7 @@ package body DB_Maker is
       Transfer_Selected;
    exception -- Random
       when E : others =>
-         Gnoga.Log (Message => "Random: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "Random: ", Occurrence => E);
    end Random;
 
    procedure Click_Selection (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -172,7 +172,7 @@ package body DB_Maker is
       Transfer_Selected;
    exception -- Click_Selection
       when E : others =>
-         Gnoga.Log (Message => "Click_Selection: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "Click_Selection: ", Occurrence => E);
    end Click_Selection;
 
    procedure Key_Selection
@@ -184,7 +184,7 @@ package body DB_Maker is
       Transfer_Selected;
    exception -- Key_Selection
       when E : others =>
-         Gnoga.Log (Message => "Key_Selection: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "Key_Selection: ", Occurrence => E);
    end Key_Selection;
 
    function Get_From_Fields return Element is
@@ -226,7 +226,7 @@ package body DB_Maker is
       Search_From (Search_Item => Item, Prev_Index => 0);
    exception -- Add_Item
       when E : others =>
-         Gnoga.Log (Message => "Add_Item: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "Add_Item: ", Occurrence => E);
    end Add_Item;
 
    procedure Modify (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -250,7 +250,7 @@ package body DB_Maker is
       Search_From (Search_Item => Item, Prev_Index => 0);
    exception -- Modify
       when E : others =>
-         Gnoga.Log (Message => "Modify: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "Modify: ", Occurrence => E);
    end Modify;
 
    procedure Delete_Item (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -267,14 +267,10 @@ package body DB_Maker is
       Refresh;
    exception -- Delete_Item
       when E : others =>
-         Gnoga.Log (Message => "Delete_Item: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "Delete_Item: ", Occurrence => E);
    end Delete_Item;
 
    Search_Index : Natural := 0;
-
-   use Ada.Strings.Unbounded;
-
-   use Ada.Characters.Handling;
 
    procedure Search_From
      (Search_Item : in Element;
@@ -287,7 +283,7 @@ package body DB_Maker is
 
       procedure Check_All is new Lists.Iterate (Action => Check_One);
 
-      type Lowered_List is array (Field_Number) of Unbounded_String;
+      type Lowered_List is array (Field_Number) of String;
 
       Lowered : Lowered_List; -- To_Lower applied to the fields of Search_Item
       Found   : Boolean := False;
@@ -300,8 +296,6 @@ package body DB_Maker is
          Continue :    out Boolean)
       is
          Local : Boolean := not Or_Checked;
-
-         use Ada.Characters.Handling;
       begin -- Check_One
          Index := Index + 1;
 
@@ -319,9 +313,9 @@ package body DB_Maker is
             begin -- Field_Value
                if Length (Lowered (I)) > 0 then
                   if Or_Checked then
-                     Local := Local or Ada.Strings.Fixed.Index (To_Lower (Text), To_String (Lowered (I))) > 0;
+                     Local := Local or Text.To_Lower.Index (Lowered (I)) > 0;
                   else
-                     Local := Local and Ada.Strings.Fixed.Index (To_Lower (Text), To_String (Lowered (I))) > 0;
+                     Local := Local and Text.To_Lower.Index (Lowered (I)) > 0;
                   end if;
                end if;
             end Field_Value;
@@ -333,7 +327,7 @@ package body DB_Maker is
    begin -- Search_From
       Fill_Lowered :
       for I in Lowered'Range loop
-         Lowered (I) := To_Unbounded_String (To_Lower (Value (Search_Item, I)));
+         Lowered (I) := To_Lower (Value (Search_Item, I));
       end loop Fill_Lowered;
 
       Check_All (List => List);
@@ -355,7 +349,7 @@ package body DB_Maker is
       Search_From (Search_Item => Item, Prev_Index => 0);
    exception -- Search_Item
       when E : others =>
-         Gnoga.Log (Message => "Search_Item: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "Search_Item: ", Occurrence => E);
    end Search_Item;
 
    procedure Search_More (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -364,7 +358,7 @@ package body DB_Maker is
       Search_From (Search_Item => Item, Prev_Index => Search_Index);
    exception -- Search_More
       when E : others =>
-         Gnoga.Log (Message => "Search_More: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "Search_More: ", Occurrence => E);
    end Search_More;
 
    procedure Reset (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -376,14 +370,14 @@ package body DB_Maker is
       end loop All_Fields;
    exception -- Reset
       when E : others =>
-         Gnoga.Log (Message => "Reset: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "Reset: ", Occurrence => E);
    end Reset;
 
    procedure Add_One
      (Item     : in     Element;
       Continue :    out Boolean)
    is
-      Image : Unbounded_String;
+      Image : String;
    begin -- Add_One
       All_Fields :
       for I in Field'Range loop
@@ -395,10 +389,10 @@ package body DB_Maker is
       end loop All_Fields;
 
       Continue := True;
-      Sel.Add_Option (Value => To_String (Image), Text => To_String (Image));
+      Sel.Add_Option (Value => Image, Text => Image);
    end Add_One;
 
-   Header : Unbounded_String;
+   Header : String;
 begin -- DB_Maker
    Gnoga.Application.Title (File_Name);
    Gnoga.Application.HTML_On_Close (File_Name & " ended.");
@@ -418,7 +412,7 @@ begin -- DB_Maker
       Append (Source => Header, New_Item => Field_Name (I));
    end loop Build_Header;
 
-   Form.Put_Line (Message => To_String (Header));
+   Form.Put_Line (Message => Header);
    Sel.Create (Form => Form, Visible_Lines => 20);
    Sel.On_Click_Handler (Handler => Click_Selection'Unrestricted_Access);
    Sel.On_Key_Press_Handler (Handler => Key_Selection'Unrestricted_Access);
@@ -477,7 +471,7 @@ begin -- DB_Maker
    Gnoga.Application.Singleton.Message_Loop;
 exception -- DB_Maker
    when E : others =>
-      Gnoga.Log (Message => Ada.Exceptions.Exception_Information (E));
+      Gnoga.Log (E);
 end DB_Maker;
 --
 -- This is free software; you can redistribute it and/or modify it under

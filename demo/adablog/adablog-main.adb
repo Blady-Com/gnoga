@@ -1,5 +1,3 @@
-with Ada.Exceptions;
-
 with GNAT.OS_Lib;
 
 with Gnoga.Application.Multi_Connect;
@@ -9,8 +7,6 @@ with AdaBlog.Migrations;
 with AdaBlog.Controller;
 
 procedure AdaBlog.Main is
-   use Gnoga;
-
    pragma Linker_Options ("-lsqlite3");
 begin
    if Gnoga.Server.Migration.Migrations_Handled_Command_Line (Connection, Migrations'Unrestricted_Access) then
@@ -24,6 +20,5 @@ begin
    Application.Multi_Connect.Message_Loop;
 exception
    when E : others =>
-      Log (Ada.Exceptions.Exception_Name (E) & " - " & Ada.Exceptions.Exception_Message (E));
-
+      Log (E);
 end AdaBlog.Main;

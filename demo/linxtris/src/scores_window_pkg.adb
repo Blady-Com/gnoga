@@ -33,9 +33,12 @@ with Main_Window_Pkg; use Main_Window_Pkg;
 with Gnoga.Gui.View.Grid;
 with Gnoga.Gui.Base;
 with Gnoga.Application.Singleton;
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package body Scores_Window_pkg is
+   use Gnoga;
+   use all type Gnoga.String;
+
+   subtype String is Gnoga.String;
 
    package Callbacks is
 
@@ -201,11 +204,11 @@ package body Scores_Window_pkg is
 
    function Get_Maximum_Score return Natural is
       use Scores_IO;
-      Filename : constant String := To_String (Main_Window_Pkg.Data_Dir & "scores");
+      Filename : constant String := Main_Window_Pkg.Data_Dir & "scores";
       File     : File_Type;
       scr      : Score_Type;
    begin
-      Open (File, In_File, Filename);
+      Open (File, In_File, To_UTF_8 (Filename));
       Read (File, scr);
       Close (File);
       return scr.Score;
@@ -225,13 +228,13 @@ package body Scores_Window_pkg is
       Score : Natural)
    is
       use Scores_IO;
-      Filename : constant String := To_String (Main_Window_Pkg.Data_Dir & "scores");
+      Filename : constant String := Main_Window_Pkg.Data_Dir & "scores";
       File     : File_Type;
       scr      : Score_Type;
       I        : Scores_IO.Count := 10;
       J        : Scores_IO.Count;
    begin
-      Open (File, Inout_File, Filename);
+      Open (File, Inout_File, To_UTF_8 (Filename));
       loop
          Set_Index (File, I);
          Read (File, scr);
@@ -250,15 +253,15 @@ package body Scores_Window_pkg is
                end loop;
             end if;
             scr.Score := Score;
-            if Name'Length > scr.Name'Length then
+            if Name.Length > scr.Name'Length then
                for i in scr.Name'Range loop
-                  scr.Name (i) := Name (i);
+                  scr.Name (i) := Name.Get_Latin_1 (i);
                end loop;
             else
-               for i in Name'Range loop
-                  scr.Name (i) := Name (i);
+               for i in Name loop
+                  scr.Name (i) := Name.get_latin_1 (i);
                end loop;
-               for i in Name'Last + 1 .. scr.Name'Last loop
+               for i in Name.Last + 1 .. scr.Name'Last loop
                   scr.Name (i) := ' ';
                end loop;
             end if;
@@ -275,13 +278,13 @@ package body Scores_Window_pkg is
 
    procedure Get_Scores is
       use Scores_IO;
-      Filename : constant String := To_String (Main_Window_Pkg.Data_Dir & "scores");
+      Filename : constant String := Main_Window_Pkg.Data_Dir & "scores";
       File     : File_Type;
       scr      : Score_Type;
       procedure Create_File;
       procedure Create_File is
       begin
-         Create (File, Out_File, Filename);
+         Create (File, Out_File, To_UTF_8 (Filename));
          scr.Name  := "no user             ";
          scr.Score := 0;
          for i in 1 .. 10 loop
@@ -290,11 +293,11 @@ package body Scores_Window_pkg is
          Close (File);
       end Create_File;
    begin
-      Open (File, In_File, Filename);
+      Open (File, In_File, To_UTF_8 (Filename));
       for i in 1 .. 10 loop
          Read (File, scr);
-         Scores_Win.Names_Label (i).Text (scr.Name);
-         Scores_Win.Scores_Label (i).Text (Integer'Image (scr.Score));
+         Scores_Win.Names_Label (i).Text (From_Latin_1 (scr.Name));
+         Scores_Win.Scores_Label (i).Text (Image (scr.Score));
       end loop;
       Minimum_Score := scr.Score;
       Close (File);

@@ -8,11 +8,13 @@ with Gnoga.Gui.Element.Canvas;
 with Gnoga.Gui.Element.Canvas.Context_2D;
 
 package body Snake.Connection is
+   use Gnoga;
    use Gnoga.Types;
    use Gnoga.Gui.Element.Common;
    use Gnoga.Gui.View;
    use Gnoga.Gui.Element.Canvas;
    use Gnoga.Gui.Element.Canvas.Context_2D;
+   use all type Gnoga.String;
 
    --------------------
    -- Display_Splash --
@@ -246,7 +248,7 @@ package body Snake.Connection is
                --  clear old score
                Context.Fill_Color ("white");
                Context.Font (Height => "12px");
-               Context.Fill_Text ("Score :" & App.Score'Img, 5, Display_Height - 15);
+               Context.Fill_Text ("Score :" & Image (App.Score), 5, Display_Height - 15);
 
                App.Score := App.Score + 10;
 
@@ -265,7 +267,7 @@ package body Snake.Connection is
 
       Context.Fill_Color ("green");
       Context.Font (Height => "12px");
-      Context.Fill_Text ("Score :" & App.Score'Img, 5, Display_Height - 15);
+      Context.Fill_Text ("Score :" & Image (App.Score, Prefix => ' '), 5, Display_Height - 15);
    exception
       when others =>
          Gnoga.Log ("Exception in Paint");

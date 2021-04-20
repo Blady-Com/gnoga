@@ -40,8 +40,9 @@ with Gnoga.Gui.Plugin.Pixi.Sprite;
 with Gnoga.Gui.View;
 with Gnoga.Types;
 
-with Ada.Characters.Handling; use Ada.Characters.Handling;
 with Ada.Numerics.Float_Random;
+
+with UXStrings.Conversions;
 
 procedure Leaves_main is
    use Match_3;
@@ -54,9 +55,11 @@ procedure Leaves_main is
    use Gnoga.Gui.Plugin.Pixi.Sprite;
    use Gnoga.Gui.View;
 
+   use all type Gnoga.String;
+
    function Bitmap
      (c : Cell)
-      return String
+      return Gnoga.String
    is
    begin
       case c is
@@ -148,7 +151,7 @@ procedure Leaves_main is
 
    trace : constant Boolean := True;
 
-   procedure Game_log (s : String) is
+   procedure Game_log (s : Gnoga.String) is
    begin
       if trace then
          Gnoga.Log (s);
@@ -167,7 +170,7 @@ procedure Leaves_main is
       ox1, oy1, ox2, oy2 : Integer;
       aux                : Cell;
    begin
-      Game_log ("Swapping: (" & c1.x'Img & c1.y'Img & ") and (" & c2.x'Img & c2.y'Img & ")");
+      Game_log ("Swapping: (" & Image (c1.x) & Image (c1.y) & ") and (" & Image (c2.x) & Image (c2.y) & ")");
       Unclick (App);
       App.Sprite (c1.x, c1.y).Position (ox1, oy1);
       App.Sprite (c2.x, c2.y).Position (ox2, oy2);
@@ -202,12 +205,13 @@ procedure Leaves_main is
       --
       procedure Show_matches is
          fx : array (ma'Range) of Sprite_Type;
+         function Image is new UXStrings.Conversions.Scalar_Image (Match_kind);
       begin
          for tch in ma'Range loop
             fx (tch).Create
-              (App.C, "img/" & To_Lower (Match_kind'Image (ma (tch).kind)) & ".png",
-               Column          => Pix_hor_pos (ma (tch).pos), Row => Pix_ver_pos (ma (tch).pos),
-               Column_Velocity => 6.0 * (Random (gen) - 0.5), Row_Velocity => Random (gen) - 4.0);
+              (App.C, "img/" & To_Lower (Image (ma (tch).kind)) & ".png", Column => Pix_hor_pos (ma (tch).pos),
+               Row => Pix_ver_pos (ma (tch).pos), Column_Velocity => 6.0 * (Random (gen) - 0.5),
+               Row_Velocity                                                      => Random (gen) - 4.0);
          end loop;
          Game_log ("[--Delay--] Show matches");
          delay 0.41;
@@ -308,7 +312,9 @@ procedure Leaves_main is
       App.My_Canvas.On_Mouse_Down_Handler (null);
       --  Un-display choice highlighter
       App.Tile_choice.Finalize;
-      Game_log ("Trying to swap: (" & swap_1.x'Img & swap_1.y'Img & ") and (" & swap_2.x'Img & swap_2.y'Img & ")");
+      Game_log
+        ("Trying to swap: (" & Image (swap_1.x) & Image (swap_1.y) & ") and (" & Image (swap_2.x) & Image (swap_2.y) &
+         ")");
       if swap_1.x in App.My_Board'Range (1) and then swap_1.y in App.My_Board'Range (2)
         and then swap_2.x in App.My_Board'Range (1) and then swap_2.y in App.My_Board'Range (2)
         and then App.My_Board (swap_1.x, swap_1.y) in Movable_tile
@@ -428,7 +434,7 @@ procedure Leaves_main is
       else
          App.Btn_Down_pos := null_cell_pos;
       end if;
-      Game_log ("Mouse Down; Down pos =" & App.Btn_Down_pix_x'Img & App.Btn_Down_pix_y'Img);
+      Game_log ("Mouse Down; Down pos =" & Image (App.Btn_Down_pix_x) & Image (App.Btn_Down_pix_y));
       App.My_Canvas.On_Mouse_Move_Handler (Mouse_Move'Unrestricted_Access);
       App.My_Canvas.On_Mouse_Up_Handler (Mouse_Up'Unrestricted_Access);
    end Mouse_Down;
@@ -442,14 +448,14 @@ procedure Leaves_main is
       target_cell : Cell_pos            := Locate_cell (Mouse_Event.X, Mouse_Event.Y);
       slide       : Boolean             := False;
    begin
-      Game_log ("Mouse Move" & Mouse_Event.X'Img & Mouse_Event.Y'Img);
+      Game_log ("Mouse Move" & Image (Mouse_Event.X) & Image (Mouse_Event.Y));
       if App.Btn_Down_pos = null_cell_pos then
          return;
       end if;
       dx := Mouse_Event.X - App.Btn_Down_pix_x;
       dy := Mouse_Event.Y - App.Btn_Down_pix_y;
       if abs dx > cell_size / 2 then
-         Game_log ("Hor. Slide, delta= " & dx'Img);
+         Game_log ("Hor. Slide, delta= " & Image (dx));
          slide := True;
          if dx < 0 then
             target_cell := (Integer'Max (1, App.Btn_Down_pos.x - 1), App.Btn_Down_pos.y);
@@ -457,7 +463,7 @@ procedure Leaves_main is
             target_cell := (Integer'Min (App.columns, App.Btn_Down_pos.x + 1), App.Btn_Down_pos.y);
          end if;
       elsif abs dy > cell_size / 2 then
-         Game_log ("Ver. Slide, delta= " & dy'Img);
+         Game_log ("Ver. Slide, delta= " & Image (dy));
          slide := True;
          if dy < 0 then
             target_cell := (App.Btn_Down_pos.x, Integer'Max (1, App.Btn_Down_pos.y - 1));
@@ -477,7 +483,7 @@ procedure Leaves_main is
    is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
-      Game_log ("Mouse Up" & Mouse_Event.X'Img & Mouse_Event.Y'Img);
+      Game_log ("Mouse Up" & Image (Mouse_Event.X) & Image (Mouse_Event.Y));
       App.My_Canvas.On_Mouse_Move_Handler (null);
       App.My_Canvas.On_Mouse_Up_Handler (null);
       App.Btn_Up_pos := Locate_cell (Mouse_Event.X, Mouse_Event.Y);

@@ -658,7 +658,7 @@ package body Logic is
       App.Message.Text (Value => Your_Turn);
    exception -- Process_Player_Move
       when E : others =>
-         Gnoga.Log (Message => "Process_Player_Move: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "Process_Player_Move: ", Occurrence => E);
    end Process_Player_Move;
 
    procedure Reset (App : in out App_Info) is
@@ -695,7 +695,7 @@ package body Logic is
       end if;
    exception -- Reset
       when E : others =>
-         Gnoga.Log (Message => "Reset: " & Ada.Exceptions.Exception_Information (E));
+         Gnoga.Log (Message => "Reset: ", Occurrence => E);
    end Reset;
 end Logic;
 --

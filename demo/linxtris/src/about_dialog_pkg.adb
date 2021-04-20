@@ -33,6 +33,7 @@ with Main_Window_Pkg; use Main_Window_Pkg;
 with Gnoga.Gui.Base;
 
 package body About_Dialog_Pkg is
+   use all type Gnoga.String;
 
    package Callbacks is
 

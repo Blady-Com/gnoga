@@ -27,11 +27,9 @@
 --|
 --------------------------------------------------------------------------------
 
-with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.View.Grid;
 with Gnoga.Gui.Element;
 with Gnoga.Types.Colors;
-with Gnoga.Gui.Base;
 
 package body Othello_Pkg.Callbacks is
 
@@ -49,7 +47,7 @@ package body Othello_Pkg.Callbacks is
    ---------------------------
 
    procedure On_New_Game1_Activate (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App_Data : Othello_Types.App_Data_Access := Othello_Types.App_Data_Access (Object.Connection_Data);
+      App_Data : constant Othello_Types.App_Data_Access := Othello_Types.App_Data_Access (Object.Connection_Data);
    begin
       New_Game
         (Othello   => App_Data.Othello, Playing_Board => App_Data.Playing_Board, Whose_Move => App_Data.Whose_Move,
@@ -61,7 +59,7 @@ package body Othello_Pkg.Callbacks is
    -----------------------
 
    procedure On_Pass1_Activate (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App_Data : Othello_Types.App_Data_Access := Othello_Types.App_Data_Access (Object.Connection_Data);
+      App_Data : constant Othello_Types.App_Data_Access := Othello_Types.App_Data_Access (Object.Connection_Data);
    begin
       Pass
         (Othello   => App_Data.Othello, Playing_Board => App_Data.Playing_Board, Whose_Move => App_Data.Whose_Move,
@@ -73,7 +71,7 @@ package body Othello_Pkg.Callbacks is
    -----------------------
 
    procedure On_Exit1_Activate (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
-      App_Data : Othello_Types.App_Data_Access := Othello_Types.App_Data_Access (Object.Connection_Data);
+      App_Data : constant Othello_Types.App_Data_Access := Othello_Types.App_Data_Access (Object.Connection_Data);
    begin
 --        Gnoga.Application.Multi_Connect.End_Application;
 
@@ -103,9 +101,9 @@ package body Othello_Pkg.Callbacks is
 
    procedure Make_Move (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       Button   : Othello_Types.Cell_Button renames Othello_Types.Cell_Button (Object);
-      Row      : constant Othello_Types.Valid_Row    := Button.Row;
-      Column   : constant Othello_Types.Valid_Column := Button.Column;
-      App_Data : Othello_Types.App_Data_Access       := Othello_Types.App_Data_Access (Object.Connection_Data);
+      Row      : constant Othello_Types.Valid_Row       := Button.Row;
+      Column   : constant Othello_Types.Valid_Column    := Button.Column;
+      App_Data : constant Othello_Types.App_Data_Access := Othello_Types.App_Data_Access (Object.Connection_Data);
    begin
       Make_Move
         (Othello   => App_Data.Othello, Playing_Board => App_Data.Playing_Board, Whose_Move => App_Data.Whose_Move,
@@ -117,7 +115,7 @@ package body Othello_Pkg.Callbacks is
       Connection  :        access Gnoga.Application.Multi_Connect.Connection_Holder_Type)
    is
       -- Create memory for variable data for this connection
-      App : Othello_Types.App_Data_Access := new Othello_Types.App_Data_Type;
+      App : constant Othello_Types.App_Data_Access := new Othello_Types.App_Data_Type;
    begin
       -- Set the variable data for this connection
       Main_Window.Connection_Data (App);

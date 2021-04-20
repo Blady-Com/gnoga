@@ -22,7 +22,6 @@
 
 --  with Gtk.Main;
 with Gnoga;
-with Ada.Exceptions;
 
 with Main_Window_Pkg;        use Main_Window_Pkg;
 with Preferences_Window_Pkg; use Preferences_Window_Pkg;
@@ -46,5 +45,5 @@ begin
 exception
    when E : others =>
       Gnoga.Log ("LinXtris Error:");
-      Gnoga.Log (Ada.Exceptions.Exception_Information (E));
+      Gnoga.Log (E);
 end LinXtris;

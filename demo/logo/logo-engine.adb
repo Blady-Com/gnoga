@@ -15,6 +15,8 @@ with Strings_Edit.Integers;
 
 with logo_messages.logo_Strings;
 
+with UXStrings.Conversions;
+
 package body Logo.Engine is
 
    ------------
@@ -26,7 +28,7 @@ package body Logo.Engine is
       Primitives : Logo.Parser.Primitive_Tables.Dictionary)
       return Instruction
    is
-      Copy   : aliased String := Line;
+      Copy   : aliased Standard.String := To_UTF_8 (Line);
       Code   : Parsers.String_Source.Source (Copy'Access);
       Got_It : Boolean;
    begin
@@ -41,7 +43,7 @@ package body Logo.Engine is
                declare
                   Pointer : Integer := Parsers.String_Source.Get_Pointer (Code);
                begin
-                  Strings_Edit.Integers.Get (Line, Pointer, Instr.Arg1);
+                  Strings_Edit.Integers.Get (Copy, Pointer, Instr.Arg1);
                end;
             end if;
          end if;
@@ -58,8 +60,9 @@ package body Logo.Engine is
    is
       ST : Duration;
       use all type Parser.Primitive;
+      function Image is new UXStrings.Conversions.Scalar_Image (Logo.Parser.Primitive);
    begin
-      Gnoga.Log (Instr.Command'Img & Instr.Arg1'Img);
+      Gnoga.Log (Image (Instr.Command) & Gnoga.Image (Instr.Arg1, Prefix => ' '));
       case Instr.Command is
          when forward =>
             View.Turtle.Move_Rel (Instr.Arg1, 10.0, 10.0, ST);

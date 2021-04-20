@@ -5,7 +5,7 @@
 -- NOTES                        : Ada 202x
 --
 -- COPYRIGHT                    : (c) Pascal Pignard 2021
--- LICENCE                      : CeCILL V2.1 (https://www.cecill.info)
+-- LICENCE                      : CeCILL V2.1 (https://cecill.info)
 -- CONTACT                      : http://blady.pagesperso-orange.fr
 -------------------------------------------------------------------------------
 
@@ -124,7 +124,10 @@ package body UXStrings is
    procedure Finalize (Object : in out UXString) is
    begin
       if Object.Chars /= null then
-         Free (Object.Chars);
+         if Object.Finalized'Valid and then not Object.Finalized then
+            Free (Object.Chars);
+            Object.Finalized := True;
+         end if;
       end if;
    end Finalize;
 

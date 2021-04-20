@@ -335,6 +335,7 @@ private
    type UXString is new Ada.Finalization.Controlled with record
       Chars      : UTF_8_Characters_Access := new UTF_8_Character_Array (2 .. 1);
       Full_ASCII : Boolean                 := False;
+      Finalized  : Boolean                 := False;
    end record;
 
    procedure Adjust (Object : in out UXString);
@@ -349,6 +350,7 @@ private
    for UXString'Write use UXString_Write;
 
    Null_UXString : constant UXString :=
-     (Ada.Finalization.Controlled with Chars => new UTF_8_Character_Array (2 .. 1), Full_ASCII => True);
+     (Ada.Finalization.Controlled with Chars => new UTF_8_Character_Array (2 .. 1), Full_ASCII => True,
+      Finalized                              => False);
 
 end UXStrings;

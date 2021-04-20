@@ -713,6 +713,19 @@ package body UXStrings is
       end return;
    end "&";
 
+   -------------------
+   -- Replace_ASCII --
+   -------------------
+
+   procedure Replace_ASCII (Source : in out UXString; Index : Positive; By : ASCII_Character) is
+   begin
+      if Source.Full_ASCII then
+         Source.Chars (Source.Chars'First + Index - 1) := By;
+      else
+         Source := Slice (Source, 1, Index - 1) & From_ASCII (By) & Slice (Source, Index + 1, Length (Source));
+      end if;
+   end Replace_ASCII;
+
    ---------------------
    -- Replace_Latin_1 --
    ---------------------

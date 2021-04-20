@@ -165,6 +165,8 @@ package UXStrings is
    function "&" (Left : Unicode_Character; Right : UXString) return UXString;
    -- Return the concatenation of Left and Right
 
+   procedure Replace_ASCII (Source : in out UXString; Index : Positive; By : ASCII_Character);
+   -- Update Source such as the character at Index position is set to the ASCII character parameter By
    procedure Replace_Latin_1 (Source : in out UXString; Index : Positive; By : Latin_1_Character);
    -- Update Source such as the character at Index position is set to the Latin 1 character parameter By
    procedure Replace_BMP (Source : in out UXString; Index : Positive; By : BMP_Character);

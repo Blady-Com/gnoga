@@ -16,19 +16,18 @@ procedure Layouts_SSL is
    use Gnoga.Types;
    use Gnoga.Gui;
    use Gnoga.Gui.Element;
+   use all type Gnoga.String;
 
-   type App_Data is new Connection_Data_Type with
-      record
-         Main_Window : Window.Pointer_To_Window_Class;
-         Docks       : Gnoga.Gui.View.Docker.Docker_View_Type;
-         View        : aliased Gnoga.Gui.View.Card.Card_View_Type;
-      end record;
+   type App_Data is new Connection_Data_Type with record
+      Main_Window : Window.Pointer_To_Window_Class;
+      Docks       : Gnoga.Gui.View.Docker.Docker_View_Type;
+      View        : aliased Gnoga.Gui.View.Card.Card_View_Type;
+   end record;
    type App_Access is access all App_Data;
 
    procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class)
-   is
+   procedure On_Click (Object : in out Gnoga.Gui.Base.Base_Type'Class) is
       App : App_Access := App_Access (Object.Connection_Data);
 
       Click_Count : Common.Span_Type;
@@ -37,20 +36,20 @@ procedure Layouts_SSL is
       View.Card.Tab_Item_Type (Object).Tab_Select;
 
       Click_Count.Attach_Using_Parent (Object, "click_count");
-      Count := Natural'Value (Click_Count.Text);
+      Count := Value (Click_Count.Text);
       Count := Count + 1;
-      Click_Count.Text (Gnoga.Left_Trim (Count'Img));
+      Click_Count.Text (Gnoga.Left_Trim (Image (Count)));
    end On_Click;
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type);
+      Connection  :        access Gnoga.Application.Multi_Connect
+        .Connection_Holder_Type);
 
    procedure On_Connect
      (Main_Window : in out Gnoga.Gui.Window.Window_Type'Class;
-      Connection  : access
-        Gnoga.Application.Multi_Connect.Connection_Holder_Type)
+      Connection  :        access Gnoga.Application.Multi_Connect
+        .Connection_Holder_Type)
    is
       App    : App_Access := new App_Data;
       V      : View.Pointer_To_View_Class;
@@ -70,19 +69,19 @@ procedure Layouts_SSL is
       Dex := new View.Docker.Docker_View_Type;
       Dex.Dynamic;
       Dex.Create (App.Docks);
-      App.Docks.Fill_Dock (Dex);
+      App.Docks.Fill_Dock (View.Pointer_To_View_Base_Class (Dex));
 
       App.View.Create (Dex.all);
       App.View.Border;
-      Dex.Fill_Dock (App.View'Access);
+      Dex.Fill_Dock (App.View'Unchecked_Access);
 
       Tabs := new View.Card.Tab_Type;
       Tabs.Dynamic;
-      Tabs.Create (Parent       => Dex.all,
-                   Card_View    => App.View,
-                   Text_Color   => Gnoga.Types.Colors.Black,
-                   Tab_Color    => Gnoga.Types.Colors.Blue,
-                   Select_Color => Gnoga.Types.Colors.Light_Blue);
+      Tabs.Create
+        (Parent       => Dex.all, Card_View => App.View,
+         Text_Color   => Gnoga.Types.Colors.Black,
+         Tab_Color    => Gnoga.Types.Colors.Blue,
+         Select_Color => Gnoga.Types.Colors.Light_Blue);
 
       Tab := new View.Card.Tab_Item_Type;
       Tab.Dynamic;
@@ -93,35 +92,35 @@ procedure Layouts_SSL is
       Tab.Create (Tabs.all, "2", "Card 2");
       Tab.On_Click_Handler (On_Click'Unrestricted_Access);
 
-      Dex.Top_Dock (Tabs);
+      Dex.Top_Dock (View.Pointer_To_View_Base_Class (Tabs));
 
       V := new View.View_Type;
       V.Dynamic;
       V.Create (App.Docks);
       V.Background_Color ("Black");
       V.Put_Line ("Here");
-      App.Docks.Top_Dock (V);
+      App.Docks.Top_Dock (View.Pointer_To_View_Base_Class (V));
 
       V := new View.View_Type;
       V.Dynamic;
       V.Create (App.Docks);
       V.Background_Color ("Green");
       V.Put_Line ("Here");
-      App.Docks.Bottom_Dock (V);
+      App.Docks.Bottom_Dock (View.Pointer_To_View_Base_Class (V));
 
       V := new View.View_Type;
       V.Dynamic;
       V.Create (App.Docks);
       V.Background_Color ("Blue");
       V.Put_Line ("Here");
-      App.Docks.Left_Dock (V);
+      App.Docks.Left_Dock (View.Pointer_To_View_Base_Class (V));
 
       V := new View.View_Type;
       V.Dynamic;
       V.Create (App.Docks);
       V.Background_Color ("Yellow");
       V.Put_Line ("Here");
-      App.Docks.Right_Dock (V);
+      App.Docks.Right_Dock (View.Pointer_To_View_Base_Class (V));
 
       Card_1 := new View.Console.Console_View_Type;
       Card_1.Dynamic;
@@ -140,16 +139,13 @@ procedure Layouts_SSL is
 
 begin
    Gnoga.Server.Connection.Secure.Register_Secure_Server
-     (Certificate_File => Gnoga.Server.Application_Directory &
-        "/test_ssl/server.crt",
-      Key_File         => Gnoga.Server.Application_Directory &
-        "/test_ssl/server.key",
-      Port             => 8443,
-      Disable_Insecure => False);
+     (Certificate_File =>
+        Gnoga.Server.Application_Directory & "/test_ssl/server.crt",
+      Key_File => Gnoga.Server.Application_Directory & "/test_ssl/server.key",
+      Port     => 8_443, Disable_Insecure => False);
 
    Application.Multi_Connect.Initialize
-     (Event => On_Connect'Unrestricted_Access,
-      Boot  => "debug.html");
+     (Event => On_Connect'Unrestricted_Access, Boot => "debug.html");
 
    Application.Title ("Test App for Gnoga");
    Application.HTML_On_Close

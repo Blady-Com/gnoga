@@ -28,24 +28,17 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Text_IO; use Ada.Text_IO;
+with UXStrings.Text_IO;                              use UXStrings.Text_IO;
 with Ada.Command_Line;
-with Ada.Directories; use Ada.Directories;
-with Ada.Strings.Fixed; use Ada.Strings.Fixed;
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-with Ada.Strings.Maps.Constants; use Ada.Strings.Maps.Constants;
-
-with GNAT.OS_Lib;
+with Ada.Directories;                                use Ada.Directories;
+with Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants; use Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants;
 
 with Gnoga.Server;
 with Gnoga.Server.Template_Parser.Simple;
 
 package body Gnoga_Make is
-
    Gnoga_Make_Templates : constant String :=
-                            Gnoga.Server.Templates_Directory &
-                            "gnoga_make" &
-                            GNAT.OS_Lib.Directory_Separator;
+     Gnoga.Server.Templates_Directory & "gnoga_make" & Gnoga.Server.Directory_Separator;
 
    -------------
    -- Version --
@@ -64,23 +57,16 @@ package body Gnoga_Make is
    procedure Display_Help is
    begin
       New_Line;
-      Put_Line ("usage: " & Ada.Command_Line.Command_Name &
-                " command [arguments]");
+      Put_Line ("usage: " & From_UTF_8 (Ada.Command_Line.Command_Name) & " command [arguments]");
       New_Line;
-      Put_Line
-        ("command is one of the options below followed by appropriate ");
+      Put_Line ("command is one of the options below followed by appropriate ");
       Put_Line ("arguments for that command.");
       New_Line;
-      Put_Line
-        ("Command");
-      Put_Line
-        ("==========");
-      Put_Line
-        ("version                               - display version");
-      Put_Line
-        ("list                                  - list available templates");
-      Put_Line
-        ("new        app_name [template]        - create a new application");
+      Put_Line ("Command");
+      Put_Line ("==========");
+      Put_Line ("version                               - display version");
+      Put_Line ("list                                  - list available templates");
+      Put_Line ("new        app_name [template]        - create a new application");
 --      Put_Line
 --        ("view       app_name name [template]   - add a new view");
 --      Put_Line
@@ -91,8 +77,8 @@ package body Gnoga_Make is
 --      Put_Line
 --        ("the applications directory.");
       New_Line;
-      Put_Line ("For more help run " & Ada.Command_Line.Command_Name &
-                " command with no other arguments.");
+      Put_Line
+        ("For more help run " & From_UTF_8 (Ada.Command_Line.Command_Name) & " command with no other arguments.");
       New_Line;
    end Display_Help;
 
@@ -103,22 +89,19 @@ package body Gnoga_Make is
    procedure Display_New_Usage is
    begin
       New_Line;
-      Put_Line ("usage: " & Ada.Command_Line.Command_Name & " new " &
-                  "Application_Name [template_name] [arguments...]");
-      New_Line;
       Put_Line
-        ("Creates a new Gnoga application called Application_Name.");
+        ("usage: " & From_UTF_8 (Ada.Command_Line.Command_Name) & " new " &
+         "Application_Name [template_name] [arguments...]");
       New_Line;
-      Put_Line
-        ("If template_name is not provided the multi_connect template " &
-           "will be used.");
+      Put_Line ("Creates a new Gnoga application called Application_Name.");
       New_Line;
-      Put_Line
-        ("Templates are located at:");
+      Put_Line ("If template_name is not provided the multi_connect template " & "will be used.");
+      New_Line;
+      Put_Line ("Templates are located at:");
       Put_Line ("   " & Gnoga_Make_Templates);
       New_Line;
-      Put_Line ("Some templates may allow for additional arguments, see the" &
-                  " templates's README file for more details.");
+      Put_Line
+        ("Some templates may allow for additional arguments, see the" & " templates's README file for more details.");
    end Display_New_Usage;
 
    ------------------------
@@ -128,22 +111,19 @@ package body Gnoga_Make is
    procedure Display_View_Usage is
    begin
       New_Line;
-      Put_Line ("usage: " & Ada.Command_Line.Command_Name & " view " &
-                  "Application_Name View_Name [template_name] [arguments...]");
-      New_Line;
       Put_Line
-        ("Creates a new Gnoga View called View_Name for Application_Name.");
+        ("usage: " & From_UTF_8 (Ada.Command_Line.Command_Name) & " view " &
+         "Application_Name View_Name [template_name] [arguments...]");
       New_Line;
-      Put_Line
-        ("If template_name is not provided the page_controller template " &
-           "will be used.");
+      Put_Line ("Creates a new Gnoga View called View_Name for Application_Name.");
       New_Line;
-      Put_Line
-        ("Templates are located at:");
+      Put_Line ("If template_name is not provided the page_controller template " & "will be used.");
+      New_Line;
+      Put_Line ("Templates are located at:");
       Put_Line ("   " & Gnoga_Make_Templates);
       New_Line;
-      Put_Line ("Some templates may allow for additional arguments, see the" &
-                  " templates's README file for more details.");
+      Put_Line
+        ("Some templates may allow for additional arguments, see the" & " templates's README file for more details.");
    end Display_View_Usage;
 
    ------------------------------
@@ -154,23 +134,18 @@ package body Gnoga_Make is
    begin
       New_Line;
       Put_Line
-        ("usage: " & Ada.Command_Line.Command_Name & " view " &
-           "Application_Name Controller_Name [template_name] [arguments...]");
+        ("usage: " & From_UTF_8 (Ada.Command_Line.Command_Name) & " view " &
+         "Application_Name Controller_Name [template_name] [arguments...]");
       New_Line;
-      Put_Line
-        ("Creates a new Gnoga Controller called Controller_Name for" &
-           " Application_Name.");
+      Put_Line ("Creates a new Gnoga Controller called Controller_Name for" & " Application_Name.");
       New_Line;
-      Put_Line
-        ("If template_name is not provided the simple_view template " &
-           "will be used.");
+      Put_Line ("If template_name is not provided the simple_view template " & "will be used.");
       New_Line;
-      Put_Line
-        ("Templates are located at:");
+      Put_Line ("Templates are located at:");
       Put_Line ("   " & Gnoga_Make_Templates);
       New_Line;
-      Put_Line ("Some templates may allow for additional arguments, see the" &
-                  " templates's README file for more details.");
+      Put_Line
+        ("Some templates may allow for additional arguments, see the" & " templates's README file for more details.");
    end Display_Controller_Usage;
 
    --------------------
@@ -182,24 +157,22 @@ package body Gnoga_Make is
 
       procedure Template_Names (Directory_Entry : Directory_Entry_Type) is
       begin
-         if Kind (Directory_Entry) = Directory and then
-           Index (Simple_Name (Directory_Entry), ".") /= 1
+         if Kind (Directory_Entry) = Directory and then Index (From_UTF_8 (Simple_Name (Directory_Entry)), ".") /= 1
          then
-            Put_Line (Simple_Name (Directory_Entry));
+            Put_Line (From_UTF_8 (Simple_Name (Directory_Entry)));
          end if;
       end Template_Names;
    begin
-      Search (Directory => Gnoga_Make_Templates,
-              Pattern   => "",
-              Process   => Template_Names'Access);
+      Search (Directory => To_UTF_8 (Gnoga_Make_Templates), Pattern => "", Process => Template_Names'Access);
    end List_Templates;
 
    ---------------------
    -- New_Application --
    ---------------------
 
-   procedure New_Application (App_Name          : in String;
-                              App_Template_Name : in String)
+   procedure New_Application
+     (App_Name          : in String;
+      App_Template_Name : in String)
    is
       Data       : Gnoga.Server.Template_Parser.View_Data;
       Lower_Name : constant String := Translate (App_Name, Lower_Case_Map);
@@ -207,41 +180,44 @@ package body Gnoga_Make is
       procedure Create_Tree (Directory_Entry : Directory_Entry_Type);
       --  Copy template tree and parse template files
 
-      function Parse_Name (Name : String) return String;
+      function Parse_Name
+        (Name : String)
+         return String;
       --  Replace App_Template_Name in Name with application's name and remove
       --  the .tpl extension
 
-      function Parse_Name (Name : String) return String is
+      function Parse_Name
+        (Name : String)
+         return String
+      is
          P : constant Natural := Index (Name, App_Template_Name);
       begin
          if P = 0 then
-            return Name (Name'First .. Name'Last - 4);
+            return Name.Slice (Name.First, Name.Last - 4);
          end if;
 
-         return Name (Name'First .. Name'First + P - 2) & Lower_Name &
-            Name (App_Template_Name'Length + P .. Name'Last - 4);
+         return
+           Name.Slice (Name.First, Name.First + P - 2) & Lower_Name &
+           Name.Slice (App_Template_Name.Length + P, Name.Last - 4);
       end Parse_Name;
 
       procedure Create_Tree (Directory_Entry : Directory_Entry_Type) is
       begin
-         if Kind (Directory_Entry) = Directory and then
-           Index (Simple_Name (Directory_Entry), ".") /= 1
+         if Kind (Directory_Entry) = Directory and then Index (From_UTF_8 (Simple_Name (Directory_Entry)), ".") /= 1
          then
             Create_Directory (Simple_Name (Directory_Entry));
             Set_Directory (Simple_Name (Directory_Entry));
-            Search (Full_Name (Directory_Entry), "",
-                    Process => Create_Tree'Access);
+            Search (Full_Name (Directory_Entry), "", Process => Create_Tree'Access);
             Set_Directory ("..");
 
          elsif Kind (Directory_Entry) = Ordinary_File then
             if Extension (Simple_Name (Directory_Entry)) = "tpl" then
                Gnoga.Server.Template_Parser.Write_String_To_File
-                 (File_Name => Parse_Name (Simple_Name (Directory_Entry)),
-                  Value     => Gnoga.Server.Template_Parser.Simple.Load_View
-                    (Full_Name (Directory_Entry), Data));
+                 (File_Name => Parse_Name (From_UTF_8 (Simple_Name (Directory_Entry))),
+                  Value     =>
+                    Gnoga.Server.Template_Parser.Simple.Load_View (From_UTF_8 (Full_Name (Directory_Entry)), Data));
             else
-               Copy_File (Full_Name (Directory_Entry),
-                          Simple_Name (Directory_Entry));
+               Copy_File (Full_Name (Directory_Entry), Simple_Name (Directory_Entry));
             end if;
          else
             null;
@@ -249,42 +225,41 @@ package body Gnoga_Make is
       end Create_Tree;
 
    begin
-      Gnoga.Server.Template_Parser.Set_Template_Directory
-        ("");
+      Gnoga.Server.Template_Parser.Set_Template_Directory ("");
 
       Data.Insert ("App_Name", App_Name);
       Data.Insert ("App_Name_Lower", Lower_Name);
 
       for i in 1 .. Ada.Command_Line.Argument_Count loop
          declare
-            n : constant String := i'Img;
+            n : constant String := Gnoga.Image (i);
          begin
-            Data.Insert ("Argument_" & n (n'First + 1 .. n'Last),
-                         Ada.Command_Line.Argument (i));
+            Data.Insert ("Argument_" & n, From_UTF_8 (Ada.Command_Line.Argument (i)));
          end;
       end loop;
 
-      Put_Line ("Template Directory : " &
-                  Gnoga_Make_Templates & App_Template_Name);
+      Put_Line ("Template Directory : " & Gnoga_Make_Templates & App_Template_Name);
       Put_Line ("Creating directory : " & Lower_Name);
-      Create_Directory (Lower_Name);
-      Set_Directory (Lower_Name);
+      Create_Directory (To_UTF_8 (Lower_Name));
+      Set_Directory (To_UTF_8 (Lower_Name));
       Create_Directory ("obj");
       Create_Directory ("bin");
-      Search (Directory => Gnoga_Make_Templates & App_Template_Name,
-              Pattern   => "",
-              Process   => Create_Tree'Access);
+      Search
+        (Directory => To_UTF_8 (Gnoga_Make_Templates & App_Template_Name), Pattern => "",
+         Process   => Create_Tree'Access);
    end New_Application;
 
-   procedure New_From_Template (App_Name           : in String;
-                                Replace_Name       : in String;
-                                Name               : in String;
-                                Template_Name      : in String);
+   procedure New_From_Template
+     (App_Name      : in String;
+      Replace_Name  : in String;
+      Name          : in String;
+      Template_Name : in String);
 
-   procedure New_From_Template (App_Name           : in String;
-                                Replace_Name       : in String;
-                                Name               : in String;
-                                Template_Name      : in String)
+   procedure New_From_Template
+     (App_Name      : in String;
+      Replace_Name  : in String;
+      Name          : in String;
+      Template_Name : in String)
    is
       Data              : Gnoga.Server.Template_Parser.View_Data;
       App_Template_Name : constant String := "app_name";
@@ -294,59 +269,62 @@ package body Gnoga_Make is
       procedure Create_Tree (Directory_Entry : Directory_Entry_Type);
       --  Copy template tree and parse template files
 
-      function Parse_Name (Name : String) return String;
+      function Parse_Name
+        (Name : String)
+         return String;
       --  Replace App_Template_Name and Template_NAme in Name
       --  with application's name, name and remove the .tpl
       --  extension
 
-      function Parse_Name (Name : String) return String is
-         P  : constant Natural := Index (Name, App_Template_Name);
-         B  : Ada.Strings.Unbounded.Unbounded_String;
+      function Parse_Name
+        (Name : String)
+         return String
+      is
+         P : constant Natural := Index (Name, App_Template_Name);
+         B : String;
       begin
          if P = 0 then
-            B := To_Unbounded_String (Name (Name'First .. Name'Last - 4));
+            B := Name.Slice (Name.First, Name.Last - 4);
          else
-            B := To_Unbounded_String
-              (Name (Name'First .. Name'First + P - 2) & Lower_Name &
-                 Name (App_Template_Name'Length + P .. Name'Last - 4));
+            B :=
+              Name.Slice (Name.First, Name.First + P - 2) & Lower_Name &
+              Name.Slice (App_Template_Name.Length + P, Name.Last - 4);
          end if;
 
          declare
-            Name : constant String := To_String (B);
+            Name : constant String  := B;
             P    : constant Natural := Index (Name, Template_Name);
          begin
             if P = 0 then
-               return Name (Name'First .. Name'Last - 4);
+               return Name.Slice (Name.First, Name.Last - 4);
             else
-               return Name (Name'First .. Name'First + P - 2) & Lower_Name &
-                 Name (App_Template_Name'Length + P .. Name'Last - 4);
+               return
+                 Name.Slice (Name.First, Name.First + P - 2) & Lower_Name &
+                 Name.Slice (App_Template_Name.Length + P, Name.Last - 4);
             end if;
          end;
       end Parse_Name;
 
       procedure Create_Tree (Directory_Entry : Directory_Entry_Type) is
       begin
-         if Kind (Directory_Entry) = Directory and then
-           Index (Simple_Name (Directory_Entry), ".") /= 1
+         if Kind (Directory_Entry) = Directory and then Index (From_UTF_8 (Simple_Name (Directory_Entry)), ".") /= 1
          then
             if not Exists (Simple_Name (Directory_Entry)) then
                Create_Directory (Simple_Name (Directory_Entry));
             end if;
 
             Set_Directory (Simple_Name (Directory_Entry));
-            Search (Full_Name (Directory_Entry), "",
-                    Process => Create_Tree'Access);
+            Search (Full_Name (Directory_Entry), "", Process => Create_Tree'Access);
             Set_Directory ("..");
 
          elsif Kind (Directory_Entry) = Ordinary_File then
             if Extension (Simple_Name (Directory_Entry)) = "tpl" then
                Gnoga.Server.Template_Parser.Write_String_To_File
-                 (File_Name => Parse_Name (Simple_Name (Directory_Entry)),
-                  Value     => Gnoga.Server.Template_Parser.Simple.Load_View
-                    (Full_Name (Directory_Entry), Data));
+                 (File_Name => Parse_Name (From_UTF_8 (Simple_Name (Directory_Entry))),
+                  Value     =>
+                    Gnoga.Server.Template_Parser.Simple.Load_View (From_UTF_8 (Full_Name (Directory_Entry)), Data));
             else
-               Copy_File (Full_Name (Directory_Entry),
-                          Simple_Name (Directory_Entry));
+               Copy_File (Full_Name (Directory_Entry), Simple_Name (Directory_Entry));
             end if;
          else
             null;
@@ -354,37 +332,31 @@ package body Gnoga_Make is
       end Create_Tree;
 
    begin
-      Gnoga.Server.Template_Parser.Set_Template_Directory
-        ("");
+      Gnoga.Server.Template_Parser.Set_Template_Directory ("");
 
       Data.Insert ("App_Name", App_Name);
       Data.Insert ("App_Name_Lower", App_Lower_Name);
       Data.Insert (Replace_Name & "_Name", Name);
       Data.Insert (Replace_Name & "_Name_Lower", Lower_Name);
 
-      Put_Line ("Template Directory : " &
-                  Gnoga_Make_Templates & Template_Name);
+      Put_Line ("Template Directory : " & Gnoga_Make_Templates & Template_Name);
    end New_From_Template;
 
-   procedure New_View (App_Name           : in String;
-                       View_Name          : in String;
-                       View_Template_Name : in String)
+   procedure New_View
+     (App_Name           : in String;
+      View_Name          : in String;
+      View_Template_Name : in String)
    is
    begin
-      New_From_Template (App_Name,
-                         "View",
-                         View_Name,
-                         View_Template_Name);
+      New_From_Template (App_Name, "View", View_Name, View_Template_Name);
    end New_View;
 
-   procedure New_Controller (App_Name                 : in String;
-                             Controller_Name          : in String;
-                             Controller_Template_Name : in String)
+   procedure New_Controller
+     (App_Name                 : in String;
+      Controller_Name          : in String;
+      Controller_Template_Name : in String)
    is
    begin
-      New_From_Template (App_Name,
-                         "Controller",
-                         Controller_Name,
-                         Controller_Template_Name);
+      New_From_Template (App_Name, "Controller", Controller_Name, Controller_Template_Name);
    end New_Controller;
 end Gnoga_Make;

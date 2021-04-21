@@ -39,11 +39,12 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Characters.Latin_1;
 with Ada.Strings.Unbounded;
 
-with Gnoga;
 with Gnoga.Server.Template_Parser.Simple;
 with Gnoga.Types;
 
 with Gnoga_Doc.Token; use Gnoga_Doc.Token;
+
+with UXStrings;
 
 package body Gnoga_Doc is
 
@@ -60,7 +61,7 @@ package body Gnoga_Doc is
 
          while S (P) /= ':' loop
             Get_To_EOS (S, P);
-            Names.Prepend (Token_Name (S, P));
+            Names.Prepend (UXStrings.From_UTF_8 (Token_Name (S, P)));
             Get_To_EOT (S, P);
             Get_To_EOS (S, P);
 
@@ -84,7 +85,7 @@ package body Gnoga_Doc is
                   Get_To_Next_Token (S, P);
                else
                   for i in Names.First_Index .. Names.Last_Index loop
-                     Put_Line (Names.Element (i) & " : " & Type_Info);
+                     Put_Line (UXStrings.To_UTF_8 (Names.Element (i)) & " : " & Type_Info);
                   end loop;
 
                   Names.Clear;
@@ -109,8 +110,8 @@ package body Gnoga_Doc is
       Put_Line ("Parsing file : " & File_Name);
 
       declare
-         S : constant String := Gnoga.Server.Template_Parser.Simple.Load_View
-           (File_Name);
+         S : constant String := UXStrings.To_UTF_8 (Gnoga.Server.Template_Parser.Simple.Load_View
+           (UXStrings.From_UTF_8 (File_Name)));
          P : Integer := S'First;
          T : Integer;
          L : Integer;

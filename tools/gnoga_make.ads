@@ -28,7 +28,12 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
+with Gnoga;
+
 package Gnoga_Make is
+   use all type Gnoga.String;
+
+   subtype String is Gnoga.String;
 
    procedure Version;
    --  Display version information
@@ -47,16 +52,19 @@ package Gnoga_Make is
 
    procedure List_Templates;
 
-   procedure New_Application (App_Name          : in String;
-                              App_Template_Name : in String);
+   procedure New_Application
+     (App_Name          : in String;
+      App_Template_Name : in String);
    --  Copy new_application template directory and make appropriate project
    --  name substitutions
 
-   procedure New_View (App_Name           : in String;
-                       View_Name          : in String;
-                       View_Template_Name : in String);
+   procedure New_View
+     (App_Name           : in String;
+      View_Name          : in String;
+      View_Template_Name : in String);
 
-   procedure New_Controller (App_Name                 : in String;
-                             Controller_Name          : in String;
-                             Controller_Template_Name : in String);
+   procedure New_Controller
+     (App_Name                 : in String;
+      Controller_Name          : in String;
+      Controller_Template_Name : in String);
 end Gnoga_Make;

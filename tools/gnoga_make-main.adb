@@ -19,16 +19,8 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Command_Line; use Ada.Command_Line;
-with Ada.Strings.Fixed; use Ada.Strings.Fixed;
-with Ada.Strings.Maps.Constants; use Ada.Strings.Maps.Constants;
-
-with Ada.Exceptions;
-with GNAT.Traceback.Symbolic;
-
-with Gnoga;
-
-with Gnoga_Make;
+with Ada.Command_Line;                               use Ada.Command_Line;
+with Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants; use Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants;
 
 procedure Gnoga_Make.Main is
 begin
@@ -38,7 +30,7 @@ begin
    end if;
 
    declare
-      Command : constant String := Translate (Argument (1), Lower_Case_Map);
+      Command : constant String := Translate (From_UTF_8 (Argument (1)), Lower_Case_Map);
    begin
       if Command = "version" or Command = "-v" or Command = "/v" then
          Gnoga_Make.Version;
@@ -50,9 +42,9 @@ begin
          if Argument_Count < 2 then
             Gnoga_Make.Display_New_Usage;
          elsif Argument_Count = 2 then
-            Gnoga_Make.New_Application (Argument (2), "multi_connect");
+            Gnoga_Make.New_Application (From_UTF_8 (Argument (2)), "multi_connect");
          else
-            Gnoga_Make.New_Application (Argument (2), Argument (3));
+            Gnoga_Make.New_Application (From_UTF_8 (Argument (2)), From_UTF_8 (Argument (3)));
          end if;
 
       elsif Command = "list" then
@@ -74,7 +66,5 @@ begin
    end;
 exception
    when E : others =>
-      Gnoga.Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                   Ada.Exceptions.Exception_Message (E));
-      Gnoga.Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
+      Gnoga.Log (E);
 end Gnoga_Make.Main;

@@ -35,17 +35,16 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Exceptions;
-with GNAT.Traceback.Symbolic;
 with Ada.Command_Line;
 
 with Gnoga;
+with UXStrings;
 
 procedure Gnoga_Doc.Main is
+   use type Gnoga.String;
 begin
    if Ada.Command_Line.Argument_Count /= 1 then
-      Gnoga.Write_To_Console ("Usage: " & Ada.Command_Line.Command_Name &
-                                " filename");
+      Gnoga.Write_To_Console ("Usage: " & UXStrings.From_UTF_8 (Ada.Command_Line.Command_Name) & " filename");
    end if;
 
    if Ada.Command_Line.Argument_Count = 1 then
@@ -53,7 +52,5 @@ begin
    end if;
 exception
    when E : others =>
-      Gnoga.Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                   Ada.Exceptions.Exception_Message (E));
-      Gnoga.Log (GNAT.Traceback.Symbolic.Symbolic_Traceback (E));
+      Gnoga.Log (E);
 end Gnoga_Doc.Main;

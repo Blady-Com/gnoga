@@ -17,7 +17,7 @@ procedure Test_UXStrings_Text_IO is
       Put_Line (F,"une soirée passée à étudier les mathématiques ℕ⊂𝕂...");
       Put (F,"Test_End");
       Close (F);
-      Put_Line ("File witten.");
+      Put_Line ("File written.");
    end;
 
    procedure Read (Encoding : Encoding_Scheme) is
@@ -41,7 +41,7 @@ procedure Test_UXStrings_Text_IO is
          Character'Write (S, C);
       end loop;
       Close (F);
-      Put_Line ("File witten.");
+      Put_Line ("File written.");
    end;
 
    procedure Read_Stream is

@@ -1,5 +1,7 @@
 # Unicode Extended Strings (UXStrings)
 
+[![Alire](https://img.shields.io/endpoint?url=https://alire.ada.dev/badges/uxstrings.json)](https://alire.ada.dev/crates/uxstrings.html)
+
 ## Motivation
 
 Ada GUI library [Gnoga](https://sourceforge.net/projects/gnoga) internal character strings implementation is based on both Ada types String and Unbounded\_String.
@@ -35,7 +37,7 @@ Automatically S2 will adapt its inner representation to the received characters.
 
 ## UXStrings packages
 
-Package named UXStrings (Unicode Extended String) and its Text\_IO child package are proposed to bring String enhancements using some Ada 202x features.
+Package named [UXStrings](https://github.com/Blady-Com/UXStrings/blob/master/src/uxstrings1.ads) (Unicode Extended String) and its [Text_IO](https://github.com/Blady-Com/UXStrings/blob/master/src/uxstrings-text_io1.ads) child package are proposed to bring String enhancements using some Ada 202x features.
 
 The first part of UXString package contains renaming statements of current Ada types.
 Ada current String type is structurally an array of Latin-1 characters thus is renamed as Latin\_1\_Character\_Array.
@@ -80,14 +82,31 @@ Note: Iterable is a GNAT specific aspect.
 
 ## UXStrings implementations
 
-### UXStrings
+### UXStrings 1
 
-A first POC implementation is provided. The source code files are ending with the number 1 as for instance "uxstrings.ads". A GNAT project file "uxstrings.gpr" is provided with some naming conventions for both packages UXStrings  and UXStrings.Text\_IO.
+A first proof of concept implementation is provided. The source code files are ending with the number 1 as for instance "uxstrings1.ads". A GNAT project file "uxstrings1.gpr" is provided with some naming conventions for both packages UXStrings  and UXStrings.Text\_IO.
 
 #### Implementation choices
 
 UTF-8 encoding is chosen for internal representation. The [Strings_Edit library](http://www.dmitry-kazakov.de/ada/strings_edit.htm) is used for UTF-8 encoding management.
 [GNAT.OS_Lib](https://docs.adacore.com/gnat_rm-docs/html/gnat_rm/gnat_rm/the_gnat_library.html#gnat-os-lib-g-os-lib-ads) is chosen for input / output management.
+
+This implementation which is only for demonstrate the possible usages of UXString has many limitations.
+
+#### Limitations:
+
+- not thread safe
+- single character assignment is not implemented
+- only few API are implemented
+
+### UXStrings 2
+
+A second proof of concept implementation is provided. The source code files are ending with the number 2 as for instance "uxstrings2.ads". A GNAT project file "uxstrings2.gpr" is provided with some naming conventions for both packages UXStrings  and UXStrings.Text\_IO.
+
+#### Implementation choices
+
+In addition to implementation UXStrings 1, some API have been added to support ASCII 7 bits encoding. ASCII is a subset of UTF-8 thus no change with the internal representation.
+However, the API are now aware if content is full ASCII. On one hand, this permits to access directly to the position of one character without iterating on UTF-8 characters. Thus this is a time improvement when content is full ASCII. On the other hand, when content is changing the API check if the content is full ASCII. Thus this is a time penalty when changes are not full ASCII.
 
 This implementation which is only for demonstrate the possible usages of UXString has many limitations.
 
@@ -108,10 +127,24 @@ Here are some ideas:
 
 ## Tests
 
-One test program test\_uxstrings.adb is provided for UXStrings tests and an other test program test\_uxstrings\_text\_io.adb is provided for UXStrings.Text\_IO tests.
+One test program [test\_uxstrings.adb](https://github.com/Blady-Com/UXStrings/blob/master/tests/test_uxstrings.adb) is provided for UXStrings tests and an other test program [test\_uxstrings\_text\_io.adb](https://github.com/Blady-Com/UXStrings/blob/master/tests/test_uxstrings_text_io.adb) is provided for UXStrings.Text\_IO tests.
+
+## Using Alire
+
+In your [Alire](https://alire.ada.dev) project, add UXStrings dependency:
+
+`% alr with uxstrings`
+
+Thus you can import the UXStrings package in your programs.
+
+## Licence
+
+The provided UXStrings specifications are intend to be public.
+Constructive criticism and altenative implementations of these specifications are expected.
+The actual proposed implementation is under [CeCILL](https://cecill.info) licence.
 
 ## Feedbacks
 
-Feel free to send feedback about UXStrings specification source code on [Github](https://github.com/Blady-Com/UXStrings/issues) or [Gnoga mailing list](https://sourceforge.net/p/gnoga/mailman/gnoga-list).
+Feel free to send feedback about UXStrings specification source code on [Github](https://github.com/Blady-Com/UXStrings/issues).
 
-Pascal Pignard, November 2020.
+Pascal Pignard, April 2021.

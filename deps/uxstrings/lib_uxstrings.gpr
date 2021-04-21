@@ -21,4 +21,7 @@ library project Lib_UXStrings is
       for Artifacts ("share/doc/uxstrings_rm") use (Project'Object_Dir & "/gnatdoc/*");
    end Install;
 
+   package Pretty_Printer is
+      for Default_Switches ("ada") use ("-M120", "-W8", "--comments-unchanged");
+   end Pretty_Printer;
 end Lib_UXStrings;

@@ -112,7 +112,7 @@ procedure Demo is
       App : constant App_Access := App_Access (Object.Connection_Data);
    begin
       App.Target.Border (Color => Colors.Green);
-      App.Target.Text (Drag_Text & "@" & Image (X) & Image (Y));
+      App.Target.Text (Drag_Text & "@" & Image (X) & ',' & Image (Y));
    end Drop;
 
    procedure On_Connect
@@ -256,7 +256,7 @@ procedure Demo is
          Collection_View : Gnoga.Gui.View.View_Type;
          Name_List       : Gnoga.Types.Data_Array_Type;
       begin
-         Collection_View.Create (Main_Window);
+         Collection_View.Create (App.Console);
          Gnoga.Client.Bind_Page.Bind_Page (Collection_View);
 
          Name_List := Collection_View.Element_Names;

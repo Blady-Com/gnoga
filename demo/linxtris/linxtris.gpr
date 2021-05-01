@@ -9,7 +9,10 @@ project Linxtris is
    for Main use ("linxtris.adb");
    for Create_Missing_Dirs use Settings'Create_Missing_Dirs;
 
-   package Compiler renames Settings.Compiler;
+   package Compiler is
+      for Default_Switches ("Ada") use Settings.Compiler'Default_Switches ("Ada") & "-gnatyN";
+   end Compiler;
+
    package Binder renames Settings.Binder;
    package Linker renames Settings.Linker;
 

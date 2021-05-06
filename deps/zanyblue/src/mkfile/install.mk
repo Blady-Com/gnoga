@@ -46,7 +46,7 @@ UNINSTALL_DEP=uninstall-zb
 endif
 GPRINSTALL_FLAGS+=-f
 GPRINSTALL_FLAGS+=-p
-GPRINSTALL_FLAGS+=--prefix=$(INSTALL_DIR)
+GPRINSTALL_FLAGS+=--prefix="$(INSTALL_DIR)"
 #GPRINSTALL_FLAGS+=--install-name=zanyblue
 GPRINSTALL_FLAGS+=$(GNATFLAGS)
 
@@ -68,10 +68,11 @@ install-zb:
 	$(GPRINSTALL) $(GPRINSTALL_FLAGS) zanyblue.gpr
 	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --mode=usage zbmcompile/zbmcompile.gpr
 	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --mode=usage zbinfo/zbinfo.gpr
-	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --mode=usage zbtest/zbtest.gpr
+#	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --mode=usage zbtest/zbtest.gpr
 
+.IGNORE: uninstall-zb
 uninstall-zb:
 	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --uninstall zanyblue.gpr
-	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --uninstall --mode=usage zbmcompile/zbmcompile.gpr
-	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --uninstall --mode=usage zbinfo/zbinfo.gpr
-	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --uninstall --mode=usage zbtest/zbtest.gpr
+	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --uninstall --mode=usage zbmcompile.gpr
+	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --uninstall --mode=usage zbinfo.gpr
+#	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --uninstall --mode=usage zbtest.gpr

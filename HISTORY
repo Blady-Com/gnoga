@@ -1,11 +1,47 @@
-20201128 - Gnoga V2.1-alpha:
+2021xxxx - Gnoga V2.1-beta:
 
 - ...
 
 
-2020xxxx - Gnoga V1.6-beta:
+20210506 - Gnoga V2.1-alpha:
 
-- xxx
+- Demo test program: avoid replacing of Main_Window.View by Collection_View to avoid finalization of Console and then exception when resizing.
+- Adapt Gnoga Secure programs to UXStrings.
+- Adapt Tools programs to UXStrings.
+- Adapt Demo programs to UXStrings.
+- Storage test program: fix life time of View to avoid exception when resizing.
+- Adapt Test programs to UXStrings.
+- Zanyblue: fix Write_String empty buffer.
+- UXStrings: upgrade version 2 up to version 1.
+- Add log message and exception occurence.
+- Select UTF-8 or ASCII conversions for optimization with UXStrings version 2.
+    Switch to UTF-8 encoding when required by Unix like OS.
+    Likewise, set UTF-8 and LF as output encoding and line terminator.
+- UXStrings: upgrade to version 2 (UXS_20210405).
+- Fix "PROGRAM_ERROR : accessibility check failed" from previous wrong changes adapting to GNAT Community 2020.
+- Zanyblue: generate zbmcompile messages with zbmcompile.
+- Zanyblue: generate zbinfo messages with zbmcompile.
+- Zanyblue:
+    Fix line ending to LF.
+    Adapt zbmcompile properties to UXString and generate corresponding messages.
+- Zanyblue: adapt zbinfo to UXStrings.
+- Zanyblue: fix Raise_Exception call and Decompose_Name default values.
+- Zanyblue: adapt zbmcompile to UXStrings.
+- Zanyblue: add ZanyBlue.Text.Wide_Wide_Characters.
+- Zanyblue: reformat zbinfo, zbmcompile, zbtest source codes.
+- Zanyblue: suppress Wide_Wide_prefix.
+- Zanyblue: change Wide_String and Wide_Wide_String handling to UXStrings.
+- Zanyblue: reformat source codes.
+- Zanyblue: upgrade to version 1.4.0 (r3199).
+- Add UXStrings to makefile.
+- Fix some UTF-8 conversions from or to client.
+- Homogenize logs with ID.
+- Change to Image without space prefix and then suppress all Trim.
+- Use preferably Image instead of 'Img or 'Image and Value instead of 'Value.
+- Use First and Last for compatibility with correspondant String attributes.
+- Add new Image and value conversion functions. Integer Image has the same convention (space prefix) as Ada Image attribute.
+- Change String and Unbounded_String handling to UXStrings.
+- Reformat Gnoga source codes.
 
 
 20191222 - Gnoga V1.6-alpha:

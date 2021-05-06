@@ -39,7 +39,7 @@
 
 TOP=..
 
-APPDIRS=zbmcompile zbinfo zbtest
+APPDIRS=zbmcompile zbinfo
 
 CLEAN_FILES+=$(wildcard gnatcheck.out)
 CLEAN_FILES+=$(wildcard obj/*)

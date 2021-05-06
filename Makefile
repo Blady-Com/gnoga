@@ -210,6 +210,7 @@ install_deps: deps $(BUILD_SQLITE3)
 	- $(COPY) lib$(PATHSEP)libsqlite3.a "$(PREFIX)$(PATHSEP)lib"
 	- $(MAKE) -C deps/zanyblue/src $(ZB_MAKE) INSTALL_DIR="$(PREFIX)" install
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=uxstrings deps/uxstrings/lib_uxstrings.gpr
 
 # Install Gnoga without deps
 install_gnoga: basic_components gnoga gnoga_tools

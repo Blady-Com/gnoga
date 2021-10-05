@@ -101,7 +101,7 @@ DOWNLOAD_URL="$(DOWNLOAD_ROOT)/zanyblue-$(VERSION_S).tar.gz"
 DIST_TLD=$(call lc,zanyblue-$(VERSION_TLD))
 TARNAME=zanyblue-$(VERSION_S).tar.gz
 ifndef SVN_VERSION
-SVN_VERSION=$(shell svnversion $(TOP))
+SVN_VERSION=3199
 COPYRIGHT_YEAR=$(CURRENT_YEAR)
 endif
 
@@ -118,7 +118,7 @@ SBINDIR=$(SRCDIR)/bin
 STAGEDIR=$(TOP)/stage
 ADMINDIR=$(SRCDIR)/admin
 DISTRIBUTION=$(TOP)/$(TARNAME)
-ZBDEV=$(TOP)/src/bin/zbdev
+ZBDEV=echo
 
 # The choices for BUILD are "Debug", for a debug build, "Production" for an
 # optimized production build, and  "Coverage" for a coverage enable build via

@@ -38,9 +38,13 @@
 --  function definitions giving version information.
 --
 
+with UXStrings;
+
 package ZanyBlue is
 
-   pragma Pure;
+   use UXStrings;
+
+   subtype String is UXString;
 
    Version_Major : constant Natural := $V_MAJOR;
    --  The major version number associated with the ZanyBlue release.
@@ -53,7 +57,7 @@ package ZanyBlue is
    --  This should normally be 0 unless a serious issue was encountered
    --  with a release.
 
-   Revision : constant Wide_String := $SVN_VERSION;
+   Revision : constant String := $SVN_VERSION;
    --  The Subversion revision number for the build.
 
    Copyright_Year : constant Positive := $COPYRIGHT_YEAR;

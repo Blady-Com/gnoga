@@ -42,8 +42,6 @@ with UXStrings;
 
 package ZanyBlue is
 
---     pragma Pure;
-
    use UXStrings;
 
    subtype String is UXString;
@@ -59,13 +57,13 @@ package ZanyBlue is
    --  This should normally be 0 unless a serious issue was encountered
    --  with a release.
 
-   Revision : constant String := "3144";
+   Revision : constant String := "3199";
    --  The Subversion revision number for the build.
 
-   Copyright_Year : constant Positive := 2_020;
+   Copyright_Year : constant Positive := 2021;
    --  The copyright year for the build.
 
-   Max_Float_Precision : constant := 5_000;
+   Max_Float_Precision : constant := 5000;
    --  Maximum precision supported for floating point formatting (number of
    --  digits printed after the decimal point.  Requests to format floating
    --  point numbers with a precision greater than this will be truncated to

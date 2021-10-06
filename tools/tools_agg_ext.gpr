@@ -1,4 +1,4 @@
-with "settings.gpr";
+with "../settings.gpr";
 
 aggregate project Tools_Agg_Ext is
 

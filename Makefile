@@ -139,7 +139,7 @@ basic_components:
 	$(MAKE) -C components
 
 # Mandatory dependances for Gnoga and demos
-deps : simple_components zanyblue pragmarc uxstrings
+deps : simple_components uxstrings zanyblue pragmarc
 
 simple_components:
 	$(BUILDER) -P deps/simple_components/lib_components.gpr $(SC_OPTIONS)

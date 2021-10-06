@@ -19,9 +19,8 @@ abstract project Settings is
    Common_Options := ("-gnaty3abcefhiklM120nOprsStu", "-gnat2012", "-gnatW8", "-gnatU");
    --  Common options used for the build modes
 
-   Debug_Options := ("-g", "-gnata", "-gnatq", "-gnatQ", "-gnatw.eH.YD", "-gnatVaep", "-gnato",
-                     "-fstack-check", "-gnatf", "-gnateE", "-gnateF", "-Wall",
-                     "-gnatec=" & Settings'Project_Dir & "pragma_debug.adc");
+   Debug_Options := ("-g", "-gnata", "-gnatq", "-gnatQ", "-gnatw.eH.YD.N", "-gnatVaep", "-gnato",
+                     "-fstack-check", "-gnatf", "-gnateE", "-gnateF", "-Wall");
 
    Release_Options := ("-O2", "-gnatp", "-gnatn");
 
@@ -29,6 +28,7 @@ abstract project Settings is
       case Build is
          when "Debug" =>
             for Default_Switches ("Ada") use Common_Options & Debug_Options;
+            for Local_Configuration_Pragmas use "pragma_debug.adc";
          when "Release" =>
             for Default_Switches ("Ada") use Common_Options & Release_Options;
          when "Profile" =>

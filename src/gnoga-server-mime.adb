@@ -66,6 +66,8 @@ package body Gnoga.Server.Mime is
          return "image/x-icon";
       elsif Ext = "html" or Ext = "htm" then
          return "text/html";
+      elsif Ext = "svg" then
+         return "image/svg+xml";
       else
          return "text/plain";
       end if;

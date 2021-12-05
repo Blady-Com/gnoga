@@ -66,11 +66,11 @@ with "gnoga.gpr";
 with "zanyblue.gpr";
 ...
 
-then add these options to your grpbuild: -aP/path/to/gnoga/src -aP/path/to/gnoga/deps/zanyblue/src -aP/path/to/gnoga/deps/PragmARC
+then add these options to your grpbuild: -aP/path/to/gnoga/src -aP/path/to/gnoga/deps/zanyblue/src
 or for Unix like
-export GPR_PROJECT_PATH=/path/to/gnoga/src:/path/to/gnoga/deps/zanyblue/src:/path/to/gnoga/deps/PragmARC
+export GPR_PROJECT_PATH=/path/to/gnoga/src:/path/to/gnoga/deps/zanyblue/src
 or for Windows
-set GPR_PROJECT_PATH=path\to\gnoga\src;path\to\gnoga\deps\zanyblue\src;path\to\gnoga\deps\PragmARC
+set GPR_PROJECT_PATH=path\to\gnoga\src;path\to\gnoga\deps\zanyblue\src
 
 These options are automatically computed for you with gnoga-config.
 The script is created a first time with makefile and then can be use without makefile.

@@ -137,7 +137,7 @@ basic_components:
 	$(MAKE) -C components
 
 # Mandatory dependances for Gnoga and demos
-deps : simple_components zanyblue pragmarc
+deps : simple_components zanyblue
 
 simple_components:
 	$(BUILDER) -P deps/simple_components/lib_components.gpr $(SC_OPTIONS)
@@ -151,9 +151,6 @@ sqlite3:
 
 zanyblue:
 	- cd deps/zanyblue/src && "$(MAKE)" $(ZB_MAKE) APPDIRS="zbmcompile zbinfo"
-
-pragmarc:
-	$(BUILDER) -P deps/PragmARC/lib_pragmarc.gpr
 
 native_gtk: src/gnoga_gtk_window.c
 	cd obj && gcc -c ../src/gnoga_gtk_window.c `pkg-config --cflags gtk+-3.0,webkit2gtk-3.0`
@@ -204,7 +201,6 @@ install_deps: deps $(BUILD_SQLITE3)
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=components deps/simple_components/lib_components.gpr $(SC_OPTIONS)
 	- $(COPY) lib$(PATHSEP)libsqlite3.a "$(PREFIX)$(PATHSEP)lib"
 	- $(MAKE) -C deps/zanyblue/src $(ZB_MAKE) INSTALL_DIR="$(PREFIX)" install
-	$(INSTALLER) --prefix="$(PREFIX)" --install-name=pragmarc deps/PragmARC/lib_pragmarc.gpr
 
 # Install Gnoga without deps
 install_gnoga: basic_components gnoga gnoga_tools
@@ -223,11 +219,10 @@ install_gnoga_sa:
 .IGNORE: uninstall
 uninstall:
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=components --uninstall lib_components.gpr
-	$(INSTALLER) --prefix="$(PREFIX)" --install-name=pragmarc --uninstall pragmarc.gpr
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --uninstall gnoga.gpr
 	$(MAKE) -C deps/zanyblue/src INSTALL_DIR="$(PREFIX)" uninstall
 
-demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello tic_tac_toe leaves db_maker logo localize
+demo: snake mine_detector connect_four chattanooga adaedit adablog linxtris random_int adaothello tic_tac_toe leaves logo localize
 
 snake:
 	$(BUILDER) -P demo/demo_agg.gpr $@-main $(GN_OPTIONS)
@@ -254,25 +249,19 @@ linxtris:
 	$(BUILDER) -P demo/demo_agg.gpr $@ $(GN_OPTIONS)
 	@echo "usage: bin/linxtris -data_dir demo/linxtris/"
 
-password_gen: pragmarc
-	$(BUILDER) -P demo/demo_agg.gpr $@-program $(GN_OPTIONS)
-
 random_int:
 	$(BUILDER) -P demo/demo_agg.gpr $@-program $(GN_OPTIONS)
 
 adaothello:
 	$(BUILDER) -P demo/demo_agg.gpr othello_game $(GN_OPTIONS)
 
-tic_tac_toe: pragmarc
+tic_tac_toe:
 	$(BUILDER) -P demo/demo_agg.gpr $@-program $(GN_OPTIONS)
 
 leaves:
 	$(COPY) demo$(PATHSEP)leaves$(PATHSEP)img$(PATHSEP)*.png img
 	$(COPY) demo$(PATHSEP)leaves$(PATHSEP)img$(PATHSEP)*.jpg img
 	$(BUILDER) -P demo/demo_agg.gpr $@_main $(GN_OPTIONS)
-
-db_maker: pragmarc
-	$(BUILDER) -P demo/demo_agg.gpr movies $(GN_OPTIONS)
 
 logo: zanyblue
 	$(COPY) demo$(PATHSEP)logo$(PATHSEP)*.png img
@@ -309,7 +298,6 @@ clean_all: clean clean_deps
 .IGNORE: clean_deps
 clean_deps:
 	$(CLEANER) -P deps/simple_components/lib_components.gpr
-	$(CLEANER) -P deps/PragmARC/lib_pragmarc.gpr
 	cd deps/zanyblue && "$(MAKE)" -C src clean
 	$(RMS) deps$(PATHSEP)MultiMarkdown-4
 	$(RMS) deps$(PATHSEP)electron-quick-start
@@ -363,9 +351,9 @@ check_rules:
 gnoga-config:
 ifeq ($(BUILD_OS),Windows)
 	- $(MKDIR) bin
-	echo %%1 %%2 %%3 %%4 %%5 %%6 %%7 %%8 %%9 $(GN_OPTIONS) $(ZB_OPTIONS) -aP$(CWD)$(PATHSEP)src -aP$(CWD)$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)src -aP$(CWD)$(PATHSEP)deps$(PATHSEP)PragmARC > bin$(PATHSEP)gnoga-config.cmd
+	echo %%1 %%2 %%3 %%4 %%5 %%6 %%7 %%8 %%9 $(GN_OPTIONS) $(ZB_OPTIONS) -aP$(CWD)$(PATHSEP)src -aP$(CWD)$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)src > bin$(PATHSEP)gnoga-config.cmd
 else
 	- $(MKDIR) bin
-	echo echo $(GN_OPTIONS) $(ZB_OPTIONS) -aP$(CWD)$(PATHSEP)src -aP$(CWD)$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)src -aP$(CWD)$(PATHSEP)deps$(PATHSEP)PragmARC > bin$(PATHSEP)gnoga-config
+	echo echo $(GN_OPTIONS) $(ZB_OPTIONS) -aP$(CWD)$(PATHSEP)src -aP$(CWD)$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)src  > bin$(PATHSEP)gnoga-config
 	chmod +x bin$(PATHSEP)gnoga-config
 endif

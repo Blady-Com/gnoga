@@ -211,13 +211,13 @@ package body Gnoga.Gui.Element is
                         Value   : in String)
    is
    begin
-      Element.jQuery_Execute ("attr ('" & Name & "','" &
-                                Escape_Quotes (Value) & "');");
+      Element.jQuery_Execute ("attr ('" & Escape_Quotes (Name) & "','" &
+                                Escape_Quotes (Value) & "')");
    end Attribute;
 
    function Attribute (Element : Element_Type; Name : String) return String is
    begin
-      return Element.jQuery_Execute ("attr ('" & Name & "');");
+      return Element.jQuery_Execute ("attr ('" & Escape_Quotes (Name) & "')");
    end Attribute;
 
    ----------------

@@ -60,7 +60,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
      (View : in out Accordion_Type; Heading : String)
    is
    begin
-      View.Put_HTML ("<h3>" & Escape_Quotes (Heading) & "</h3>");
+      View.Put_HTML ("<h3>" & Heading & "</h3>");
    end Create_Section;
 
    ----------------------
@@ -115,8 +115,8 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
             if Left_Icon = "" and Right_Icon = "" then
                return "";
             else
-               return ", icons: { primary: '" & Left_Icon & "'," &
-                 "secondary: '" & Right_Icon & "'}";
+               return ", icons: { primary: '" & Escape_Inner_Quotes (Left_Icon) & "'," &
+                 "secondary: '" & Escape_Inner_Quotes (Right_Icon) & "'}";
             end if;
          end Is_Icon;
       begin
@@ -187,7 +187,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
         (Parent, "<div>" & Escape_Quotes (Content) & "</div>", ID);
 
       Dialog.jQuery_Execute
-        ("dialog({title: '" & Title & "'," &
+        ("dialog({title: '" & Escape_Quotes (Title) & "'," &
            "height:" & Is_Auto (Height) & "," &
            "width:" & Is_Auto (Width) & "," &
            "position: { my: '" & Position_My & "', at: '" &

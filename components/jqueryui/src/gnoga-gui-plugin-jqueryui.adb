@@ -252,8 +252,8 @@ package body Gnoga.Gui.Plugin.jQueryUI is
       end Has_Options;
    begin
       Element.jQuery_Execute (Effect_Method &
-                                "('" & Effect_Name & "'," &
-                                "{ easing: '" & Easing & "'" &
+                                "('" & Escape_Quotes (Effect_Name) & "'," &
+                                "{ easing: '" & Escape_Quotes (Easing) & "'" &
                                 Has_Options & " }," &
                                 Animation_Duration'Img & ")");
    end jQueryUI_Effect;

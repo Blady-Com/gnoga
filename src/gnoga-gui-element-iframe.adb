@@ -49,7 +49,7 @@ package body Gnoga.Gui.Element.IFrame is
       ID       : in     String := "")
    is
    begin
-      IFrame.Create_From_HTML (Parent, Escape_Quotes ("<iframe src='" & URL & "' seamless=" &
+      IFrame.Create_From_HTML (Parent, Escape_Quotes ("<iframe src='" & Escape_Inner_Quotes (URL) & "' seamless=" &
                                  Seamless'Img & "></iframe>"), ID);
 
       IFrame.Frame.Attach (Connection_ID => Parent.Connection_ID,

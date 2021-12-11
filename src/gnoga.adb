@@ -51,6 +51,32 @@ package body Gnoga is
    Automatic_Flush : Boolean := False;
    Log_File : Ada.Text_IO.File_Type;
 
+   -------------------------
+   -- Escape_Inner_Quotes --
+   -------------------------
+
+   function Escape_Inner_Quotes (S : String) return String is
+
+      function Translate_Character (C : Character) return String;
+
+      function Translate_Character (C : Character) return String is
+      begin
+         if C = ''' then
+            return "&apos;";
+         else
+            return (1 => C);
+         end if;
+      end Translate_Character;
+
+      R : Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      for C in S'Range loop
+         Ada.Strings.Unbounded.Append (R, Translate_Character (S (C)));
+      end loop;
+
+      return Ada.Strings.Unbounded.To_String (R);
+   end Escape_Inner_Quotes;
+
    -------------------
    -- Escape_Quotes --
    -------------------
@@ -61,9 +87,7 @@ package body Gnoga is
 
       function Translate_Character (C : Character) return String is
       begin
-         if C = '"' then
-            return "\x22";
-         elsif C = ''' then
+         if C = ''' then
             return "\x27";
          elsif C = '\' then
             return "\x5C";

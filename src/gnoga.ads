@@ -52,6 +52,11 @@ package Gnoga is
 
    HTTP_Server_Name : constant String := "gnoga/" & Version;
 
+   function Escape_Inner_Quotes
+     (S : String)
+      return String;
+   --  Escape quotes for HTML attributes in Javascript.
+
    function Escape_Quotes
      (S : String)
       return String;

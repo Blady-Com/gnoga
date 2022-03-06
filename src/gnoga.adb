@@ -49,6 +49,40 @@ package body Gnoga is
    Automatic_Flush : Boolean := False;
    Log_File        : UXStrings.Text_IO.File_Type;
 
+   -------------------------
+   -- Escape_Inner_Quotes --
+   -------------------------
+
+   function Escape_Inner_Quotes
+     (S : String)
+      return String
+   is
+
+      function Translate_Character
+        (C : Unicode_Character)
+         return String;
+
+      function Translate_Character
+        (C : Unicode_Character)
+         return String
+      is
+      begin
+         if C = ''' then
+            return "&apos;";
+         else
+            return From_Unicode (C);
+         end if;
+      end Translate_Character;
+
+      R : String;
+   begin
+      for C in S loop
+         Append (R, Translate_Character (S (C)));
+      end loop;
+
+      return R;
+   end Escape_Inner_Quotes;
+
    -------------------
    -- Escape_Quotes --
    -------------------
@@ -67,9 +101,7 @@ package body Gnoga is
          return String
       is
       begin
-         if C = '"' then
-            return "\x22";
-         elsif C = ''' then
+         if C = ''' then
             return "\x27";
          elsif C = '\' then
             return "\x5C";

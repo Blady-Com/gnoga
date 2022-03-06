@@ -57,7 +57,9 @@ package body Gnoga.Gui.Element.Form is
    begin
       Form.Create_From_HTML
         (Parent,
-         Escape_Quotes ("<form action='" & Action & "' method='" & Image (Method) & "' target='" & Target & "' />"),
+         Escape_Quotes
+           ("<form action='" & Escape_Inner_Quotes (Action) & "' method='" & Image (Method) & "' target='" & Target &
+            "' />"),
          ID);
    end Create;
 
@@ -275,7 +277,7 @@ package body Gnoga.Gui.Element.Form is
       function Is_Name return String is
       begin
          if Name /= "" then
-            return " name='" & Name & "'";
+            return " name='" & Escape_Inner_Quotes (Name) & "'";
          else
             return "";
          end if;
@@ -284,7 +286,8 @@ package body Gnoga.Gui.Element.Form is
       Element.Create_From_HTML
         (Form,
          Escape_Quotes
-           ("<input type='" & Input_Type & "' " & "form='" & Form.ID & "' value='" & Value & "' " & Is_Name & "/>"),
+           ("<input type='" & Input_Type & "' " & "form='" & Form.ID & "' value='" & Escape_Inner_Quotes (Value) &
+            "' " & Is_Name & "/>"),
          ID);
    end Create_Element;
 
@@ -713,8 +716,8 @@ package body Gnoga.Gui.Element.Form is
       Element.Create_From_HTML
         (Form,
          Escape_Quotes
-           ("<textarea " & "form='" & Form.ID & "' name='" & Name & "' cols=" & Image (Columns) & " rows=" &
-            Image (Rows) & ">" & Value & "</textarea>"),
+           ("<textarea " & "form='" & Form.ID & "' name='" & Escape_Inner_Quotes (Name) & "' cols=" & Image (Columns) &
+            " rows=" & Image (Rows) & ">" & Value & "</textarea>"),
          ID);
    end Create;
 
@@ -1408,7 +1411,7 @@ package body Gnoga.Gui.Element.Form is
    is
       Dummy_D : Gnoga.Gui.Element.Element_Type;
    begin
-      Dummy_D.Create_From_HTML (List, Escape_Quotes ("<option value='" & Value & "'>"));
+      Dummy_D.Create_From_HTML (List, Escape_Quotes ("<option value='" & Escape_Inner_Quotes (Value) & "'>"));
    end Add_Option;
 
    -------------------------------------------------------------------------
@@ -1429,7 +1432,7 @@ package body Gnoga.Gui.Element.Form is
       function Is_Name return String is
       begin
          if Name /= "" then
-            return " name='" & Name & "'";
+            return " name='" & Escape_Inner_Quotes (Name) & "'";
          else
             return "";
          end if;
@@ -1661,7 +1664,8 @@ package body Gnoga.Gui.Element.Form is
       Element.Execute
         ("add ($('" &
          Escape_Quotes
-           ("<option value='" & Value & "'" & Is_Selected & Is_Disabled & Has_ID & ">" & Text & "</option>") &
+           ("<option value='" & Escape_Inner_Quotes (Value) & "'" & Is_Selected & Is_Disabled & Has_ID & ">" & Text &
+            "</option>") &
          "').get(0)" & Last_Parameter & ")");
    end Add_Option;
 
@@ -1716,8 +1720,11 @@ package body Gnoga.Gui.Element.Form is
    begin
       Element.Create_From_HTML
         (Parent => Form,
-         HTML   => Escape_Quotes ("<option value='" & Value & "'>" & Text & Is_Selected & Is_Disabled & "</option>"),
-         ID     => ID);
+         HTML   =>
+           Escape_Quotes
+             ("<option value='" & Escape_Inner_Quotes (Value) & ''' & Is_Selected & Is_Disabled & '>' & Text &
+              "</option>"),
+         ID => ID);
 
       Element.Place_Inside_Bottom_Of (Selection);
    end Create;
@@ -1826,7 +1833,9 @@ package body Gnoga.Gui.Element.Form is
       end Is_Disabled;
    begin
       Element.Create_From_HTML
-        (Parent => Form, HTML => Escape_Quotes ("<optgroup label='" & Label & "'" & Is_Disabled & "/>"), ID => ID);
+        (Parent => Form,
+         HTML   => Escape_Quotes ("<optgroup label='" & Escape_Inner_Quotes (Label) & ''' & Is_Disabled & "/>"),
+         ID     => ID);
 
       Element.Place_Inside_Bottom_Of (Selection);
    end Create;

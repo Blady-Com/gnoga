@@ -141,7 +141,7 @@ package body Gnoga.Client.Files is
 
    procedure Transfert_As_Binary
      (Reader : in out File_Reader_Type;
-      Files  : in     Gnoga.Gui.Element.Form.File_Type'class;
+      Files  : in     Gnoga.Gui.Element.Form.File_Type'Class;
       Index  : in     Positive := 1)
    is
    begin
@@ -154,7 +154,7 @@ package body Gnoga.Client.Files is
 
    procedure Transfert_As_Text
      (Reader   : in out File_Reader_Type;
-      Files    : in     Gnoga.Gui.Element.Form.File_Type'class;
+      Files    : in     Gnoga.Gui.Element.Form.File_Type'Class;
       Index    : in     Positive := 1;
       Encoding : in     String   := "UTF-8")
    is

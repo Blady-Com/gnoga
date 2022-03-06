@@ -106,14 +106,14 @@ package Gnoga.Client.Files is
 
    procedure Transfert_As_Binary
      (Reader : in out File_Reader_Type;
-      Files  : in     Gnoga.Gui.Element.Form.File_Type'class;
+      Files  : in     Gnoga.Gui.Element.Form.File_Type'Class;
       Index  : in     Positive := 1);
    --  Starts reading the contents of the specified file by its index, once finished,
    --  the reader contains the raw binary data from the file as a string.
 
    procedure Transfert_As_Text
      (Reader   : in out File_Reader_Type;
-      Files    : in     Gnoga.Gui.Element.Form.File_Type'class;
+      Files    : in     Gnoga.Gui.Element.Form.File_Type'Class;
       Index    : in     Positive := 1;
       Encoding : in     String   := "UTF-8");
    --  Starts reading the contents of the specified file by its index, once finished,

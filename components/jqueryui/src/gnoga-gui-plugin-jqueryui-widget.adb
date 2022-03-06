@@ -60,7 +60,7 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
       Heading :        String)
    is
    begin
-      View.Put_HTML ("<h3>" & Escape_Quotes (Heading) & "</h3>");
+      View.Put_HTML ("<h3>" & Heading & "</h3>");
    end Create_Section;
 
    ----------------------
@@ -115,7 +115,9 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
             if Left_Icon = "" and Right_Icon = "" then
                return "";
             else
-               return ", icons: { primary: '" & Left_Icon & "'," & "secondary: '" & Right_Icon & "'}";
+               return
+                 ", icons: { primary: '" & Escape_Inner_Quotes (Left_Icon) & "'," & "secondary: '" &
+                 Escape_Inner_Quotes (Right_Icon) & "'}";
             end if;
          end Is_Icon;
       begin
@@ -193,12 +195,13 @@ package body Gnoga.Gui.Plugin.jQueryUI.Widget is
       Dialog.Create_From_HTML (Parent, "<div>" & Escape_Quotes (Content) & "</div>", ID);
 
       Dialog.jQuery_Execute
-        ("dialog({title: '" & Title & "'," & "height:" & Is_Auto (Height) & "," & "width:" & Is_Auto (Width) & "," &
-         "position: { my: '" & Position_My & "', at: '" & Position_At & "', of: window }," & "resizable: " &
-         Image (Resizable) & "," & "minHeight:" & Image (Minimum_Height) & "," & "minWidth:" & Image (Minimum_Width) &
-         "," & "height:" & Is_Auto (Height) & "," & "width:" & Is_Auto (Width) & "," & "maxHeight:" &
-         Is_False (Maximum_Height) & "," & "maxWidth:" & Is_False (Maximum_Width) & "," & "modal: " & Image (Modal) &
-         "," & "closeOnEscape: " & Image (Close_On_Escape) & "," & "draggable: " & Image (Draggable) & "})");
+        ("dialog({title: '" & Escape_Quotes (Title) & "'," & "height:" & Is_Auto (Height) & "," & "width:" &
+         Is_Auto (Width) & "," & "position: { my: '" & Position_My & "', at: '" & Position_At & "', of: window }," &
+         "resizable: " & Image (Resizable) & "," & "minHeight:" & Image (Minimum_Height) & "," & "minWidth:" &
+         Image (Minimum_Width) & "," & "height:" & Is_Auto (Height) & "," & "width:" & Is_Auto (Width) & "," &
+         "maxHeight:" & Is_False (Maximum_Height) & "," & "maxWidth:" & Is_False (Maximum_Width) & "," & "modal: " &
+         Image (Modal) & "," & "closeOnEscape: " & Image (Close_On_Escape) & "," & "draggable: " & Image (Draggable) &
+         "})");
 
       Dialog.Bind_Event (Event => "dialogresizestop", Message => "");
    end Create;

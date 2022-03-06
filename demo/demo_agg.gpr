@@ -2,20 +2,18 @@ with "../settings.gpr";
 
 aggregate project Demo_Agg is
 
-   for Project_Path use ("..", "../src", "../deps/simple_components", "../deps/zanyblue/src", "../deps/PragmARC");
+   for Project_Path use ("..", "../src", "../deps/simple_components", "../deps/zanyblue/src");
    for Project_Files use ("snake/snake.gpr",
                             "mine_detector/mine_detector.gpr",
                             "connect_four/connect_four.gpr",
                             "chattanooga/chattanooga.gpr",
                             "adaedit/adaedit.gpr",
                             "adablog/adablog.gpr",
-                            "password_gen/password_gen.gpr",
                             "linxtris/linxtris.gpr",
                             "random_int/random_int.gpr",
                             "adaothello/adaothello.gpr",
                             "tic_tac_toe/tic_tac_toe.gpr",
                             "leaves/leaves.gpr",
-                            "db_maker/db_maker.gpr",
                             "logo/logo.gpr",
                             "localize/localize.gpr");
    for Create_Missing_Dirs use Settings'Create_Missing_Dirs;

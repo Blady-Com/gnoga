@@ -1,6 +1,5 @@
 with "settings.gpr";
 with "gnoga.gpr";
-with "lib_pragmarc.gpr";
 
 project Tic_Tac_Toe is
 

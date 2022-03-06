@@ -12,7 +12,7 @@ http://www.gnoga.com
 * Gnoga uses Simple Components written by Dmitry A. Kazakov for its http and
   WebSockets communication layer (http://www.dmitry-kazakov.de/ada/components.htm).
 
-* The PragmArc library, Chattanooga, Password Gen, Mine Detector, Random_Int, Movies, tic tac toe demos
+* The Chattanooga, Mine Detector, Random_Int, tic tac toe demos
   applications were written by Jeffrey Carter (https://github.com/jrcarter).
 
 * The Connect Four demo was written originally for GNAT-JVM by Barry Fagin and

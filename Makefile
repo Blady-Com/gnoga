@@ -230,8 +230,10 @@ install_gnoga_sa:
 uninstall:
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=components --uninstall lib_components.gpr
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=pragmarc --uninstall pragmarc.gpr
+	$(INSTALLER) --prefix="$(PREFIX)" --install-name=uxstrings --uninstall lib_uxstrings.gpr
 	$(INSTALLER) --prefix="$(PREFIX)" --install-name=gnoga --uninstall gnoga.gpr
 	$(MAKE) -C deps/zanyblue/src INSTALL_DIR="$(PREFIX)" uninstall
+	$(RM) -fr "$(PREFIX)"/share/gnoga
 
 demo: snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello tic_tac_toe leaves db_maker logo localize
 
@@ -315,6 +317,7 @@ clean_all: clean clean_deps
 .IGNORE: clean_deps
 clean_deps:
 	$(CLEANER) -P deps/simple_components/lib_components.gpr
+	$(CLEANER) -P deps/uxstrings/lib_uxstrings.gpr
 	$(CLEANER) -P deps/PragmARC/lib_pragmarc.gpr
 	cd deps/zanyblue && "$(MAKE)" -C src clean
 	$(RMS) deps$(PATHSEP)MultiMarkdown-4

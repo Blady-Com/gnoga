@@ -43,6 +43,7 @@ with Ada.Exceptions;
 with Ada.Containers.Ordered_Maps;
 with Ada.Text_IO;
 with Ada.Streams.Stream_IO;
+with Ada.Command_Line;
 
 with GNAT.Sockets.Server;                               use GNAT.Sockets.Server;
 with GNAT.Sockets.Connection_State_Machine.HTTP_Server; use GNAT.Sockets.Connection_State_Machine.HTTP_Server;
@@ -793,31 +794,46 @@ package body Gnoga.Server.Connection is
       Verbose : in Boolean := True)
    is
       function Image is new UXStrings.Conversions.Integer_Image (GNAT.Sockets.Port_Type);
+      function Value is new UXStrings.Conversions.Integer_Value (GNAT.Sockets.Port_Type);
+
+      function Argument_Value (Switch : String; Default : String) return String;
+      function Argument_Value (Switch : String; Default : String) return String is
+         use Ada.Command_Line;
+         Arg1, Arg2 : String;
+      begin
+         for Arg in 1 .. Argument_Count loop
+            Arg1 := From_UTF_8 (Argument (Arg));
+            if Arg1.Slice (1, Switch.Length) = Switch then
+               Arg2 := Arg1.Slice (Switch.Length + 1, Arg1.Length);
+            end if;
+         end loop;
+         return (if Arg2 /= Null_UXString then Arg2 else Default);
+      end Argument_Value;
+
    begin
-      Verbose_Output := Verbose;
+      Verbose_Output := Value (Argument_Value ("--gnoga-verbose=", Image (Verbose)));
+      Boot_HTML      := Argument_Value ("--gnoga-boot=", Boot);
+      Server_Port    := Value (Argument_Value ("--gnoga-port=", Image (GNAT.Sockets.Port_Type (Port))));
+      Server_Host    := Argument_Value ("--gnoga-host=", Host);
 
-      Boot_HTML   := Boot;
-      Server_Port := GNAT.Sockets.Port_Type (Port);
-      Server_Host := Host;
-
-      if Verbose then
-         Write_To_Console ("Gnoga            :" & Gnoga.Version);
-         Write_To_Console ("Application root :" & Application_Directory);
-         Write_To_Console ("Executable at    :" & Executable_Directory);
-         Write_To_Console ("HTML root        :" & HTML_Directory);
-         Write_To_Console ("Upload directory :" & Upload_Directory);
-         Write_To_Console ("Templates root   :" & Templates_Directory);
-         Write_To_Console ("/js  at          :" & JS_Directory);
-         Write_To_Console ("/css at          :" & CSS_Directory);
-         Write_To_Console ("/img at          :" & IMG_Directory);
+      if Verbose_Output then
+         Write_To_Console ("Gnoga            : " & Gnoga.Version);
+         Write_To_Console ("Application root : " & Application_Directory);
+         Write_To_Console ("Executable at    : " & Executable_Directory);
+         Write_To_Console ("HTML root        : " & HTML_Directory);
+         Write_To_Console ("Upload directory : " & Upload_Directory);
+         Write_To_Console ("Templates root   : " & Templates_Directory);
+         Write_To_Console ("/js  at          : " & JS_Directory);
+         Write_To_Console ("/css at          : " & CSS_Directory);
+         Write_To_Console ("/img at          : " & IMG_Directory);
 
          if not Secure_Only then
-            Write_To_Console ("Boot file        :" & Boot);
-            Write_To_Console ("HTTP listen on   :" & Host & ":" & Image (Server_Port));
+            Write_To_Console ("Boot file        : " & Boot_HTML);
+            Write_To_Console ("HTTP listen on   : " & Server_Host & ":" & Image (Server_Port));
          end if;
 
          if Secure_Server then
-            Write_To_Console ("HTTPS listen on  :" & Host & ":" & Image (Secure_Port));
+            Write_To_Console ("HTTPS listen on  : " & Server_Host & ":" & Image (Secure_Port));
          end if;
       end if;
 

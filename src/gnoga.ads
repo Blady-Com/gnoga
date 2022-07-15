@@ -127,6 +127,7 @@ package Gnoga is
    --  Activate exception log for the designated task
 
    --  Convenient string conversions of usual types
+   function Value is new UXStrings.Conversions.Scalar_Value (Boolean);
    function Value is new UXStrings.Conversions.Integer_Value (Integer);
    function Value is new UXStrings.Conversions.Floating_Point_Value (Float);
    function Image is new UXStrings.Conversions.Scalar_Image (Boolean);

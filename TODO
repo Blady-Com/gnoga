@@ -113,7 +113,7 @@ DONE 19. Internationalisation with language translation of displayed text.
 28. Support database compatible with OpenOffice Base (HSQLDB)
 29. Getting good scientific 2D plots is a hard requirement, getting some nice 3D stuff would be a nice addition.
    Added Jeff's plotting library.
-30. Use Wide_Strings type for Gnoga APIs strings and keep UTF-8 support
+DONE 30. Use Wide_Strings type for Gnoga APIs strings and keep UTF-8 support
 DONE 31. Add AdaOthello port to Gnoga.
 32. Support games with http://phaser.io/.
 DONE 33. Instrument Gnoga tasks with a Ada.Task_Termination handler.

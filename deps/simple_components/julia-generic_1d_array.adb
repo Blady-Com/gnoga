@@ -3,7 +3,7 @@
 --     Julia.Generic_1D_Array                      Luebeck            --
 --  Implementation                                 Winter, 2019       --
 --                                                                    --
---                                Last revision :  11:37 20 Jan 2019  --
+--                                Last revision :  18:40 23 Oct 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -108,7 +108,7 @@ package body Julia.Generic_1D_Array is
 
    function Value (Object : value_t) return Element_Array_Type is
       Size  : constant Natural := Length (Object);
-      Value : Element_Array_Type (1..Index_Type (Size));
+      Value : Element_Array_Type (1..Index_Type'Base (Size));
    begin
       if Value'Length > 0 then
          declare

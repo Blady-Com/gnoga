@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2018       --
 --                                                                    --
---                                Last revision :  11:33 10 May 2020  --
+--                                Last revision :  18:40 23 Oct 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -33,6 +33,7 @@
 --  After the library is loaded,  the Julia context  must be initialized
 --  by calling to Init or to Init_With_Image.
 --
+with Ada.Calendar;          use Ada.Calendar;
 with Ada.Exceptions;        use Ada.Exceptions;
 with Interfaces;            use Interfaces;
 with Interfaces.C;          use Interfaces.C;
@@ -40,7 +41,8 @@ with Interfaces.C.Strings;  use Interfaces.C.Strings;
 with System;                use System;
 
 with Ada.Finalization;
-with Generic_Map;
+with Generic_Unbounded_Array;
+with Object.Handle;
 with Tables;
 with System.Storage_Elements;
 
@@ -166,7 +168,7 @@ package Julia is
 --
    function CCall_Address (Location : Address) return String;
 --
--- Eval_String -- Evaluate argument as a Julia expression
+-- Eval_[String|char_array] -- Evaluate argument as a Julia expression
 --
 --    Str - The expression to evaluate
 --
@@ -179,7 +181,9 @@ package Julia is
 --    Julia_Error - Any exception for Juila reraised
 --
    function Eval_String (Str : String) return value_t;
+   function Eval_char_array (Str : char_array) return value_t;
    procedure Eval_String (Str : String);
+   procedure Eval_char_array (Str : char_array);
 --
 -- Get_Function -- Get function from a module
 --
@@ -211,6 +215,26 @@ package Julia is
 --    Julia_Error - Any exception for Juila reraised
 --
    function Load (Module : module_t; File : String) return value_t;
+--
+-- Load_File_String
+--
+--    Module - The module
+--    Source - The source code to parse
+--    File   - The file name to associate with Julia code
+--
+-- Returns :
+--
+--    The result of execution
+--
+-- Exceptions :
+--
+--    Julia_Error - Any exception for Juila reraised
+--
+   function Load_File_String
+            (  Module : module_t;
+               Source : String;
+               File   : String
+            )  return value_t;
 ------------------------------------------------------------------------
 --
 -- Julia tuples
@@ -359,8 +383,8 @@ package Julia is
 --
 -- Get_Value -- Tuple length
 --
---    List  - The tuple
---    Index - Element position
+--    List         - The tuple
+--    Name | Index - Element position
 --
 -- Returns :
 --
@@ -371,6 +395,7 @@ package Julia is
 --    Constraint_Error - Invalid index
 --
    function Get_Value (List : Tuple; Index : Positive) return value_t;
+   function Get_Value (List : Tuple; Name  : String  ) return value_t;
 --
 -- Is_NamedTuple -- Type test
 --
@@ -409,6 +434,7 @@ package Julia is
    function To_Julia (Value : Boolean     ) return value_t;
    function To_Julia (Value : char        ) return value_t;
    function To_Julia (Value : Character   ) return value_t;
+   function To_Julia (Value : Day_Duration) return value_t;
    function To_Julia (Value : Double      ) return value_t;
    function To_Julia (Value : C_Float     ) return value_t;
    function To_Julia (Value : Integer_8   ) return value_t;
@@ -421,6 +447,7 @@ package Julia is
    function To_Julia (Value : Unsigned_32 ) return value_t;
    function To_Julia (Value : Unsigned_64 ) return value_t;
    function To_Julia (Value : values_array) return value_t; -- Tuple
+   function To_Julia (Value : Time        ) return value_t;
    function To_Julia (Value : Tuple       ) return value_t; -- Tuple
 ------------------------------------------------------------------------
 -- Value -- Conversion from Julia
@@ -428,6 +455,7 @@ package Julia is
    function Value (Object : value_t) return Boolean;
 -- function Value (Object : value_t) return char;
 -- function Value (Object : value_t) return Character;
+   function Value (Object : value_t) return Day_Duration;
    function Value (Object : value_t) return Double;
    function Value (Object : value_t) return C_Float;
    function Value (Object : value_t) return Integer_8;
@@ -440,6 +468,7 @@ package Julia is
    function Value (Object : value_t) return Unsigned_32;
    function Value (Object : value_t) return Unsigned_64;
    function Value (Object : value_t) return values_array; -- Tuple
+   function Value (Object : value_t) return Time;
    function Value (Object : value_t) return Tuple;        -- Tuple
 ------------------------------------------------------------------------
 -- Arrays:
@@ -535,6 +564,12 @@ package Julia is
                 Expected : value_t;
                 Got      : value_t
              );
+--
+-- Catching Julia exceptions
+--
+   function Get_Safe_Restore return Address;
+-- function Setjmp (Buffer : Address; Value : int) return int;
+   procedure Set_Safe_Restore (Buffer : Address);
 ------------------------------------------------------------------------
 --
 -- Garbage collection
@@ -752,12 +787,23 @@ private
    type value_t    is new Address;
    No_Value : constant value_t := value_t (Null_Address);
 
-   package Tuple_Tables is new Tables (value_t);
-   package Tuple_Maps   is new Generic_Map (size_t, value_t);
-   type Tuple is tagged record
+   package Tuple_Tables is new Tables (Integer);
+   type value_t_Array is array (Positive range <>) of value_t;
+   package Tuple_Arrays is
+      new Generic_Unbounded_Array
+          (  Index_Type        => Positive,
+             Object_Type       => value_t,
+             Object_Array_Type => value_t_Array,
+             Null_Element      => No_Value
+          );
+   type Tuple_Object is new Object.Entity with record
       Table : Tuple_Tables.Table;
-      Map   : Tuple_Maps.Map;
+      List  : Tuple_Arrays.Unbounded_Array;
    end record;
+   type Tuple_Ptr is access Tuple_Object'Class;
+   package Tuple_Handles is new Object.Handle (Tuple_Object, Tuple_Ptr);
+
+   type Tuple is new Tuple_Handles.Handle with null record;
 
    function Array_Typename      return typename_t;
    function Tuple_Typename      return typename_t;
@@ -980,6 +1026,8 @@ private
    type Get_PTLS_States_Ptr is access function return tls_states_t;
    pragma Convention (C, Get_PTLS_States_Ptr);
 
+   type Get_Safe_Restore_Ptr is access function return Address;
+
    type Init_Ptr is access procedure;
    pragma Convention (C, Init_Ptr);
 
@@ -999,6 +1047,14 @@ private
            File   : char_array
         )  return value_t;
    pragma Convention (C, Load_Ptr);
+
+   type Load_File_String_Ptr is access function
+        (  Text      : char_array;
+           Length    : size_t;
+           File_Name : char_array;
+           Module    : module_t
+        )  return value_t;
+   pragma Convention (C, Load_File_String_Ptr);
 
    type New_StructV_Ptr is access function
         (  Type_Of : datatype_t;
@@ -1037,6 +1093,13 @@ private
            Element   : value_t
         );
    pragma Convention (C, Set_Nth_Field_Ptr);
+
+   type Set_Safe_Restore_Ptr is access procedure (Bufffer : Address);
+
+-- type Setjmp_Ptr is access function
+--      (  Buffer : Address;
+--         Value  : int
+--      )  return int;
 
    type Symbol_Ptr is access function
         (  Name : char_array
@@ -1213,7 +1276,9 @@ private
       Get_Nth_Field_Checked : Get_Nth_Field_Checked_Ptr;
       Get_Nth_Field         : Get_Nth_Field_Ptr;
       Get_PTLS_States       : Get_PTLS_States_Ptr;
+      Get_Safe_Restore      : Get_Safe_Restore_Ptr;
       Load                  : Load_Ptr;
+      Load_File_String      : Load_File_String_Ptr;
       Main_Module           : Address;
       Method_Type           : Address;
       Module_Type           : Address;
@@ -1228,6 +1293,8 @@ private
       Int64_Type            : Address;
       Pchar_To_String       : Pchar_To_String_Ptr;
       Set_Nth_Field         : Set_Nth_Field_Ptr;
+      Set_Safe_Restore      : Set_Safe_Restore_Ptr;
+--    Setjmp                : Setjmp_Ptr;
       Simplevector_Type     : Address;
       String_Ptr            : String_Ptr_Ptr;
       Static_Show           : Static_Show_Ptr;

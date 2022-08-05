@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  22:41 09 Mar 2020  --
+--                                Last revision :  10:00 19 May 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -92,7 +92,7 @@ package body GNAT.Sockets.Server is
       return Free (Client.Written);
    end Available_To_Send;
 
-   procedure Clear (Client : in out Connection'Class) is
+   procedure Clear (Client : in out Connection) is
    begin
       Client.Failed                := False; -- Clean I/O state
       Client.External_Action       := False;
@@ -299,6 +299,9 @@ package body GNAT.Sockets.Server is
       null;
    end Downed;
 
+   function "+" is
+      new Ada.Unchecked_Conversion (System.Address, Selector_Access);
+
    procedure Do_Connect
              (  Listener : in out Connections_Server'Class;
                 Client   : in out Connection_Ptr
@@ -317,7 +320,8 @@ package body GNAT.Sockets.Server is
          (  Socket   => Client.Socket,
             Server   => Client.Client_Address,
             Timeout  => 0.0,
-            Selector => Listener.Selector'Unchecked_Access,
+--          Selector => Listener.Selector'Unchecked_Access,
+            Selector => +Listener.Selector'Address, -- GNAT 12.1 bug
             Status   => Status
          );
          if Status = Completed then
@@ -767,7 +771,9 @@ package body GNAT.Sockets.Server is
                Client'Unchecked_Access
             );
       end if;
-      Set (Listener.Read_Sockets, Client.Socket);
+      if Client.Socket /= No_Socket then
+         Set (Listener.Read_Sockets, Client.Socket);
+      end if;
       if Client.Transport = null then -- No handshaking
          declare
             Saved : constant Session_State := Client.Session;
@@ -1306,7 +1312,7 @@ package body GNAT.Sockets.Server is
          or else
             (  Pointer > Data'Last
             and then
-               Pointer - 1 > Data'Last
+               Pointer - Data'Last /= 1
          )  )
       then
          Raise_Exception (Layout_Error'Identity, "Subscript error");

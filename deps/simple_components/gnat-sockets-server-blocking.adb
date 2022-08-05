@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Blocking                Luebeck            --
 --  Implementation                                 Winter, 2018       --
 --                                                                    --
---                                Last revision :  14:52 29 Feb 2020  --
+--                                Last revision :  08:55 08 Apr 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,11 +25,19 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Calendar;       use Ada.Calendar;
-with Ada.IO_Exceptions;  use Ada.IO_Exceptions;
+with Ada.Calendar;              use Ada.Calendar;
+with Ada.IO_Exceptions;         use Ada.IO_Exceptions;
+with Strings_Edit.Long_Floats;  use Strings_Edit.Long_Floats;
+with Synchronization;           use Synchronization;
 
 package body GNAT.Sockets.Server.Blocking is
    use GNAT.Sockets.Server.Handles;
+
+   procedure Free is
+      new Ada.Unchecked_Deallocation (Reader, Reader_Ptr);
+
+   procedure Free is
+      new Ada.Unchecked_Deallocation (Writer, Writer_Ptr);
 
    procedure Cancel_IO
              (  Listener : in out Blocking_Server;
@@ -84,6 +92,7 @@ package body GNAT.Sockets.Server.Blocking is
             "One connection is already handled by the server"
          );
       end if;
+      Listener.Finalizing    := False;
       Client.Session         := Session_Disconnected;
       Client.Client          := True;
       Client.Connect_No      := 0;
@@ -95,6 +104,11 @@ package body GNAT.Sockets.Server.Blocking is
                                 );
       Set (Listener.Peer, Client);
       Listener.Clients := Listener.Clients + 1;
+      Listener.Reader :=
+         new Reader
+             (  Listener'Unchecked_Access,
+                Client.all'Unchecked_Access
+             );
       Listener.Writer :=
          new Writer
              (  Listener'Unchecked_Access,
@@ -103,29 +117,11 @@ package body GNAT.Sockets.Server.Blocking is
    end Connect;
 
    procedure Finalize (Listener : in out Blocking_Server) is
-      procedure Free is
-         new Ada.Unchecked_Deallocation (Writer, Writer_Ptr);
-      Started : constant Time := Clock;
    begin
-      if Listener.Writer /= null then
+      if Listener.Writer /= null or else Listener.Reader /= null then
          Listener.Finalizing := True;
          Close (Listener);
-         while not Listener.Writer'Terminated loop
-            if Clock - Started > Listener.IO_Timeout then
-               Trace
-               (  Listener.Factory.all,
-                  (  Get_Client_Name
-                     (  Listener.Factory.all,
-                        Listener.Writer.Client.all
-                     )
-                  &  " Aborting writer"
-               )  );
-               abort Listener.Writer.all;
-               exit;
-            end if;
-            delay 0.001;
-         end loop;
-         Free (Listener.Writer);
+         Wait_For_Tasks (Listener, Listener.IO_Timeout, True);
       end if;
       Invalidate (Listener.Peer);
       Finalize (Connections_Server (Listener));
@@ -147,6 +143,12 @@ package body GNAT.Sockets.Server.Blocking is
       return Listener.Peer;
    end Get_Peer;
 
+   function Get_Read_Timeout (Listener : Blocking_Server)
+      return Duration is
+   begin
+      return Listener.Event.Get_Read_Timeout;
+   end Get_Read_Timeout;
+
    function Get_Server_Address
             (  Listener : Blocking_Server
             )  return Sock_Addr_Type is
@@ -156,6 +158,11 @@ package body GNAT.Sockets.Server.Blocking is
       Address.Port := No_Port;
       return Address;
    end Get_Server_Address;
+
+   function Image (Value : Duration) return String is
+   begin
+      return Image (Long_Float (Value), AbsSmall => -3) & "s";
+   end Image;
 
    procedure Initialize (Listener : in out Blocking_Server) is
    begin
@@ -184,7 +191,16 @@ package body GNAT.Sockets.Server.Blocking is
       if Is_Empty (Listener.Input) then
          Listener.Event.Set_Empty (True);
          if Is_Empty (Listener.Input) then
-            Listener.Event.Wait_Not_Empty;
+            select
+               Listener.Event.Wait_Not_Empty;
+            or delay Listener.Event.Get_Read_Timeout;
+               Raise_Exception
+               (  Timeout_Error'Identity,
+                  (  "Read timeout of "
+                  &  Image (Listener.Event.Get_Read_Timeout)
+                  &  " expired"
+               )  );
+            end select;
          end if;
       end if;
       for Index in Data'Range loop
@@ -192,7 +208,9 @@ package body GNAT.Sockets.Server.Blocking is
          Last := Index;
          exit when Listener.Input.Is_Empty;
       end loop;
-      if not Is_Full (Listener.Input) then
+      if Is_Empty (Listener.Input) then
+         Listener.Event.Set_Empty (True);
+      elsif not Is_Full (Listener.Input) then
          Listener.Event.Set_Full (False);
       end if;
    end Receive_Socket;
@@ -209,6 +227,30 @@ package body GNAT.Sockets.Server.Blocking is
       );
    end Request_Disconnect;
 
+   procedure Set_Read_Timeout
+             (  Listener : in out Blocking_Server;
+                Timeout  : Duration := Duration'Last
+             )  is
+   begin
+      if Timeout <= 0.0 then
+         Raise_Exception
+         (  Constraint_Error'Identity,
+            "Invalid read timeout"
+         );
+      else
+         Listener.Event.Set_Read_Timeout (Timeout);
+      end if;
+   end Set_Read_Timeout;
+
+   procedure Unblock_Send
+             (  Listener : in out Blocking_Server;
+                Client   : in out Connection'Class
+             )  is
+   begin
+      Unblock_Send (Connections_Server (Listener), Client);
+      Listener.Event.Unblock;
+   end Unblock_Send;
+
    procedure Send_Socket
              (  Listener : in out Blocking_Server;
                 Client   : in out Connection'Class;
@@ -220,46 +262,134 @@ package body GNAT.Sockets.Server.Blocking is
       Last := Data'Last;
    end Send_Socket;
 
+   procedure Wait_For_Tasks
+             (  Listener : in out Blocking_Server;
+                Timeout  : Duration;
+                Kill     : Boolean
+             )  is
+      Started : constant Time := Clock;
+   begin
+      if Listener.Reader /= null then
+         while not Listener.Reader'Terminated loop
+            if Clock - Started > Timeout then
+               if not Kill then
+                  raise Timeout_Error;
+               end if;
+               abort Listener.Reader.all;
+               exit;
+            end if;
+            delay 0.001;
+         end loop;
+         Free (Listener.Reader);
+      end if;
+      if Listener.Writer /= null then
+         while not Listener.Writer'Terminated loop
+            if Clock - Started > Timeout then
+               if not Kill then
+                  raise Timeout_Error;
+               end if;
+               abort Listener.Writer.all;
+               exit;
+            end if;
+            delay 0.001;
+         end loop;
+         Free (Listener.Writer);
+      end if;
+      Invalidate (Listener.Peer);
+   end Wait_For_Tasks;
+
    protected body IO_Buffer_Event is
+
+      function Get_Read_Timeout return Duration is
+      begin
+         return Read_Timeout;
+      end Get_Read_Timeout;
+
+      function Is_Reader_Completed return Boolean is
+      begin
+         return Completed;
+      end Is_Reader_Completed;
 
       function Is_Exiting return Boolean is
       begin
          return Exiting;
       end Is_Exiting;
 
+      function Is_Timed_Out return Boolean is
+      begin
+         return Timeout;
+      end Is_Timed_Out;
+
       procedure Quit is
       begin
          Exiting := True;
+         Timeout := False;
       end Quit;
 
       procedure Set_Empty (Value : Boolean) is
       begin
-         Empty := Value;
+         Empty   := Value;
+         Timeout := False;
       end Set_Empty;
 
       procedure Set_Full (Value : Boolean) is
       begin
-         Full := Value;
+         Full    := Value;
+         Timeout := False;
       end Set_Full;
 
-      entry Wait_Not_Empty when Exiting or else not Empty is
+      procedure Set_Read_Timeout (Value : Duration) is
+      begin
+         Timeout      := False;
+         Read_Timeout := Value;
+      end Set_Read_Timeout;
+
+      procedure Set_Reader_Completed is
+      begin
+         Completed := True;
+      end Set_Reader_Completed;
+
+      procedure Signal_Timeout is
+      begin
+         Completed := True;
+         Timeout   := True;
+      end Signal_Timeout;
+
+      entry Unblock when Wait_Not_Empty'Count = 0 is
+      begin
+         null;
+      end Unblock;
+
+      entry Wait_Not_Empty
+         when Exiting or else Timeout or else not Empty or else
+              Unblock'Count > 0 is
       begin
          if Exiting then
             raise Connection_Error;
+         elsif Completed then
+            Raise_Exception
+            (  Device_Error'Identity,
+               "Reader task is terminated"
+            );
+         elsif Timeout then
+            raise Timeout_Error;
          end if;
       end Wait_Not_Empty;
 
-      entry Wait_Not_Full when Exiting or else not Full is
+      entry Wait_Not_Full
+         when Exiting or else Completed or else not Full is
       begin
-         if Exiting then
+         if Exiting or else Completed then
             raise Connection_Error;
          end if;
       end Wait_Not_Full;
    end IO_Buffer_Event;
 
-   task body Writer is
-      task Reader;
-
+   task body Reader is
+      Buffer   : Stream_Element_Array (1..1);
+      Last     : Stream_Element_Offset;
+      Received : Time;
+      Purged   : Natural;
       procedure Trace (Text : String) is
       begin
          Trace
@@ -269,41 +399,55 @@ package body GNAT.Sockets.Server.Blocking is
             &  Text
          )  );
       end Trace;
-
-      task body Reader is
-         Buffer : Stream_Element_Array (1..1);
-         Last   : Stream_Element_Offset;
-      begin
-         Trace ("Reader task starting");
-         On_Reader_Start (Listener.all);
-         while not (  Listener.Finalizing
-                   or else
-                      Listener.Shutdown_Request
-                   or else
-                      Listener.Event.Is_Exiting
-                   )  loop
-            if Is_Full (Listener.Input) then
-               Listener.Event.Set_Full (True);
-               Listener.Event.Wait_Not_Full;
-            end if;
-            Read (Listener.Input_Stream.all, Buffer, Last);
-            if Last >= Buffer'First then
-               Put (Listener.Input, Buffer (1));
-               Listener.Event.Set_Empty (False);
-            end if;
-         end loop;
+   begin
+      Trace ("Reader task starting");
+      Purge (Listener.Input, Purged);
+      On_Reader_Start (Listener.all);
+      Received := Clock;
+      while not (  Listener.Finalizing
+                or else
+                   Listener.Shutdown_Request
+                or else
+                   Listener.Event.Is_Exiting
+                )  loop
+         if Is_Full (Listener.Input) then
+            Listener.Event.Set_Full (True);
+            Listener.Event.Wait_Not_Full;
+         end if;
+         Read (Listener.Input_Stream.all, Buffer, Last);
+         if Last >= Buffer'First then
+            Received := Clock;
+            Put (Listener.Input, Buffer (1));
+            Listener.Event.Set_Empty (False);
+         elsif Clock - Received > Listener.Event.Get_Read_Timeout then
+            Listener.Event.Signal_Timeout;
+            exit;
+         end if;
+      end loop;
+      Trace ("Reader task exiting");
+   exception
+      when End_Error | Connection_Error =>
          Trace ("Reader task exiting");
-      exception
-         when End_Error | Connection_Error =>
-            Trace ("Reader task exiting");
-         when Error : others =>
-            Trace_Error
-            (  Listener.Factory.all,
-               "Reader error",
-               Error
-            );
-      end Reader;
+         Listener.Event.Set_Reader_Completed;
+      when Error : others =>
+         Trace_Error
+         (  Listener.Factory.all,
+            "Reader error",
+            Error
+         );
+         Listener.Event.Set_Reader_Completed;
+   end Reader;
 
+   task body Writer is
+      procedure Trace (Text : String) is
+      begin
+         Trace
+         (  Listener.Factory.all,
+            (  Get_Client_Name (Listener.Factory.all, Client.all)
+            &  " "
+            &  Text
+         )  );
+      end Trace;
       Data_Left : Boolean := False;
    begin
       Trace ("Writer task starting");
@@ -340,7 +484,24 @@ package body GNAT.Sockets.Server.Blocking is
             end if;
             exit;
          end if;
-         if not Listener.Input.Is_Empty then
+         if Listener.Input.Is_Empty then
+            if Listener.Event.Is_Timed_Out then
+               Trace
+               (  Listener.Factory.all,
+                  (  "Read timeout "
+                  &  Image (Listener.Event.Get_Read_Timeout)
+                  & " expired"
+               )  );
+               exit;
+            end if;
+            if not Data_Left and then Queued_To_Send (Client.all) = 0
+            then
+               select
+                  Listener.Event.Wait_Not_Empty;
+               or delay Listener.Event.Get_Read_Timeout;
+               end select;
+            end if;
+         else
             begin
                Read (Client.all, Listener.Factory.all);
             exception
@@ -438,7 +599,9 @@ package body GNAT.Sockets.Server.Blocking is
          end;
       end if;
       Listener.Finalizing := True;
-      Close (Listener.all);
+      if not Listener.Event.Is_Reader_Completed then -- Abort reader
+         Close (Listener.all);
+      end if;
       Listener.Clients      := Listener.Clients - 1;
       Client.Session        := Session_Down;
       Client.Failed         := False;

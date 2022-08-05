@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     ELV_MAX_Cube_Client.Stream_IO               Summer, 2015       --
 --  Implementation                                                    --
---                                Last revision :  14:20 16 Nov 2018  --
+--                                Last revision :  15:58 18 Feb 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -192,12 +192,13 @@ package body GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
             when Cube | Shutter_Contact | Eco_Button | Unknown =>
                null;
             when Wall_Thermostat =>
-               Result.Comfort  := Read (Stream);
-               Result.Eco      := Read (Stream);
-               Result.Max      := Read (Stream);
-               Result.Min      := Read (Stream);
-               Result.Offset   := Read (Stream);
-               Result.Schedule := Read (Stream);
+               Result.Comfort     := Read (Stream);
+               Result.Eco         := Read (Stream);
+               Result.Max         := Read (Stream);
+               Result.Min         := Read (Stream);
+               Result.Offset      := Read (Stream);
+               Result.Schedule    := Read (Stream);
+               Result.Window_Open := Read (Stream);
             when Radiator_Thermostat | Radiator_Thermostat_Plus =>
                Result.Comfort         := Read (Stream);
                Result.Eco             := Read (Stream);
@@ -374,6 +375,7 @@ package body GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
             Write (Stream, Parameters.Min);
             Write (Stream, Parameters.Offset);
             Write (Stream, Parameters.Schedule);
+            Write (Stream, Parameters.Window_Open);
          when Radiator_Thermostat | Radiator_Thermostat_Plus =>
             Write (Stream, Parameters.Comfort);
             Write (Stream, Parameters.Eco);

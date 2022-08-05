@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     MODBUS_Client.Synchronous                   Spring, 2015       --
 --  Implementation                                                    --
---                                Last revision :  14:52 29 Feb 2020  --
+--                                Last revision :  09:02 17 Oct 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --

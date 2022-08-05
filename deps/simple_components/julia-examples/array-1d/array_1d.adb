@@ -32,7 +32,7 @@ with Julia;         use Julia;
 with Julia.Generic_1D_Array;
 
 procedure Array_1D is
-   Bin : constant String := "D:\Julia-1.2.0\bin";
+   Bin : constant String := "D:\Julia-1.6.3\bin";
 
    type Words_Array is
       array (Positive range <>) of Interfaces.Integer_16;

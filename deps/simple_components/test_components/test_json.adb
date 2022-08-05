@@ -3,7 +3,7 @@
 --     Test_Parser_JSON                            Luebeck            --
 --  Test program                                   Autumn, 2019       --
 --                                                                    --
---                                Last revision :  09:21 06 Oct 2019  --
+--                                Last revision :  10:13 29 Nov 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of  the  GNU  Library  General  Public  --
@@ -50,6 +50,49 @@ procedure Test_JSON is
    Arena : aliased Stack_Storage.Pool (200, 512);
 begin
 -- GNAT.Exception_Traces.Trace_On (GNAT.Exception_Traces.Every_Raise);
+   declare
+      use Parsers.JSON.String_Source;
+      use Parsers.String_Source;
+      Text : aliased String :=
+             "{"                                           & CRLF &
+             "  ""args"": {},"                             & CRLF &
+             "  ""headers"": {"                            & CRLF &
+             "    ""Accept"": ""application/json"","       & CRLF &
+             "    ""Host"": ""172.20.21.11:8090"","        & CRLF &
+             "    ""User-Agent"": ""curl/7.65.0"""         & CRLF &
+             "  },"                                        & CRLF &
+             "  ""origin"": ""172.32.1.64"","              & CRLF &
+             "  ""url"": ""http://172.20.21.11:8090/get""" & CRLF &
+             "}" & CRLF;
+      Input : aliased Source (Text'Access);
+      Data  : constant JSON_Value := Parse (Input'Access, Arena'Access);
+   begin
+      Put_Line ("Parsed:" & Image (Data));
+   end;
+   declare
+      use Parsers.JSON.String_Source;
+      use Parsers.String_Source;
+      Text : aliased String :=
+             "{""empty"": [" & CRLF &
+                "]"          &
+             "}"             & CRLF;
+      Input : aliased Source (Text'Access);
+      Data  : constant JSON_Value := Parse (Input'Access, Arena'Access);
+   begin
+      Put_Line ("Parsed:" & Image (Data));
+   end;
+   declare
+      use Parsers.JSON.String_Source;
+      use Parsers.String_Source;
+      Text : aliased String :=
+             "{""empty"": {" & CRLF &
+                "}"          &
+             "}"             & CRLF;
+      Input : aliased Source (Text'Access);
+      Data  : constant JSON_Value := Parse (Input'Access, Arena'Access);
+   begin
+      Put_Line ("Parsed:" & Image (Data));
+   end;
    declare
       use Parsers.JSON.String_Source;
       use Parsers.String_Source;

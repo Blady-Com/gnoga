@@ -3,7 +3,7 @@
 --     Parsers.JSON.Generic_Parser                 Luebeck            --
 --  Interface                                      Autumn, 2019       --
 --                                                                    --
---                                Last revision :  19:57 14 Sep 2019  --
+--                                Last revision :  10:13 29 Nov 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -57,10 +57,15 @@ package Parsers.JSON.Generic_Parser is
                Arena : access Root_Storage_Pool'Class
             )  return JSON_Value;
 private
+   type Argument_Item is record
+      Nothing : Boolean;
+      Data    : JSON_Argument;
+   end record;
+
    package Tokens is
       new Parsers.Generic_Token
           (  Operation_Type => Operations,
-             Argument_Type  => JSON_Argument,
+             Argument_Type  => Argument_Item,
              Priority_Type  => Priorities,
              Sources        => Sources
           );
@@ -106,6 +111,12 @@ private
                 Code     : in out Lexers.Lexer_Source_Type;
                 Argument : out Tokens.Argument_Token;
                 Got_It   : out Boolean
+             );overriding
+   procedure On_Missing_Operand
+             (  Context   : in out Expression;
+                Code      : in out Lexers.Lexer_Source_Type;
+                Operation : Tokens.Operation_Token;
+                Argument  : out Tokens.Argument_Token
              );
 
 end Parsers.JSON.Generic_Parser;

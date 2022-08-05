@@ -560,7 +560,7 @@ exception Constraint_Error is propagated if the number is not in the range
 <P>
 This procedure places the number specified by the parameter <b>Value
 </b>into the output string <b>Destination</b>. The string
-is written starting from <b>Destination (Pointer)</b>. The parameter
+is written starting from <b>Destination </b>(<b>Pointer</b>). The parameter
 <b>LowerCase</b> determines whether upper or lower case letters
 should be used. The exception Layout_Error is propagated when
 <b>Pointer</b> is not in <b>Destination</b>'Range or
@@ -626,8 +626,7 @@ The generic package has the following subprograms:</p>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;);</tt></BLOCKQUOTE>
 <P>
 This procedure gets an integer number from the string
-<b>Source</b>. The process starts from <b>Source
-(Pointer)</b>. The parameter <b>Base</b> indicates the base
+<b>Source</b>. The process starts from <b>Source </b>(<b>Pointer</b>). The parameter <b>Base</b> indicates the base
 of the expected number. The exception Constraint_Error is propagated if the
 number is not in the range <b>First</b>..<b>Last</b>.
 Data_Error indicates a syntax error in the number. End_Error is raised when
@@ -687,7 +686,7 @@ number was detected.</p>
 <P>
 This procedure places the number specified by the parameter
 <b>Value</b> into the output string <b>Destination</b>.
-The string is written starting from <b>Destination (Pointer)</b>.
+The string is written starting from <b>Destination </b>(<b>Pointer</b>).
 The parameter <b>Base</b> indicates the number base used for the
 output. The base itself does not appear in the output. The parameter
 <b>PutPlus</b> indicates whether the plus sign should be placed
@@ -801,7 +800,7 @@ The package defines the following subprograms:</p>
   &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;);</tt></BLOCKQUOTE>
 <P>
 This procedure gets a number from the string <b>Source</b>. The
-process starts from <b>Source (Pointer)</b>. The number in the
+process starts from <b>Source </b>(<b>Pointer</b>). The number in the
 string may be in either floating-point or fixed-point format. The point may
 be absent. The mantissa can have base 2..16 (defined by the parameter
 <b>Base</b>). The exponent part (if appears) is introduced by 'e'
@@ -871,7 +870,7 @@ is raised when no number was detected.</p>
 <P>
 This procedure places the number specified by the parameter
 <b>Value</b> into the output string <b>Destination</b>.
-The string is written starting from <b>Destination (Pointer)</b>.
+The string is written starting from <b>Destination </b>(<b>Pointer</b>).
 The parameter <b>Base</b> indicates the number base used for the
 output. <b>Base</b> itself does not appear in the output. The exponent
 part (if used) is always decimal. <b>PutPlus</b> indicates whether
@@ -5868,8 +5867,7 @@ The following versions were tested with the compilers:</i>
 <i>GNAT Community 2019 (20190517-83)</i></li>
   <li>
 <i>GNAT Community 2018 (20180523-73)</i></li>
-	<li><i>GNAT 8</i></li>
-	<li><i>GNAT 9</i></li>
+	<li><i>GNAT 8-12</i></li>
   </ul>
 <P>
 Changes (31 May 2020) to the version 3.6:<ul>

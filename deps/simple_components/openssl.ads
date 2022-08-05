@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2019       --
 --                                                                    --
---                                Last revision :  13:12 14 Sep 2019  --
+--                                Last revision :  09:42 12 Dec 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -103,11 +103,14 @@ package OpenSSL is
    BIO_CTRL_SET_FILENAME : constant BIO_CTRL := 30;
 
    type BIO        is private;
+   type BIO_METHOD is private;
    type EVP_MD     is private;
    type SSL        is private;
    type SSL_CTX    is private;
    type SSL_METHOD is private;
 
+   No_BIO     : constant BIO;
+   No_METHOD  : constant BIO_METHOD;
    No_SSL     : constant SSL;
    No_SSL_CTX : constant SSL_CTX;
 
@@ -178,29 +181,12 @@ package OpenSSL is
         )  return int;
    pragma Convention (C, Destroy_Ptr);
    type Callback_Ctlr_Ptr is access function
-        (  b        : BIO;
-           cmd      : int;
-           callback : BIO_Info_CB_Ptr
+        (  b   : BIO;
+           cmd : BIO_CTRL;
+           num : long;
+           ptr : System.Address
         )  return long;
    pragma Convention (C, Callback_Ctlr_Ptr);
-
-   type bio_method_st is record
-      type_of       : BIO_TYPE;
-      name          : chars_ptr;
-      bwrite        : Write_Ptr;
-      bwrite_old    : Write_old_Ptr;
-      bread         : Read_Ptr;
-      bread_old     : Read_Old_Ptr;
-      bputs         : Puts_Ptr;
-      bgets         : Gets_Ptr;
-      ctrl          : Ctrl_Ptr;
-      create        : Create_Ptr;
-      destroy       : Destroy_Ptr;
-      callback_ctrl : Callback_Ctlr_Ptr;
-   end record;
-   pragma Convention (C, bio_method_st);
-   type bio_method_st_Ptr is access all bio_method_st;
-   pragma Convention (C, bio_method_st_Ptr);
 
    type BIO_Flags is new int;
    BIO_FLAGS_READ         : constant BIO_Flags := 16#001#;
@@ -217,7 +203,61 @@ package OpenSSL is
    procedure BIO_clear_flags (b : BIO; flags : BIO_Flags);
    function BIO_free (b : BIO) return int;
    function BIO_get_data (b : BIO) return System.Address;
-   function BIO_new (type_of : bio_method_st) return BIO;
+   function BIO_get_new_index return int;
+   procedure BIO_meth_free (biom : BIO_METHOD);
+   function BIO_meth_get_create (biom : BIO_METHOD) return Create_Ptr;
+   function BIO_meth_get_ctrl
+            (  biom : BIO_METHOD
+            )  return Callback_Ctlr_Ptr;
+   function BIO_meth_get_destroy (biom : BIO_METHOD) return Destroy_Ptr;
+   function BIO_meth_get_gets (biom : BIO_METHOD) return Gets_Ptr;
+   function BIO_meth_get_puts (biom : BIO_METHOD) return Puts_Ptr;
+   function BIO_meth_get_read (biom : BIO_METHOD) return Read_Old_Ptr;
+   function BIO_meth_get_read_ex (biom : BIO_METHOD) return Read_Ptr;
+   function BIO_meth_get_write (biom : BIO_METHOD) return Write_Old_Ptr;
+   function BIO_meth_get_write_ex (biom : BIO_METHOD) return Write_Ptr;
+   function BIO_meth_new
+            (  type_of : int;
+               name    : char_array
+            )  return BIO_METHOD;
+   function BIO_meth_set_create
+            (  biom : BIO_METHOD;
+               cb   : Create_Ptr
+            )  return int;
+   function BIO_meth_set_ctrl
+            (  biom : BIO_METHOD;
+               cb   : Callback_Ctlr_Ptr
+            )  return int;
+   function BIO_meth_set_destroy
+            (  biom : BIO_METHOD;
+               cb   : Destroy_Ptr
+            )  return int;
+   function BIO_meth_set_gets
+            (  biom : BIO_METHOD;
+               cb   : Gets_Ptr
+            )  return int;
+   function BIO_meth_set_puts
+            (  biom : BIO_METHOD;
+               cb   : Puts_Ptr
+            )  return int;
+   function BIO_meth_set_read
+            (  biom : BIO_METHOD;
+               cb   : Read_Old_Ptr
+            )  return int;
+   function BIO_meth_set_read_ex
+            (  biom : BIO_METHOD;
+               cb   : Read_Ptr
+            )  return int;
+   function BIO_meth_set_write
+            (  biom : BIO_METHOD;
+               cb   : Write_Old_Ptr
+            )  return int;
+   function BIO_meth_set_write_ex
+            (  biom : BIO_METHOD;
+               cb   : Write_Ptr
+            )  return int;
+   function BIO_new (type_of : BIO_METHOD) return BIO;
+   function BIO_pop (b : BIO) return BIO;
    function BIO_read
             (  b    : BIO;
                data : access Stream_Element;
@@ -229,12 +269,19 @@ package OpenSSL is
                dlen      : int;
                readbytes : access size_t
             )  return int;
+-- function BIO_reset(b : BIO) return int;
+   function BIO_s_null return BIO_METHOD;
    procedure BIO_set_data
              (  a   : BIO;
                 ptr : System.Address
              );
    procedure BIO_set_flags (b : BIO; flags : BIO_Flags);
-   function BIO_s_mem return bio_method_st_Ptr;
+   function BIO_s_mem return BIO_METHOD;
+   function BIO_test_flags
+            (  b     : BIO;
+               flags : BIO_Flags
+            )  return BIO_flags;
+   function BIO_up_ref (b : BIO) return int;
    function BIO_write
             (  b    : BIO;
                data : access Stream_Element;
@@ -305,6 +352,7 @@ package OpenSSL is
                 len  : size_t
              );
    function ERR_get_error return unsigned_long;
+   function ERR_peek_error return unsigned_long;
    procedure ERR_put_error
              (  lib    : Err_Lib   := ERR_LIB_USER;
                 func   : int;
@@ -446,6 +494,64 @@ package OpenSSL is
             (  opts     : Unsigned_64 := 0;
                settings : ossl_init_settings_st_Ptr := null
             )  return int;
+
+   type SSL_MODE_TYPE is new long;
+   SSL_MODE_ENABLE_PARTIAL_WRITE : constant SSL_MODE_TYPE := 16#000001#;
+--
+-- Make  it  possible  to retry SSL_write() with changed buffer location
+-- (buffer contents must stay the same!); this is  not  the  default  to
+-- avoid  the  misconception  that non-blocking SSL_write() behaves like
+-- non-blocking write():
+--
+   SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER : constant SSL_MODE_TYPE :=
+                                                             16#000002#;
+--
+-- Never bother the application with retries if the transport is blocking:
+--
+   SSL_MODE_AUTO_RETRY           : constant SSL_MODE_TYPE := 16#000004#;
+--
+-- Don't attempt to automatically build certificate chain
+--
+   SSL_MODE_NO_AUTO_CHAIN        : constant SSL_MODE_TYPE := 16#000008#;
+--
+-- Save RAM  by releasing read  and  write  buffers when  they're empty.
+-- (SSL3 and TLS only.) Released buffers are freed.
+--
+   SSL_MODE_RELEASE_BUFFERS      : constant SSL_MODE_TYPE := 16#000010#;
+--
+-- Send the current time in the Random fields  of  the  ClientHello  and
+-- ServerHello   records    for    compatibility    with    hypothetical
+-- implementations that require it.
+--
+   SSL_MODE_SEND_CLIENTHELLO_TIME : constant SSL_MODE_TYPE := 16#00020#;
+   SSL_MODE_SEND_SERVERHELLO_TIME : constant SSL_MODE_TYPE := 16#00040#;
+--
+-- Send  TLS_FALLBACK_SCSV  in  the  ClientHello.  To  be  set  only  by
+-- applications  that  reconnect with a downgraded protocol version; see
+-- draft-ietf-tls-downgrade-scsv-00 for details. DO NOT ENABLE  THIS  if
+-- your  application  attempts  a  normal  handshake.  Only  use this in
+-- explicit   fallback    retries,    following    the    guidance    in
+-- draft-ietf-tls-downgrade-scsv-00.
+--
+   SSL_MODE_SEND_FALLBACK_SCSV   : constant SSL_MODE_TYPE := 16#000080#;
+--
+-- Support Asynchronous operation
+--
+   SSL_MODE_ASYNC                : constant SSL_MODE_TYPE := 16#000100#;
+--
+-- When using DTLS/SCTP, include the terminating zero in the label  used
+-- for  computing  the  endpoint-pair  shared   secret.   Required   for
+-- interoperability  with  implementations  having  this  bug like these
+-- older version of OpenSSL:
+--
+-- - OpenSSL 1.0.0 series
+-- - OpenSSL 1.0.1 series
+-- - OpenSSL 1.0.2 series
+-- - OpenSSL 1.1.0 series
+-- - OpenSSL 1.1.1 and 1.1.1a
+--
+   SSL_MODE_DTLS_SCTP_LABEL_LENGTH_BUG : constant SSL_MODE_TYPE :=
+                                                              16#00400#;
 --
 -- Options
 --
@@ -568,6 +674,15 @@ package OpenSSL is
    SSL_OP_NO_DTLS_MASK : constant SSL_OP :=
                                    SSL_OP_NO_DTLSv1
                                 or SSL_OP_NO_DTLSv1_2;
+
+   type SSL_WANT_TYPE is new int;
+   SSL_NOTHING         : constant SSL_WANT_TYPE := 1;
+   SSL_WRITING         : constant SSL_WANT_TYPE := 2;
+   SSL_READING         : constant SSL_WANT_TYPE := 3;
+   SSL_X509_LOOKUP     : constant SSL_WANT_TYPE := 4;
+   SSL_ASYNC_PAUSED    : constant SSL_WANT_TYPE := 5;
+   SSL_ASYNC_NO_JOBS   : constant SSL_WANT_TYPE := 6;
+   SSL_CLIENT_HELLO_CB : constant SSL_WANT_TYPE := 7;
 --
 -- SSL_CTRL_TYPE -- Control commands
 --
@@ -710,7 +825,14 @@ package OpenSSL is
    DTLS1_2_VERSION : constant SSL_Version_No := 16#0FEFD#;
    TLS_ANY_VERSION : constant SSL_Version_No := 16#10000#;
 
+   SSL_SENT_SHUTDOWN     : constant := 1;
+   SSL_RECEIVED_SHUTDOWN : constant := 2;
+
    function SSL_CTX_check_private_key (ctx : SSL_CTX) return int;
+   function SSL_CTX_clear_mode
+            (  ctx  : SSL_CTX;
+               mode : SSL_MODE_TYPE
+            )  return SSL_MODE_TYPE;
    function SSL_CTX_clear_options
             (  ctx : SSL_CTX;
                op  : SSL_OP
@@ -723,8 +845,14 @@ package OpenSSL is
             )  return long;
    procedure SSL_CTX_free (ctx : SSL_CTX);
    function SSL_CTX_get_ciphers (ctx : SSL_CTX) return OPENSSL_STACK;
+   function SSL_CTX_get_mode (ctx : SSL_CTX) return SSL_MODE_TYPE;
    function SSL_CTX_get_options (ctx : SSL_CTX) return SSL_OP;
    function SSL_CTX_get_timeout (ctx : SSL_CTX) return long;
+   function SSL_CTX_load_verify_locations
+            (  ctx    : SSL_CTX;
+               CAfile : chars_ptr;
+               CApath : chars_ptr
+            )  return int;
    function SSL_CTX_new (meth : SSL_METHOD) return SSL_CTX;
    function SSL_CTX_set_cipher_list
             (  ctx : SSL_CTX;
@@ -734,19 +862,19 @@ package OpenSSL is
             (  ctx : SSL_CTX;
                str : char_array
             )  return int;
-   function SSL_CTX_load_verify_locations
-            (  ctx    : SSL_CTX;
-               CAfile : chars_ptr;
-               CApath : chars_ptr
-            )  return int;
    function SSL_CTX_set_default_verify_dir (ctx : SSL_CTX) return int;
    function SSL_CTX_set_default_verify_file (ctx : SSL_CTX) return int;
    function SSL_CTX_set_default_verify_paths (ctx : SSL_CTX) return int;
+   function SSL_CTX_set_mode
+            (  ctx  : SSL_CTX;
+               mode : SSL_MODE_TYPE
+            )  return SSL_MODE_TYPE;
    function SSL_CTX_set_options
             (  ctx : SSL_CTX;
                op  : SSL_OP
             )  return SSL_OP;
-   function SSL_CTX_set_timeout(ctx : SSL_CTX; t : long) return long;
+   function SSL_CTX_set_timeout (ctx : SSL_CTX; t : long) return long;
+   function SSL_CTX_up_ref (ctx : SSL_CTX) return int;
    function SSL_CTX_use_certificate_ASN1
             (  ctx : SSL_CTX;
                len : int;
@@ -785,6 +913,11 @@ package OpenSSL is
    function SSL_accept (s : SSL) return int;
    function SSL_check_private_key (s : SSL) return int;
    procedure SSL_certs_clear (s : SSL);
+   function SSL_clear (s : SSL) return int;
+   function SSL_clear_mode
+            (  s    : SSL;
+               mode : SSL_MODE_TYPE
+            )  return SSL_MODE_TYPE;
    function SSL_clear_options (s : SSL; op : SSL_OP) return SSL_OP;
    function SSL_connect (s : SSL) return int;
    function SSL_ctrl
@@ -800,7 +933,9 @@ package OpenSSL is
    function SSL_get_cipher_list (s : SSL; priority : int)
       return chars_ptr;
    function SSL_get_error (s : SSL; ret_code : int) return int;
+   function SSL_get_mode (s : SSL) return SSL_MODE_TYPE;
    function SSL_get_options (s : SSL) return SSL_OP;
+   function SSL_get_rbio (s : SSL) return BIO;
    function SSL_get_shared_ciphers
             (  s    : SSL;
                buf  : char_array;
@@ -808,6 +943,7 @@ package OpenSSL is
             )  return chars_ptr;
    function SSL_get_state (s : SSL) return OSSL_HANDSHAKE_STATE;
    function SSL_get_version (s : SSL_CTX) return chars_ptr;
+   function SSL_get_wbio (s : SSL) return BIO;
    function SSL_get_SSL_CTX (s : SSL) return SSL_CTX;
    function SSL_in_before (s : SSL) return int;
    function SSL_in_init (s : SSL) return int;
@@ -837,9 +973,15 @@ package OpenSSL is
                str : char_array
             )  return int;
    procedure SSL_set_connect_state (s : SSL);
+   function SSL_set_mode
+            (  s    : SSL;
+               mode : SSL_MODE_TYPE
+            )  return SSL_MODE_TYPE;
    function SSL_set_options (s : SSL; op : SSL_OP) return SSL_OP;
+   procedure SSL_set_shutdown (s : SSL; mode : int);
    procedure SSL_set0_rbio (s : SSL; rbio : BIO);
    procedure SSL_set0_wbio (s : SSL; wbio : BIO);
+   function SSL_shutdown (s : SSL) return int;
    function SSL_use_certificate_ASN1
             (  s   : SSL;
                len : int;
@@ -875,6 +1017,7 @@ package OpenSSL is
                format : SSL_FILETYPE
             )  return int;
    function SSL_version (s : SSL) return int;
+   function SSL_want (s : SSL) return SSL_WANT_TYPE;
    function SSL_write
             (  s      : SSL;
                buf    : System.Address;
@@ -982,11 +1125,19 @@ package OpenSSL is
 --
 -- Exceptions :
 --
---     ID - If any SSL error is pending
+--    ID - If any SSL error is pending
 --
    procedure Check_Error (ID : Exception_ID);
+
+   function Address_Of (Object : BIO) return System.Address;
+   function Address_Of (Object : BIO_METHOD) return System.Address;
+   function Address_Of (Object : EVP_MD) return System.Address;
+   function Address_Of (Object : SSL) return System.Address;
+   function Address_Of (Object : SSL_CTX) return System.Address;
+   function Address_Of (Object : SSL_METHOD) return System.Address;
 private
    type BIO           is new System.Address;
+   type BIO_METHOD    is new System.Address;
    type EVP_MD        is new System.Address;
    type OPENSSL_STACK is new System.Address;
    type SSL           is new System.Address;
@@ -995,6 +1146,8 @@ private
    type SSL_METHOD    is new System.Address;
 
    No_CIPHER  : constant SSL_CIPHER := SSL_CIPHER (System.Null_Address);
+   No_BIO     : constant BIO        := BIO (System.Null_Address);
+   No_METHOD  : constant BIO_METHOD := BIO_METHOD (System.Null_Address);
    No_SSL     : constant SSL        := SSL (System.Null_Address);
    No_SSL_CTX : constant SSL_CTX    := SSL_CTX (System.Null_Address);
    No_STACK   : constant OPENSSL_STACK :=
@@ -1003,12 +1156,38 @@ private
    pragma Import (C, BIO_clear_flags,        "BIO_clear_flags");
    pragma Import (C, BIO_free,               "BIO_free");
    pragma Import (C, BIO_get_data,           "BIO_get_data");
+   pragma Import (C, BIO_get_new_index,      "BIO_get_new_index");
+   pragma Import (C, BIO_meth_free,          "BIO_meth_free");
+   pragma Import (C, BIO_meth_get_destroy,   "BIO_meth_get_destroy");
+   pragma Import (C, BIO_meth_get_create,    "BIO_meth_get_create");
+   pragma Import (C, BIO_meth_get_ctrl,      "BIO_meth_get_ctrl");
+   pragma Import (C, BIO_meth_get_gets,      "BIO_meth_get_gets");
+   pragma Import (C, BIO_meth_get_puts,      "BIO_meth_get_puts");
+   pragma Import (C, BIO_meth_get_read,      "BIO_meth_get_read");
+   pragma Import (C, BIO_meth_get_read_ex,   "BIO_meth_get_read_ex");
+   pragma Import (C, BIO_meth_get_write,     "BIO_meth_get_write");
+   pragma Import (C, BIO_meth_get_write_ex,  "BIO_meth_get_write_ex");
+   pragma Import (C, BIO_meth_new,           "BIO_meth_new");
+   pragma Import (C, BIO_meth_set_destroy,   "BIO_meth_set_destroy");
+   pragma Import (C, BIO_meth_set_create,    "BIO_meth_set_create");
+   pragma Import (C, BIO_meth_set_ctrl,      "BIO_meth_set_ctrl");
+   pragma Import (C, BIO_meth_set_gets,      "BIO_meth_set_gets");
+   pragma Import (C, BIO_meth_set_puts,      "BIO_meth_set_puts");
+   pragma Import (C, BIO_meth_set_read,      "BIO_meth_set_read");
+   pragma Import (C, BIO_meth_set_read_ex,   "BIO_meth_set_read_ex");
+   pragma Import (C, BIO_meth_set_write,     "BIO_meth_set_write");
+   pragma Import (C, BIO_meth_set_write_ex,  "BIO_meth_set_write_ex");
    pragma Import (C, BIO_new,                "BIO_new");
+   pragma Import (C, BIO_pop,                "BIO_pop");
    pragma Import (C, BIO_read,               "BIO_read");
    pragma Import (C, BIO_read_ex,            "BIO_read_ex");
-   pragma Import (C, BIO_set_data ,          "BIO_set_data");
+-- pragma Import (C, BIO_reset,              "BIO_reset");
+   pragma Import (C, BIO_s_null,             "BIO_s_null");
+   pragma Import (C, BIO_set_data,           "BIO_set_data");
    pragma Import (C, BIO_set_flags,          "BIO_set_flags");
    pragma Import (C, BIO_s_mem,              "BIO_s_mem");
+   pragma Import (C, BIO_test_flags,         "BIO_test_flags");
+   pragma Import (C, BIO_up_ref,             "BIO_up_ref");
    pragma Import (C, BIO_write,              "BIO_write");
    pragma Import (C, BIO_write_ex,           "BIO_write_ex");
 
@@ -1029,6 +1208,7 @@ private
    pragma Import (C, ERR_clear_error,        "ERR_clear_error");
    pragma Import (C, ERR_error_string_n,     "ERR_error_string_n");
    pragma Import (C, ERR_get_error,          "ERR_get_error");
+   pragma Import (C, ERR_peek_error,         "ERR_peek_error");
    pragma Import (C, ERR_put_error,          "ERR_put_error");
 
    pragma Import (C, OPENSSL_init_ssl,       "OPENSSL_init_ssl");
@@ -1050,6 +1230,7 @@ private
    pragma Import (C, SSL_CTX_load_verify_locations,
                                        "SSL_CTX_load_verify_locations");
    pragma Import (C, SSL_CTX_new,           "SSL_CTX_new");
+   pragma Import (C, SSL_CTX_up_ref,        "SSL_CTX_up_ref");
    pragma Import (C, SSL_CTX_set_cipher_list,
                                             "SSL_CTX_set_cipher_list");
    pragma Import (C, SSL_CTX_set_ciphersuites,
@@ -1082,6 +1263,7 @@ private
    pragma Import (C, SSL_certs_clear,        "SSL_certs_clear");
    pragma Import (C, SSL_check_private_key,  "SSL_check_private_key");
    pragma Import (C, SSL_connect,            "SSL_connect");
+   pragma Import (C, SSL_clear,              "SSL_clear");
    pragma Import (C, SSL_clear_options,      "SSL_clear_options");
    pragma Import (C, SSL_ctrl,               "SSL_ctrl");
    pragma Import (C, SSL_free,               "SSL_free");
@@ -1092,10 +1274,12 @@ private
                                           "SSL_get1_supported_ciphers");
    pragma Import (C, SSL_get_error,          "SSL_get_error");
    pragma Import (C, SSL_get_options,        "SSL_get_options");
+   pragma Import (C, SSL_get_rbio,           "SSL_get_rbio");
    pragma Import (C, SSL_get_shared_ciphers, "SSL_get_shared_ciphers");
    pragma Import (C, SSL_get_SSL_CTX,        "SSL_get_SSL_CTX");
    pragma Import (C, SSL_get_state,          "SSL_get_state");
    pragma Import (C, SSL_get_version,        "SSL_get_version");
+   pragma Import (C, SSL_get_wbio,           "SSL_get_wbio");
    pragma Import (C, SSL_in_before,          "SSL_in_before");
    pragma Import (C, SSL_in_init,            "SSL_in_init");
    pragma Import (C, SSL_is_init_finished,   "SSL_is_init_finished");
@@ -1110,8 +1294,11 @@ private
    pragma Import (C, SSL_set_ciphersuites,   "SSL_set_ciphersuites");
    pragma Import (C, SSL_set_connect_state,  "SSL_set_connect_state");
    pragma Import (C, SSL_set_options,        "SSL_set_options");
+   pragma Import (C, SSL_set_shutdown,       "SSL_set_shutdown");
    pragma Import (C, SSL_set0_rbio,          "SSL_set0_rbio");
    pragma Import (C, SSL_set0_wbio,          "SSL_set0_wbio");
+   pragma Import (C, SSL_shutdown,           "SSL_shutdown");
+   pragma Import (C, SSL_want,               "SSL_want");
    pragma Import (C, SSL_use_certificate_ASN1,
                                             "SSL_use_certificate_ASN1");
    pragma Import (C, SSL_use_certificate_chain_file,

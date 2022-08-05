@@ -3,7 +3,7 @@
 --     Persistent.Blocking_Files.                  Luebeck            --
 --        Transactional.Dump                       Summer, 2014       --
 --  Interface                                                         --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  11:02 11 Apr 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -29,9 +29,7 @@ with Strings_Edit;           use Strings_Edit;
 with Strings_Edit.Integers;  use Strings_Edit.Integers;
 with Strings_Edit.Quoted;    use Strings_Edit.Quoted;
 
-with Interfaces;
 with Persistent.Blocking_Files.Text_IO;
-with Strings_Edit.Integer_Edit;
 
 package body Persistent.Blocking_Files.Transactional.Dump is
    use Persistent.Blocking_Files.Text_IO;

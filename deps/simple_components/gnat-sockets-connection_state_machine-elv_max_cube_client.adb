@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     ELV_MAX_Cube_Client                         Summer, 2015       --
 --  Implementation                                                    --
---                                Last revision :  11:26 01 Jun 2020  --
+--                                Last revision :  13:32 28 Jan 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -42,8 +42,11 @@ package body GNAT.Sockets.Connection_State_Machine.
    use Device_Handles;
    use Room_Handles;
 
-   Epoch : constant Time :=
-                    Ada.Calendar.Formatting.Time_Of (2000, 01, 01);
+   Max_M_Blocks : constant Integer := 255;
+   Busy_Error   : constant String :=
+                           "Cube is busy (cannot send data right now)";
+   Epoch        : constant Time :=
+                     Ada.Calendar.Formatting.Time_Of (2000, 01, 01);
 
 --     procedure Dump (Topology : Devices_Configuration; Prefix : String) is
 --        use Ada.Text_IO;
@@ -219,6 +222,19 @@ package body GNAT.Sockets.Connection_State_Machine.
    function Encode (Mode : Operating_Mode) return Character;
    function Encode (Kind_Of : Partner_Device_Type) return Character;
    function Encode (Room : Room_ID) return Character;
+
+   type Disposition is
+        (  Creating_Socket,
+           Setting_Reuse,
+           Setting_Broadcast,
+           Setting_Timeout,
+           Getting_Host_By_Name,
+           Getting_Address_From_Name,
+           Binding_Socket,
+           Sending_Socket,
+           Receiving_From_Socket,
+           Closing_Socket
+        );
 
    procedure Free is
       new Ada.Unchecked_Deallocation
@@ -1524,18 +1540,6 @@ package body GNAT.Sockets.Connection_State_Machine.
                      16#2A#, 16#2A#, 16#2A#, 16#2A#, 16#2A#, 16#2A#,
                      16#49#
                   );
-      type Disposition is
-           (  Creating_Socket,
-              Setting_Reuse,
-              Setting_Broadcast,
-              Setting_Timeout,
-              Getting_Host_By_Name,
-              Getting_Address_From_Name,
-              Binding_Socket,
-              Sending_Socket,
-              Receiving_From_Socket,
-              Closing_Socket
-           );
       Action  : Disposition := Creating_Socket;
       Address : aliased Sock_Addr_Type;
 
@@ -1564,6 +1568,7 @@ package body GNAT.Sockets.Connection_State_Machine.
                return "closing the socket";
          end case;
       end Image;
+
       Data      : Stream_Element_Array  (1..100);
       Result    : Cube_Descriptor_Array (1..255);
       Count     : Natural           := 0;
@@ -2017,6 +2022,9 @@ package body GNAT.Sockets.Connection_State_Machine.
          for Index in 0..6 loop
             Get_Day (Device, Data, Pointer, List, Decode (Index));
          end loop;
+         Get_Temperature (Data, Pointer, Device.Data.Offset);
+         Device.Data.Offset := Device.Data.Offset - 3.5;
+         Get_Temperature (Data, Pointer, Device.Data.Window_Open);
       end Get_Wall_Thermostat_Data;
 
       Update  : Update_Type;
@@ -3027,7 +3035,7 @@ package body GNAT.Sockets.Connection_State_Machine.
       end if;
       Get_Comma (Line, Pointer);
       begin
-         Get (Line, Pointer, J, First => 0, Last => I + 1);
+         Get (Line, Pointer, J, First => 0, Last => Max_M_Blocks);
       exception
          when End_Error =>
             Raise_Exception
@@ -3037,8 +3045,8 @@ package body GNAT.Sockets.Connection_State_Machine.
          when others =>
             Raise_Exception
             (  Data_Error'Identity,
-               (  "Invalid M-response, wrong second field, expected 1.."
-               &  Image (I + 1)
+               (  "Invalid M-response, wrong second field, expected 0.."
+               &  Image (Max_M_Blocks)
             )  );
       end;
       Get_Comma (Line, Pointer);
@@ -3700,6 +3708,16 @@ package body GNAT.Sockets.Connection_State_Machine.
       return True;
    end Is_Configured;
 
+   function Is_Blocking (Data : String) return Boolean is
+   begin
+      case Data (Data'First) is
+         when 'd' | 'e' | 'f' | 's' =>
+            return True;
+         when others =>
+            return False;
+      end case;
+   end Is_Blocking;
+
    function Is_In
             (  Client : ELV_MAX_Cube_Client;
                Device : RF_Address
@@ -3954,6 +3972,17 @@ package body GNAT.Sockets.Connection_State_Machine.
                "Unsupported message '" & Line (Line'First) & '''
             );
       end case;
+      if Is_Empty (Client.Secondary) then
+         Client.Blocked := False;
+      else
+         declare
+            Data    : String  := Get (Client.Secondary);
+            Pointer : Integer := Data'First;
+         begin
+            Send (Client, Data, Pointer);
+            Client.Blocked := Is_Blocking (Data);
+         end;
+      end if;
    end Process_Packet;
 
    procedure Put
@@ -3977,7 +4006,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          or else
             (  Pointer > Destination'Last
             and then
-               Pointer - 1 > Destination'Last
+               Pointer /= Destination'Last + 1
          )  )  then
          raise Layout_Error;
       end if;
@@ -4024,7 +4053,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          Pointer := Pointer + 1;
          Name    := Pointer;
          Pointer := Pointer + Length;
-         if Pointer - 1 > Data'Last then
+         if Pointer - Data'Last > 1 then
             raise Data_Error with
                   "wrong name length (device " & Image (No) & ')';
          end if;
@@ -4068,7 +4097,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          Pointer := Pointer + 1;
          Name    := Pointer;
          Pointer := Pointer + Length;
-         if Pointer - 1 > Data'Last then
+         if Pointer - Data'Last > 1 then
             raise Data_Error with
                   "wrong name length (room " & Image (No) & ')';
          end if;
@@ -4162,6 +4191,52 @@ package body GNAT.Sockets.Connection_State_Machine.
       end loop;
    end Query_Unconfigured_Devices;
 
+   procedure Reboot (Serial_No : String; Port : Port_Type := 23272) is
+      Address : aliased Sock_Addr_Type;
+      Last    : Stream_Element_Offset;
+      Socket  : Socket_Type := No_Socket;
+   begin
+      if Serial_No'Length /= 10 then
+         raise Constraint_Error;
+      end if;
+      declare
+         Announce : constant String :=
+                       "eQ3Max*" & Character'Val (0) & Serial_No & 'R';
+      begin
+         Create_Socket (Socket, Family_Inet, Socket_Datagram);
+         Set_Socket_Option
+         (  Socket,
+            Socket_Level,
+            (Reuse_Address, True)
+         );
+         Set_Socket_Option
+         (  Socket,
+            Socket_Level,
+            (Broadcast, True)
+         );
+         Address.Addr := Broadcast_Inet_Addr;
+         Address.Port := Port;
+         Send_Socket
+         (  Socket,
+            From_String (Announce),
+            Last,
+            Address'Access
+         );
+         Close_Socket (Socket);
+      end;
+   exception
+      when Error : others =>
+         if Socket /= No_Socket then
+            begin
+               Close_Socket (Socket);
+            exception
+               when others =>
+                  null;
+            end;
+         end if;
+         raise;
+   end Reboot;
+
    procedure Release (Lock : in out Topology_Holder) is
    begin
       if not Lock.Released then
@@ -4187,15 +4262,15 @@ package body GNAT.Sockets.Connection_State_Machine.
             when Cube | Shutter_Contact | Eco_Button | Unknown =>
                null;
             when Radiator_Thermostat..Wall_Thermostat =>
-               To.Comfort  := From.Comfort;
-               To.Eco      := From.Eco;
-               To.Max      := From.Max;
-               To.Min      := From.Min;
-               To.Offset   := From.Offset;
+               To.Comfort     := From.Comfort;
+               To.Eco         := From.Eco;
+               To.Max         := From.Max;
+               To.Min         := From.Min;
+               To.Offset      := From.Offset;
+               To.Window_Open := From.Window_Open;
                To.Schedule := From.Schedule;
                case To.Kind_Of is
                   when Radiator_Thermostat | Radiator_Thermostat_Plus =>
-                     To.Window_Open     := From.Window_Open;
                      To.Window_Time     := From.Window_Time;
                      To.Boost_Time      := From.Boost_Time;
                      To.Boost_Valve     := From.Boost_Valve;
@@ -4398,14 +4473,21 @@ package body GNAT.Sockets.Connection_State_Machine.
                 Data   : String
              )  is
       Pointer : Integer := Data'First;
+      Full    : Boolean;
    begin
-      if Available_To_Send (Client) < Data'Length then
-         Raise_Exception
-         (  Use_Error'Identity,
-            "Cube is busy (cannot send data right now)"
-         );
+      if Client.Blocked or else not Is_Empty (Client.Secondary) then
+         Put (Client.Secondary, Data, Full);
+         if Full then
+            Raise_Exception
+            (  Use_Error'Identity,
+               Busy_Error
+            );
+         end if;
+      elsif Available_To_Send (Client) < Data'Length then
+         Raise_Exception (Use_Error'Identity, Busy_Error);
       else
          Send (Client, Data, Pointer);
+         Client.Blocked := Is_Blocking (Data);
       end if;
    end Send;
 
@@ -4444,7 +4526,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          Pointer := Pointer + 1;
          Name    := Pointer;
          Pointer := Pointer + Length;
-         if Pointer - 1 > Data'Last then
+         if Pointer - Data'Last > 1 then
             Raise_Exception
             (  Data_Error'Identity,
                (  "wrong name length (device "
@@ -4533,7 +4615,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          Pointer := Pointer + 1;
          Name    := Pointer;
          Pointer := Pointer + Length;
-         if Pointer - 1 > Data'Last then
+         if Pointer - Data'Last > 1 then
             Raise_Exception
             (  Data_Error'Identity,
                (  "wrong name length (room "
@@ -5028,14 +5110,15 @@ package body GNAT.Sockets.Connection_State_Machine.
    end Set_Thermostat_Parameters;
 
    procedure Set_Thermostat_Parameters_Unchecked
-             (  Client  : in out ELV_MAX_Cube_Client;
-                Device  : in out Device_Descriptor'Class;
-                Comfort : Centigrade;
-                Eco     : Centigrade;
-                Max     : Centigrade;
-                Min     : Centigrade;
-                Offset  : Centigrade;
-                Mode    : Setting_Mode
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Device      : in out Device_Descriptor'Class;
+                Comfort     : Centigrade;
+                Eco         : Centigrade;
+                Max         : Centigrade;
+                Min         : Centigrade;
+                Offset      : Centigrade;
+                Window_Open : Centigrade;
+                Mode        : Setting_Mode
              )  is
    begin
       if Device.Kind_Of /= Wall_Thermostat then
@@ -5064,30 +5147,32 @@ package body GNAT.Sockets.Connection_State_Machine.
                &  Character'Val (Encode (Max))
                &  Character'Val (Encode (Min))
                &  Character'Val (Encode (Offset + 3.5))
-               &  Character'Val (0)
+               &  Character'Val (Encode (Window_Open))
                &  Character'Val (0)
                )
             &  CRLF
          )  );
       end if;
       if 0 /= (S_Response and Mode) then
-         Device.Data.Comfort := Comfort;
-         Device.Data.Eco     := Eco;
-         Device.Data.Min     := Min;
-         Device.Data.Max     := Max;
-         Device.Data.Offset  := Offset;
+         Device.Data.Comfort     := Comfort;
+         Device.Data.Eco         := Eco;
+         Device.Data.Min         := Min;
+         Device.Data.Max         := Max;
+         Device.Data.Offset      := Offset;
+         Device.Data.Window_Open := Window_Open;
       end if;
    end Set_Thermostat_Parameters_Unchecked;
 
    procedure Set_Thermostat_Parameters
-             (  Client  : in out ELV_MAX_Cube_Client;
-                Index   : Positive;
-                Comfort : Centigrade;
-                Eco     : Centigrade;
-                Max     : Centigrade;
-                Min     : Centigrade;
-                Offset  : Centigrade;
-                Mode    : Setting_Mode := S_Command or S_Response
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Index       : Positive;
+                Comfort     : Centigrade;
+                Eco         : Centigrade;
+                Max         : Centigrade;
+                Min         : Centigrade;
+                Offset      : Centigrade;
+                Window_Open : Centigrade;
+                Mode        : Setting_Mode := S_Command or S_Response
              )  is
       Lock : Topology_Holder (Client'Access);
    begin
@@ -5099,35 +5184,38 @@ package body GNAT.Sockets.Connection_State_Machine.
          Max     => Max,
          Min     => Min,
          Offset  => Offset,
+         Window_Open => Window_Open,
          Mode    => Mode
       );
    end Set_Thermostat_Parameters;
 
    procedure Set_Thermostat_Parameters
-             (  Client  : in out ELV_MAX_Cube_Client;
-                Address : RF_Address;
-                Comfort : Centigrade;
-                Eco     : Centigrade;
-                Max     : Centigrade;
-                Min     : Centigrade;
-                Offset  : Centigrade;
-                Mode    : Setting_Mode := S_Command or S_Response
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Address     : RF_Address;
+                Comfort     : Centigrade;
+                Eco         : Centigrade;
+                Max         : Centigrade;
+                Min         : Centigrade;
+                Offset      : Centigrade;
+                Window_Open : Centigrade;
+                Mode        : Setting_Mode := S_Command or S_Response
              )  is
       Lock : Topology_Holder (Client'Access);
    begin
       Set_Thermostat_Parameters_Unchecked
-      (  Client  => Client,
-         Device  => Ptr
-                    (  Get
-                       (  Client.Topology.Devices,
-                          Get_Device_Unchecked (Client, Address)
-                    )  ) .all,
-         Comfort => Comfort,
-         Eco     => Eco,
-         Max     => Max,
-         Min     => Min,
-         Offset  => Offset,
-         Mode    => Mode
+      (  Client      => Client,
+         Device      => Ptr
+                        (  Get
+                           (  Client.Topology.Devices,
+                              Get_Device_Unchecked (Client, Address)
+                        )  ) .all,
+         Comfort     => Comfort,
+         Eco         => Eco,
+         Max         => Max,
+         Min         => Min,
+         Offset      => Offset,
+         Window_Open => Window_Open,
+         Mode        => Mode
       );
    end Set_Thermostat_Parameters;
 
@@ -5551,10 +5639,10 @@ package body GNAT.Sockets.Connection_State_Machine.
       Zone : String (1..24) := (others => Character'Val (0));
    begin
       Zone (1..Winter.Name'Length)       := Winter.Name;
-      Zone (12..11 + Summer.Name'Length) := Summer.Name;
+      Zone (13..12 + Summer.Name'Length) := Summer.Name;
       Zone ( 6) := Character'Val (Winter.Start);
       Zone ( 7) := Character'Val (Day_Of_Week'Pos (Winter.Day));
-      Zone ( 9) := Character'Val (Integer (Winter.Hour));
+      Zone ( 8) := Character'Val (Integer (Winter.Hour));
       Zone (18) := Character'Val (Summer.Start);
       Zone (19) := Character'Val (Day_Of_Week'Pos (Summer.Day));
       Zone (20) := Character'Val (Integer (Summer.Hour));
@@ -5565,8 +5653,8 @@ package body GNAT.Sockets.Connection_State_Machine.
             Zone (18) := Character'Val (Summer.Start - 6);
          end if;
       end if;
-      Zone ( 8) := Character'Val (3);
-      Zone (20) := Character'Val (2);
+--    Zone ( 8) := Character'Val (3);
+--    Zone (20) := Character'Val (2);
       Zone ( 9..12) := Image (Winter.Offset);
       Zone (21..24) := Image (Summer.Offset);
       declare
@@ -5879,6 +5967,14 @@ package body GNAT.Sockets.Connection_State_Machine.
    procedure Write
              (  Stream : access Root_Stream_Type'Class;
                 Item   : Devices_Configuration
+             )  is
+   begin
+      null;
+   end Write;
+
+   procedure Write
+             (  Stream : access Root_Stream_Type'Class;
+                Item   : Secondary_Buffer
              )  is
    begin
       null;

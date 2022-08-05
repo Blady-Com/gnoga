@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     ELV_MAX_Cube_Client                         Summer, 2015       --
 --  Interface                                                         --
---                                Last revision :  23:23 12 May 2019  --
+--                                Last revision :  11:02 11 Apr 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -31,6 +31,7 @@ with Ada.Exceptions;  use Ada.Exceptions;
 with GNAT.Sockets.Connection_State_Machine.Expected_Sequence;
 with GNAT.Sockets.Connection_State_Machine.Terminated_Strings;
 
+with Generic_Indefinite_FIFO;
 with Generic_Indefinite_Set;
 with Generic_Map;
 with Object.Handle;
@@ -155,22 +156,22 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
          when Cube | Shutter_Contact | Eco_Button | Unknown =>
             null;
          when Radiator_Thermostat..Wall_Thermostat =>
-            Comfort  : Centigrade := 18.0;
-            Eco      : Centigrade := 18.0;
-            Max      : Centigrade := 18.0;
-            Min      : Centigrade := 18.0;
-            Offset   : Centigrade := 0.0;
-            Schedule : Week_Schedule :=
+            Comfort     : Centigrade := 18.0;
+            Eco         : Centigrade := 18.0;
+            Max         : Centigrade := 18.0;
+            Min         : Centigrade := 18.0;
+            Offset      : Centigrade := 0.0;
+            Window_Open : Centigrade := 18.0;
+            Schedule    : Week_Schedule :=
                           (others => (0, (others => (0.0, 19.0))));
             case Kind_Of is
                when Radiator_Thermostat | Radiator_Thermostat_Plus =>
-                  Window_Open     : Centigrade := 18.0;
-                  Window_Time     : Duration   := 10.0;
-                  Boost_Time      : Duration   := 1.0;
-                  Boost_Valve     : Ratio      := 0.5;
-                  Decalcification : Week_Time  := (Su, 12.0 * 3_600.0);
-                  Max_Valve       : Ratio      := 0.8;
-                  Valve_Offset    : Ratio      := 0.0;
+                  Window_Time     : Duration  := 10.0;
+                  Boost_Time      : Duration  := 1.0;
+                  Boost_Valve     : Ratio     := 0.5;
+                  Decalcification : Week_Time := (Su, 12.0 * 3_600.0);
+                  Max_Valve       : Ratio     := 0.8;
+                  Valve_Offset    : Ratio     := 0.0;
                when others =>
                   null;
             end case;
@@ -195,20 +196,22 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
 --
 -- ELV_MAX_Cube_Client -- An object implementing ELV MAX! Cube client
 --
---    Listener    - The connections server object
---    Line_Length - The maximal response line length
---    Input_Size  - The size of the input buffer
---    Output_Size - The size of the output buffer
+--    Listener       - The connections server object
+--    Line_Length    - The maximal response line length
+--    Input_Size     - The size of the input buffer
+--    Output_Size    - The size of the output buffer
+--    Secondary_Size - The size of the secondary buffer
 --
 -- The  Output_Size can  be limited to 140 elements or so,  if  only one
--- request will be sent at a time.  If the client wanted  to queue  more
--- than one request it should be increased correspondingly.
+-- request will be sent at a time. The Secondary_Size is the buffer used
+-- to to queue more than one requests. It should be set correspondingly.
 --
    type ELV_MAX_Cube_Client
-        (  Listener    : access Connections_Server'Class;
-           Line_Length : Positive;
-           Input_Size  : Buffer_Length;
-           Output_Size : Buffer_Length
+        (  Listener       : access Connections_Server'Class;
+           Line_Length    : Positive;
+           Input_Size     : Buffer_Length;
+           Output_Size    : Buffer_Length;
+           Secondary_Size : Storage_Count
         )  is new State_Machine with private;
 --
 -- Add_New_Device -- Add new device
@@ -1495,8 +1498,8 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
 --    Max             - Temperature
 --    Min             - Temperature
 --    Offset          - Between the set and actual temperatures
---  [ Window_Open     - When associated window is open
---    Window_Time ]   - Before engaging window mode
+--    Window_Open     - When associated window is open
+--  [ Window_Time ]   - Before engaging window mode
 --    Mode            - Execution mode
 --
 -- The parameter  Mode  specifies  execution method.  When S_Command  is
@@ -1540,24 +1543,26 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
                 Mode        : Setting_Mode := S_Command or S_Response
              );
    procedure Set_Thermostat_Parameters
-             (  Client  : in out ELV_MAX_Cube_Client;
-                Index   : Positive;
-                Comfort : Centigrade;
-                Eco     : Centigrade;
-                Max     : Centigrade;
-                Min     : Centigrade;
-                Offset  : Centigrade;
-                Mode    : Setting_Mode := S_Command or S_Response
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Index       : Positive;
+                Comfort     : Centigrade;
+                Eco         : Centigrade;
+                Max         : Centigrade;
+                Min         : Centigrade;
+                Offset      : Centigrade;
+                Window_Open : Centigrade;
+                Mode        : Setting_Mode := S_Command or S_Response
              );
    procedure Set_Thermostat_Parameters
-             (  Client  : in out ELV_MAX_Cube_Client;
-                Address : RF_Address;
-                Comfort : Centigrade;
-                Eco     : Centigrade;
-                Max     : Centigrade;
-                Min     : Centigrade;
-                Offset  : Centigrade;
-                Mode    : Setting_Mode := S_Command or S_Response
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Address     : RF_Address;
+                Comfort     : Centigrade;
+                Eco         : Centigrade;
+                Max         : Centigrade;
+                Min         : Centigrade;
+                Offset      : Centigrade;
+                Window_Open : Centigrade;
+                Mode        : Setting_Mode := S_Command or S_Response
              );
 --
 -- Set_Thermostat_Schedule -- Set device schedule
@@ -1809,6 +1814,19 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client is
             )  return Cube_Descriptor_Array;
 ------------------------------------------------------------------------
 --
+-- Reboot -- MAX! cube
+--
+--    Serial - The cube serial number (10 characters long)
+--    Port   - The broadcast port
+--
+-- Exceptions :
+--
+--    Constraint_Error - Invalid serial number
+--    Socket_Error     - I/O errors
+--
+   procedure Reboot (Serial_No : String; Port : Port_Type := 23272);
+------------------------------------------------------------------------
+--
 -- Topology_Holder -- Topology lock
 --
 -- The object holds a lock on the client topology when created. The lock
@@ -1926,6 +1944,14 @@ private
           );
    use Address_Maps;
 
+   package String_FIFOs is new Generic_Indefinite_FIFO (String);
+   type Secondary_Buffer is new String_FIFOs.FIFO with null record;
+   procedure Write
+             (  Stream : access Root_Stream_Type'Class;
+                Item   : Secondary_Buffer
+             );
+   for Secondary_Buffer'Write use Write;
+
    type Handshake is mod 2**4;
    Got_H : constant Handshake := 2**0;
    Got_C : constant Handshake := 2**1;
@@ -1957,15 +1983,17 @@ private
    end record;
    type String_Buffer_Ptr is access String_Buffer;
    type ELV_MAX_Cube_Client
-        (  Listener    : access Connections_Server'Class;
-           Line_Length : Positive;
-           Input_Size  : Buffer_Length;
-           Output_Size : Buffer_Length
+        (  Listener       : access Connections_Server'Class;
+           Line_Length    : Positive;
+           Input_Size     : Buffer_Length;
+           Output_Size    : Buffer_Length;
+           Secondary_Size : Storage_Count
         )  is new State_Machine (Input_Size, Output_Size) with
    record
       Ready      : Handshake  := 0;
       Duty       : Ratio      := 0.0;
       Error      : Boolean    := False;
+      Blocked    : Boolean    := False; -- Redirect to secondary buffer
       Slots      : Integer    := 0;
       Address    : RF_Address := 0;
       Roomless   : Natural    := 0;
@@ -1974,6 +2002,7 @@ private
       Version    : String (1..6)  := (' ', '1', '.', '0', '.', '0');
       Serial_No  : String (1..10) := (others => ' ');
       Metadata   : String_Buffer_Ptr;
+      Secondary  : Secondary_Buffer (Secondary_Size);
          -- Response fields
       Line : String_Data_Item (Line_Length, Character'Val (13));
       LF   : Expected_Item (1);
@@ -2085,14 +2114,15 @@ private
                 Mode        : Setting_Mode
              );
    procedure Set_Thermostat_Parameters_Unchecked
-             (  Client  : in out ELV_MAX_Cube_Client;
-                Device  : in out Device_Descriptor'Class;
-                Comfort : Centigrade;
-                Eco     : Centigrade;
-                Max     : Centigrade;
-                Min     : Centigrade;
-                Offset  : Centigrade;
-                Mode    : Setting_Mode
+             (  Client      : in out ELV_MAX_Cube_Client;
+                Device      : in out Device_Descriptor'Class;
+                Comfort     : Centigrade;
+                Eco         : Centigrade;
+                Max         : Centigrade;
+                Min         : Centigrade;
+                Offset      : Centigrade;
+                Window_Open : Centigrade;
+                Mode        : Setting_Mode
              );
    procedure Set_Thermostat_Schedule_Unchecked
              (  Client   : in out ELV_MAX_Cube_Client;

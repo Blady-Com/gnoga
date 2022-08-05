@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.OpenSSL                 Luebeck            --
 --  Implementation                                 Winter, 2019       --
 --                                                                    --
---                                Last revision :  14:40 03 Apr 2020  --
+--                                Last revision :  09:42 12 Dec 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,8 +25,9 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.IO_Exceptions;     use Ada.IO_Exceptions;
-with Interfaces.C.Strings;  use Interfaces.C.Strings;
+with Ada.IO_Exceptions;        use Ada.IO_Exceptions;
+with Interfaces.C.Strings;     use Interfaces.C.Strings;
+with Synchronization.Mutexes;  use Synchronization.Mutexes;
 
 with Ada.Unchecked_Deallocation;
 with System.Address_To_Access_Conversions;
@@ -48,22 +49,10 @@ package body GNAT.Sockets.Server.OpenSSL is
       end if;
    end "+";
 
-   Init   : Boolean := False;
-   Method : constant bio_method_st :=
-                     (  type_of       => BIO_TYPE_MEM,
-                        name          => Interfaces.C.Strings.
-                                         New_String ("server buffer"),
-                        bwrite        => BIO_Write'Access,
-                        bwrite_old    => BIO_Write'Access,
-                        bread         => BIO_Read'Access,
-                        bread_old     => BIO_Read'Access,
-                        bputs         => BIO_Puts'Access,
-                        bgets         => BIO_Gets'Access,
-                        ctrl          => BIO_Control'Access,
-                        create        => null,
-                        destroy       => null,
-                        callback_ctrl => null
-                     );
+   Lock         : aliased Mutex;
+   Init         : Boolean    := False;
+   Read_Method  : BIO_METHOD := No_METHOD;
+   Write_Method : BIO_METHOD := No_METHOD;
 
    function BIO_Control
             (  b   : BIO;
@@ -73,7 +62,7 @@ package body GNAT.Sockets.Server.OpenSSL is
             )  return long is
    begin
       case cmd is
-         when BIO_CTRL_FLUSH =>
+         when BIO_CTRL_FLUSH | BIO_CTRL_PUSH | BIO_CTRL_POP =>
             return 1;
          when others =>
             return 0;
@@ -127,17 +116,21 @@ package body GNAT.Sockets.Server.OpenSSL is
                dlen      : size_t;
                readbytes : access size_t
             )  return int is
+      use Conversions;
       subtype Buffer_Type is
          Stream_Element_Array (1..Stream_Element_Count (dlen));
-      Session : OpenSSL_Session renames
-                Conversions.To_Pointer (BIO_get_data (b)).all;
+      Session : Object_Pointer := To_Pointer (BIO_get_data (b));
       Pointer : Stream_Element_Offset := 1;
       Buffer  : Buffer_Type;
       for Buffer'Address use data;
    begin
       BIO_clear_flags (b, BIO_FLAGS_RWS + BIO_FLAGS_SHOULD_RETRY);
-      Pull (Session.Client.Read, Buffer, Pointer);
-      readbytes.all := size_t (Pointer - 1);
+      if Session = null then
+         readbytes.all := 0;
+      else
+         Pull (Session.Client.Read, Buffer, Pointer);
+         readbytes.all := size_t (Pointer - 1);
+      end if;
       if dlen > readbytes.all then
          BIO_set_flags (b, BIO_FLAGS_READ + BIO_FLAGS_SHOULD_RETRY);
       end if;
@@ -278,19 +271,40 @@ package body GNAT.Sockets.Server.OpenSSL is
              (  Factory : in out Abstract_OpenSSL_Factory;
                 Context : Context_Type
              )  is
+      Result : int;
    begin
-      if not Init then
-         if OPENSSL_init_ssl (OPENSSL_INIT_SSL_DEFAULT) <= 0 then
-            Check_Error (Status_Error'Identity);
+      declare
+         Exclusive : Holder (Lock'Access);
+      begin
+         if not Init then
+            if OPENSSL_init_ssl (OPENSSL_INIT_SSL_DEFAULT) <= 0 then
+               Check_Error (Status_Error'Identity);
+            end if;
+            Read_Method :=
+               BIO_meth_new (BIO_get_new_index, "GNAT sockets read");
+            Result := BIO_meth_set_gets (Read_Method, BIO_Gets'Access);
+            Result :=
+               BIO_meth_set_read_ex (Read_Method, BIO_Read'Access);
+            Result :=
+               BIO_meth_set_ctrl (Read_Method, BIO_Control'Access);
+
+            Write_Method :=
+               BIO_meth_new (BIO_get_new_index, "GNAT sockets write");
+            Result := BIO_meth_set_puts (Write_Method, BIO_Puts'Access);
+            Result :=
+               BIO_meth_set_write_ex (Write_Method, BIO_Write'Access);
+            Result :=
+               BIO_meth_set_ctrl (Write_Method, BIO_Control'Access);
+            Init := True;
          end if;
-         Init := True;
-      end if;
+      end;
       if Context in Client_Context..Any_Context then
          if Factory.Client_Context = No_SSL_CTX then
             Factory.Client_Context := SSL_CTX_new (TLS_client_method);
             if Factory.Client_Context = No_SSL_CTX then
                Check_Error (Data_Error'Identity);
             end if;
+            Result := SSL_CTX_up_ref (Factory.Client_Context);
          end if;
       end if;
       if Context in Any_Context..Server_Context then
@@ -298,6 +312,7 @@ package body GNAT.Sockets.Server.OpenSSL is
          if Factory.Server_Context = No_SSL_CTX then
             Check_Error (Data_Error'Identity);
          end if;
+         Result := SSL_CTX_up_ref (Factory.Server_Context);
       end if;
    end Create_Context;
 
@@ -332,18 +347,20 @@ package body GNAT.Sockets.Server.OpenSSL is
             if Session.SSL_Session = No_SSL then
                Check_Error (Data_Error'Identity);
             end if;
+            Factory.Client_Context :=  No_SSL_CTX;
          else
             Session.SSL_Session := SSL_new (Factory.Server_Context);
             SSL_set_accept_state (Session.SSL_Session);
             if Session.SSL_Session = No_SSL then
                Check_Error (Data_Error'Identity);
             end if;
+            Factory.Server_Context :=  No_SSL_CTX;
          end if;
-         Session.Input := BIO_new (Method);
+         Session.Input := BIO_new (Read_Method);
          BIO_set_data (Session.Input,  Session'Address);
          SSL_set0_rbio (Session.SSL_Session, Session.Input);
 
-         Session.Output := BIO_new (Method);
+         Session.Output := BIO_new (Write_Method);
          BIO_set_data (Session.Output, Session'Address);
          SSL_set0_wbio (Session.SSL_Session, Session.Output);
 

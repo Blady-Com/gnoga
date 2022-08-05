@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2002       --
 --                                                                    --
---                                Last revision :  21:18 26 Jan 2018  --
+--                                Last revision :  09:02 17 Oct 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -2229,8 +2229,10 @@ package body ODBC.API is
    begin
       if (  Pointer < Destination'First
          or else
-            Pointer - 1 > Destination'Last
-         )
+            (  Pointer > Destination'Last
+            and then
+               Pointer - Destination'Last > 1
+         )  )
       then
          Raise_Exception (Layout_Error'Identity, "Wrong pointer");
       end if;

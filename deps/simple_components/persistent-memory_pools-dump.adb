@@ -1,9 +1,9 @@
 --                                                                    --
 --  package                         Copyright (c)  Dmitry A. Kazakov  --
---      Persistent.Memory_Pools                    Luebeck            --
+--      Persistent.Memory_Pools.Dump               Luebeck            --
 --  Implementation                                 Winter, 2014       --
 --                                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  11:02 11 Apr 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -30,7 +30,6 @@ with Strings_Edit.Quoted;    use Strings_Edit.Quoted;
 
 with Interfaces;
 with Persistent.Blocking_Files.Text_IO;
-with Strings_Edit.Integer_Edit;
 
 package body Persistent.Memory_Pools.Dump is
    use Persistent.Blocking_Files.Text_IO;
@@ -95,13 +94,13 @@ package body Persistent.Memory_Pools.Dump is
             Justify     => Right
          );
          if Pointer + 5 > Text'Last then
-            Put_Line (Text (Text'First..Pointer - 1));
+            Put_Line (File, Text (Text'First..Pointer - 1));
             Pointer := Text'First;
             Count := 0;
          end if;
       end loop;
       if Pointer > Text'First then
-         Put_Line (Text (Text'First..Pointer - 1));
+         Put_Line (File, Text (Text'First..Pointer - 1));
       end if;
    end Put;
 

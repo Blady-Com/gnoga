@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Client                                 Spring, 2015       --
 --  Interface                                                         --
---                                Last revision :  14:40 03 Apr 2020  --
+--                                Last revision :  09:04 10 Jul 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1001,6 +1001,7 @@ private
       Trace_Message    : Boolean := False;
       Keep_Alive       : Boolean := False;
       Send_Date        : Boolean := True;
+      Inside_Sent      : Boolean := False;
       Connection       : Connection_Flags := Connection_Close;
       If_Modified      : String_Data_Ptr;
       If_Unmodified    : String_Data_Ptr;

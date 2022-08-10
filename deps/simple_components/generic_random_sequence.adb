@@ -3,7 +3,7 @@
 --     Generic_Random_Sequence                     Luebeck            --
 --  Implementation                                 Winter, 2008       --
 --                                                                    --
---                                Last revision :  18:59 10 Feb 2008  --
+--                                Last revision :  10:13 29 Nov 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -66,6 +66,45 @@ package body Generic_Random_Sequence is
       Sequencer.Order (Size)     := Item;
       Sequencer.Size             := Size + 1;
    end Next;
+
+   procedure Next_Unbiased
+             (  Sequencer : in out Sequence;
+                Dice      : Element;
+                Item      : out Element;
+                Success   : out Boolean
+             )  is
+      Position : Element;
+      Size     : Element := Sequencer.Size;
+   begin
+      if Sequencer.Init then
+         -- Uninitialized sequence
+         Start (Sequencer);
+         Sequencer.Init := False;
+         Size     := 0;
+         Position := Dice;
+      elsif Size = 0 then -- The first item of the sequence
+         Position := Dice;
+      elsif Size = Element'Last then -- The last item of the sequence
+         Position := Size;
+      else -- The following item of the sequence
+         declare
+            Length : constant Item_Type := Element'Last - Size;
+            Count  : constant Item_Type :=
+                        ((Item_Type'Last - Length) + 1) / Length + 1;
+         begin
+            if Count > 0 and then Dice / Length >= Count then
+               Success := False;
+               return;
+            end if;
+            Position := Size + Dice mod (Length + 1);
+         end;
+      end if;
+      Item := Sequencer.Order (Position);
+      Sequencer.Order (Position) := Sequencer.Order (Size);
+      Sequencer.Order (Size)     := Item;
+      Sequencer.Size             := Size + 1;
+      Success                    := True;
+   end Next_Unbiased;
 
    procedure Start (Sequencer : in out Sequence) is
    begin

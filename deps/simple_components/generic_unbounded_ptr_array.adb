@@ -3,7 +3,7 @@
 --     Generic_Unbounded_Ptr_Array                 Luebeck            --
 --  Implementation                                 Spring, 2002       --
 --                                                                    --
---                                Last revision :  11:37 13 Oct 2007  --
+--                                Last revision :  16:40 15 Oct 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -43,6 +43,9 @@ package body Generic_Unbounded_Ptr_Array is
             Delete (Container.Vector (Index));
          end loop;
       end if;
+      Object_Ptr_Array.Finalize
+      (  Object_Ptr_Array.Unbounded_Array (Container)
+      );
    end Finalize;
 
    function Get

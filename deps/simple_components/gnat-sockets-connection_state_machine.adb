@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine       Luebeck            --
 --  Implementation                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  13:13 14 Sep 2019  --
+--                                Last revision :  18:40 23 Oct 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -304,8 +304,9 @@ Align_To_The_Margin :
          &  Image (Length)
          &  " used out of "
          &  Image (Buffer'Last)
-         &  ", items allocated "
-         &  Image (Pool.Parent.Count)
+         &  ", items allocated,"
+         &  Storage_Count'Image (Size)
+         &  " requested"
       )  );
    end Allocate;
 
@@ -324,24 +325,42 @@ Align_To_The_Margin :
       Data.State   := State;
    end Call;
 
+   procedure Clear (Client : in out State_Machine) is
+   begin
+      Clear (Connection (Client));
+      Client.State := 0;
+      Client.Start := 0;
+      if Client.Data /= null then
+         loop
+            Client.Data.Current := 1;
+            Client.Data.State   := 0;
+            exit when Client.Data.Caller = null;
+            Client.Data := Client.Data.Caller;
+         end loop;
+      end if;
+   end Clear;
+
    procedure Connected (Client : in out State_Machine) is
       Stream : aliased Initialization_Stream;
    begin
-      Initialize (Connection (Client));
-      State_Machine'Class'Write
-      (  Stream'Access,
-         State_Machine'Class (Client)
-      );
-      Free (Client.Data);
-      if Stream.Count > 0 then
-         Client.Data :=
-            new Sequence'
-                (  Length  => Stream.Count,
-                   Caller  => null,
-                   State   => 0,
-                   Current => 1,
-                   List    => Stream.Data.Vector (1..Stream.Count)
-                );
+      if not Client.Once then
+         Client.Once := True;
+         Initialize (Connection (Client));
+         State_Machine'Class'Write
+         (  Stream'Access,
+            State_Machine'Class (Client)
+         );
+         Free (Client.Data);
+         if Stream.Count > 0 then
+            Client.Data :=
+               new Sequence'
+                   (  Length  => Stream.Count,
+                      Caller  => null,
+                      State   => 0,
+                      Current => 1,
+                      List    => Stream.Data.Vector (1..Stream.Count)
+                   );
+         end if;
       end if;
    end Connected;
 
@@ -462,6 +481,11 @@ Align_To_The_Margin :
             declare
                Counter : aliased Initialization_Stream;
             begin
+               if This.Parent = null then
+                  Counter.Parent := This.Shared'Access;
+               else
+                  Counter.Parent := This.Parent;
+               end if;
                Selector.Initialized := True;
                Data_Selector'Class'Write (Counter'Access, Selector);
                if Counter.Count <= 1 then
@@ -928,7 +952,7 @@ Align_To_The_Margin :
       if Value < 2**7 then
          return Integer_8 (Value);
       else
-         return Integer_8 (not Value) - 1;
+         return -Integer_8 (not Value) - 1;
       end if;
    end To_Integer;
 
@@ -937,7 +961,7 @@ Align_To_The_Margin :
       if Value < 2**15 then
          return Integer_16 (Value);
       else
-         return Integer_16 (not Value) - 1;
+         return -Integer_16 (not Value) - 1;
       end if;
    end To_Integer;
 
@@ -946,7 +970,7 @@ Align_To_The_Margin :
       if Value < 2**31 then
          return Integer_32 (Value);
       else
-         return Integer_32 (not Value) - 1;
+         return -Integer_32 (not Value) - 1;
       end if;
    end To_Integer;
 
@@ -955,7 +979,7 @@ Align_To_The_Margin :
       if Value < 2**63 then
          return Integer_64 (Value);
       else
-         return Integer_64 (not Value) - 1;
+         return -Integer_64 (not Value) - 1;
       end if;
    end To_Integer;
 

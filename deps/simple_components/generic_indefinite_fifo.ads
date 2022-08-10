@@ -3,7 +3,7 @@
 --     Generic_Indefinite_FIFO                     Luebeck            --
 --  Interface                                      Summer, 2008       --
 --                                                                    --
---                                Last revision :  22:06 23 Jul 2014  --
+--                                Last revision :  16:40 15 Oct 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -119,6 +119,7 @@ package Generic_Indefinite_FIFO is
 --
 --    Queue   - The queue
 --    Element - To put into the queue
+--  [ Full ]  - The queue is full (no exception raised)
 --
 -- Exceptions :
 --
@@ -127,6 +128,11 @@ package Generic_Indefinite_FIFO is
    procedure Put
              (  Queue   : in out FIFO;
                 Element : Element_Type
+             );
+   procedure Put
+             (  Queue   : in out FIFO;
+                Element : Element_Type;
+                Full    : out Boolean
              );
 private
    type Buffer is array (Storage_Offset range <>) of Storage_Element;
@@ -154,6 +160,11 @@ private
                 Size      : Storage_Count;
                 Alignment : Storage_Count
              );
+   function Can_Allocate
+             (  Queue     : FIFO;
+                Size      : Storage_Count;
+                Alignment : Storage_Count
+             )  return Boolean;
    procedure Deallocate
              (  Queue     : in out FIFO;
                 Address   : System.Address;

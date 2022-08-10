@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.OpenSSL                 Luebeck            --
 --  Interface                                      Winter, 2019       --
 --                                                                    --
---                                Last revision :  10:32 11 May 2019  --
+--                                Last revision :  09:42 12 Dec 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -861,9 +861,9 @@ private
            Size   : Buffer_Length
         )  is new Encoder (Size) with
    record
-      SSL_Session : SSL;
-      Input       : BIO;
-      Output      : BIO;
+      SSL_Session : SSL := No_SSL;
+      Input       : BIO := No_BIO;
+      Output      : BIO := No_BIO;
       State       : OpenSSL_Session_State := TLS_Handshake;
    end record;
    procedure Finalize (Session : in out OpenSSL_Session);

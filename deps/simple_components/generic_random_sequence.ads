@@ -3,7 +3,7 @@
 --     Generic_Random_Sequence                     Luebeck            --
 --  Interface                                      Winter, 2008       --
 --                                                                    --
---                                Last revision :  09:14 29 Jun 2008  --
+--                                Last revision :  10:13 29 Nov 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -89,6 +89,25 @@ package Generic_Random_Sequence is
              (  Sequencer : in out Sequence;
                 Dice      : Element;
                 Item      : out Element
+             );
+--
+-- Next_Unbiased -- Get the next unbiased item of the sequence
+--
+--    Sequencer - The sequence generator
+--    Dice      - Randomizing input
+--    Item      - The result
+--    Success   - False if unsuccessful
+--
+-- This variant is used to get an unbiased sequence. When Dice is random
+-- the sequence obtained  by Next will be biased  towards first elements
+-- of  the sequence.  This variant generates  an unbiased  sequence. The
+-- procedure must be called repeatedly when Success is false.
+--
+   procedure Next_Unbiased
+             (  Sequencer : in out Sequence;
+                Dice      : Element;
+                Item      : out Element;
+                Success   : out Boolean
              );
 --
 -- Start -- Begin a sequence

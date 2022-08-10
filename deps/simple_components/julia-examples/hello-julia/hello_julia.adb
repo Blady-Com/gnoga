@@ -28,7 +28,7 @@
 with Julia;  use Julia;
 
 procedure Hello_Julia is 
-   Bin : constant String := "D:\Julia-1.2.0\bin";
+   Bin : constant String := "D:\Julia-1.6.3\bin";
 begin
    Load (Bin & "\libjulia.dll");  -- Load library
    Init_With_Image (Bin);         -- Initialize environment

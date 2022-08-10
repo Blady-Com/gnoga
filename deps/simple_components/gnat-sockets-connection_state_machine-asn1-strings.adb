@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     ASN1.Strings                                Spring, 2019       --
 --  Implementation                                                    --
---                                Last revision :  13:37 03 Aug 2019  --
+--                                Last revision :  10:13 29 Nov 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -802,7 +802,7 @@ package body GNAT.Sockets.Connection_State_Machine.ASN1.Strings is
          or else
             (  Pointer > Data'Last
             and then
-               Pointer > Data'Last + 1
+               Pointer - Data'Last /= 1
          )  )  then
          Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
       elsif Data'Last - Pointer < Value'Length - 1 then
@@ -824,7 +824,7 @@ package body GNAT.Sockets.Connection_State_Machine.ASN1.Strings is
          or else
             (  Pointer > Data'Last
             and then
-               Pointer > Data'Last + 1
+               Pointer - Data'Last /= 1
          )  )  then
          Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
       end if;
@@ -863,7 +863,7 @@ package body GNAT.Sockets.Connection_State_Machine.ASN1.Strings is
          or else
             (  Pointer > Data'Last
             and then
-               Pointer > Data'Last + 1
+               Pointer - Data'Last /= 1
          )  )  then
          Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
       end if;
@@ -896,7 +896,7 @@ package body GNAT.Sockets.Connection_State_Machine.ASN1.Strings is
          or else
             (  Pointer > Data'Last
             and then
-               Pointer > Data'Last + 1
+               Pointer - Data'Last /= 1
          )  )  then
          Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
       end if;
@@ -932,7 +932,7 @@ package body GNAT.Sockets.Connection_State_Machine.ASN1.Strings is
          or else
             (  Pointer > Data'Last
             and then
-               Pointer > Data'Last + 1
+               Pointer - Data'Last /= 1
          )  )  then
          Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
       end if;

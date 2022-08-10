@@ -3,7 +3,7 @@
 --  MODBUS client test                             Luebeck            --
 --                                                 Spring, 2015       --
 --                                                                    --
---                                Last revision :  14:53 29 Feb 2020  --
+--                                Last revision :  09:02 17 Oct 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -189,7 +189,7 @@ procedure Test_MODBUS_Client is
             while not Is_Connected (Client) loop -- Busy waiting
                delay Timeout;
             end loop;
-            Put_Line ("MODBUS client connected");
+            Put_Line ("MODBUS RTU client connected");
             FC5 (Client, 100, 1, True, 1);
             Put_Line ("FC1 > OK");
             FC15 (Client, 101, (5..15=>True, 16=>False, 17=>True), 1);
@@ -282,7 +282,7 @@ procedure Test_MODBUS_Client is
    end Test_Synchronous;
 begin
 --   Test_Asynchronous;
-   Test_RTU ("\\.\COM5");
+   Test_RTU ("\\.\COM4");
 --   Test_Synchronous;
 exception
    when Error : others =>

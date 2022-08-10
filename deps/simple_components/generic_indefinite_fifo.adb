@@ -3,7 +3,7 @@
 --     Generic_Indefinite_FIFO                     Luebeck            --
 --                                                 Summer, 2008       --
 --  Implementation                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  16:40 15 Oct 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -70,6 +70,29 @@ package body Generic_Indefinite_FIFO is
       end if;
       Queue.Last := Address;
    end Allocate;
+
+   function Can_Allocate
+             (  Queue     : FIFO;
+                Size      : Storage_Count;
+                Alignment : Storage_Count
+             )  return Boolean is
+      Total : constant Storage_Count := Size - (Size mod (-Alignment));
+      Free  : constant Storage_Count := Queue.Free + Total;
+   begin
+      if Free_Space (Queue) < Total then
+         return False;
+      elsif Free > Queue.Size then
+         return
+         (  Queue.First = Queue.Free
+         or else
+            Free = Queue.Size + 1
+         or else
+            Queue.First > Total + 1
+         );
+      else
+         return True;
+      end if;
+   end Can_Allocate;
 
    procedure Delete
              (  Queue : in out FIFO;
@@ -183,6 +206,23 @@ package body Generic_Indefinite_FIFO is
    exception
       when Storage_Error =>
          raise Constraint_Error;
+   end Put;
+
+   procedure Put
+             (  Queue   : in out FIFO;
+                Element : Element_Type;
+                Full    : out Boolean
+             )  is
+   begin
+      if Can_Allocate (Queue, Element'Size, Element_Type'Alignment) then
+         Put (Queue, Element);
+         Full := False;
+      else
+         Full := True;
+      end if;
+   exception
+      when Storage_Error =>
+         Full := True;
    end Put;
 
    function Storage_Size (Queue : FIFO)

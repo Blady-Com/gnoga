@@ -3,7 +3,7 @@
 --     Connection_State_Machine.Little_Endian.     Luebeck            --
 --     Generic_Single_Precision_IEEE_754           Winter, 2012       --
 --  Implementation                                                    --
---                                Last revision :  16:04 08 Jun 2019  --
+--                                Last revision :  10:13 29 Nov 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -65,7 +65,7 @@ package body GNAT.Sockets.Connection_State_Machine.Little_Endian.
          or else
             (  Pointer > Data'Last
             and then
-               Pointer - 1 > Data'Last
+               Pointer - Data'Last /= 1
          )  )
       then
          Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);

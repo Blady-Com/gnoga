@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine       Luebeck            --
 --  Interface                                      Winter, 2012       --
 --                                                                    --
---                                Last revision :  18:41 01 Aug 2019  --
+--                                Last revision :  18:40 23 Oct 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -53,6 +53,10 @@ package GNAT.Sockets.Connection_State_Machine is
 -- These objects will be read automatically in their order.
 --
    type State_Machine is abstract new Connection with private;
+--
+-- Clear -- Overrides GNAT.Sockets.Server...
+--
+   procedure Clear (Client : in out State_Machine);
 --
 -- Connected -- Overrides Connections_Server...
 --
@@ -451,7 +455,7 @@ package GNAT.Sockets.Connection_State_Machine is
 --
 -- Allocator_Data -- The  allocator's  list.   The  users  of  the  pool
 --                   register themselves  in order to  get notifications
--- upon erasing the buffer.  They should finalize  all objects then have
+-- upon erasing the buffer.  They should finalize  all objects they have
 -- allocated in the pool.
 --
    type Allocator_Data;
@@ -462,7 +466,7 @@ package GNAT.Sockets.Connection_State_Machine is
    type External_String_Buffer (Size : Natural) is
       new Shared_Data_Item with
    record
-      Pool       : Arena_Pool (External_String_Buffer'Access);
+      Pool       : aliased Arena_Pool (External_String_Buffer'Access);
       Length     : Natural := 0;
       Count      : Natural := 0;       -- Allocatied items
       Allocators : Allocator_Data_Ptr; -- List of objects using the pool
@@ -491,7 +495,7 @@ package GNAT.Sockets.Connection_State_Machine is
                 State   : in out Stream_Element_Offset
              );
 --
--- Fnalize -- Destruction
+-- Finalize -- Destruction
 --
 --    Buffer - The buffer
 --
@@ -582,6 +586,7 @@ private
       Start  : Stream_Element_Offset := 0; -- Saved pointer
       Fed    : Unsigned_64 := 0;  -- Running count of octets processed
       Data   : Sequence_Ptr;
+      Once   : Boolean := False;  -- Not initialized
    end record;
    procedure Call
              (  Client  : in out State_Machine;

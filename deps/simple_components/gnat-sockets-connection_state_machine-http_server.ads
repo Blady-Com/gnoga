@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Server                                 Winter, 2013       --
 --  Interface                                                         --
---                                Last revision :  14:07 11 Nov 2019  --
+--                                Last revision :  20:46 27 Aug 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -408,6 +408,10 @@ package GNAT.Sockets.Connection_State_Machine.HTTP_Server is
            Sec_WebSocket_Protocol_Header,
            Sec_WebSocket_Version_Header,
            Sec_WebSocket_Key_Header,
+           X_Requested_By_Header,   -- Non-standard text header
+           X_Requested_With_Header, -- Non-standard text header
+           X_XSRF_Token_Header,     -- Non-standard text header
+           X_CSRF_Token_Header,     -- Non-standard text header
            Warning_Header,
 
            Range_Header,

@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Server                                 Winter, 2013       --
 --  Implementation                                                    --
---                                Last revision :  14:07 11 Nov 2019  --
+--                                Last revision :  20:46 27 Aug 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -4219,6 +4219,10 @@ begin
    Add (Request_Headers, "User-Agent",        User_Agent_Header);
    Add (Request_Headers, "Via",               Via_Header);
    Add (Request_Headers, "Warning",           Warning_Header);
+   Add (Request_Headers, "X-CSRF-TOKEN",      X_CSRF_Token_Header);
+   Add (Request_Headers, "X-Requested-By",    X_Requested_By_Header);
+   Add (Request_Headers, "X-Requested-With",  X_Requested_With_Header);
+   Add (Request_Headers, "X-XSRF-TOKEN",      X_XSRF_Token_Header);
 
    Add (Connections, "close",      Connection_Close);
    Add (Connections, "keep-alive", Connection_Persistent);

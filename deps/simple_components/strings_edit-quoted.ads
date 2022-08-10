@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Summer, 2004       --
 --                                                                    --
---                                Last revision :  11:50 30 May 2014  --
+--                                Last revision :  14:39 30 Aug 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -37,7 +37,7 @@ package Strings_Edit.Quoted is
 -- the first character of the string. Pointer is  advanced  to  the  the
 -- first character following the input. The  parameter  Marks  specifies
 -- the  quotation marks to use. Within the string body this character is
--- GDoubled.
+-- doubled.
 --
 -- Returns :
 --
@@ -63,7 +63,7 @@ package Strings_Edit.Quoted is
 --
 -- This procedure puts Text in Mark quotes and stores it  starting  with
 -- String  (Pointer).  Pointer  value  is  advanced  to  the  the  first
--- character following the output. Mark characters  are  GDoubled  within
+-- character following the output. Mark characters  are  doubled  within
 -- the string body.
 --
 -- Exceptions :

@@ -225,6 +225,10 @@ package body Julia.Load_Julia_Library is
             )  return GC_Total_Bytes_Ptr;
    function dlsym
             (  Module : Address;
+               Name   : char_array := "jl_gc_get_total_bytes" & Nul
+            )  return GC_Get_Total_Bytes_Ptr;
+   function dlsym
+            (  Module : Address;
                Name   : char_array := "jl_get_field" & Nul
             )  return Get_Field_Ptr;
    function dlsym
@@ -245,6 +249,10 @@ package body Julia.Load_Julia_Library is
             )  return Get_PTLS_States_Ptr;
    function dlsym
             (  Module : Address;
+               Name   : char_array := "jl_get_safe_restore" & Nul
+            )  return Get_Safe_Restore_Ptr;
+   function dlsym
+            (  Module : Address;
                Name   : char_array := "jl_init__threading" & Nul
             )  return Init_Ptr;
    function dlsym
@@ -262,6 +270,10 @@ package body Julia.Load_Julia_Library is
             )  return Load_Ptr;
    function dlsym
             (  Module : Address;
+               Name   : char_array := "jl_load_file_string" & Nul
+            )  return Load_File_String_Ptr;
+   function dlsym
+            (  Module : Address;
                Name   : char_array := "jl_new_datatype" & Nul
             )  return New_Datatype_Ptr;
    function dlsym
@@ -276,10 +288,18 @@ package body Julia.Load_Julia_Library is
             (  Module : Address;
                Name   : char_array := "jl_pchar_to_string" & Nul
             )  return Pchar_To_String_Ptr;
+--   function dlsym
+--            (  Module : Address;
+--               Name   : char_array := "jl_setjmp" & Nul
+--            )  return Setjmp_Ptr;
    function dlsym
             (  Module : Address;
                Name   : char_array := "jl_set_nth_field" & Nul
             )  return Set_Nth_Field_Ptr;
+   function dlsym
+            (  Module : Address;
+               Name   : char_array := "jl_set_safe_restore" & Nul
+            )  return Set_Safe_Restore_Ptr;
    function dlsym
             (  Module : Address;
                Name   : char_array := "jl_static_show" & Nul
@@ -474,20 +494,25 @@ package body Julia.Load_Julia_Library is
          Links.GC_Is_Enabled         := dlsym (Library);
          Links.GC_Queue_Root         := dlsym (Library);
          Links.GC_Total_Bytes        := dlsym (Library);
+         Links.GC_Get_Total_Bytes    := dlsym (Library);
          Links.Get_Field             := dlsym (Library);
          Links.Get_Global            := dlsym (Library);
          Links.Get_Nth_Field         := dlsym (Library);
          Links.Get_Nth_Field_Checked := dlsym (Library);
          Links.Get_PTLS_States       := dlsym (Library);
+         Links.Get_Safe_Restore      := dlsym (Library);
          Links.Init                  := dlsym (Library);
          Links.Init_With_Image       := dlsym (Library);
          Links.IsA                   := dlsym (Library);
          Links.Load                  := dlsym (Library);
+         Links.Load_File_String      := dlsym (Library);
          Links.New_Datatype          := dlsym (Library);
          Links.New_Struct_Uninit     := dlsym (Library);
          Links.New_StructV           := dlsym (Library);
          Links.Pchar_To_String       := dlsym (Library);
          Links.Set_Nth_Field         := dlsym (Library);
+         Links.Set_Safe_Restore      := dlsym (Library);
+--       Links.Setjmp                := dlsym (Library);
          Links.Static_Show           := dlsym (Library);
          Links.String_Ptr            := dlsym (Library);
          Links.SVec_Fill             := dlsym (Library);

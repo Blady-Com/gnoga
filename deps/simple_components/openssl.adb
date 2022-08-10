@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2019       --
 --                                                                    --
---                                Last revision :  16:04 08 Jun 2019  --
+--                                Last revision :  09:42 12 Dec 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -28,6 +28,36 @@
 with System;
 
 package body OpenSSL is
+
+   function Address_Of (Object : BIO) return System.Address is
+   begin
+      return System.Address (Object);
+   end Address_Of;
+
+   function Address_Of (Object : BIO_METHOD) return System.Address is
+   begin
+      return System.Address (Object);
+   end Address_Of;
+
+   function Address_Of (Object : EVP_MD) return System.Address is
+   begin
+      return System.Address (Object);
+   end Address_Of;
+
+   function Address_Of (Object : SSL) return System.Address is
+   begin
+      return System.Address (Object);
+   end Address_Of;
+
+   function Address_Of (Object : SSL_CTX) return System.Address is
+   begin
+      return System.Address (Object);
+   end Address_Of;
+
+   function Address_Of (Object : SSL_METHOD) return System.Address is
+   begin
+      return System.Address (Object);
+   end Address_Of;
 
    procedure Check_Error (ID : Exception_ID) is
       Error : constant unsigned_long := ERR_get_error;
@@ -219,5 +249,83 @@ package body OpenSSL is
             Check_Error (Constraint_Error'Identity);
       end case;
    end RAND_Priv_Bytes;
+
+   function SSL_clear_mode
+            (  s    : SSL;
+               mode : SSL_MODE_TYPE
+            )  return SSL_MODE_TYPE is
+   begin
+      return SSL_MODE_TYPE
+             (  SSL_ctrl
+                (  s,
+                   SSL_CTRL_CLEAR_MODE,
+                   long (mode),
+                   System.Null_Address
+             )  );
+   end SSL_clear_mode;
+
+   function SSL_get_mode (s : SSL) return SSL_MODE_TYPE is
+   begin
+      return SSL_MODE_TYPE
+             (  SSL_ctrl
+                (  s,
+                   SSL_CTRL_MODE,
+                   0,
+                   System.Null_Address
+             )  );
+   end SSL_get_mode;
+
+   function SSL_set_mode
+            (  s    : SSL;
+               mode : SSL_MODE_TYPE
+            )  return SSL_MODE_TYPE is
+   begin
+      return SSL_MODE_TYPE
+             (  SSL_ctrl
+                (  s,
+                   SSL_CTRL_MODE,
+                   long (mode),
+                   System.Null_Address
+             )  );
+   end SSL_set_mode;
+
+   function SSL_CTX_clear_mode
+            (  ctx  : SSL_CTX;
+               mode : SSL_MODE_TYPE
+            )  return SSL_MODE_TYPE is
+   begin
+      return SSL_MODE_TYPE
+             (  SSL_CTX_ctrl
+                (  ctx,
+                   SSL_CTRL_CLEAR_MODE,
+                   long (mode),
+                   System.Null_Address
+             )  );
+   end SSL_CTX_clear_mode;
+
+   function SSL_CTX_get_mode (ctx : SSL_CTX) return SSL_MODE_TYPE is
+   begin
+      return SSL_MODE_TYPE
+             (  SSL_CTX_ctrl
+                (  ctx,
+                   SSL_CTRL_MODE,
+                   0,
+                   System.Null_Address
+             )  );
+   end SSL_CTX_get_mode;
+
+   function SSL_CTX_set_mode
+            (  ctx  : SSL_CTX;
+               mode : SSL_MODE_TYPE
+            )  return SSL_MODE_TYPE is
+   begin
+      return SSL_MODE_TYPE
+             (  SSL_CTX_ctrl
+                (  ctx,
+                   SSL_CTRL_MODE,
+                   long (mode),
+                   System.Null_Address
+             )  );
+   end SSL_CTX_set_mode;
 
 end OpenSSL;

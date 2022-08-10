@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Autumn, 2012       --
 --                                                                    --
---                                Last revision :  10:00 09 Apr 2016  --
+--                                Last revision :  10:00 19 May 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1578,7 +1578,7 @@ package body Persistent.Native_ODBC is
                &  Image (ID)
             )  );
             Fetch (Command);
-            if "" = Get_Data (Storage.Command, 1, Always) then
+            if "" = String'(Get_Data (Storage.Command, 1, Always)) then
                return;
             end if;
          exception

@@ -2,7 +2,7 @@ with "shared";
 
 library project Lib_Components is
 
-   Version     := "4.49";
+   Version     := "4.62";
 
    type Object_Tracing_Mode is ("Off", "On");
    Object_Tracing : Object_Tracing_Mode := external ("Traced_objects", "Off");
@@ -273,7 +273,16 @@ library project Lib_Components is
       "generic_unbounded_array.ads",
       "generic_unbounded_ptr_array.adb",
       "generic_unbounded_ptr_array.ads",
+      "ieee_754.adb",
       "ieee_754.ads",
+	  "ieee_754-decimal32.adb",
+	  "ieee_754-decimal32.ads",
+	  "ieee_754-decimal64.adb",
+	  "ieee_754-decimal64.ads",
+	  "ieee_754-decimal128.adb",
+	  "ieee_754-decimal128.ads",
+      "ieee_754-edit.adb",
+      "ieee_754-edit.ads",
       "ieee_754-generic_double_precision.adb",
       "ieee_754-generic_double_precision.ads",
       "ieee_754-generic_single_precision.adb",
@@ -408,8 +417,14 @@ library project Lib_Components is
       "persistent-single_file_keys-sets.ads",
       "persistent-single_file-text_io.adb",
       "persistent-single_file-text_io.ads",
+      "persistent-streams.adb",
+      "persistent-streams.ads",
+      "persistent-streams-dump.adb",
+      "persistent-streams-dump.ads",
       "persistent.adb",
       "persistent.ads",
+      "pipe_streams.adb",
+      "pipe_streams.ads",
       "stack_storage-mark_and_release.adb",
       "stack_storage-mark_and_release.ads",
       "stack_storage.adb",
@@ -478,7 +493,11 @@ library project Lib_Components is
       "synchronization-pulse_events.ads",
       "system_errno.ads",
       "tables-utf8_names.adb",
-      "tables-utf8_names.ads"
+      "tables-utf8_names.ads",
+      "universally_unique_identifiers.adb",
+      "universally_unique_identifiers.ads",
+      "universally_unique_identifiers-edit.adb",
+      "universally_unique_identifiers-edit.ads"
    );
    Components_Connections_Server_Source_Files :=
    (  "gnat-sockets-connection_state_machine.adb",

@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     ASN1.Generic_Unsigned                       Spring, 2019       --
 --  Implementation                                                    --
---                                Last revision :  18:41 01 Aug 2019  --
+--                                Last revision :  10:13 29 Nov 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -139,7 +139,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          or else
             (  Pointer > Data'Last
             and then
-               Pointer - 1 > Data'Last
+               Pointer - Data'Last /= 1
          )  )
       then
          Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
@@ -192,7 +192,7 @@ package body GNAT.Sockets.Connection_State_Machine.
          or else
             (  Pointer > Data'Last
             and then
-               Pointer > Data'Last + 1
+               Pointer - Data'Last /= 1
          )  )  then
          Raise_Exception (Layout_Error'Identity, Out_Of_Bounds);
       end if;

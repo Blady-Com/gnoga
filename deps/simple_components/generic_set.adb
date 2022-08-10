@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2002       --
 --                                                                    --
---                                Last revision :  20:01 04 Apr 2016  --
+--                                Last revision :  10:00 19 May 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -434,6 +434,7 @@ package body Generic_Set is
          end if;
       else
          if not Condition (Item, Null_Element) then
+            Updated := False;
             return;
          end if;
          if Container.Object = null then

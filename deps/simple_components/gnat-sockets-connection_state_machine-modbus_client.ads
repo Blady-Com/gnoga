@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     MODBUS_Client                               Spring, 2015       --
 --  Interface                                                         --
---                                Last revision :  14:52 29 Feb 2020  --
+--                                Last revision :  18:40 23 Oct 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -654,21 +654,6 @@ private
    pragma Assert (Stream_Element'Size = 8);
 
    function "abs" (Timeout : Duration) return Time;
-
-   type Payload_Item (Size : Stream_Element_Count) is
-      new Data_Item with
-   record
-      Offset : Stream_Element_Offset := 0;
-      Last   : Stream_Element_Offset := 0;
-      Value  : Stream_Element_Array (1..Size);
-   end record;
-   procedure Feed
-             (  Item    : in out Payload_Item;
-                Data    : Stream_Element_Array;
-                Pointer : in out Stream_Element_Offset;
-                Client  : in out State_Machine'Class;
-                State   : in out Stream_Element_Offset
-             );
 --
 -- TCP_Head -- The head of MODBUS TCP packet, it is empty for MODBUS RTU
 --
@@ -715,10 +700,13 @@ private
                 State   : in out Stream_Element_Offset
              );
 --
--- RTU_Checksum -- The checksum duplet. It is empty for MODBUS TCP
+-- Payload_And_Checksum_Item -- Payload and 2-octets of checksum
 --
-   type RTU_Checksum;
-   protected type Silence_Event (Parent : access RTU_Checksum) is
+   type Payload_And_Checksum_Item;
+
+   protected type Silence_Event
+                  (  Parent : access Payload_And_Checksum_Item
+                  )  is
       function Get return Time_Span;
       function Get_Next return Time;
       procedure Set (Silence_Time : Time_Span);
@@ -735,20 +723,29 @@ private
              );
    for Silence_Event'Write use Write;
 
-   type RTU_Checksum (Client : access MODBUS_Client'Class) is
+   type Payload_And_Checksum_Item
+        (  Client : access MODBUS_Client'Class;
+           Size   : Stream_Element_Count
+        )  is
       new Data_Item with
    record
+         -- Payload
+      Offset : Stream_Element_Offset := 0;
+      Last   : Stream_Element_Offset := 0;
+      Value  : Stream_Element_Array (1..Size);
+         -- Checksum
       Enable : Boolean := False;
-      Event  : Silence_Event (RTU_Checksum'Unchecked_Access);
+      Event  : Silence_Event (Payload_And_Checksum_Item'Unchecked_Access);
       Data   : Stream_Element_Array (1..2);
    end record;
    procedure Feed
-             (  Item    : in out RTU_Checksum;
+             (  Item    : in out Payload_And_Checksum_Item;
                 Data    : Stream_Element_Array;
                 Pointer : in out Stream_Element_Offset;
-                Machine : in out State_Machine'Class;
+                Client  : in out State_Machine'Class;
                 State   : in out Stream_Element_Offset
              );
+
    type MODBUS_Client
         (  Listener    : access Connections_Server'Class;
            Output_Size : Buffer_Length
@@ -759,10 +756,13 @@ private
       Unit_ID       : Unsigned_8_Data_Item;
       Function_Code : Unsigned_8_Data_Item;
       Length        : RTU_Length   (MODBUS_Client'Unchecked_Access);
-      Payload_Data  : Payload_Item (256);
-      CRC           : RTU_Checksum (MODBUS_Client'Unchecked_Access);
+      Payload_Data  : Payload_And_Checksum_Item
+                      (  MODBUS_Client'Unchecked_Access,
+                         256
+                      );
    end record;
 
+   procedure Clear (Client : in out MODBUS_Client);
    procedure Prepare_To_Send
              (  Client : in out MODBUS_Client;
                 Length : Stream_Element_Count

@@ -3,7 +3,7 @@
 --  Test                                           Luebeck            --
 --                                                 Winter, 2008       --
 --                                                                    --
---                                Last revision :  23:22 29 Sep 2017  --
+--                                Last revision :  10:13 29 Nov 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -46,7 +46,14 @@ begin
       This   : Item;
    begin
       for Element in Item'Range loop
-         This := Next (Source, Random (Dice));
+         loop
+            declare
+               Success : Boolean;
+            begin
+               Next_Unbiased (Source, Random (Dice), This, Success);
+               exit when Success;
+            end;
+         end loop;
          if Is_In (Result, Item_Position (This)) then
             Raise_Exception
             (  Constraint_Error'Identity,

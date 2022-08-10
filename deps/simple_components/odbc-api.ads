@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Autumn, 2012       --
 --                                                                    --
---                                Last revision :  17:24 20 Oct 2012  --
+--                                Last revision :  08:41 29 Mar 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -4430,7 +4430,7 @@ package ODBC.API is
 -- True forces  NULL  string  values  returned  as  empty  strings.  The
 -- parameter  Block_Size  specifies  the  size  in which string data are
 -- fetched.  When the column value exceeds the size the value is fetched
--- in several in several requests and then concatenated.
+-- in several requests and then concatenated.
 --
 -- Returns :
 --

@@ -1,3 +1,9 @@
+20220810 - Gnoga V1.6b (1.6.2):
+
+- Add Alire support: alire.toml, lib_gnoga.gpr and .gitignore.
+- Update plugins.gpr, settings.gpr, README.md and HISTORY.
+
+
 20210501 - Gnoga V1.6a:
 
 - Update Makefile, settings.gpr and HISTORY.

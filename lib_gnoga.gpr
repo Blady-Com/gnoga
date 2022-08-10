@@ -1,0 +1,45 @@
+with "settings.gpr";
+with "components.gpr";
+with "components-connections_server.gpr";
+with "components-connections_server-http_server.gpr";
+with "xpm/xpm_parser.gpr";
+with "components/plugins.gpr";
+
+library project Lib_Gnoga is
+
+   for Source_Dirs use ("src") & Plugins.Source_Dirs;
+   for Object_Dir use Settings.Obj_Dir;
+   for Library_Name use "gnoga";
+   for Library_Dir use Settings.Lib_Dir;
+   for Library_Kind use "static";
+   for Create_Missing_Dirs use Settings'Create_Missing_Dirs;
+
+   package Naming is
+      case Settings.Build_Target is
+         when "Windows" =>
+            for Body ("Gnoga.Application.Open_command") use "gnoga-application.windows";
+         when "OSX" =>
+            for Body ("Gnoga.Application.Open_command") use "gnoga-application.osx";
+         when others =>
+            for Body ("Gnoga.Application.Open_command") use "gnoga-application.linux";
+      end case;
+   end Naming;
+
+   package Compiler renames Settings.Compiler;
+
+   package Binder renames Settings.Binder;
+
+   package Builder renames Settings.Builder;
+
+   package IDE renames Settings.IDE;
+
+   package Install is
+      for Artifacts ("share/gnoga/doc") use ("docs/html/*.html", "docs/*.txt", "docs/user_guide");
+--      for Artifacts ("share/gnoga/gnoga_rm") use (Project'Object_Dir & "/gnatdoc/*"); -- absolute paths aren't processed well
+      for Artifacts ("share/gnoga/gnoga_rm") use ("obj/gnatdoc/*");
+   end Install;
+
+   package Pretty_Printer renames Settings.Pretty_Printer;
+
+end Lib_Gnoga;
+

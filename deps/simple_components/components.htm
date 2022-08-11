@@ -12,7 +12,7 @@
 <BODY bgcolor="#FFFFFF" link="#0000FF" vlink="#800080">
 <P align="center">
 <BIG><BIG><BIG><b>SIMPLE COMPONENTS</b></BIG></BIG><br>
-<EM>version 4.50</EM><BR>
+<EM>version 4.62</EM><BR>
 by Dmitry A. Kazakov</BIG><BR>
 (<A HREF="mailto:mailbox@dmitry-kazakov.de">mailbox@dmitry-kazakov.de</A>)<br>
 <a href="http://www.dmitry-kazakov.de"><img border="0" src="home.jpg" alt="[Home]" width="40" height="40"></a></p>
@@ -255,13 +255,13 @@ MAX! client implementation</a></td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px" colspan="2">Source distribution (any platform)</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px" colspan="2">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_50.tgz">components_4_50.tgz</a>
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_62.tgz">components_4_62.tgz</a>
 		(<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
 		<td>&nbsp;</td>
 		<td align="center">
 		&nbsp;</td>
 		<td align="center">
-		<a href="http://www.dmitry-kazakov.de/ada/components_4_50.tgz">
+		<a href="http://www.dmitry-kazakov.de/ada/components_4_62.tgz">
 <img src="download.jpg" align=middle alt="[Download]" width="29" height="29"></a></td>
 		<td align="center">
 		&nbsp;</td>
@@ -1568,8 +1568,8 @@ sets <b>Left</b> and <b>Right</b>.</p>
       height="29"></a><a href="#21"><IMG
       src="index.gif" alt="[TOC]" width="29" height="29"></a><a href="#2.2"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
 <H3>2.1. Persistent objects</H3>
-<p><a name="persistent_objects"></a><a name="object_persistence"></a>A persistent object is one stored in an external storage, independent on the 
-application, that originally created it. A persistent object can be restored
+<p><a name="persistent_objects"></a><a name="object_persistence"></a>A persistent object is one stored in an external storage independent on the 
+application that originally created it. A persistent object can be restored
 from the external storage in a fully functional state in the same or other
 application. The provided 
 implementation of persistent objects was designed with the following goals in 
@@ -6881,7 +6881,7 @@ contribution</a> software.</p>
 <a href="#Persistent.Blocking_Files">Persistent.Blocking_Files</a> provides 
 blocking access file based on the package Direct_IO from the standard library. The file consists of fixed-size 
 blocks which can be mapped onto the memory cache and accessed there. The size of 
-the cache can be specified upon file opening. When a file block is read it is 
+the cache is specified upon file opening. When a file block is read it is 
 stored in the cache. On a next read attempt the block is accessed from the cache 
 if the block is still there. Updates of a block in the cache does not cause 
 physical output until the file is closed or else the cache is flushed.</p>
@@ -7188,7 +7188,7 @@ file is open. I/O exceptions are propagated on other errors. See also
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Name</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Mode</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Access_Mode := Read_Mode;<br>
+	: <a href="#Persistent.Blocking_Files.Access_Mode">Access_Mode</a> := Read_Mode;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 	Hash_Size</b> : Positive&nbsp;&nbsp;&nbsp; :=<font color="#800000"> 256</font>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Form</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
@@ -7375,7 +7375,8 @@ number.</p>
 	Pointer</b>&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">in out</font> 
 	Integer;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-	Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Byte_Offset;<br>
+	Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : 
+	<a href="#Persistent.Blocking_Files.Block_Offset">Block_Offset</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 	Field</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Natural&nbsp;&nbsp; :=
 	<font color="#800000">0</font>;<br>
@@ -7398,7 +7399,8 @@ output or <b>Pointer</b> is invalid.</p>
 	Pointer</b>&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">in out</font> 
 	Integer;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-	Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Block_Count;<br>
+	Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : 
+	<a href="#Persistent.Blocking_Files.Block_Count">Block_Count</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 	Field</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Natural&nbsp;&nbsp; :=
 	<font color="#800000">0</font>;<br>
@@ -7429,7 +7431,7 @@ number was detected.</p>
 <p align="right">
   <a href="#2.9" name="2.12"></a><a href="#2.11"><IMG src="prev.gif" alt="[Back]" width="29"
       height="29"></a><A href="#21"><IMG
-      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#3"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#2.13"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
 <H3>2.12. Transactional blocking files</H3>
 <p><a name="Persistent.Blocking_Files.Transactional"></a>The package
 <a href="#Persistent.Blocking_Files.Transactional">Persistent.Blocking_Files.Transactional</a> provides 
@@ -7509,7 +7511,8 @@ defined on the type.</p>
 <blockquote>
   <p><tt><font color="#0000FF"><a name="Persistent.Blocking_Files.Transactional.Close"></a>
 	procedure </font>Close (<b>Container</b> :<font color="#0000FF"> in out
-	</font>Persistent_Transactional_Array);</tt></p>
+	</font>
+	<a href="#Persistent.Blocking_Files.Transactional.Persistent_Transactional_Array">Persistent_Transactional_Array</a>);</tt></p>
 
 </blockquote>
 
@@ -7521,7 +7524,8 @@ rolled back. I/O exceptions are propagated on errors.</p>
   <p><tt><font color="#0000FF">
 	<a name="Persistent.Blocking_Files.Transactional.Commit"></a>
 	procedure </font>Commit (<b>Container</b> :<font color="#0000FF"> in out
-	</font>Persistent_Transactional_Array);</tt></p>
+	</font>
+	<a href="#Persistent.Blocking_Files.Transactional.Persistent_Transactional_Array">Persistent_Transactional_Array</a>);</tt></p>
 
 </blockquote>
 
@@ -7529,7 +7533,8 @@ rolled back. I/O exceptions are propagated on errors.</p>
 
 <blockquote>
   <p><tt><font color="#0000FF">procedure </font>Finalize (<b>Container</b> :<font color="#0000FF"> 
-	in out </font>Persistent_Transactional_Array);</tt></p>
+	in out </font>
+	<a href="#Persistent.Blocking_Files.Transactional.Persistent_Transactional_Array">Persistent_Transactional_Array</a>);</tt></p>
 
 </blockquote>
 
@@ -7539,7 +7544,8 @@ derived type, it must be called from the derived type implementation.</p>
 
 <blockquote>
   <p><tt><font color="#0000FF">procedure </font>Flush (<b>Container</b> :<font color="#0000FF"> 
-	in out </font>Persistent_Transactional_Array);</tt></p>
+	in out </font>
+	<a href="#Persistent.Blocking_Files.Transactional.Persistent_Transactional_Array">Persistent_Transactional_Array</a>);</tt></p>
 
 </blockquote>
 
@@ -7553,7 +7559,7 @@ propagated on errors.</p>
 	<a name="Persistent.Blocking_Files.Transactional.Get_Allocated_Size"></a>function </font>
 	Get_Allocated_Size<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Container</b> : 
-	Persistent_Transactional_Array<br>
+	<a href="#Persistent.Blocking_Files.Transactional.Persistent_Transactional_Array">Persistent_Transactional_Array</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> <a href="#Persistent.Blocking_Files.Byte_Index">Byte_Index</a>;</tt></p>
 
@@ -7568,9 +7574,9 @@ file open. I/O exceptions are propagated on errors.</p>
 	<a name="Persistent.Blocking_Files.Transactional.Get_Disposed_Blocks"></a>function </font>
 	Get_Disposed_Blocks<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Container</b> : 
-	Persistent_Transactional_Array<br>
+	<a href="#Persistent.Blocking_Files.Transactional.Persistent_Transactional_Array">Persistent_Transactional_Array</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> Block_Count;</tt></p>
+	return</font> <a href="#Persistent.Blocking_Files.Block_Count">Block_Count</a>;</tt></p>
 
 </blockquote>
 
@@ -7585,9 +7591,9 @@ file open. I/O exceptions are propagated on errors.</p>
 	<a name="Persistent.Blocking_Files.Transactional.Get_Free_Blocks"></a>function </font>
 	Get_Free_Blocks<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Container</b> : 
-	Persistent_Transactional_Array<br>
+	<a href="#Persistent.Blocking_Files.Transactional.Persistent_Transactional_Array">Persistent_Transactional_Array</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
-	return</font> Block_Count;</tt></p>
+	return</font> <a href="#Persistent.Blocking_Files.Block_Count">Block_Count</a>;</tt></p>
 
 </blockquote>
 
@@ -7626,12 +7632,12 @@ bytes. The result -1 can be used as the Map_Size parameter of
 	<a name="Persistent.Blocking_Files.Transactional.Get_Physical"></a>function </font>
 	Get_Physical<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Container</b> : 
-	Persistent_Transactional_Array;<br>
+	<a href="#Persistent.Blocking_Files.Transactional.Persistent_Transactional_Array">Persistent_Transactional_Array</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Virtual</b>&nbsp;&nbsp; 
 	: <a href="#Persistent.Blocking_Files.Block_Index">Block_Index</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font>
-	Block_Count;</tt></p>
+	<a href="#Persistent.Blocking_Files.Block_Count">Block_Count</a>;</tt></p>
 
 </blockquote>
 
@@ -7644,7 +7650,7 @@ file open. I/O exceptions are propagated on errors.</p>
 	function </font>
 	Get_Sequence_No<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Container</b> : 
-	Persistent_Transactional_Array<br>
+	<a href="#Persistent.Blocking_Files.Transactional.Persistent_Transactional_Array">Persistent_Transactional_Array</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font>
 	Unsigned_64;</tt></p>
@@ -7660,7 +7666,7 @@ file open.</p>
 	<a name="Persistent.Blocking_Files.Transactional.Get_Used_Size"></a>function </font>
 	Get_Used_Size<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Container</b> : 
-	Persistent_Transactional_Array<br>
+	<a href="#Persistent.Blocking_Files.Transactional.Persistent_Transactional_Array">Persistent_Transactional_Array</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> <a href="#Persistent.Blocking_Files.Byte_Index">Byte_Index</a>;</tt></p>
 
@@ -7677,7 +7683,7 @@ file open. I/O exceptions are propagated on errors.</p>
 	<a name="Persistent.Blocking_Files.Transactional.Is_Updated"></a>function </font>
 	Is_Updated<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Container</b> : 
-	Persistent_Transactional_Array;<br>
+	<a href="#Persistent.Blocking_Files.Transactional.Persistent_Transactional_Array">Persistent_Transactional_Array</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Virtual</b>&nbsp;&nbsp; 
 	: <a href="#Persistent.Blocking_Files.Block_Index">Block_Index</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
@@ -7694,11 +7700,12 @@ file open. I/O exceptions are propagated on errors.</p>
   <p><tt><font color="#0000FF"><a name="Persistent.Blocking_Files.Transactional.Open"></a>
 	procedure </font>Open<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Container</b> 
-	: <font color="#0000FF">in out</font> Persistent_Transactional_Array;<br>
+	: <font color="#0000FF">in out</font> 
+	<a href="#Persistent.Blocking_Files.Transactional.Persistent_Transactional_Array">Persistent_Transactional_Array</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Name</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: String;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Mode</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-	: Access_Mode := Read_Mode;<br>
+	: <a href="#Persistent.Blocking_Files.Access_Mode">Access_Mode</a> := Read_Mode;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 	Hash_Size</b> : Positive&nbsp;&nbsp;&nbsp; :=<font color="#800000"> 256</font>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Map_Size</b>&nbsp; 
@@ -7722,7 +7729,8 @@ file. I/O exceptions are propagated on errors.</p>
 <blockquote>
   <p><tt><font color="#0000FF">procedure </font>Open<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Container</b> 
-	: <font color="#0000FF">in out</font> Persistent_Transactional_Array;<br>
+	: <font color="#0000FF">in out</font> 
+	<a href="#Persistent.Blocking_Files.Transactional.Persistent_Transactional_Array">Persistent_Transactional_Array</a>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 	Hash_Size</b> : Positive :=<font color="#800000"> 256</font>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <b>Map_Size</b>&nbsp; 
@@ -7740,7 +7748,8 @@ create a temp file.</p>
   <p><tt><font color="#0000FF">
 	<a name="Persistent.Blocking_Files.Transactional.Rollback"></a>procedure </font>
 	Rollback (<b>Container</b> :
-	<font color="#0000FF">in out</font> Persistent_Transactional_Array);</tt></p>
+	<font color="#0000FF">in out</font> 
+	<a href="#Persistent.Blocking_Files.Transactional.Persistent_Transactional_Array">Persistent_Transactional_Array</a>);</tt></p>
 
 </blockquote>
 
@@ -7775,13 +7784,15 @@ flags controls the output:</p>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>File</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 	: File_Type;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-	Container</b> : Persistent_Transactional_Array'Class;<br>
+	Container</b> : 
+	<a href="#Persistent.Blocking_Files.Transactional.Persistent_Transactional_Array">Persistent_Transactional_Array</a>'Class;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 	Flags</b>&nbsp;&nbsp;&nbsp;&nbsp; : Dump_Flags := Dump_All<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
 	<font color="#0000FF">procedure</font> Put<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Container</b> 
-	: Persistent_Transactional_Array'Class;<br>
+	: 
+	<a href="#Persistent.Blocking_Files.Transactional.Persistent_Transactional_Array">Persistent_Transactional_Array</a>'Class;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 	Flags</b>&nbsp;&nbsp;&nbsp;&nbsp; : Dump_Flags := Dump_All<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
@@ -7790,8 +7801,370 @@ flags controls the output:</p>
 output is used. <b>Container</b> is the object to output. <b>Flags</b> controls 
 the output.</p>
 
+<p align="right">
+  <a href="#2.9" name="2.13"></a><a href="#2.12"><IMG src="prev.gif" alt="[Back]" width="29"
+      height="29"></a><A href="#21"><IMG
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#3"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+<H3>2.13. Persistent streams</H3>
+<p><a name="Persistent.Streams"></a>The package
+<a href="#Persistent.Blocking_Files.Transactional">Persistent.Streams</a> provides 
+<a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>, a stream 
+backed by 
+<a href="#Persistent.Blocking_Files.Transactional.Persistent_Transactional_Array">
+Persistent_Transactional_Array</a>. The stream can be written and read as a 
+FIFO. The read content can be disposed freeing place in the file. When read 
+beyond the last written element End_Error is propagated.</p>
+<p>The package defines the file types:</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF">
+	<a name="Persistent.Streams.Persistent_Stream"></a>type </font>
+	Persistent_Stream<font color="#0000FF">
+	is<br>
+&nbsp;&nbsp; new </font>Ada.Streams.Root_Stream_Type<font color="#0000FF">
+	with private</font>;</tt></p>
+
+</blockquote>
+
+<p>This type of the stream.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF">
+	<a name="Persistent.Streams.Stream_Position"></a>type </font>
+	Stream_Position<font color="#0000FF">
+	is new </font> <a href="#Persistent.Blocking_Files.Byte_Index">Byte_Index</a>;</tt></p>
+
+</blockquote>
+
+<p>Values of this type indicate a position in the stream. The position is 
+monotonically ascending.</p>
+<p>&nbsp;The following operations are 
+defined on the type.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF"><a name="Persistent.Streams.Close"></a>procedure </font>Close (<b>Stream</b> :<font color="#0000FF"> in out
+	</font><a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>);</tt></p>
+
+</blockquote>
+
+<p>This procedure is used to close file previously opened with
+<a href="#Persistent.Streams.Open">Open</a>. The pending changes are 
+written into the file. I/O exceptions are propagated on errors. If the stream 
+remains unclosed the updates from the last call to
+<a href="#Persistent.Stream.Flush">Flush</a> are dropped.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF">
+	<a name="Persistent.Streams.Dispose"></a>procedure </font>Dispose (<b>Stream</b> 
+	: <font color="#0000FF">in out</font>
+	<a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>);<br>
+	<font color="#0000FF">procedure</font> Dispose<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Stream</b> :
+	<font color="#0000FF">in out</font>
+	<a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Upto</b>&nbsp;&nbsp; 
+	: <a href="#Persistent.Streams.Stream_Position">Stream_Position</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+
+</blockquote>
+
+<p>This procedure removes all previously read content from the stream. The freed 
+space becomes available current transaction and opens a new one. When the 
+parameter <b>Upto</b> is specified it is the first position to keep in the 
+stream. Everything prior to it is disposed.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF"><a name="Persistent.Streams.End_Of"></a>function </font>
+	End_Of (<b>Stream</b> :
+	<a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>)
+	<font color="#0000FF">return</font> Boolean;</tt></p>
+
+</blockquote>
+
+<p>This function returns <font color="#800000"><i>true</i></font> if the end of 
+the stream is reached. Reading beyond the end propagates End_Error.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF">procedure </font>Erase (<b>Stream</b> :
+	<font color="#0000FF">in out</font>
+	<a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>);</tt></p>
+
+</blockquote>
+
+<p>This procedure removes all&nbsp; stream content.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF"><a name="Persistent.Stream.Flush"></a>procedure </font>Flush (<b>Stream</b> :
+	<font color="#0000FF">in out</font>
+	<a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>);</tt></p>
+
+</blockquote>
+
+<p>This procedure writes all updates to the file. I/O exceptions are 
+propagated on errors.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF">
+	<a name="Persistent.Streams.Get_Block_Size"></a>function </font>
+	Get_Block_Size<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Stream</b> :
+	<a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return Block_Count</font>;</tt></p>
+
+</blockquote>
+
+<p>This function returns the number of allocated logical blocks. It includes the 
+unused blocks but not the blocks reserved for maintaining redundancy. See also
+<a href="#Persistent.Streams.Get_Blocks">Get_Blocks</a>.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF">
+	<a name="Persistent.Streams.Get_Blocks"></a>procedure </font>
+	Get_Blocks<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Stream</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: <a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Total_Blocks</b>&nbsp;&nbsp;&nbsp; : <font color="#0000FF">out</font> 
+	<font color="#0000FF">
+	Block_Count</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Disposed_Blocks</b> : <font color="#0000FF">out</font> <font color="#0000FF">
+	Block_Count</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Free_Blocks</b>&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">out</font> 
+	<font color="#0000FF">
+	Block_Count</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Logical_Blocks</b>&nbsp; : <font color="#0000FF">out</font> <font color="#0000FF">
+	Block_Count</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Writable_Blocks</b> : <font color="#0000FF">out</font> <font color="#0000FF">
+	Block_Count</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+
+</blockquote>
+
+<p>This procedure returns file usage statistics:</p>
+<ul>
+	<li><b>Total_Blocks</b> is the number of blocks the files occupies;</li>
+	<li><b>Disposed_Blocks</b> is the number of blocks that are free but cannot 
+	be used until the current transaction is committed;</li>
+	<li><b>Free_Blocks</b> is the number of blocks the can be reused within the 
+	current transaction;</li>
+	<li><b>Logical_Blocks</b> is the number of logical blocks used by the stream 
+	content, The logical blocks are allocated on top of file blocks. The same 
+	logical blocks can use two file blocks because when a logical block is 
+	updated it is written into a new file block in order to prevent data loss 
+	upon system crash;</li>
+	<li><b>Writable_Blocks</b> is the number of logical blocks available for 
+	reusing.</li>
+</ul>
+<p>Use_Error is propagated when no 
+file open. I/O exceptions are propagated on errors.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF">
+	<a name="Persistent_Stream.Get_Name"></a>function </font>
+	Get_Name<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Stream</b> :
+	<a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
+	return</font> String;</tt></p>
+
+</blockquote>
+
+<p>This function returns the name of the file backing the stream. Use_Error is 
+propagated when no file open.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF">
+	<a name="Persistent.Streams.Get_First_Index"></a>function </font>
+	Get_First_Index (<b>Stream</b> :
+	<a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>)<br>
+&nbsp;&nbsp; <font color="#0000FF">return</font> <a href="#Persistent.Blocking_Files.Byte_Index">Byte_Index</a>;</tt></p>
+
+</blockquote>
+
+<p>This function returns logical index of the first element in the stream. Use_Error is 
+propagated when no file open.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF">
+	<a name="Persistent.Streams.Get_First_Position"></a>function </font>
+	Get_First_Position (<b>Stream</b> :
+	<a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>)<br>
+&nbsp;&nbsp; <font color="#0000FF">return</font> <a href="#Persistent.Streams.Stream_Position">Stream_Position</a>;</tt></p>
+
+</blockquote>
+
+<p>This function returns the position of the first element in the stream. The 
+stream position is monotonically ascending zero-based number. Use_Error is 
+propagated when no file open.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF">
+	<a name="Persistent.Streams.Get_Read_Index"></a>function </font>
+	Get_Read_Index (<b>Stream</b> :
+	<a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>)<br>
+&nbsp;&nbsp; <font color="#0000FF">return</font> <a href="#Persistent.Blocking_Files.Byte_Index">Byte_Index</a>;</tt></p>
+
+</blockquote>
+
+<p>This function returns logical index of the stream element next to read.. Use_Error is 
+propagated when no file open.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF">
+	<a name="Persistent.Streams.Get_Read_Position"></a>function </font>
+	Get_Read_Position (<b>Stream</b> :
+	<a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>)<br>
+&nbsp;&nbsp; <font color="#0000FF">return</font> <a href="#Persistent.Streams.Stream_Position">Stream_Position</a>;</tt></p>
+
+</blockquote>
+
+<p>This function returns the position of the stream element next to read. The 
+stream position is monotonically ascending zero-based number. Use_Error is 
+propagated when no file open.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF">
+	<a name="Persistent.Streams.Get_Size"></a>function </font>
+	Get_Size (<b>Stream</b> :
+	<a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>) <font color="#0000FF">
+	return</font> <a href="#Persistent.Streams.Stream_Position">Stream_Position</a>;</tt></p>
+
+</blockquote>
+
+<p>This function returns number of elements in the stream. It is the difference 
+between the write and first positions. Use_Error is 
+propagated when no file open.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF">
+	<a name="Persistent.Streams.Get_Write_Index"></a>function </font>
+	Get_Write_Index (<b>Stream</b> :
+	<a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>)<br>
+&nbsp;&nbsp; <font color="#0000FF">return</font> <a href="#Persistent.Blocking_Files.Byte_Index">Byte_Index</a>;</tt></p>
+
+</blockquote>
+
+<p>This function returns logical index of the first stream element to write.. Use_Error is 
+propagated when no file open.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF">
+	<a name="Persistent.Streams.Get_Write_Position"></a>function </font>
+	Get_Write_Position (<b>Stream</b> :
+	<a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>)<br>
+&nbsp;&nbsp; <font color="#0000FF">return</font> <a href="#Persistent.Streams.Stream_Position">Stream_Position</a>;</tt></p>
+
+</blockquote>
+
+<p>This function returns the position of the first stream element to write. The 
+stream position is monotonically ascending zero-based number. Use_Error is 
+propagated when no file open.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF">
+	function </font>Is_Empty (<b>Stream</b> :
+	<a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>) <font color="#0000FF">
+	return </font>Boolean;</tt></p>
+
+</blockquote>
+
+<p>This function returns <font color="#800000"><i>true</i></font> if the stream 
+is empty.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF">
+	function </font>Is_Open (<b>Stream</b> :
+	<a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>) <font color="#0000FF">
+	return </font>Boolean;</tt></p>
+
+</blockquote>
+
+<p>This function returns <font color="#800000"><i>true</i></font> if the file 
+backing the stream is open.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF">
+	<a name="Persistent.Streams.Open"></a>procedure </font>Open<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Stream</b>&nbsp;&nbsp;&nbsp; 
+	: <font color="#0000FF">in out</font> 
+	<a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Name</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Mode</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: <a href="#Persistent.Blocking_Files.Access_Mode">Access_Mode</a> := Read_Mode;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Hash_Size</b> : Positive&nbsp;&nbsp;&nbsp; :=<font color="#800000"> 256</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Form</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: String&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; := &quot;&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+
+</blockquote>
+
+<p>This procedure opens a file specified by <b>Name</b>. <b>Mode</b> is the 
+file access mode. When <b>Mode</b> is <i>Read_Mode</i> the stream can only be 
+read from and the file must exist. <b>Hash_Size</b> 
+specifies the number of virtual blocks kept resident in the memory. <b>Map_Size</b> 
+specifies how many segments of the virtual-to-physical mapping are kept cached 
+in the memory. I/O exceptions are propagated on errors.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF">
+	procedure </font>
+	Rewind (<b>Stream</b> 
+	: <font color="#0000FF">in out</font> 
+	<a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>);</tt></p>
+
+</blockquote>
+
+<p>This procedure sets the read position back to the first element. Use_Error is 
+propagated when no file open.</p>
+
+<h4><a name="2.13.1"></a>2.13.1. Textual output of internal structures</h4>
+<p><a name="Persistent.Streams.Dump"></a>The package
+<a href="#Persistent.Streams.Dump">Persistent.Streams.Dump</a> 
+provides procedures to output internal structures of a stream. The 
+flags controls the output:</p>
+<blockquote>
+  <p><tt><font color="#0000FF">type </font>Dump_Flags<font color="#0000FF"> is 
+	mod </font><font color="#800000">2</font>**<font color="#800000">4</font>;<br>
+	Dump_General_Information&nbsp; : <font color="#0000FF">constant</font> 
+	Dump_Flags := <font color="#800000">2</font>**<font color="#800000">0</font>;<br>
+	Dump_Free_Block_List&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">constant</font> 
+	Dump_Flags := <font color="#800000">2</font>**<font color="#800000">1</font>;<br>
+	Dump_Used_Block_List&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">constant</font> 
+	Dump_Flags := <font color="#800000">2</font>**<font color="#800000">2</font>;<br>
+	Dump_Block_Contents&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">
+	constant</font> Dump_Flags := <font color="#800000">2</font>**<font color="#800000">3</font>;<br>
+	Dump_All&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: <font color="#0000FF">constant </font>Dump_Flags := Dump_Flags'Last;</tt></p>
+</blockquote>
+<p>The procedures defined in the package are:</p>
+<blockquote>
+  <p><tt><font color="#0000FF">procedure</font> Put<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>File</b>&nbsp;&nbsp;&nbsp;: File_Type;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Stream </b>: <a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Flags</b>&nbsp;&nbsp;: Dump_Flags := Dump_All<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+	<font color="#0000FF">procedure</font> Put<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Stream</b> 
+	: <a href="#Persistent.Streams.Persistent_Stream">Persistent_Stream</a>'Class;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Flags</b>&nbsp;&nbsp;: Dump_Flags := Dump_All<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The parameter <b>File</b> is the file to output into. If omitted the standard 
+output is used. <b>Stream</b> is the object to output. <b>Flags</b> controls 
+the output.</p>
+
 <hr><p align="right">
-  <A name="3"></A><a href="#2.12"><IMG src="prev.gif" alt="[Back]" width="29"
+  <A name="3"></A><a href="#2.13"><IMG src="prev.gif" alt="[Back]" width="29"
       height="29"></a><A href="#21"><IMG
       src="index.gif" alt="[TOC]" width="29" height="29"></A><A
       href="#3.1"><IMG src="next.gif" alt="[Next]" width="29" height="29"></A></p>
@@ -8945,16 +9318,18 @@ Ada.Finalization.Controlled <font color="#0000FF">with private</font>;<br>
       src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#4"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
 <H3>3.3. B-trees</H3>
 <p><a name="b-tree"></a>A B-tree is a map effective for large sets of keys 
-allocated in a storage supporting random access to fixed blocks of memory. 
-B-trees are used for implementation of file systems and databases. A B-tree is 
-balanced. A node of the tree has up to fixed number of keys. Each nodes has a 
-bucket with sorted keys and values. Binary search is used to within the bucket. 
-Keys in the non-leaf nodes have to children. Keys of branch nodes may have up to 
-two children on the left and on the right. The left child and its children 
-contains keys lesser than the key itself. The right one contains greater keys. 
-Adjacent keys in the bucket share the child which is the right child of the 
-first key and the left child of the second key. The keys of subtree rooted in the child are 
-greater than the first key and lesser than the second key. Each child bucked 
+allocated in a storage supporting random access to the fixed blocks of memory. 
+B-trees are used for implementation of the file systems and databases. A B-tree 
+is balanced. Each tree node has a bounded number of keys. The node keys and 
+values are sorted and kept in a single storage bucket. Binary search is used 
+within the bucket. Keys of the non-leaf nodes have children nodes. Keys of such nodes may have up to 
+two children nodes on its left and right. The left child node and its children 
+nodes 
+contain keys lesser than the key itself. The right one contains the greater keys. 
+The adjacent keys in the bucket share the child node. The child node of the 
+adjacent pair contains the right child of the first key of the pair and the left child of the second key 
+of the pair. The keys of subtree rooted in the child are 
+greater than the first key and lesser than the second key. Each child node 
 keeps an upward link to its parent. The keys of the tree can be effectively 
 traversed in ascending and descending order.</p>
 <h4><a name="3.3.1"></a>3.3.1. B-trees of definite keys and objects</h4>
@@ -12304,7 +12679,7 @@ at the end it is 0. For a newly created object the result is 0.</p>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">
 	return</font> Boolean;</tt></p>
 </blockquote>
-<p>These functions compare the unread contents of Stream with an array of stream 
+<p>These functions compare the unread contents of <b>Stream</b> with an array of stream 
 elements or characters of a string. The result is <i><font color="#800000">true</font></i> 
 if the unread content of Stream is less than the second parameter. An unopened 
 stream is considered empty.</p>
@@ -14520,11 +14895,22 @@ is propagated when the queue is empty.</p>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Queue</b>&nbsp;&nbsp; 
 	: <font color="#0000FF">in out</font> FIFO;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Element</b> : Element_Type<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<font color="#0000FF"><br>
+	procedure</font> Put<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Queue</b>&nbsp;&nbsp; 
+	: <font color="#0000FF">in out</font> FIFO;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 	Element</b> : Element_Type;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Full</b>&nbsp;&nbsp;&nbsp; 
+	: <font color="#0000FF">out</font> Boolean<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
 <p>This procedure put <b>Element</b> into <b>Queue</b>. Constraint_Error when
-<b>Queue</b> does not have enough space for <b>Element</b>.</p>
+<b>Queue</b> does not have enough space for <b>Element</b>. The variant with the
+<b>Full</b> output parameter is exception-free. <b>Full</b> is set to
+<font color="#800000"><i>true</i></font> if the element was successfully pot 
+into the FIFO and <i><font color="#800000">false</font></i> otherwise.</p>
 <H4><a name="10.1.4"></a>10.1.4. Signaled FIFO of indefinite elements</H4>
 <p><a name="Generic_Indefinite_FIFO.Signaled_FIFO"></a>The child package
 <a href="#Generic_Indefinite_FIFO.Signaled_FIFO">Generic_Indefinite_FIFO.Signaled_FIFO</a> 
@@ -16294,7 +16680,7 @@ Map</a> when the object's data are first allocated in the shared memory.</p>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) <font color="#0000FF">&nbsp;return</font> 
 	Unsigned_16;</tt></p>
 </blockquote>
-<p>This function returns the signature is used in order to verify if the shared 
+<p>This function returns the signature used to verify if the shared 
 environment contains same objects in all instances. The default implementation 
 uses the external tag name with the function Get_Signature also provided by the 
 package: </p>
@@ -21929,8 +22315,7 @@ following table summarizes the rules of choosing the operation priorities:</p>
     <TD valign="top">Very high</TD>
     <TD valign="top" bgcolor="#C0C0C0">&nbsp;</TD>
     <TD valign="top">Array indices and function usually have higher priority 
-    than most of infix operations, but not all of them::
-    <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse">
+	than most of infix operations, but not all of them:<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse">
     <tr>
     <td align="center" colspan="6">
     <p align="left">
@@ -26298,6 +26683,24 @@ imply sequence repetition.</p>
 </blockquote>
 <p>This is a variant of the function above shaped as a procedure.</p>
 <blockquote>
+<p><tt><font color="#0000FF">procedure</font> Next_Unbiased<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Sequencer</b> 
+: <font color="#0000FF">in out</font> Sequence;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Dice</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: Element;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Item</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+: <font color="#0000FF">out</font> Element;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Success</b>&nbsp;&nbsp; : <font color="#0000FF">out</font> Boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>The function and procedure <a href="#Generic_Random_Sequence.Next">Next</a> 
+described above generate sequences biased towards zero. This procedure generates 
+an unbiased sequence. The additional output parameter <b>Success</b> when <i>
+<font color="#800000">false</font></i> indicates that the attempt to get the 
+next unbiased element was unsuccessful and a next attempt must be made by 
+calling it again with another value of <b>Dice</b>.</p>
+<blockquote>
 <p><tt><font color="#0000FF">procedure</font> Start (<b>Sequencer</b> :
 <font color="#0000FF">in out</font> Sequence);</tt></p>
 </blockquote>
@@ -26385,10 +26788,10 @@ Ada floating-point type should be used.</p>
 provided for handling <a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> 
 floating-point numbers. The package declares:</p>
 <blockquote>
-<p><tt><font color="#0000FF">subtype </font>Byte<font color="#0000FF"> is </font>
+<p><tt><font color="#0000FF"><a name="IEEE 754.Byte"></a>subtype </font>Byte<font color="#0000FF"> is </font>
 Interfaces.Unsigned_8;</tt></p>
 </blockquote>
-<p>The type Byte represents one byte of an
+<p>The type <a href="#IEEE 754.Byte">Byte</a> represents one byte of an
 <a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> floating-number data 
 layout. The package also declares the following exceptions:</p>
 <blockquote>
@@ -26396,6 +26799,105 @@ layout. The package also declares the following exceptions:</p>
 exception</font>;<br>
 Positive_Overflow_Error : <font color="#0000FF">exception</font>;<br>
 Negative_Overflow_Error : <font color="#0000FF">exception</font>;</tt></p>
+</blockquote>
+<p>The package provides tools to deal with densely packed decimal 
+representations:</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="IEEE 754.Decimal_Encoding"></a>type </font>
+Decimal_Encoding<font color="#0000FF"> is </font>(Binary_Integer, 
+Densely_Packed);</tt></p>
+</blockquote>
+<p>The encoding values are</p>
+<ul>
+	<li><i>Binary_Integer</i> denotes binary integer decimal (BID);</li>
+	<li><i>Densely_Packed</i> denotes densely packed decimal (DPD).</li>
+</ul>
+<p>Operations and types to pack and unpack decimals:</p>
+<blockquote>
+<p><tt><font color="#0000FF">subtype </font>Unpacked_Decimal<font color="#0000FF"> 
+is </font>Integer<font color="#0000FF"> range </font><font color="#800000">0</font>..<font color="#800000">999</font>;<font color="#0000FF"><br>
+type </font>Packed_Decimal<font color="#0000FF"> is mod </font>
+<font color="#800000">2</font>**<font color="#800000">10</font>;</tt></p>
+</blockquote>
+<p>The DPD format packs 3 decimal digits into 10-bits sequence.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function </font>Pack (<b>Value</b> : 
+Unpacked_Decimal)<font color="#0000FF"> return </font>Packed_Decimal;</tt></p>
+</blockquote>
+<p>This function packs <b>Value</b> in DPD.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function </font>Unpack (<b>Value</b> : 
+Packed_Decimal)<font color="#0000FF"> return </font>Unpacked_Decimal;</tt></p>
+</blockquote>
+<p>This function unpacks <b>Value</b> from DPD. Note that several 10-bit 
+sequences may have same correspond same decimal value. Therefore <i>x</i> = Pack 
+(Unpack (<i>x</i>)) is not necessarily true.</p>
+<p>Furthermore, the package provides 128-bit integer type, since most platforms 
+do not support it directly:</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="IEEE_754.Integer_128"></a>type </font>
+Integer_128<font color="#0000FF"> is array </font>(<font color="#800000">1</font>..<font color="#800000">4</font>)<font color="#0000FF"> 
+of </font>Unsigned_32;<br>
+Integer_128_Zero&nbsp; : <font color="#0000FF">constant</font> 
+<a href="#IEEE_754.Integer_128">Integer_128</a>;<br>
+Integer_128_First : <font color="#0000FF">constant</font> 
+<a href="#IEEE_754.Integer_128">Integer_128</a>;<br>
+Integer_128_Last&nbsp; : <font color="#0000FF">constant</font> 
+<a href="#IEEE_754.Integer_128">Integer_128</a>;</tt></p>
+</blockquote>
+<p>The type is encoded as 32-bit big-endian in 2's complement. The values range 
+is -2<sup>127</sup>..2<sup>127</sup>-1. The type provides the standard set of 
+integer operations:</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> &quot;<font color="#FF0000">&lt;</font>&quot;&nbsp; 
+(<b>Left</b>, <b>Right</b> : <a href="#IEEE_754.Integer_128">Integer_128</a>) <font color="#0000FF">return</font> 
+Boolean;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">&lt;=</font>&quot; (<b>Left</b>,
+<b>Right</b> : <a href="#IEEE_754.Integer_128">Integer_128</a>) <font color="#0000FF">return</font> Boolean;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">&gt;</font>&quot;&nbsp; (<b>Left</b>,
+<b>Right</b> : <a href="#IEEE_754.Integer_128">Integer_128</a>) <font color="#0000FF">return</font> Boolean;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">&gt;=</font>&quot; (<b>Left</b>,
+<b>Right</b> : <a href="#IEEE_754.Integer_128">Integer_128</a>) <font color="#0000FF">return</font> Boolean;<br>
+<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">abs</font>&quot; (<b>Left</b> 
+: <a href="#IEEE_754.Integer_128">Integer_128</a>) <font color="#0000FF">return</font> Integer_128;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">+</font>&quot;&nbsp;&nbsp; 
+(<b>Left</b> : <a href="#IEEE_754.Integer_128">Integer_128</a>) <font color="#0000FF">return</font> Integer_128;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">-</font>&quot;&nbsp;&nbsp; 
+(<b>Left</b> : <a href="#IEEE_754.Integer_128">Integer_128</a>) <font color="#0000FF">return</font> Integer_128;<br>
+<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">+</font>&quot; (<b>Left</b>,
+<b>Right</b> : <a href="#IEEE_754.Integer_128">Integer_128</a>) <font color="#0000FF">return</font> Integer_128;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">-</font>&quot; (<b>Left</b>,
+<b>Right</b> : <a href="#IEEE_754.Integer_128">Integer_128</a>) <font color="#0000FF">return</font> Integer_128;<br>
+<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">*</font>&quot;&nbsp;&nbsp; 
+(<b>Left</b>, <b>Right</b> : <a href="#IEEE_754.Integer_128">Integer_128</a>) <font color="#0000FF">return</font> 
+Integer_128;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">/</font>&quot;&nbsp;&nbsp; 
+(<b>Left</b>, <b>Right</b> : <a href="#IEEE_754.Integer_128">Integer_128</a>) <font color="#0000FF">return</font> 
+Integer_128;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">mod</font>&quot; (<b>Left</b>,
+<b>Right</b> : <a href="#IEEE_754.Integer_128">Integer_128</a>) <font color="#0000FF">return</font> Integer_128;<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">rem</font>&quot; (<b>Left</b>,
+<b>Right</b> : <a href="#IEEE_754.Integer_128">Integer_128</a>) <font color="#0000FF">return</font> Integer_128;<br>
+<br>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">**</font>&quot; (<b>Left</b> 
+: Integer_128; <b>Right</b> : Natural)<br>
+<font color="#0000FF">&nbsp;&nbsp; return</font> Integer_128;</tt></p>
+</blockquote>
+<p>Conversions to and from 64-bit integers:</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> From_Integer_64&nbsp; (<b>Value</b> 
+: Integer_64 ) <font color="#0000FF">return</font> 
+<a href="#IEEE_754.Integer_128">Integer_128</a>;<br>
+<font color="#0000FF">function</font> From_Unsigned_64 (<b>Value</b> : 
+Unsigned_64) <font color="#0000FF">return</font> <a href="#IEEE_754.Integer_128">Integer_128</a>;<br>
+<br>
+<font color="#0000FF">function</font> To_Integer_64&nbsp; (<b>Value</b> : 
+<a href="#IEEE_754.Integer_128">Integer_128</a>) <font color="#0000FF">return</font> Integer_64;<br>
+<font color="#0000FF">function</font> To_Unsigned_64 (<b>Value</b> : 
+<a href="#IEEE_754.Integer_128">Integer_128</a>) <font color="#0000FF">return</font> Unsigned_64;</tt></p>
 </blockquote>
 <h4><a name="15.1.1"></a>15.1.1. Single precision 32-bit floating-point numbers</h4>
 <p><a name="IEEE_754.Generic_Single_Precision"></a>The generic child package
@@ -26411,17 +26913,19 @@ package </font>IEEE_754.Generic_Single_Precision<font color="#0000FF"> is </font
 package. The type of the <a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> 
 numbers is:</p>
 <blockquote>
-<p><tt><font color="#0000FF">type </font>Float_32<font color="#0000FF"> is array </font>
-(1..4) <font color="#0000FF">of</font> Byte;</tt></p>
+<p><tt><font color="#0000FF"><a name="IEEE_754.Float_32"></a>type </font>Float_32<font color="#0000FF"> is array </font>
+(<font color="#800000">1</font>..<font color="#800000">4</font>) <font color="#0000FF">of</font> 
+<a href="#IEEE 754.Byte">Byte</a>;</tt></p>
 </blockquote>
 <p>The values of the type are 32-bit single-precision 
 <a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> floating-point 
-numbers .The memory layout of encoding is big endian, i.e. the byte containing 
+numbers .The memory layout of encoding is big-endian, i.e. the byte containing 
 the number's sign and the most significant bits of the exponent is the first 
 array element. The byte containing the least significant bits of the mantissa is 
 the last array element. The following operations are defined in the package:</p>
 <blockquote>
-<p><tt><font color="#0000FF">function </font>From_IEEE (<b>Value</b> : Float_32)<font color="#0000FF"> 
+<p><tt><font color="#0000FF">function </font>From_IEEE (<b>Value</b> : 
+<a href="#IEEE_754.Float_32">Float_32</a>)<font color="#0000FF"> 
 return</font> Number;</tt></p>
 </blockquote>
 <p>This function converts <b>Value</b> to the corresponding Ada floating-point 
@@ -26444,7 +26948,8 @@ Value</b> is not a number or else cannot be converted to Number.</p>
   </TR>
 </TABLE>
 <blockquote>
-<p><tt><font color="#0000FF">function </font>Is_NaN (<b>Value</b> : Float_32)<font color="#0000FF"> 
+<p><tt><font color="#0000FF">function </font>Is_NaN (<b>Value</b> : 
+<a href="#IEEE_754.Float_32">Float_32</a>)<font color="#0000FF"> 
 return</font> Boolean;</tt></p>
 </blockquote>
 <p>This function returns <font color="#800000"><i>true</i></font> if <b>Value</b> 
@@ -26452,14 +26957,15 @@ is an
 <a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> NaN (not a number).</p>
 <blockquote>
 <p><tt><font color="#0000FF">function</font> Is_Negative (<b>Value</b> : 
-Float_32)<font color="#0000FF"> return</font> Boolean;</tt></p>
+<a href="#IEEE_754.Float_32">Float_32</a>)<font color="#0000FF"> return</font> Boolean;</tt></p>
 </blockquote>
 <p>This function returns <font color="#800000"><i>true</i></font> if <b>Value</b> 
 is an
 <a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> negative, Note that
 <a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> has negative zeros.</p>
 <blockquote>
-<p><tt><font color="#0000FF">function</font> Is_Real (<b>Value</b> : Float_32)<font color="#0000FF"> 
+<p><tt><font color="#0000FF">function</font> Is_Real (<b>Value</b> : 
+<a href="#IEEE_754.Float_32">Float_32</a>)<font color="#0000FF"> 
 return</font> Boolean;</tt></p>
 </blockquote>
 <p>This function returns <font color="#800000"><i>true</i></font> if <b>Value</b> 
@@ -26468,19 +26974,21 @@ zeros are considered numbers.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF">function </font>To_IEEE (<b>Value</b> : Number)<font color="#0000FF"> 
-return</font> Float_32;</tt></p>
+return</font> <a href="#IEEE_754.Float_32">Float_32</a>;</tt></p>
 </blockquote>
 <p>This function converts Ada floating-point number to the corresponding
 <a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> number. The result 
 can be an infinity if the value cannot be represented otherwise.</p>
 
 <blockquote>
-<p><tt>Positive_Infinity : <font color="#0000FF">constant</font> Float_32;<br>
+<p><tt>Positive_Infinity : <font color="#0000FF">constant</font> 
+<a href="#IEEE_754.Float_32">Float_32</a>;<br>
 Positive_Zero&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">constant</font> 
-Float_32;<br>
-Negative_Infinity : <font color="#0000FF">constant</font> Float_32;<br>
+<a href="#IEEE_754.Float_32">Float_32</a>;<br>
+Negative_Infinity : <font color="#0000FF">constant</font> 
+<a href="#IEEE_754.Float_32">Float_32</a>;<br>
 Negative_Zero&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">constant</font> 
-Float_32;</tt></p>
+<a href="#IEEE_754.Float_32">Float_32</a>;</tt></p>
 </blockquote>
 <p>These constants define some special
 <a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> representations.</p>
@@ -26501,18 +27009,378 @@ package </font>IEEE_754.Generic_Double_Precision<font color="#0000FF"> is </font
 package. The type of the <a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> 
 numbers is:</p>
 <blockquote>
-<p><tt><font color="#0000FF">type </font>Float_64<font color="#0000FF"> is array </font>
-(1..8) <font color="#0000FF">of</font> Byte;</tt></p>
+<p><tt><font color="#0000FF"><a name="IEEE_754.Float_64"></a>type </font>Float_64<font color="#0000FF"> is array </font>
+(<font color="#800000">1</font>..<font color="#800000">8</font>) <font color="#0000FF">of</font> 
+<a href="#IEEE 754.Byte">Byte</a>;</tt></p>
 </blockquote>
-<p>The memory layout of Float_64 is big endian. The rest of the package is 
+<p>The memory layout of <a href="#IEEE_754.Float_64">Float_64</a> is big-endian. The rest of the package is 
 identical to
 <a href="#IEEE_754.Generic_Single_Precision">IEEE_754.Generic_Single_Precision</a> 
-with Float_64 used instead of Float_32.</p>
+with <a href="#IEEE_754.Float_64">Float_64</a> used instead of
+<a href="#IEEE_754.Float_32">Float_32</a>.</p>
 <p><a name="IEEE_754.Long_Floats"></a>The package 
 <a href="#IEEE_754.Long_Floats">IEEE_754.Long_Floats</a> is an instantiation of
 <a href="#IEEE_754.Generic_Double_Precision">IEEE_754.Generic_Double_Precision</a> 
 with the standard type Long_Float.</p>
-<p align="right">
+<h4><a name="15.1.3"></a>15.1.3. Decimal32 numbers</h4>
+<p><a name="IEEE_754.Decimal32"></a>The package <a href="#IEEE_754.Decimal32">
+IEEE_754.Decimal32</a> provides and implementation of Decimal32 format. The 
+encoding stores up to 7 decimal digits and decimal exponent into 32-bits:</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="IEEE_754.Decimal32.Decimal_32"></a>type </font>
+Decimal_32<font color="#0000FF"> is array </font>(<font color="#800000">1</font>..<font color="#800000">4</font>) <font color="#0000FF">of</font> 
+<a href="#IEEE 754.Byte">Byte</a>;<br>
+<font color="#0000FF">type</font> Decimal_32_Mantissa <font color="#0000FF">is 
+range</font> -<font color="#800000">9_999_999</font>..<font color="#800000">9_999_999</font>;<br>
+<font color="#0000FF">type</font> Decimal_32_Exponent <font color="#0000FF">is 
+range</font> -<font color="#800000">101</font>..<font color="#800000">90</font>;</tt></p>
+</blockquote>
+<p>The memory layout of encoding is big-endian, i.e. the byte containing 
+the number's sign and the most significant bits of the exponent is the first 
+array element. The byte containing the least significant bits of the mantissa is 
+the last array element. The following operations are defined in the package:</p>
+<blockquote>
+<p><tt><font color="#0000FF">function </font>From_IEEE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp; 
+: <a href="#IEEE_754.Decimal32.Decimal_32">Decimal_32</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Mantissa</b> 
+: <font color="#0000FF">out</font> Decimal_32_Mantissa;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Exponent</b> 
+: <font color="#0000FF">out</font> Decimal_32_Exponent;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Encoding</b> 
+: <a href="#IEEE 754.Decimal_Encoding">Decimal_Encoding</a> := Binary_Integer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This function converts <b>Value</b> to the corresponding mantissa and 
+exponent. An exception is propagated when <b>
+Value</b> is not a number or else cannot be converted. Note that decimal 
+representations are not normalized therefore same numbers can be represented by 
+different combinations of mantissa and exponent and thus have different 
+representations. </p>
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I></CAPTION>
+  <TR>
+    <TD valign="top">Negative_Overflow_Error</TD>
+    <TD> <b>Value</b> is a negative infinity</TD>
+  </TR>
+  <tr>
+    <TD valign="top">Not_A_Number_Error</TD>
+    <TD> <b>Value</b> is not a number (NaN)</TD>
+  </tr>
+  <TR>
+    <TD valign="top">Positive_Overflow_Error</TD>
+    <TD> <b>Value</b> is a positive infinity</TD>
+  </TR>
+</TABLE>
+<blockquote>
+<p><tt><font color="#0000FF">function </font>Is_NaN (<b>Value</b> : 
+<a href="#IEEE_754.Decimal32.Decimal_32">Decimal_32</a>)<font color="#0000FF"> 
+return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <font color="#800000"><i>true</i></font> if <b>Value</b> 
+is an
+<a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> NaN (not a number).</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Is_Negative (<b>Value</b> : 
+<a href="#IEEE_754.Decimal32.Decimal_32">Decimal_32</a>)<font color="#0000FF"> return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <font color="#800000"><i>true</i></font> if <b>Value</b> 
+is an
+<a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> negative, Note that
+<a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> has negative zeros.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Is_Real (<b>Value</b> : 
+<a href="#IEEE_754.Decimal32.Decimal_32">Decimal_32</a>)<font color="#0000FF"> 
+return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <font color="#800000"><i>true</i></font> if <b>Value</b> 
+represents a real number.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function </font>To_IEEE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Mantissa</b> : 
+Decimal_32_Mantissa;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Exponent</b> 
+: Decimal_32_Exponent;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Encoding</b> 
+: <a href="#IEEE 754.Decimal_Encoding">Decimal_Encoding</a> := Binary_Integer<font color="#0000FF"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font>) <font color="#0000FF">&nbsp;return </font>
+<a href="#IEEE_754.Decimal32.Decimal_32">Decimal_32</a>;</tt></p>
+</blockquote>
+<p>This function encodes <b>Mantissa</b> and <b>Exponent</b> into
+<a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> Decimal32 format. 
+Constraint_Error is propagated when the result cannot encode all digits of <b>
+Mantissa</b>.</p>
+
+<h4><a name="15.1.4"></a>15.1.4. Decimal64 numbers</h4>
+<p><a name="IEEE_754.Decimal64"></a>The package <a href="#IEEE_754.Decimal64">
+IEEE_754.Decimal64</a> provides and implementation of Decimal64 format. The 
+encoding stores up to 16 decimal digits and decimal exponent into 64-bits:</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="IEEE_754.Decimal64.Decimal_64"></a>type </font>
+Decimal_64<font color="#0000FF"> is array </font>(<font color="#800000">1</font>..<font color="#800000">8</font>) <font color="#0000FF">of</font> 
+<a href="#IEEE 754.Byte">Byte</a>;<br>
+<font color="#0000FF">type</font> Decimal_64_Mantissa <font color="#0000FF">is 
+range</font> -<font color="#800000">9_999_999_999_999_999</font>..<font color="#800000">9_999_999_999_999_999</font>;<br>
+<font color="#0000FF">type</font> Decimal_64_Exponent <font color="#0000FF">is 
+range</font> -<font color="#800000">398</font>..<font color="#800000">369</font>;</tt></p>
+</blockquote>
+<p>The memory layout of encoding is big-endian, i.e. the byte containing 
+the number's sign and the most significant bits of the exponent is the first 
+array element. The byte containing the least significant bits of the mantissa is 
+the last array element. The following operations are defined in the package:</p>
+<blockquote>
+<p><tt><font color="#0000FF">function </font>From_IEEE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp; 
+: <a href="#IEEE_754.Decimal64.Decimal_64">Decimal_64</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Mantissa</b> 
+: <font color="#0000FF">out</font> Decimal_64_Mantissa;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Exponent</b> 
+: <font color="#0000FF">out</font> Decimal_64_Exponent;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Encoding</b> 
+: <a href="#IEEE 754.Decimal_Encoding">Decimal_Encoding</a> := Binary_Integer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This function converts <b>Value</b> to the corresponding mantissa and 
+exponent. An exception is propagated when <b>
+Value</b> is not a number or else cannot be converted. Note that decimal 
+representations are not normalized therefore same numbers can be represented by 
+different combinations of mantissa and exponent and thus have different 
+representations. </p>
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I></CAPTION>
+  <TR>
+    <TD valign="top">Negative_Overflow_Error</TD>
+    <TD> <b>Value</b> is a negative infinity</TD>
+  </TR>
+  <tr>
+    <TD valign="top">Not_A_Number_Error</TD>
+    <TD> <b>Value</b> is not a number (NaN)</TD>
+  </tr>
+  <TR>
+    <TD valign="top">Positive_Overflow_Error</TD>
+    <TD> <b>Value</b> is a positive infinity</TD>
+  </TR>
+</TABLE>
+<blockquote>
+<p><tt><font color="#0000FF">function </font>Is_NaN (<b>Value</b> : 
+<a href="#IEEE_754.Decimal64.Decimal_64">Decimal_64</a>)<font color="#0000FF"> 
+return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <font color="#800000"><i>true</i></font> if <b>Value</b> 
+is an
+<a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> NaN (not a number).</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Is_Negative (<b>Value</b> : 
+<a href="#IEEE_754.Decimal64.Decimal_64">Decimal_64</a>)<font color="#0000FF"> return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <font color="#800000"><i>true</i></font> if <b>Value</b> 
+is an
+<a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> negative, Note that
+<a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> has negative zeros.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Is_Real (<b>Value</b> : 
+<a href="#IEEE_754.Decimal64.Decimal_64">Decimal_64</a>)<font color="#0000FF"> 
+return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <font color="#800000"><i>true</i></font> if <b>Value</b> 
+represents a real number.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function </font>To_IEEE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Mantissa</b> : 
+Decimal_64_Mantissa;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Exponent</b> 
+: Decimal_64_Exponent;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Encoding</b> 
+: <a href="#IEEE 754.Decimal_Encoding">Decimal_Encoding</a> := Binary_Integer<font color="#0000FF"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font>) <font color="#0000FF">&nbsp;return </font>
+<a href="#IEEE_754.Decimal64.Decimal_64">Decimal_64</a>;</tt></p>
+</blockquote>
+<p>This function encodes <b>Mantissa</b> and <b>Exponent</b> into
+<a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> Decimal64 format. Constraint_Error is propagated when the result cannot encode all digits of <b>
+Mantissa</b>.</p>
+
+<h4><a name="15.1.5"></a>15.1.5. Decimal128 numbers</h4>
+<p><a name="IEEE_754.Decimal128"></a>The package <a href="#IEEE_754.Decimal128">IEEE_754.Decimal128</a> provides and implementation of Decimal128 
+format. The 
+encoding stores up to 34 decimal digits and decimal exponent into 128-bits:</p>
+<blockquote>
+<p><tt><font color="#0000FF"><a name="IEEE_754.Decimal28.Decimal_l28"></a>type </font>
+Decimal_128<font color="#0000FF"> is array </font>(<font color="#800000">1</font>..<font color="#800000">16</font>) <font color="#0000FF">of</font> 
+<a href="#IEEE 754.Byte">Byte</a>;<br>
+<font color="#0000FF">type</font> Decimal_128_Exponent <font color="#0000FF">is 
+range</font> -<font color="#800000">6176</font>..<font color="#800000">6111</font>;</tt></p>
+</blockquote>
+<p>The memory layout of encoding is big-endian, i.e. the byte containing 
+the number's sign and the most significant bits of the exponent is the first 
+array element. The byte containing the least significant bits of the mantissa is 
+the last array element. The following operations are defined in the package:</p>
+<blockquote>
+<p><tt><font color="#0000FF">function </font>From_IEEE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Value</b>&nbsp;&nbsp;&nbsp; 
+: <a href="#IEEE_754.Decimal28.Decimal_l28">Decimal_128</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Mantissa</b> 
+: <font color="#0000FF">out</font> <a href="#IEEE_754.Integer_128">Integer_128</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Exponent</b> 
+: <font color="#0000FF">out</font> Decimal_128_Exponent;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Encoding</b> 
+: <a href="#IEEE 754.Decimal_Encoding">Decimal_Encoding</a> := Binary_Integer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This function converts <b>Value</b> to the corresponding mantissa and 
+exponent. An exception is propagated when <b>
+Value</b> is not a number or else cannot be converted. Note that decimal 
+representations are not normalized therefore same numbers can be represented by 
+different combinations of mantissa and exponent and thus have different 
+representations. </p>
+<TABLE border="5" cellpadding="3" cellspacing="0">
+  <CAPTION align="top">
+    <I>Exceptions</I></CAPTION>
+  <TR>
+    <TD valign="top">Negative_Overflow_Error</TD>
+    <TD> <b>Value</b> is a negative infinity</TD>
+  </TR>
+  <tr>
+    <TD valign="top">Not_A_Number_Error</TD>
+    <TD> <b>Value</b> is not a number (NaN)</TD>
+  </tr>
+  <TR>
+    <TD valign="top">Positive_Overflow_Error</TD>
+    <TD> <b>Value</b> is a positive infinity</TD>
+  </TR>
+</TABLE>
+<blockquote>
+<p><tt><font color="#0000FF">function </font>Is_NaN (<b>Value</b> : 
+<a href="#IEEE_754.Decimal28.Decimal_l28">Decimal_128</a>)<font color="#0000FF"> 
+return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <font color="#800000"><i>true</i></font> if <b>Value</b> 
+is an
+<a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> NaN (not a number).</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Is_Negative (<b>Value</b> : 
+<a href="#IEEE_754.Decimal28.Decimal_l28">Decimal_128</a>)<font color="#0000FF"> return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <font color="#800000"><i>true</i></font> if <b>Value</b> 
+is an
+<a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> negative, Note that
+<a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> has negative zeros.</p>
+<blockquote>
+<p><tt><font color="#0000FF">function</font> Is_Real (<b>Value</b> : 
+<a href="#IEEE_754.Decimal28.Decimal_l28">Decimal_128</a>)<font color="#0000FF"> 
+return</font> Boolean;</tt></p>
+</blockquote>
+<p>This function returns <font color="#800000"><i>true</i></font> if <b>Value</b> 
+represents a real number.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">function </font>To_IEEE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Mantissa</b> : 
+<a href="#IEEE_754.Integer_128">Integer_128</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Exponent</b> 
+: Decimal_128_Exponent;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Encoding</b> 
+: <a href="#IEEE 754.Decimal_Encoding">Decimal_Encoding</a> := Binary_Integer<font color="#0000FF"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font>) <font color="#0000FF">&nbsp;return </font>
+<a href="#IEEE_754.Decimal28.Decimal_l28">Decimal_128</a>;</tt></p>
+</blockquote>
+<p>This function encodes <b>Mantissa</b> and <b>Exponent</b> into
+<a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> Decimal128 format. Constraint_Error is propagated when the result cannot encode all digits of <b>
+Mantissa</b>.</p>
+
+<h4><a name="15.1.6"></a>15.1.6. 128-bit integers editing</h4>
+<p><a name="IEEE_754.Edit"></a>The package <a href="#IEEE_754.Decimal128">IEEE_754.Edit</a> provides 
+string editing facilities for 128-bit integers:</p>
+<BLOCKQUOTE>
+  <tt><font color="#0000FF">procedure</FONT> Get<BR>
+  &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;( &nbsp;<b>Source</b>
+  &nbsp;: <font color="#0000FF">in</FONT> String;<BR>
+  &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+  &nbsp;<b>Pointer</b> : <font color="#0000FF">in
+  out</FONT> Integer;<BR>
+  &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+  &nbsp;<b>Value</b> &nbsp;&nbsp;: <font color="#0000FF">out</FONT> 
+	<a href="#IEEE_754.Integer_128">Integer_128</a>;<BR>
+  &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+  &nbsp;<b>Base</b> &nbsp;&nbsp; : NumberBase&nbsp; := <FONT color="#800000">10</FONT><BR>
+  &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;);</tt></BLOCKQUOTE>
+<P>
+This procedure gets an integer number from the string
+<b>Source</b>. The process starts from <b>Source </b>(<b>Pointer</b>). The parameter <b>Base</b> indicates the base
+of the expected number. The exception Constraint_Error is propagated if the
+number is not in the range <b>First</b>..<b>Last</b>.
+Data_Error indicates a syntax error in the number. End_Error is raised when
+no number was detected. Layout_Error is propagated when
+<b>Pointer</b> is not in the range <b>Source</b>'First
+.. <b>Source</b>'Last + 1.</p>
+<BLOCKQUOTE>
+  <tt><font color="#0000FF">function</FONT> Value<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;( &nbsp;<b>Source</b> : String;<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;<b>Base</b>
+  &nbsp; : NumberBase &nbsp;:= <FONT color="#800000">10</FONT>;<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;)&nbsp; <font color="#0000FF">return</FONT>  
+	<a href="#IEEE_754.Integer_128">Integer_128</a>;</tt></BLOCKQUOTE>
+<P>
+This function gets an integer number from the string <b>Source</b>.
+The number can be surrounded by spaces and tabs. The whole string
+<b>Source</b> should be matched. Otherwise the exception Data_Error
+is propagated. Also Data_Error indicates a syntax error in the number. The
+exception Constraint_Error is propagated if the number is not in the range
+<b>First</b>..<b>Last</b>. End_Error is raised when no
+number was detected.</p>
+<BLOCKQUOTE>
+  <tt><font color="#0000FF">procedure</FONT> Put<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;(
+  &nbsp;<b>Destination</b> : <font color="#0000FF">in
+  out</FONT> String;<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+  &nbsp;&nbsp;<b>Pointer</b>&nbsp; &nbsp;&nbsp; : <font color="#0000FF">in
+  out</FONT> Integer;<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+  &nbsp;&nbsp;<b>Value</b>&nbsp; &nbsp;&nbsp; &nbsp; : 
+	<a href="#IEEE_754.Integer_128">Integer_128</a>;<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+  &nbsp;&nbsp;<b>Base</b>&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; : NumberBase := 
+  <FONT color="#800000">10</FONT>;<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+  &nbsp;&nbsp;<b>Put_Plus</b>&nbsp;&nbsp; &nbsp;: Boolean &nbsp; &nbsp;:= False;<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+  &nbsp;&nbsp;<b>Field</b>&nbsp; &nbsp;&nbsp; &nbsp; : Natural &nbsp; &nbsp;:= 
+  <FONT color="#800000">0</FONT>;<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+  &nbsp;&nbsp;<b>Justify</b> &nbsp; &nbsp;&nbsp;: Alignment &nbsp;:= Left;<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+  &nbsp;&nbsp;<b>Fill</b> &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;: Character &nbsp;:= ' '<BR>
+  &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;);</tt></BLOCKQUOTE>
+<P>
+This procedure places the number specified by the parameter
+<b>Value</b> into the output string <b>Destination</b>.
+The string is written starting from <b>Destination </b>(<b>Pointer</b>).
+The parameter <b>Base</b> indicates the number base used for the
+output. The base itself does not appear in the output. The parameter
+<b>Put_Plus</b> indicates whether the plus sign should be placed
+if the number is positive. The exception Layout_Error is propagated when
+<b>Pointer</b> is not in <b>Destination</b>'Range or
+there is no room for the output.</p>
+<BLOCKQUOTE>
+  <tt><font color="#0000FF">function</FONT> Image<BR>
+  &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;( &nbsp;<b>Value</b>
+  &nbsp; &nbsp;: <a href="#IEEE_754.Integer_128">Integer_128</a>;<BR>
+  &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;<b>Base</b>
+  &nbsp;&nbsp;&nbsp; : NumberBase := <FONT color="#800000">10</FONT>;<BR>
+  &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+  &nbsp;&nbsp;<b>Put_Plus</b> : Boolean &nbsp; &nbsp;:= False<BR>
+  &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;)
+  &nbsp;<font color="#0000FF">return</FONT> String;</tt></BLOCKQUOTE>
+<P>
+This function converts <b>Value</b> to string. The parameter
+<b>Base</b> indicates the number base used for the output. The
+base itself does not appear in the output. The parameter
+<b>Put_Plus</b> indicates whether the plus sign should be placed
+if the number is positive.<p align="right">
   <A name="15.2"></A><a href="#15.1"><IMG src="prev.gif" alt="[Back]" width="29"
       height="29"></a><A href="#21"><IMG
       src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#15.3"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
@@ -27618,7 +28486,149 @@ a stream and then the written contents taken as a string.</p>
   <A name="16.6"></A><a href="#16.5"><IMG src="prev.gif" alt="[Back]" width="29"
       height="29"></a><A href="#21"><IMG
       src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#16.7"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
-<H3>16.6. ChaCha20 encrypted streams</H3>
+
+<H3>16.6. Pipe streams</H3>
+
+<p><a name="Pipe_Streams"></a>The package 
+<a href="#Pipe_Streams">Pipe_Streams</a> provides streams that can be used as a 
+pipe between two tasks. The stream can be read and written. The reader is 
+blocked when there is no data available to read. Similarly the writer is blocked 
+when there is no space available to write. Each side of the stream can be closed 
+to propagate End_Error on an attempt to read or write correspondingly. Also the 
+stream can set into the sink mode to accept and ignoring all writing.</p>
+<p>Consider the following example of using a pipe stream. Let there is a 
+compiler that reads the source from a stream and a communication task receiving 
+the source over some networking protocol. The communication produces chunks of 
+the source to compile so that there is no complete source at any time. The 
+communication writes chunks into the pipe stream. The compiler is ran by a 
+separate task and reads from the pipe. Now consider different scenarios:</p>
+<ul>
+	<li>No space in the pipe. The communication is blocked upon writing until 
+	the compiler task consumes some of input and frees space;</li>
+	<li>No input ready. The compiler task is blocked until the communication 
+	delivers more;</li>
+	<li>End of the source. The communication task closes the reading end of the 
+	pipe. The compiler will be able to read remaining data from the pipe and 
+	will get End_Error if it attempts to beyond that;</li>
+	<li>Syntax error. When the compiler detects an error and cannot continue it 
+	can close the writing end. This will cause the communication task getting 
+	End_Error attempting to write into the pipe. This might be undesirable from 
+	the communication protocol point of view. The alternative is to set the 
+	writing end into the sink mode. Whatever the communication task writes would 
+	be accepted and ignored.</li>
+</ul>
+<p>The 
+following data types are defined in the package:</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF"><a name="Pipe_Streams.Pipe_Stream"></a>type </font>
+Pipe_Stream<br>
+&nbsp;&nbsp;&nbsp; (&nbsp; Size : Stream_Element_Count<br>
+&nbsp;&nbsp;&nbsp; )<font color="#0000FF">&nbsp; is new </font>Root_Stream_Type<font color="#0000FF"> 
+with private</font>;</tt></p>
+</blockquote>
+<p>This is the type of the stream. The following operations are provided:</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF">procedure </font>Erase (<b>Stream</b> :<font color="#0000FF"> 
+in out <a href="#Pipe_Streams.Pipe_Stream">Pipe_Stream</a></font>);</tt></p>
+</blockquote>
+<p>This procedure makes the stream empty and available to read/write.</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF">function </font>Available_To_Read (<b>Stream</b> :<font color="#0000FF">
+<a href="#Pipe_Streams.Pipe_Stream">Pipe_Stream</a></font>)<br>
+&nbsp;&nbsp; <font color="#0000FF">return</font> Stream_Element_Count;</tt></p>
+</blockquote>
+<p>This function returns how many stream items can be read without blocking.</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF">function </font>Available_To_Write (<b>Stream</b> :<font color="#0000FF">
+<a href="#Pipe_Streams.Pipe_Stream">Pipe_Stream</a></font>)<br>
+&nbsp;&nbsp; <font color="#0000FF">return</font> Stream_Element_Count;</tt></p>
+</blockquote>
+<p>This function returns how many stream items can be written without blocking.</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF">procedure </font>Close_Read (<b>Stream</b><font color="#0000FF"> 
+: in out <a href="#Pipe_Streams.Pipe_Stream">Pipe_Stream</a></font>);</tt></p>
+</blockquote>
+<p>This procedure closes the read stream end. Reading from the stream will 
+propagate End_Error when the stream is empty instead of blocking.</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF">procedure </font>Close_Write (<b>Stream</b> :
+<font color="#0000FF">in out <a href="#Pipe_Streams.Pipe_Stream">Pipe_Stream</a></font>);</tt></p>
+</blockquote>
+<p>This procedure closes the write stream end. Writing into the stream will 
+propagate End_Error.</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF">function </font>Is_Empty (<b>Stream</b> :
+<font color="#0000FF"><a href="#Pipe_Streams.Pipe_Stream">Pipe_Stream</a></font>)
+<font color="#0000FF">return </font>Boolean;</tt></p>
+</blockquote>
+<p>This function returns <i><font color="#800000">true</font></i> if there is no 
+data ready to read from the stream. The subsequent read will block if no writing 
+happens in between.</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF">function </font>Is_Full (<b>Stream</b> :
+<font color="#0000FF"><a href="#Pipe_Streams.Pipe_Stream">Pipe_Stream</a></font>)
+<font color="#0000FF">return </font>Boolean;</tt></p>
+</blockquote>
+<p>This function returns <i><font color="#800000">true</font></i> if there is no 
+space to write into the stream. The subsequent write will block if no reading 
+happens in between.</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF">function </font>Is_Read_Closed (<b>Stream</b> :
+<font color="#0000FF"><a href="#Pipe_Streams.Pipe_Stream">Pipe_Stream</a></font>)
+<font color="#0000FF">return </font>Boolean;</tt></p>
+</blockquote>
+<p>This function returns <i><font color="#800000">true</font></i> if reading 
+from the stream is closed. Reading from the stream will propagate End_Error.</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF">function </font>Is_Sink (<b>Stream</b> :
+<font color="#0000FF"><a href="#Pipe_Streams.Pipe_Stream">Pipe_Stream</a></font>)
+<font color="#0000FF">return </font>Boolean;</tt></p>
+</blockquote>
+<p>This function returns <i><font color="#800000">true</font></i> if writing 
+into the stream is a void operation.</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF">function </font>Is_Write_Closed (<b>Stream</b> :
+<font color="#0000FF"><a href="#Pipe_Streams.Pipe_Stream">Pipe_Stream</a></font>)
+<font color="#0000FF">return </font>Boolean;</tt></p>
+</blockquote>
+<p>This function returns <i><font color="#800000">true</font></i> if writing 
+into the stream is closed. Writing into the stream will propagate End_Error.</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF">procedure </font>Sink (<b>Stream</b><font color="#0000FF"> 
+: in out <a href="#Pipe_Streams.Pipe_Stream">Pipe_Stream</a></font>);</tt></p>
+</blockquote>
+<p>This procedure sets the stream in the sink mode. All newly written data are 
+accepted and ignored.</p>
+
+<p align="right">
+  <A name="16.7"></A><a href="#16.5"><IMG src="prev.gif" alt="[Back]" width="29"
+      height="29"></a><A href="#21"><IMG
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#16.8"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+<H3>16.7. ChaCha20 encrypted streams</H3>
 
 <p>The package 
 <a href="http://www.dmitry-kazakov.de/ada/strings_edit.htm#Strings_Edit.ChaCha20">Strings_Edit.ChaCha20</a> provides streams 
@@ -27627,10 +28637,10 @@ encipher upon write. Since ChaCha20 is a symmetric cipher deciphering and
 enciphering are same.</p>
 
 <p align="right">
-  <A name="16.7"></A><a href="#16.6"><IMG src="prev.gif" alt="[Back]" width="29"
+  <A name="16.8"></A><a href="#16.7"><IMG src="prev.gif" alt="[Back]" width="29"
       height="29"></a><A href="#21"><IMG
-      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#16.8"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
-<H3>16.7. ODBC bindings</H3>
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#16.9"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+<H3>16.8. ODBC bindings</H3>
 
 <p><a name="ODBC_Bindings"></a>ODBC stands for <b>O</b>pen <b>D</b>ata<b>B</b>ase
 <b>C</b>onnectivety, an interface to access database management systems is a 
@@ -27644,7 +28654,7 @@ is the IP address of the server, port, user credentials etc. In other cases it
 could be the data base file name. Each data source has a unique name (DSN) 
 assigned when it is configured. In order to access a data base the application 
 must know the DSN and optionally the user name and password.</p>
-<h4><a name="16.7.1"></a>16.7.1. Thin bindings</h4>
+<h4><a name="16.8.1"></a>16.8.1. Thin bindings</h4>
 <p><a name="ODBC.Thin"></a>The package <a href="#ODBC.Thin">ODBC.Thin</a> 
 provides thin bindings to ODBC, which closely follows C API. As such it should 
 be somewhat inconvenient to use. Where possible, plain string types like 
@@ -27703,7 +28713,7 @@ x86_64</TD>
     <TD valign="top">64-bit architecture</TD>
   </tr>
   </TABLE>
-<h4><a name="16.7.2"></a>16.7.2. Thick bindings</h4>
+<h4><a name="16.8.2"></a>16.8.2. Thick bindings</h4>
 <p><a name="ODBC.API"></a>The package <a href="#ODBC.API">ODBC.API</a> provides 
 higher level ODBC bindings. The ODBC handles are encapsulated into controlled 
 types to ensure their safe allocation and deallocation:</p>
@@ -27725,7 +28735,7 @@ propagate following exceptions instead:</p>
 	the current context. In certain cases in may indicate lack of support at the 
 	driver side.</li>
 </ul>
-<h4><a name="16.7.3"></a>16.7.3. ODBC environments</h4>
+<h4><a name="16.8.3"></a>16.8.3. ODBC environments</h4>
 <p>The package <a href="#ODBC.API">ODBC.API</a> declares the type 
 <a href="#ODBC.API.ODBC_Environment">ODBC_Enviroment</a>:</p>
 <blockquote>
@@ -27955,7 +28965,7 @@ connection objects created using <a href="#ODBC_Version_attribute">
 Set_ODBC_Version</a> with an appropriate version value. When a new type is derived from
 <a href="#ODBC.API.ODBC_Environment">ODBC_Environment</a> and this operation is 
 overridden the new implementation must call it from its body.</p>
-<h4><a name="16.7.4"></a>16.7.4. ODBC connections</h4>
+<h4><a name="16.8.4"></a>16.8.4. ODBC connections</h4>
 <p><a name="ODBC.API.ODBC_Connection"></a>The package <a href="#ODBC.API">
 ODBC.API</a> declares the type <a href="#ODBC.API.ODBC_Connection">
 ODBC_Connection</a>:</p>
@@ -29488,7 +30498,7 @@ with the specified name exists in the data base. Note that the driver may
 consider table names case-sensitive in some cases and case-insensitive in 
 others. When searching for a table using this function, the table name must be 
 in the canonic form, otherwise the driver may fail finding it.</p>
-<h4><a name="16.7.5"></a>16.7.5. Transactions</h4>
+<h4><a name="16.8.5"></a>16.8.5. Transactions</h4>
 <p><a name="odbc_transactions"></a>The package <a href="#ODBC.API">
 ODBC.API</a> declares the type</p>
 <blockquote>
@@ -29531,7 +30541,7 @@ and, finally, the mode is set back to <i>None</i>.</p>
 <p>Note that the ODBC drivers may support no transactions. Use the function
 <a href="#ODBC.API.Serializable">Serializable</a> to check if the necessary 
 transactions isolation level is provided.</p>
-<h4><a name="16.7.6"></a>16.7.6. ODBC commands</h4>
+<h4><a name="16.8.6"></a>16.8.6. ODBC commands</h4>
 <p>The package <a href="#ODBC.API">ODBC.API</a> declares the type 
 <a href="#ODBC.API.ODBC_Command">ODBC_Command</a>:</p>
 <blockquote>
@@ -30392,7 +31402,7 @@ names case-sensitive in some cases and case-insensitive in others. When
 searching for a table using this function, the table name must be in the canonic 
 form, otherwise the driver may fail finding it.</p>
 
-<h4><a name="16.7.7"></a>16.7.7. Binding parameters</h4>
+<h4><a name="16.8.7"></a>16.8.7. Binding parameters</h4>
 <p><a name="ODBC.Bound_Parameters"></a>The package
 <a href="#ODBC.Bound_Parameters">ODBC.Bound_Parameters</a> defines types used to 
 pass values to prepared commands. Parameters of fixed-size values are bound 
@@ -30509,10 +31519,10 @@ corresponding to <b>Value</b>. Constraint_Error is propagated when <b>Value</b>
 is larger than Length.</p>
 
 <p align="right">
-  <A name="16.8"></A><a href="#16.7"><IMG src="prev.gif" alt="[Back]" width="29"
+  <A name="16.9"></A><a href="#16.8"><IMG src="prev.gif" alt="[Back]" width="29"
       height="29"></a><A href="#21"><IMG
-      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#16.9"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
-<H3>16.8. GNUTLS bindings</H3>
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#16.10"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+<H3>16.9. GNUTLS bindings</H3>
 
 <p><a name="GNUTLS"></a>The package GNUTLS provides bindings to the
 <a href="http://www.gnutls.org/">GNUTLS</a> library. The bindings are semi-thick. 
@@ -30546,10 +31556,10 @@ package is used with a formal procedure used as a callback.</p>
 Stream_Element_Array or String as appropriate.</p>
 
 <p align="right">
-  <A name="16.9"></A><a href="#16.8"><IMG src="prev.gif" alt="[Back]" width="29"
+  <A name="16.10"></A><a href="#16.9"><IMG src="prev.gif" alt="[Back]" width="29"
       height="29"></a><A href="#21"><IMG
-      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#16.10"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
-<H3>16.9. Interfacing Julia language</H3>
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#16.11"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+<H3>16.10. Interfacing Julia language</H3>
 
 <p><a name="Julia"></a>The package <a href="#Julia">Julia</a> provides interfacing 
 with the
@@ -30597,7 +31607,7 @@ where
 finalize
 <a href="https://docs.julialang.org">Julia</a>'s environment.</p>
 
-<h4><a name="16.9.1"></a>16.9.1. Initialization and finalization</h4>
+<h4><a name="16.10.1"></a>16.10.1. Initialization and finalization</h4>
 <p>The first call to be done before using any other is Load which loads the
 <a href="https://docs.julialang.org">Julia</a>'s dynamic library.</p>
 
@@ -30646,7 +31656,7 @@ purpose.</p>
 <p>This procedure is called last to finalize the <a href="https://docs.julialang.org">Julia</a> 
 environment.</p>
 
-<h4><a name="16.9.2"></a>16.9.2. Data types</h4>
+<h4><a name="16.10.2"></a>16.10.2. Data types</h4>
 <p>The package <a href="#Julia">Julia</a> declares the following data types:</p>
 
 <blockquote>
@@ -30724,7 +31734,7 @@ instance.</p>
 </blockquote>
 <p>This function is an equivalent of <a href="#Julia.TypeName">TypeName</a>.</p>
 
-<h4><a name="16.9.3"></a>16.9.3. Correspondence between data types</h4>
+<h4><a name="16.10.3"></a>16.10.3. Correspondence between data types</h4>
 <p>Types are objects in <a href="https://docs.julialang.org">Julia</a>. These 
 objects have the type <a href="#Julia.datatype_t">datatype_t</a> in Ada. The 
 following table lists functions returning the corresponding
@@ -30896,7 +31906,7 @@ of the type Float32 to Interfaces.C.C_Float.</p>
 <p>This function converts Interfaces.C.C_Float to a new <a href="https://docs.julialang.org">Julia</a> 
 value.</p>
 
-<h4><a name="16.9.4"></a>16.9.4. Julia tuples</h4>
+<h4><a name="16.10.4"></a>16.10.4. Julia tuples</h4>
 <p>A tuple in <a href="https://docs.julialang.org">Julia</a> is an ordered set 
 of values which can be of any type. A tuple can be named in which case each 
 element of the tuple has a unique string key. The tuple interface is supported 
@@ -31025,7 +32035,7 @@ Constraint_Error is propagated when <b>Index</b> is greater than tuple length.</
 <font color="#0000FF">return</font> Natural;</tt></p>
 </blockquote>
 <p>This function returns the number elements of the tuple.</p>
-<h4><a name="16.9.5"></a>16.9.5. Julia arrays</h4>
+<h4><a name="16.10.5"></a>16.10.5. Julia arrays</h4>
 <p><a href="https://docs.julialang.org">Julia</a> has built-in arrays with 
 elements of scalar values. These can be accessed from Ada and converted to Ada 
 arrays. The following operations are defined on <a href="https://docs.julialang.org">Julia</a> 
@@ -31067,7 +32077,7 @@ Dimension</b> is invalid.</p>
 <a href="#Julia.Generic_2D_Array">Julia.Generic_2D_Array</a>, 
 <a href="#Julia.Generic_3D_Array">Julia.Generic_3D_Array</a>.</p>
 
-<h4><a name="16.9.6"></a>16.9.6. Execution of Julia code</h4>
+<h4><a name="16.10.6"></a>16.10.6. Execution of Julia code</h4>
 <p>The <a href="https://docs.julialang.org">Julia</a> effect code execution is 
 accumulated in the environment and held between calls. There is no notion of a 
 block, any sequence of statements can be executed, though it must be a complete 
@@ -31217,7 +32227,7 @@ return</font> function_t;</tt></p>
 specified by <b>Name</b>. End_Error is propagated when there is no function with 
 this name in the module.</p>
 
-<h4><a name="16.9.7"></a>16.9.7. Calling Ada from Julia</h4>
+<h4><a name="16.10.7"></a>16.10.7. Calling Ada from Julia</h4>
 <p><a href="https://docs.julialang.org">Julia</a> uses C calling convention when 
 it calls alien code. Therefore Ada subroutines called from
 <a href="https://docs.julialang.org">Julia</a> must have C conventions. The 
@@ -31343,7 +32353,7 @@ declared for the Ada function <i>Increment</i>. The wrapper is also called <i>
 Increment</i> and then called three times applied to the variable initialized by 
 1.0. The result is 4.0 is printed at the end.</p>
 
-<h4><a name="16.9.8"></a>16.9.8. Handling Julia exceptions</h4>
+<h4><a name="16.10.8"></a>16.10.8. Handling Julia exceptions</h4>
 <p>The following subroutines are used for handling exceptions in
 <a href="https://docs.julialang.org">Julia</a>.</p>
 <blockquote>
@@ -31391,7 +32401,7 @@ Expected</b> : value_t;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
 </blockquote>
 
-<h4><a name="16.9.9"></a>16.9.9. 1-d arrays</h4>
+<h4><a name="16.10.9"></a>16.10.9. 1-d arrays</h4>
 <p><a name="Julia.Generic_1D_Array"></a>The package
 <a href="#Julia.Generic_1D_Array">Julia.Generic_1D_Array</a> provides 
 interfacing to 1-d arrays:</p>
@@ -31538,7 +32548,7 @@ second element is updated and finally the array is printed in
 <p><tt>A = 1 2 3<br>
 Int16[1, 10, 3]</tt></p>
 </blockquote>
-<h4><a name="16.9.10"></a>16.9.10. 2-d arrays</h4>
+<h4><a name="16.10.10"></a>16.10.10. 2-d arrays</h4>
 <p><a name="Julia.Generic_2D_Array"></a>The package
 <a href="#Julia.Generic_2D_Array">Julia.Generic_2D_Array</a> provides 
 interfacing to 2-d arrays:</p>
@@ -31631,7 +32641,7 @@ return</font> Element_Array_Type;</tt></p>
 <p>This function returns Ada array corresponding to
 <a href="https://docs.julialang.org">Julia</a>'s <b>Object</b>.</p>
 
-<h4><a name="16.9.11"></a>16.9.11. 3-d arrays</h4>
+<h4><a name="16.10.11"></a>16.10.11. 3-d arrays</h4>
 <p><a name="Julia.Generic_3D_Array"></a>The package
 <a href="#Julia.Generic_3D_Array">Julia.Generic_3D_Array</a> provides 
 interfacing to 3-d arrays:</p>
@@ -31724,7 +32734,7 @@ return</font> Natural;</tt></p>
 <p>This function returns the number of array element for the corresponding 
 dimension.</p>
 
-<h4><a name="16.9.12"></a>16.9.12. Garbage collection control</h4>
+<h4><a name="16.10.12"></a>16.10.12. Garbage collection control</h4>
 <p>
 <a href="https://docs.julialang.org">Julia</a> deploys garbage collection. The 
 following subroutines are provided to control it:</p>
@@ -31852,19 +32862,159 @@ propagated when <b>Slot</b> has already a value to protect. Constraint_Error
 is propagated when <b>Slot</b> is greater than <b>Object</b>.Count.</p>
 
 <p align="right">
-  <A name="16.10"></A><a href="#16.9"><IMG src="prev.gif" alt="[Back]" width="29"
+  <A name="16.11"></A><a href="#16.10"><IMG src="prev.gif" alt="[Back]" width="29"
       height="29"></a><A href="#21"><IMG
-      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#17"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
-<H3>16.10. OpenSSL bindings</H3>
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#16.12"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+<H3>16.11. OpenSSL bindings</H3>
 
 <p><a name="OpenSSL"></a>The package OpenSSL provides bindings to the
 <a href="https://www.openssl.org/">OpenSSL</a> library. The bindings are 
 semi-thick. The bindings are not complete, basically only operations directly 
 used for maintaining SSL/TLS connections are provided.</p>
 
+<p>&nbsp;</p>
+
+<p align="right">
+  <A name="16.12"></A><a href="#16.11"><IMG src="prev.gif" alt="[Back]" width="29"
+      height="29"></a><A href="#21"><IMG
+      src="index.gif" alt="[TOC]" width="29" height="29"></A><a href="#17"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
+<H3>16.12. Universally unique identifiers</H3>
+
+<p><a name="Universally_Unique_Identifiers"></a>The package 
+<a href="#Universally_Unique_Identifiers">Universally_Unique_Identifiers</a> provides means to generate <b>U</b>niversally
+<b>U</b>nique <b>Id</b>entifiers (UUID) as described in
+<a href="https://tools.ietf.org/html/rfc4122">RFC 4122</a>. The following data 
+types are defined:</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF"><a name="Universally_Unique_Identifiers.UUID_Value"></a>
+type </font>UUID_Value<font color="#0000FF"> is array </font>(<font color="#800000">1</font>..<font color="#800000">16</font>)<font color="#0000FF"> 
+of </font><a href="#IEEE 754.Byte">Byte</a>;</tt></p>
+</blockquote>
+<p>This is the type of UUID values. Each value is 128-bit long.</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF"><a name="Universally_Unique_Identifiers.UUID_String"></a>
+subtype </font>UUID_String<font color="#0000FF"> is </font>String<font color="#0000FF"> </font>(<font color="#800000">1</font>..<font color="#800000">36</font>)<font color="#0000FF">;</font></tt></p>
+</blockquote>
+<p>The subtype <a href="#Universally_Unique_Identifiers.UUID_String">UUID_String</a> 
+represents an UUID in textual form like <tt>6068bed1-f90c-3d44-4231-0d62bc164d19</tt>.</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF">subtype </font>Node_ID<font color="#0000FF"> is </font>String<font color="#0000FF"> </font>(<font color="#800000">1</font>..<font color="#800000">6</font>)<font color="#0000FF">;</font></tt></p>
+</blockquote>
+<p>The node identification subtype is used when UUID is generated from a 
+time-stamp. The following operations are provided:</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF">function </font>Create<font color="#0000FF"> return
+<a href="#Universally_Unique_Identifiers.UUID_Value">UUID_Value</a></font>;</tt></p>
+</blockquote>
+<p>This function generates an UUID using pseudo-random numbers.</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF">function </font>Create<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>ID</b>&nbsp;&nbsp;&nbsp; 
+: Node_ID;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Stamp</b> 
+: Time := Clock<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) <font color="#0000FF">&nbsp;return
+<a href="#Universally_Unique_Identifiers.UUID_Value">UUID_Value</a></font>;</tt></p>
+</blockquote>
+<p>This function generates an UUID from time stamp. The parameter ID is provided 
+to identify the node, e.g. the MAC address as the standard suggests.</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF">function</font> &quot;<font color="#FF0000">&lt;</font>&quot;&nbsp; (<b>Left</b>,
+<b>Right</b> : <font color="#0000FF">
+<a href="#Universally_Unique_Identifiers.UUID_Value">UUID_Value</a></font>)
+<font color="#0000FF">return</font> Boolean;<font color="#0000FF"><br>
+function</font> &quot;<font color="#FF0000">&lt;=</font>&quot; (<b>Left</b>, <b>Right</b> : <font color="#0000FF">
+<a href="#Universally_Unique_Identifiers.UUID_Value">UUID_Value</a></font>)
+<font color="#0000FF">return </font>Boolean;<font color="#0000FF"><br>
+function</font> &quot;<font color="#FF0000">&gt;=</font>&quot; (<b>Left</b>, Right : <font color="#0000FF">
+<a href="#Universally_Unique_Identifiers.UUID_Value">UUID_Value</a></font>)
+<font color="#0000FF">return </font>Boolean;<font color="#0000FF"><br>
+function </font>&quot;<font color="#FF0000">&gt;</font>&quot;&nbsp; (<b>Left</b>, <b>Right</b> 
+: <font color="#0000FF">
+<a href="#Universally_Unique_Identifiers.UUID_Value">UUID_Value</a></font>)<font color="#0000FF"> 
+return </font>Boolean;</tt></p>
+</blockquote>
+<p>Comparison functions treat UUID as a big-endian number. The order is 
+compatible with the UUID order in textual representation.</p>
+
+<h4><a name="16.12.1"></a>16.12.1. String editing</h4>
+<p><a name="Universally_Unique_Identifiers.Edit"></a>The package
+<a href="#Universally_Unique_Identifiers">Universally_Unique_Identifiers</a>.<a href="#Universally_Unique_Identifiers.Edit">Edit</a> 
+provides string formatting facilities for UUID.</p>
+<blockquote>
+  <p><tt><font color="#0000FF">procedure</font> Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Source</b>&nbsp; 
+	: String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Pointer</b> : <font color="#0000FF">in out</font> Integer;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Value</b>&nbsp;&nbsp; : <font color="#0000FF">out</font> <font color="#0000FF">
+<a href="#Universally_Unique_Identifiers.UUID_Value">UUID_Value</a></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure takes <b>Value</b> starting from <b>Source</b> (<b>Pointer</b>).
+<b>Pointer</b> is advanced after the input. Layout_Error is propagated 
+when <b>Pointer</b> is out of the range <b>Data</b>'First..<b>Data</b>'Last+1. 
+End_Error is propagated when there is no UUID. Data_Error is propagated 
+on UUID format errors.</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF">function </font>Image (<b>Value</b> :
+<font color="#0000FF"><a href="#Universally_Unique_Identifiers.UUID_Value">
+UUID_Value</a></font>)<font color="#0000FF"> return
+<a href="#Universally_Unique_Identifiers.UUID_String">UUID_String</a></font>;</tt></p>
+</blockquote>
+<p>This function returns the textual representation of UUID.</p>
+
+<blockquote>
+  <p><tt><font color="#0000FF">procedure</font> Put<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; <b>Destination</b> 
+	: <font color="#0000FF">in out</font> String;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Pointer</b>&nbsp;&nbsp;&nbsp;&nbsp; : <font color="#0000FF">in out</font> 
+	Integer;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Value</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : 
+	<font color="#0000FF"><a href="#Universally_Unique_Identifiers.UUID_Value">
+UUID_Value</a></font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Field</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Natural&nbsp;&nbsp; :=
+	<font color="#800000">0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+	Justify</b>&nbsp;&nbsp;&nbsp;&nbsp; : Alignment := Left;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Fill</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	: Character := ' '<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure outputs <b>Value</b> starting from <b>Destination</b> (<b>Pointer</b>).
+<b>Pointer</b> is advanced after the output. <b>Field</b>, <b>Justify</b> and <b>
+Fill</b> control output. Layout_Error is propagated when there is no room for 
+output or <b>Pointer</b> is invalid.</p>
+
+<blockquote>
+<p><tt>
+<font color="#0000FF">function </font>Value (<b>Source</b> : String)<font color="#0000FF"> 
+return <a href="#Universally_Unique_Identifiers.UUID_Value">UUID_Value</a></font>;</tt></p>
+</blockquote>
+<p>This function converts the textual representation of UUID to its value. 
+Data_Error is propagated on format errors.</p><a href="#IEEE 754.Byte">
+
 <hr>
 <p align="right">
-<a name="17"></a><a href="#16.10"><IMG src="prev.gif" alt="[Back]" width="29" height="29"></a><A href="#21"><IMG src="index.gif"
+<a name="17"></a><a href="#16.12"><IMG src="prev.gif" alt="[Back]" width="29" height="29"></a><A href="#21"><IMG src="index.gif"
  alt="[TOC]" width="29" height="29"></A><a href="#17.1"><IMG src="next.gif" alt="[Next]" width="29" height="29"></a></p>
 <H2>17. Networking</H2>
 <p align="right">
@@ -32801,7 +33951,14 @@ Available_To_Send (<b>Client</b> : <a href="#GNAT.Sockets.Server.Connection">Con
 <p>This function returns is the maximum number of stream elements which
 <a href="#GNAT.Sockets.Server.Send">Send</a> is guaranteed to accept. Larger 
 number may cause <a href="#GNAT.Sockets.Server.Send">Send</a> returning the 
-parameter Pointer less or equal to Data'Last.</p>
+parameter <b>Pointer</b> less or equal to Data'Last.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Clear"></a>
+procedure</font> Clear (<b>Client</b> : <font color="#0000FF">in out</font> <a href="#GNAT.Sockets.Server.Connection">Connection</a>);</tt></p>
+</blockquote>
+<p>This procedure clear the internal state of <b>Client</b>. Normally, the 
+client is created upon connection and requires no cleanup.</p>
 
 <blockquote>
 <p><tt><font color="#0000FF"><a name="GNAT.Sockets.Server.Connect_Error"></a>
@@ -34822,6 +35979,14 @@ handle or file.</p>
 <p>This function returns a handle to the connection object used by the server.</p>
 
 <blockquote>
+<p><tt><font color="#0000FF">function</font> Get_Read_Timeout (<b>Listener</b> : 
+<a href="#GNAT.Sockets.Server.Blocking.Blocking_Server">Blocking_Server</a>)<font color="#0000FF"><br>
+&nbsp;&nbsp; return </font>Duration;</tt></p>
+</blockquote>
+<p>This function returns sets the read timeout (see
+<a href="#GNAT.Sockets.Server.Blocking.Set_Read_Timeout">Set_Read_Timeout</a>).</p>
+
+<blockquote>
 <p><tt><font color="#0000FF">procedure </font>On_Reader_Start (<b>Listener</b> :
 <font color="#0000FF">in out</font> 
 <a href="#GNAT.Sockets.Server.Blocking.Blocking_Server">Blocking_Server</a>);</tt></p>
@@ -34836,6 +36001,39 @@ implementation does nothing.</p>
 </blockquote>
 <p>This procedure is called once when the reader task starts. The default 
 implementation does nothing.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">
+<a name="GNAT.Sockets.Server.Blocking.Set_Read_Timeout"></a>procedure </font>
+Set_Read_Timeout<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Listener</b> : 
+<font color="#0000FF">in out</font> 
+<a href="#GNAT.Sockets.Server.Blocking.Blocking_Server">Blocking_Server</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Timeout</b>&nbsp; : Duration := Duration'Last<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure sets the read timeout. The value limits the time the reader 
+waits for an input. Normally, when reading from a serial point the input timeout 
+expiring does not cause error. The next attempt to read is made instead. In 
+order to prevent infinite waiting when the counterpart never sends anything the 
+read timeout is applied. When expired further reading attempts are prevented and 
+an input error is propagated instead. The timeout is set per octet read.</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure </font>Wait_For_Tasks<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>&nbsp; Listener</b> : 
+<font color="#0000FF">in out</font> 
+<a href="#GNAT.Sockets.Server.Blocking.Blocking_Server">Blocking_Server</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
+Timeout</b>&nbsp; : Duration;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Kill</b>&nbsp;&nbsp;&nbsp;&nbsp; 
+: Boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</tt></p>
+</blockquote>
+<p>This procedure awaits for the reader and writer tasks to complete. When <b>
+Kill</b> is <font color="#800000"><i>true</i></font> upon timeout expiration the 
+tasks are aborted and no exception is propagated.</p>
 
 <p align="right">
   <A name="17.2"></A><a href="#17.1"><IMG src="prev.gif" alt="[Back]" width="29"
@@ -41625,27 +42823,27 @@ record</font><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">null</font>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">when</font> 
 Radiator_Thermostat..Wall_Thermostat =&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Comfort&nbsp;&nbsp;: Centigrade := <font color="#800000">18.0</font>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Eco&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: Centigrade := <font color="#800000">18.0</font>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Max&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: Centigrade := <font color="#800000">18.0</font>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Min&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: Centigrade := <font color="#800000">18.0</font>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Offset&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Comfort&nbsp;&nbsp;&nbsp; &nbsp;: Centigrade := <font color="#800000">18.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Eco&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;: Centigrade := <font color="#800000">18.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Max&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;: Centigrade := <font color="#800000">18.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Min&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;: Centigrade := <font color="#800000">18.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Offset&nbsp;&nbsp; &nbsp;&nbsp; 
 : Centigrade := <font color="#800000">0.0</font>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Schedule&nbsp;: Week_Schedule;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Window_Open 
+: Centigrade := <font color="#800000">18.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Schedule&nbsp;&nbsp; &nbsp;: Week_Schedule;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF">case</font> 
 Kind_Of<font color="#0000FF"> is<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when</font> 
 Radiator_Thermostat | Radiator_Thermostat_Plus =&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Window_Open&nbsp;&nbsp;&nbsp;&nbsp; 
-: Centigrade := <font color="#800000">18.0</font>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Window_Time&nbsp;&nbsp;&nbsp;&nbsp; 
-: Duration&nbsp;&nbsp; := <font color="#800000">10.0</font>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Window_Time&nbsp;&nbsp;&nbsp;&nbsp; 
+: Duration&nbsp;:= <font color="#800000">10.0</font>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Boost_Time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-: Duration&nbsp;&nbsp; := <font color="#800000">1.0</font>;<br>
+: Duration&nbsp;:= <font color="#800000">1.0</font>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Boost_Valve&nbsp;&nbsp;&nbsp;&nbsp; 
-: Ratio&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; := <font color="#800000">0.5</font>;<br>
+: Ratio&nbsp;&nbsp;&nbsp;&nbsp;:= <font color="#800000">0.5</font>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Decalcification : Week_Time;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Max_Valve&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
@@ -41678,14 +42876,15 @@ ELV_MAX_Cube_Client</a> connection object type:</p>
 <p><tt><font color="#0000FF">
 <a name="GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.ELV_MAX_Cube_Client"></a>type</font> 
 ELV_MAX_Cube_Client<br>
-&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Listener&nbsp;&nbsp; &nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp; (&nbsp; Listener&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; :
 <font color="#0000FF">access</font> 
 <a href="#GNAT.Sockets.Server.Connections_Server">Connections_Server</a>'Class;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Line_Length : Positive;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Input_Size&nbsp; : 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Line_Length&nbsp;&nbsp;&nbsp; : Positive;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Input_Size&nbsp;&nbsp;&nbsp;&nbsp; : 
 <a href="#GNAT.Sockets.Server.Buffer_Length">Buffer_Length</a>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Output_Size : 
-<a href="#GNAT.Sockets.Server.Buffer_Length">Buffer_Length</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Output_Size&nbsp;&nbsp;&nbsp; : 
+<a href="#GNAT.Sockets.Server.Buffer_Length">Buffer_Length</a>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Secondary_Size : Storage_Count<br>
 &nbsp;&nbsp;&nbsp;&nbsp; )&nbsp; <font color="#0000FF">is new</font> 
 <a href="#GNAT.Sockets.Connection_State_Machine.State_Machine">State_Machine</a> <font color="#0000FF">with private</font>;</tt></p>
 </blockquote>
@@ -41697,7 +42896,11 @@ ELV_MAX_Cube_Client<br>
 	<li><i>Input_Size</i> is the input buffer size it determines the amount of 
 	data received in one piece;</li>
 	<li><i>Output_Size</i> is the output buffer size. It should be large enough 
-	to hold any outgoing command. A value about 200 can be used.</li>
+	to hold any outgoing command. A value about 200 can be used;</li>
+	<li><i>Secondary_Size</i> is the secondary buffer to store outgoing commands 
+	which cannot be sent immediately, because otherwise the cube would crash. 
+	The size depends on the amount of configuration commands to send. A value 
+	about to 2000 should suffice.</li>
 </ul>
 <p>The following operations are defined of the client:</p>
 <blockquote>
@@ -43258,10 +44461,9 @@ Comfort</b>&nbsp;&nbsp;&nbsp;&nbsp; : Centigrade;<br>
 : Centigrade;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Offset</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Centigrade;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>
-Window_Open</b> : Centigrade;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-Window_Time</b> : Day_Duration; ]<b><br>
+Window_Open</b> : Centigrade;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Window_Time</b> : Day_Duration; ]<b><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>&nbsp;: 
 Setting_Mode := S_Command or S_Response<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
@@ -43281,10 +44483,9 @@ Comfort</b>&nbsp;&nbsp;&nbsp;&nbsp; : Centigrade;<br>
 : Centigrade;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
 Offset</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Centigrade;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>
-Window_Open</b> : Centigrade;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>
-Window_Time</b> : Day_Duration; ]<br>
+Window_Open</b> : Centigrade;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <b>Window_Time</b> : Day_Duration; ]<br>
 <b>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Mode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>&nbsp;: 
 Setting_Mode := S_Command or S_Response<br>
@@ -43705,6 +44906,16 @@ operation duration. <b>Attempts</b> is the number of broadcast queries sent. <b>
 Host</b> is the official address of the host in the LAN. When omitted the first 
 host address is taken. <b>Port</b> is the broadcast port. Socket_Error is 
 propagated on I/O errors. Host_Error is propagated on host naming errors.</p>
+<p><b><u>Cube reboot</u>:</b> MAX! cubes in the LAN can be rebooted using the 
+following procedure:</p>
+
+<blockquote>
+<p><tt><font color="#0000FF">procedure</font> Reboot (<b>Serial_No</b> 
+: String;
+<b>Port</b> : Port_Type := <font color="#800000">23272</font>);</tt></p>
+</blockquote>
+<p><b>Seria_No</b> is the 10 character of the cube serial number. <b>Port</b> is the broadcast port. Socket_Error is 
+propagated on I/O errors.</p>
 <p><b><u>Topology data lock</u>:</b> MAX! cube client maintains the known 
 topology task-safe. The following helper type can be used for locking topology 
 updates:</p>
@@ -56540,6 +57751,29 @@ Block_Streams</a></TD>
   </tr>
   <tr>
     <TD colspan="4" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="13"><a href="#IEEE_754.Decimal32">Decimal32</a></TD>
+    <TD> <a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> 
+	32-bit decimal format</TD>
+  </tr>
+  <tr>
+    <TD colspan="4" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-bottom-style:none; border-bottom-width:medium; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="13"><a href="#IEEE_754.Decimal64">Decimal64</a></TD>
+    <TD> <a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> 
+	64-bit decimal format</TD>
+  </tr>
+  <tr>
+    <TD colspan="4" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-bottom-style:none; border-bottom-width:medium; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="13"><a href="#IEEE_754.Decimal128">Decimal128</a></TD>
+    <TD> <a href="http://grouper.ieee.org/groups/754/">IEEE 754</a> 
+	128-bit decimal format</TD>
+  </tr>
+  <tr>
+    <TD colspan="4" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-bottom-style:none; border-bottom-width:medium; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD colspan="13"><a href="#IEEE_754.Edit">Edit</a></TD>
+    <TD>String editing facilities for 128-bit integers</TD>
+  </tr>
+  <tr>
+    <TD colspan="4" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-bottom-style:none; border-bottom-width:medium; border-top-style:none; border-top-width:medium">&nbsp;</TD>
     <TD colspan="13"><a href="#IEEE_754.Floats">Floats</a></TD>
     <TD>An instance of <a href="#IEEE_754.Generic_Double_Precision">IEEE_754.Generic_Double_Precision</a> 
 	with Float</TD>
@@ -57191,6 +58425,19 @@ Block_Streams</a></TD>
     <TD>Text output of the persistent storage index and underlying file 
 	structures</TD>
   </TR>
+  <tr>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
+    <TD colspan="11">
+	<a href="#Persistent.Streams">Streams</a></TD>
+    <TD>Persistent streams</TD>
+  </tr>
+	<tr>
+    <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: none; border-right-width: medium; border-top-style:none; border-top-width:medium">&nbsp;</TD>
+    <TD bgcolor="#C0C0C0" style="border-left-style: none; border-left-width: medium">&nbsp;</TD>
+    <TD colspan="10" style="border-left-style: solid; border-left-width: 1px">
+	Dump</TD>
+    <TD>Text output of the internal structures of the persistent stream</TD>
+  </tr>
   <TR>
     <TD colspan="6" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium">&nbsp;</TD>
     <TD colspan="11">
@@ -57203,6 +58450,10 @@ Block_Streams</a></TD>
     <TD colspan="10" style="border-left-style: solid; border-left-width: 1px">Text_IO</TD>
     <TD>Text output of the SQLite persistent storage index</TD>
   </TR>
+  <tr>
+    <TD colspan="17"><a href="#Pipe_Streams">Pipe_Streams</a></TD>
+    <TD>Pipe streams</TD>
+  </tr>
   <tr>
     <TD colspan="17"><a href="#SQLite">SQLite</a></TD>
     <TD>Native bindings to SQLite</TD>
@@ -57443,13 +58694,24 @@ Block_Streams</a></TD>
   <TR>
     <TD colspan="4" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium; border-bottom-style:none; border-bottom-width:medium"> &nbsp;</TD>
     <TD colspan="13"> <a href="#Synchronization.Mutexes">Muexes</a></TD>
-    <TD>Reentrant mutexes</TD>
+    <TD>Re-entrant mutexes</TD>
   </TR>
   <TR>
     <TD colspan="4" bgcolor="#C0C0C0" style="border-right-style: solid; border-right-width: 1px; border-top-style:none; border-top-width:medium"> &nbsp;</TD>
     <TD colspan="13"> <a href="#Synchronization.Pulse_Events">Pulse_Events</a></TD>
     <TD>Race condition free pulse events</TD>
   </TR>
+  <tr>
+    <TD colspan="17">  
+<a href="#Universally_Unique_Identifiers">Universally_Unique_Identifiers</a></TD>
+    <TD>Universally unique identifiers according to
+	<a href="https://tools.ietf.org/html/rfc4122">RFC 4122</a></TD>
+  </tr>
+	<tr>
+    <TD colspan="2" bgcolor="#C0C0C0"> &nbsp;</TD>
+    <TD colspan="15" style="border-left-style: solid; border-left-width: 1px"> <a href="#Universally_Unique_Identifiers.Edit">Edit</a></TD>
+    <TD>UUID string editing</TD>
+  </tr>
   <TR>
     <TD colspan="17"> <a href="http://www.dmitry-kazakov.de/ada/tables.htm">Tables</a></TD>
     <TD>The packages related to tables management as described in a separate
@@ -58039,6 +59301,12 @@ Block_Streams</a></TD>
     <TD bgcolor="#FFFF99">Persistent memory pool test.</TD>
     <TD align="center" bgcolor="#FFFF99">&nbsp;</TD>
   </tr>
+  <tr>
+    <TD bgcolor="#FFFF99">test_persistent_streams</TD>
+    <TD align="center" bgcolor="#FFFF99">yes</TD>
+    <TD bgcolor="#FFFF99">Persistent streams test</TD>
+    <TD align="center" bgcolor="#FFFF99">&nbsp;</TD>
+  </tr>
   <TR>
     <TD bgcolor="#FFFF99">test_persistent_storage</TD>
     <TD align="center" bgcolor="#FFFF99">yes</TD>
@@ -58051,6 +59319,12 @@ Block_Streams</a></TD>
     <TD>An implementation of tree nodes as persistent objects, <a href="#test_persistent_tree">example</a></TD>
     <TD align="center">&nbsp;</TD>
   </TR>
+  <tr>
+    <TD bgcolor="#FFFF99">test_pipe_stream</TD>
+    <TD align="center" bgcolor="#FFFF99">yes</TD>
+    <TD bgcolor="#FFFF99">Pipe streams.</TD>
+    <TD align="center" bgcolor="#FFFF99">&nbsp;</TD>
+  </tr>
   <TR>
     <TD>test_record_blackboards</TD>
     <TD align="center">no</TD>
@@ -59204,13 +60478,109 @@ The following versions were tested with the compilers:</i>
 <i>GNAT Community 2019 (20190517-83)</i></li>
   <li>
 <i>GNAT Community 2018 (20180523-73)</i></li>
-	<li><i>GNAT 8</i></li>
-	<li><i>GNAT 9</i></li>
+	<li><i>GNAT 8-12</i></li>
   </ul>
 <P><i>and the GtkAda versions:</i></p>
 <ul>
 	<li><i>GtkAda 3.14.15</i></li>
+	<li><i>GtkAda April 5, 2022 (GTK 3.24.33)</i></li>
 </ul>
+<P>Changes (22 May 2022) to the version 4.61:</p>
+<ul>
+	<li>Pipe stream implementation added;</li>
+	<li>GNAT 12.1 bugs worked around in several package, in particular, in 
+	GNAT.Sockets.Server;</li>
+	<li>Bug fix in Generic_Set procedure Replace, parameter Updated unset;</li>
+	<li>Bug fix in Tables.UTF8_Names procedure Replace, parameter Offset unset 
+	under circumstances.</li>
+</ul>
+<P>Changes (16 April 2022) to the version 4.60:</p>
+<ul>
+	<li>GNAT Studio Community 2021 bugs worked around;</li>
+	<li>GTK 3.24.x support.</li>
+</ul>
+<P>
+Changes (29 January 2022) to the version 4.59:<ul>
+	<li>Test IEEE 754 (test_ieee_754) adapted to the latest GNAT Ada compilers 
+	natively supporting Integer_128.</li>
+	</ul>
+<P>
+Changes (6 November 2021) to the version 4.58:<ul>
+	<li>The primitive operation Clear was added to GNAT.Sockets.Server.Connect;</li>
+	<li>Julia bindings moved to the version 1.6.3;</li>
+	<li>The functions Eval_char_array, Get_Safe_Restore, Load_File_String, 
+	Set_Safe_Restore were added to Julia bindings;</li>
+	<li>Functions To_Julia and Value added to Julia bindings for Ada types Time 
+	and Day_Duration;</li>
+	<li>To_Julia defined on tuples fixed when types of elements are not directly 
+	visible.</li>
+	</ul>
+<P>
+Changes (10 July 2021) to the version 4.57:<ul>
+	<li>Bug fix in the HTTP client. The bug affected systems with above average 
+	performance causing sporadic distortion of HTTP request headers.</li>
+	</ul>
+<P>
+Changes (12 June 2021) to the version 4.56:<ul>
+	<li>ELV/e-Q3 MAX! cube bug fix for large device configurations.</li>
+	</ul>
+<P>
+Changes (2 May 2021) to the version 4.55:<ul>
+	<li>The packages Persistent.Streams and Persistent.Streams.Dump were added 
+	to implement streams backed by a fail-safe file;</li>
+	<li>ELV/e-Q3 MAX! cube client was changed to work around cube firmware 
+	problems.</li>
+	</ul>
+<P>
+Changes (14 February 2021) to the version 4.54:<ul>
+	<li>GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client changed to 
+	support wall-mounted thermostat offset and airing temperature.</li>
+	</ul>
+<P>
+Changes (13 January 2021) to the version 4.53:<ul>
+	<li>The packages Universally_Unique_Identifiers and Universally_Unique_Identifiers.Edit were added 
+	to support UUID;</li>
+	<li>Reboot procedure was added to the package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.</li>
+	</ul>
+<P>
+Changes (13 December 2020) to the version 4.52:<ul>
+	<li>Get_Reader_Timeout, Set_Reader_Timeout, Wait_For_Tasks were added to the 
+	package GNAT.Sockets.Server.Blocking;</li>
+	<li>JSON parser fixed to accept empty objects {} and empty array [];</li>
+	<li>GNAT.Sockets.Server.OpenSSL bindings were extended;</li>
+	<li>The procedure Next_Unbiased was added to the package 
+	Generic_Random_Sequence.</li>
+	</ul>
+<P>
+Changes (18 October 2020) to the version 4.51:<ul>
+	<li>Memory leak fixed in the package Generic_Unbounded_Ptr_Array;</li>
+	<li>Bug fix in data selector initialization (in the package 
+	GNAT.Sockets.Connection_State_Machine);</li>
+	<li>An exception-free variant of Put was added to the 
+	Generic_Indefinite_FIFO package;</li>
+	<li>ModBus TCP/IP implementation bug fix (the package 
+	GNAT.Sockets.Connection_State_Machine.MODBUS_Client);</li>
+	<li>Code modified to work around GCC 10.0.1 optimization bug.</li>
+	</ul>
+<P>
+Changes (1 September 2020) to the version 4.50:<ul>
+	<li>The HTTP client behavior changed not to close connection when keep alive 
+	flag is set unless the server explicitly requests closing it;</li>
+	<li>Non-standard request headers added to the HTTP implementation: <i>
+	X-Requested-By</i>, <i>X-Requested-With</i>, <i>X-XSRF-TOKEN</i>, <i>
+	X-CSRF-TOKEN</i>;</li>
+	<li>The package IEEE_754.Decimal32 was added. The package implements IEEE 
+	754-2008 decimal32 format;</li>
+	<li>The package IEEE_754.Decimal64 was added. The package implements IEEE 
+	754-2008 decimal64 format;</li>
+	<li>The package IEEE_754.Decimal128 was added. The package implements IEEE 
+	754-2008 decimal128 format;</li>
+	<li>An implementation of 128-bit integers was added to the package IEEE_754;</li>
+	<li>The package IEEE_754.Edit was added. The package provides strings 
+	formatting facilities for 128-bit integers;</li>
+	<li>Fallback time zone names changes 
+	in the package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.Time_Zones.</li>
+	</ul>
 <P>
 Changes (31 May 2020) to the version 4.49:<ul>
 	<li>Julia bindings were adapted to the language version 1.4;</li>
@@ -60116,7 +61486,9 @@ persistent storage test</a><br>
 &nbsp;&nbsp;&nbsp; <A href="#2.11">2.11. Blocking files</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#2.11.1">2.11.1. Text I/O</a><br>
 &nbsp;&nbsp;&nbsp; <A href="#2.12">2.12. Transactional blocking files</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#2.11.1">2.12.1. Textual output of internal structures</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#2.12.1">2.12.1. Textual output of internal structures</a><br>
+&nbsp;&nbsp;&nbsp; <A href="#2.13">2.13. Persistent streams</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#2.13.1">2.13.1. Textual output of internal structures</a><br>
 <hr>
 <b><big><big>3</big></big></b>&nbsp;<A href="#3"><big>Sets and maps</big></A><BR>
 &nbsp;&nbsp;&nbsp; <A href="#3.1">3.1. Sets</A><BR>
@@ -60231,7 +61603,7 @@ procedure call</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#13.4.9">13.4.9. Standard input sources</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#13.4.10">13.4.10. Latin-1 and wide text file sources</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#13.4.11">13.4.11. Stream sources</a><br>
-&nbsp;&nbsp; <a href="#13.5">13.5. Tokens</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#13.5">13.5. Tokens</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#13.5.1">13.5.1. Table-driven lexers</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#13.5.2">13.5.2. Table-driven segmented lexers</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#13.6">13.6. Lexers</a><br>
@@ -60246,7 +61618,7 @@ usage of the operation stack</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#13.8.2">13.8.2. Segmented argument stack</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#13.9">13.9. Parsing tree example. Ada 95 expression parser</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#13.10">13.10. JSON</a><br>
-&nbsp;&nbsp;&nbsp; <a href="#13.10.1">13.10.1. JSON parser</a><hr>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#13.10.1">13.10.1. JSON parser</a><hr>
 <b><big><big>14</big></big></b>&nbsp;<a href="#14"><big>Cryptography</big></a><br>
 &nbsp;&nbsp;&nbsp; <a href="#14.1">14.1. Sequences of non-repeating pseudo random numbers</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#14.2">14.2. Symmetric serialization</a><br>
@@ -60256,6 +61628,11 @@ usage of the operation stack</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#15.1">15.1. IEEE 754 representations</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#15.1.1">15.1.1. Single precision 32-bit floating-point numbers</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#15.1.2">15.1.2. Double precision 64-bit floating-point numbers</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#15.1.3">15.1.3. Decimal32 numbers</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#15.1.4">15.1.4. Decimal64 nembers</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#15.1.5">15.1.5. Decimal128 
+numbers</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#15.1.6">15.1.6. 128-bit integers editing</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#15.2">15.2. Chebyshev series</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#15.3">15.3. Gamma function</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#15.4">15.4. Normal cubic spline interpolation</a><hr>
@@ -60269,30 +61646,33 @@ usage of the operation stack</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.3.2">16.3.2. Output block stream</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#16.4">16.4. Storage streams</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#16.5">16.5. String streams</a><br>
-&nbsp;&nbsp;&nbsp; <a href="#16.6">16.6. ChaCha20 ciphering streams</a><br>
-&nbsp;&nbsp;&nbsp; <a href="#16.7">16.7. ODBC bindings</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.7.1">16.7.1. Thin bindings</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.7.2">16.7.2. Thick bindings</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.7.3">16.7.3. ODBC environments</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.7.4">16.7.4. ODBC connections</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.7.5">16.7.5. Transactions</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.7.6">16.7.6. ODBC commands</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.7.7">16.7.7. Binding parameters</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="#16.8">16.8. GNUTLS bindings</a><br>
-&nbsp;&nbsp;&nbsp; <a href="#16.9">16.9. Interfacing Julia language</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.9.1">16.9.1. Initialization and finalization</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.9.2">16.9.2. Data types</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.9.3">16.9.3. Correspondence between data types</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.9.4">16.9.4. Julia tuples</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.9.5">16.9.5. Julia arrays</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.9.6">16.9.6. Execution of Julia code</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.9.7">16.9.7. Calling Ada from Julia</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.9.8">16.9.8. Handling Julia exceptions</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.9.9">16.9.9. 1-d arrays</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.9.10">16.9.10. 2-d arrays</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.9.11">16.9.10. 3-d arrays</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.9.12">16.9.12. Garbage collection control</a><br>
-&nbsp;&nbsp;&nbsp; <a href="#16.10">16.10. OpenSSL bindings</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#16.6">16.6. Pipe streams</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#16.7">16.7. ChaCha20 ciphering streams</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#16.8">16.8. ODBC bindings</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.8.1">16.8.1. Thin bindings</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.8.2">16.8.2. Thick bindings</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.8.3">16.8.3. ODBC environments</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.8.4">16.8.4. ODBC connections</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.8.5">16.8.5. Transactions</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.8.6">16.8.6. ODBC commands</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.8.7">16.8.7. Binding parameters</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#16.9">16.9. GNUTLS bindings</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#16.10">16.10. Interfacing Julia language</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.10.1">16.10.1. Initialization and finalization</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.10.2">16.10.2. Data types</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.10.3">16.10.3. Correspondence between data types</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.10.4">16.10.4. Julia tuples</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.10.5">16.10.5. Julia arrays</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.10.6">16.10.6. Execution of Julia code</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.10.7">16.10.7. Calling Ada from Julia</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.10.8">16.10.8. Handling Julia exceptions</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.10.9">16.10.9. 1-d arrays</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.10.10">16.10.10. 2-d arrays</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.10.11">16.10.10. 3-d arrays</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.10.12">16.10.12. Garbage collection control</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#16.11">16.11. OpenSSL bindings</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#16.12">16.12. Universally unique identifiers</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href="#16.12.1">16.12.1. String editing</a><br>
 </td>
 <td valign="top">
 <b><big><big>17</big></big></b>&nbsp;<a href="#17"><big>Networking</big></a><br>

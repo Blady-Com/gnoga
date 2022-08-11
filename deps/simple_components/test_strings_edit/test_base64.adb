@@ -3,7 +3,7 @@
 --     Test_Base64                                 Luebeck            --
 --  Test                                           Autumn, 2014       --
 --                                                                    --
---                                Last revision :  18:40 01 Aug 2019  --
+--                                Last revision :  13:32 28 Jan 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -197,6 +197,13 @@ procedure Test_Base64 is
       end if;
    end Check_2;
 begin
+   Check_2
+   (  "Uf7NCJ0B1FSwiIiV5OoSi9HrCMBqtQPDmdef21qfZBk=",
+      To_String (
+     +"51 fe cd 08 9d 01 d4 54 b0 88 88 95 e4 ea 12 8b d1 eb 08 c0 6a"
+     +"b5 03 c3 99 d7 9f db 5a 9f 64 19")
+   );
+
    Check_1 ("Man",                  "TWFu");
    Check_1 ("sure.",                "c3VyZS4=");
    Check_1 ("asure.",               "YXN1cmUu");

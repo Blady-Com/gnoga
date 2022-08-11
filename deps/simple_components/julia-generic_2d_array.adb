@@ -3,7 +3,7 @@
 --     Julia.Generic_2D_Array                      Luebeck            --
 --  Implementation                                 Winter, 2019       --
 --                                                                    --
---                                Last revision :  11:37 20 Jan 2019  --
+--                                Last revision :  18:40 23 Oct 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -152,8 +152,8 @@ package body Julia.Generic_2D_Array is
       Check_Type (Object, Rows, Columns);
       declare
          Value : Element_Array_Type
-                 (  1..Row_Index_Type (Rows),
-                    1..Column_Index_Type (Columns)
+                 (  1..Row_Index_Type'Base (Rows),
+                    1..Column_Index_Type'Base (Columns)
                  );
       begin
          if Value'Length (1) > 0 and then Value'Length (2) > 0 then

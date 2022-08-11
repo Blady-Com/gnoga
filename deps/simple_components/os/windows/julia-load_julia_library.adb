@@ -3,7 +3,7 @@
 --     Julia.Load_Julia_Library                    Luebeck            --
 --  Implementation                                 Winter, 2019       --
 --                                                                    --
---                                Last revision :  11:34 10 May 2020  --
+--                                Last revision :  18:40 23 Oct 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -261,6 +261,10 @@ package body Julia.Load_Julia_Library is
             )  return Get_PTLS_States_Ptr;
    function GetProcAddress
             (  Module : Address;
+               Name   : char_array := "jl_get_safe_restore" & Nul
+            )  return Get_Safe_Restore_Ptr;
+   function GetProcAddress
+            (  Module : Address;
                Name   : char_array := "jl_init__threading" & Nul
             )  return Init_Ptr;
    function GetProcAddress
@@ -278,6 +282,10 @@ package body Julia.Load_Julia_Library is
             )  return Load_Ptr;
    function GetProcAddress
             (  Module : Address;
+               Name   : char_array := "jl_load_file_string" & Nul
+            )  return Load_File_String_Ptr;
+   function GetProcAddress
+            (  Module : Address;
                Name   : char_array := "jl_new_datatype" & Nul
             )  return New_Datatype_Ptr;
    function GetProcAddress
@@ -292,10 +300,18 @@ package body Julia.Load_Julia_Library is
             (  Module : Address;
                Name   : char_array := "jl_pchar_to_string" & Nul
             )  return Pchar_To_String_Ptr;
+--   function GetProcAddress
+--            (  Module : Address;
+--               Name   : char_array := "jl_setjmp" & Nul
+--            )  return Setjmp_Ptr;
    function GetProcAddress
             (  Module : Address;
                Name   : char_array := "jl_set_nth_field" & Nul
             )  return Set_Nth_Field_Ptr;
+   function GetProcAddress
+            (  Module : Address;
+               Name   : char_array := "jl_set_safe_restore" & Nul
+            )  return Set_Safe_Restore_Ptr;
    function GetProcAddress
             (  Module : Address;
                Name   : char_array := "jl_static_show" & Nul
@@ -764,15 +780,19 @@ package body Julia.Load_Julia_Library is
          Links.Get_Nth_Field         := GetProcAddress (Library);
          Links.Get_Nth_Field_Checked := GetProcAddress (Library);
          Links.Get_PTLS_States       := GetProcAddress (Library);
+         Links.Get_Safe_Restore      := GetProcAddress (Library);
          Links.Init                  := GetProcAddress (Library);
          Links.Init_With_Image       := GetProcAddress (Library);
          Links.IsA                   := GetProcAddress (Library);
          Links.Load                  := GetProcAddress (Library);
+         Links.Load_File_String      := GetProcAddress (Library);
          Links.New_Datatype          := GetProcAddress (Library);
          Links.New_StructV           := GetProcAddress (Library);
          Links.New_Struct_Uninit     := GetProcAddress (Library);
          Links.Pchar_To_String       := GetProcAddress (Library);
          Links.Set_Nth_Field         := GetProcAddress (Library);
+         Links.Set_Safe_Restore      := GetProcAddress (Library);
+--       Links.Setjmp                := GetProcAddress (Library);
          Links.Static_Show           := GetProcAddress (Library);
          Links.String_Ptr            := GetProcAddress (Library);
          Links.SVec_Fill             := GetProcAddress (Library);

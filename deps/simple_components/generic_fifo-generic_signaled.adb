@@ -3,7 +3,7 @@
 --     Generic_FIFO.Generic_Signaled               Luebeck            --
 --  Implementation                                 Autumn, 2007       --
 --                                                                    --
---                                Last revision :  20:01 04 Apr 2016  --
+--                                Last revision :  11:30 01 May 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -106,7 +106,7 @@ package body Generic_FIFO.Generic_Signaled is
    begin
       Get (This, Element, Empty);
       if Empty then
-         Queue.Event.Queue.Get_Blocked := True; -- Going to block
+         This.Get_Blocked := True; -- Going to block
          Get (This, Element, Empty);            -- Try again
          if Empty then                          -- Have to block
             This.Event.Wait_To_Get;

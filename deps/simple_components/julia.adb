@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2018       --
 --                                                                    --
---                                Last revision :  11:34 10 May 2020  --
+--                                Last revision :  18:40 23 Oct 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,13 +25,18 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.IO_Exceptions;    use Ada.IO_Exceptions;
-with Strings_Edit.Quoted;  use Strings_Edit.Quoted;
+with Ada.IO_Exceptions;      use Ada.IO_Exceptions;
+with Strings_Edit.Integers;  use Strings_Edit.Integers;
+with Strings_Edit.Quoted;    use Strings_Edit.Quoted;
 
+with Ada.Calendar.Formatting;
+with Ada.Calendar.Time_Zones;
 with Ada.Unchecked_Conversion;
 with Julia.Load_Julia_Library;
+with Strings_Edit.ISO_8601;
 with Strings_Edit.UTF8.Categorization;
 with System.Address_To_Access_Conversions;
+
 package body Julia is
 
    package Integer_Address_Conversions is
@@ -41,6 +46,11 @@ package body Julia is
 
    package Value_Array_Conversions is
       new System.Address_To_Access_Conversions (flat_value_t_array);
+
+   function "+" (Value : datatype_t) return value_t is
+   begin
+      return value_t (Value.all'Address);
+   end "+";
 
    function "+" (Value : value_t) return datatype_t is
       package Conversions is
@@ -187,10 +197,10 @@ package body Julia is
                 Name  : String;
                 Value : value_t
              )  is
-      use Tuple_Maps;
-      use Tuple_Tables;
       use Strings_Edit.UTF8;
       use Strings_Edit.UTF8.Categorization;
+      use Tuple_Arrays;
+      use Tuple_Tables;
       Offset  : Integer;
       Code    : Code_Point;
    begin
@@ -212,8 +222,12 @@ package body Julia is
                when others =>
                   Raise_Exception
                   (  Constraint_Error'Identity,
-                     "First name character is illegal"
-                  );
+                     (  "First name character has illegal "
+                     &  "character code "
+                     &  Code_Point'Image (Code)
+                     &  " of "
+                     &  General_Category'Image (Category (Code))
+                  )  );
             end case;
          end if;
          while Pointer <= Name'Last loop
@@ -221,31 +235,43 @@ package body Julia is
             if Code /= Character'Pos ('!') then
                case Category (Code) is
                   when Nd | No | Mn | Mc | Me | Sk =>
-                     null;
-                  when others =>
                      Raise_Exception
                      (  Constraint_Error'Identity,
-                        "Name contains illegal characters"
-                     );
+                        (  "Name contains illegal character code"
+                        &  Code_Point'Image (Code)
+                        &  " of "
+                        &  General_Category'Image (Category (Code))
+                     )  );
+                  when others =>
+                     null;
                end case;
             end if;
          end loop;
       exception
-         when others =>
+         when Error : others =>
             Raise_Exception
             (  Constraint_Error'Identity,
-               "Invalid name"
+               "Invalid name: " & Exception_Message (Error)
             );
       end;
-      Offset := Locate (List.Table, Name);
-      if Offset > 0 then
-         Raise_Exception
-         (  Constraint_Error'Identity,
-            "Element " & Name & " is already in the tuple"
-         );
+      if Is_Valid (List) then
+         Offset := Locate (Ptr (List).Table, Name);
+         if Offset > 0 then
+            Raise_Exception
+            (  Constraint_Error'Identity,
+               "Element " & Name & " is already in the tuple"
+            );
+         end if;
+      else
+         Set (List, new Tuple_Object);
       end if;
-      Add (List.Table, Name, Value);
-      Add (List.Map, size_t (GetSize (List.Table)), Value);
+      declare
+         This  : Tuple_Object'Class renames Ptr (List).all;
+         Index : constant Integer := GetSize (This.Table) + 1;
+      begin
+         Put (This.List, Index, Value);
+         Add (This.Table, Name, Index);
+      end;
    end Add;
 
    function Any_Type return datatype_t is
@@ -440,11 +466,24 @@ package body Julia is
       return Result;
    end Eval_String;
 
+   function Eval_char_array (Str : char_array) return value_t is
+      Result : constant value_t := Links.Eval_String (Str);
+   begin
+      Check_Error;
+      return Result;
+   end Eval_char_array;
+
    procedure Eval_String (Str : String) is
       Result : constant value_t := Links.Eval_String (To_C (Str));
    begin
       Check_Error;
    end Eval_String;
+
+   procedure Eval_char_array (Str : char_array) is
+      Result : constant value_t := Links.Eval_String (Str);
+   begin
+      Check_Error;
+   end Eval_char_array;
 
    procedure Exception_Clear is
    begin
@@ -654,13 +693,26 @@ package body Julia is
    function Get_Name (List : Tuple; Index : Positive) return String is
       use Tuple_Tables;
    begin
-      return GetName (List.Table, Index);
-   exception
-      when others =>
-         Raise_Exception
-         (  Constraint_Error'Identity,
-            "Tuple index is out of range"
-         );
+      begin
+         if Is_Valid (List) then
+            declare
+               This : Tuple_Object'Class renames Ptr (List).all;
+            begin
+               for Item in 1..GetSize (This.Table) loop
+                  if GetTag (This.Table, Item) = Index then
+                     return GetName (This.Table, Item);
+                  end if;
+               end loop;
+            end;
+         end if;
+      exception
+         when others =>
+            null;
+      end;
+      Raise_Exception
+      (  Constraint_Error'Identity,
+         "Tuple index is out of range"
+      );
    end Get_Name;
 
    function Get_Name
@@ -673,16 +725,48 @@ package body Julia is
    end Get_Name;
 
    function Get_Value (List : Tuple; Index : Positive) return value_t is
-      use Tuple_Maps;
+      use Tuple_Arrays;
+      use Tuple_Tables;
    begin
-      return Get (List.Map, size_t (Index));
-   exception
-      when others =>
-         Raise_Exception
-         (  Constraint_Error'Identity,
-            "Tuple index is out of range"
-         );
+      begin
+         if Is_Valid (List) and then Index <= GetSize (Ptr (List).Table)
+         then
+            return Get (Ptr (List).List, Index);
+         end if;
+      exception
+         when others =>
+             null;
+      end;
+      Raise_Exception
+      (  Constraint_Error'Identity,
+         "Tuple index is out of range"
+      );
    end Get_Value;
+
+   function Get_Value (List : Tuple; Name : String) return value_t is
+      use Tuple_Arrays;
+      use Tuple_Tables;
+   begin
+      if Is_Valid (List) then
+         declare
+            This  : Tuple_Object'Class renames Ptr (List).all;
+            Index : constant Integer := Locate (This.Table, Name);
+         begin
+           if Index > 0 then
+              return Get (This.List, GetTag (This.Table, Index));
+           end if;
+         end;
+      end if;
+      Raise_Exception
+      (  Constraint_Error'Identity,
+         "Tuple item " & Name & " does not exist"
+      );
+   end Get_Value;
+
+   function Get_Safe_Restore return Address is
+   begin
+      return Links.Get_Safe_Restore.all;
+   end Get_Safe_Restore;
 
    procedure Init is
    begin
@@ -824,7 +908,11 @@ package body Julia is
    function Length (List : Tuple) return Natural is
       use Tuple_Tables;
    begin
-      return GetSize (List.Table);
+      if Is_Valid (List) then
+         return GetSize (Ptr (List).Table);
+      else
+         return 0;
+      end if;
    end Length;
 
    function Load (Module : module_t; File : String) return value_t is
@@ -837,6 +925,27 @@ package body Julia is
       Check_Error;
       return Result;
    end Load;
+
+   function Load_File_String
+            (  Module : module_t;
+               Source : String;
+               File   : String
+            )  return value_t is
+      Result : value_t;
+   begin
+      if Address (Module) = Null_Address then
+         Raise_Exception (Constraint_Error'Identity, "Invalid module");
+      end if;
+      Result :=
+         Links.Load_File_String
+         (  To_C (Source, False),
+            Source'Length,
+            To_C (File),
+            Module
+         );
+      Check_Error;
+      return Result;
+   end Load_File_String;
 
    function Main_Module return module_t is
    begin
@@ -992,7 +1101,10 @@ package body Julia is
          if Item = No_Value then
             Item := Value;
          else
-            raise Use_Error;
+            Raise_Exception
+            (  Use_Error'Identity,
+               "The slot " & Image (Slot) & " is already in use"
+            );
          end if;
       end;
    end Set;
@@ -1013,11 +1125,20 @@ package body Julia is
       Check_Error;
    end Set_Field;
 
+-- function Setjmp (Buffer : Address; Value : int) return int is
+-- begin
+--    return Links.Setjmp (Buffer, Value);
+-- end Setjmp;
+
+   procedure Set_Safe_Restore (Buffer : Address) is
+   begin
+      Links.Set_Safe_Restore (Buffer);
+   end Set_Safe_Restore;
+
    function Simplevector_Type return datatype_t is
    begin
       return +Links.Simplevector_Type;
    end Simplevector_Type;
-
 
    function String_Type return datatype_t is
    begin
@@ -1113,6 +1234,45 @@ package body Julia is
    begin
       return +Links.Uniontype_Type;
    end Uniontype_Type;
+
+   function Value (Object : value_t) return Day_Duration is
+      function Self return value_t;
+      pragma Convention (C, Self);
+
+      function Self return value_t is
+      begin
+         return Object;
+      end Self;
+   begin
+      Check_Value (Object);
+      declare
+         Nanosecond : constant String :=
+            Julia.Value
+            (  Eval_String
+               (  "import Dates;"
+               &  "string(ccall("
+               &  CCall_Address (Self'Address)
+               &  ",Any,()).instant)"
+            )  );
+      begin
+         for Index in Nanosecond'Range loop
+            if Nanosecond (Index) = ' ' then
+               declare
+                  Count : constant Integer_64 :=
+                             Integer_64'Value
+                             (  Nanosecond (Nanosecond'First..Index - 1)
+                             );
+               begin
+                  return Day_Duration
+                         (  Long_Float (Count)
+                         /  1_000_000_000_000.0
+                         );
+               end;
+            end if;
+         end loop;
+      end;
+      return 0.0;
+   end Value;
 
    function Value (Object : value_t) return Boolean is
       Result : Integer_8;
@@ -1259,6 +1419,29 @@ package body Julia is
       end;
    end Value;
 
+   function Value (Object : value_t) return Time is
+      function Self return value_t;
+      pragma Convention (C, Self);
+
+      function Self return value_t is
+      begin
+         return Object;
+      end Self;
+   begin
+      Check_Value (Object);
+      declare
+         Data : constant String :=
+                   Julia.Value
+                   (  Eval_String
+                      (  "string(ccall("
+                      &  CCall_Address (Self'Address)
+                      &  ",Any,()))"
+                   )  );
+      begin
+         return Strings_Edit.ISO_8601.Value (Data);
+      end;
+   end Value;
+
    function Value (Object : value_t) return Unsigned_8 is
       Result : Unsigned_8;
    begin
@@ -1314,6 +1497,58 @@ package body Julia is
       return Links.Box_Char (To_C (Value));
    end To_Julia;
 
+   procedure Split
+             (  Value       : Ada.Calendar.Formatting.Second_Duration;
+                Millisecond : out Integer;
+                Microsecond : out Integer;
+                Nanosecond  : out Integer
+             )  is
+      Count : constant Unsigned_32 :=
+                       Unsigned_32
+                       (  Long_Float'Floor
+                          (  Long_Float (Value)
+                          *  1_000_000_000.0
+                       )  );
+   begin
+      Millisecond := Integer ( Count / 1_000_000);
+      Microsecond := Integer ((Count / 1_000) mod 1_000);
+      Nanosecond  := Integer ( Count          mod 1_000);
+   end Split;
+
+   function To_Julia (Value : Day_Duration) return value_t is
+      Hour        : Ada.Calendar.Formatting.Hour_Number;
+      Minute      : Ada.Calendar.Formatting.Minute_Number;
+      Second      : Ada.Calendar.Formatting.Second_Number;
+      Sub_Second  : Ada.Calendar.Formatting.Second_Duration;
+      Millisecond : Integer;
+      Microsecond : Integer;
+      Nanosecond  : Integer;
+   begin
+      Ada.Calendar.Formatting.Split
+      (  Seconds    => Value,
+         Hour       => Hour,
+         Minute     => Minute,
+         Second     => Second,
+         Sub_Second => Sub_Second
+      );
+      Split (Sub_Second, Millisecond, Microsecond, Nanosecond);
+      return Eval_String
+             (  "import Dates; Dates.Time("
+             &  Image (Integer (Hour))
+             &  ","
+             &  Image (Integer (Minute))
+             &  ","
+             &  Image (Integer (Second))
+             &  ","
+             &  Image (Millisecond)
+             &  ","
+             &  Image (Microsecond)
+             &  ","
+             &  Image (Nanosecond)
+             &  ")"
+             );
+   end To_Julia;
+
    function To_Julia (Value : Double) return value_t is
    begin
       return Links.Box_Double (Value);
@@ -1354,6 +1589,49 @@ package body Julia is
                    Value'Length
                 );
       end if;
+   end To_Julia;
+
+   function To_Julia (Value : Time) return value_t is
+      Year        : Year_Number;
+      Month       : Month_Number;
+      Day         : Day_Number;
+      Hour        : Ada.Calendar.Formatting.Hour_Number;
+      Minute      : Ada.Calendar.Formatting.Minute_Number;
+      Second      : Ada.Calendar.Formatting.Second_Number;
+      Sub_Second  : Ada.Calendar.Formatting.Second_Duration;
+      Millisecond : Integer;
+      Microsecond : Integer;
+      Nanosecond  : Integer;
+   begin
+      Ada.Calendar.Formatting.Split
+      (  Date       => Value,
+         Year       => Year,
+         Month      => Month,
+         Day        => Day,
+         Hour       => Hour,
+         Minute     => Minute,
+         Second     => Second,
+         Sub_Second => Sub_Second,
+         Time_Zone  => Ada.Calendar.Time_Zones.UTC_Time_Offset (Value)
+      );
+      Split (Sub_Second, Millisecond, Microsecond, Nanosecond);
+      return Eval_String
+             (  "import Dates; Dates.DateTime("
+             &  Image (Integer (Year))
+             &  ","
+             &  Image (Integer (Month))
+             &  ","
+             &  Image (Integer (Day))
+             &  ","
+             &  Image (Integer (Hour))
+             &  ","
+             &  Image (Integer (Minute))
+             &  ","
+             &  Image (Integer (Second))
+             &  ","
+             &  Image (Millisecond)
+             &  ")"
+             );
    end To_Julia;
 
    function To_Julia (Value : Unsigned_8 ) return value_t is
@@ -1410,11 +1688,24 @@ package body Julia is
 
    function To_Julia (Value : Tuple) return value_t is
       use Strings_Edit;
-      Tuple_Type : datatype_t;
---      Result     : value_t;
-      Size       : Natural := 512;
-      Roots      : Holder (Length (Value));
+      function Get_Types return value_t;
+      pragma Convention (C, Get_Types);
+
+      function Get_Types return value_t is
+         Values : values_array (1..Length (Value));
+      begin
+         for Index in Values'Range loop
+            Values (Index) := Get_Value (Value, Integer (Index));
+         end loop;
+         return To_Julia (Values);
+      end Get_Types;
+
+      Size  : Natural := 512;
+      Roots : Holder (Length (Value) + 1);
    begin
+      for Index in 1..Length (Value) loop
+         Set (Roots, Index, Get_Value (Value, Index));
+      end loop;
       loop
          declare
             Code    : String (1..Size);
@@ -1428,40 +1719,19 @@ package body Julia is
                Put (Code, Pointer, ":");
                Put (Code, Pointer, Get_Name (Value, Index));
             end loop;
-            Put (Code, Pointer, "),Tuple{");
-            for Index in 1..Length (Value) loop
-               if Index > 1 then
-                  Put (Code, Pointer, ", ");
-               end if;
-               Put
-               (  Code,
-                  Pointer,
-                  TypeName (Get_Value (Value, Index))
-               );
-            end loop;
-            Put (Code, Pointer, "}}");
-            for Index in 1..Length (Value) loop
-               Set (Roots, Index, Get_Value (Value, Index));
-            end loop;
-            Tuple_Type := +Eval_String (Code (1..Pointer - 1));
-            exit;
+            Put
+            (  Code,
+               Pointer,
+               (  ")}(ccall("
+               &  CCall_Address (Get_Types'Address)
+               &  ",Any,()))"
+            )  );
+            return Eval_String (Code (1..Pointer - 1));
          exception
             when Layout_Error =>
                Size := Size * 2;
          end;
       end loop;
-      declare
-         Members : values_array (1..Length (Value));
-      begin
-         for Index in 1..Length (Value) loop
-            Members (Index) := Get_Value (Value, Index);
-         end loop;
-         return Links.New_StructV
-                (  Tuple_Type,
-                   Members (Members'First)'Unchecked_Access,
-                   Members'Length
-                );
-      end;
    end To_Julia;
 
    procedure Load (Name : String := "") is
@@ -1594,6 +1864,8 @@ package body Julia is
          Error ("jl_get_nth_field_checked");
       elsif Links.Get_PTLS_States = null then
          Error ("jl_get_ptls_states");
+      elsif Links.Get_Safe_Restore = null then
+         Error ("jl_get_safe_restore");
       elsif Links.Init = null then
          Error ("jl_init");
       elsif Links.Init_With_Image = null then
@@ -1610,6 +1882,8 @@ package body Julia is
          Error ("jl_int64_type");
       elsif Links.Load = null then
          Error ("jl_load");
+      elsif Links.Load_File_String = null then
+         Error ("jl_load_file_string");
       elsif Links.Main_Module = Null_Address then
          Error ("jl_main_module");
       elsif Links.Method_Type = Null_Address then
@@ -1630,6 +1904,10 @@ package body Julia is
          Error ("jl_pchar_to_string");
       elsif Links.Set_Nth_Field = null then
          Error ("jl_set_nth_field");
+      elsif Links.Set_Safe_Restore = null then
+         Error ("jl_set_safe_restore");
+--    elsif Links.Setjmp = null then
+--       Error ("jl_setjmp");
       elsif Links.Simplevector_Type = Null_Address then
          Error ("jl_simplevector_type");
       elsif Links.Static_Show = null then

@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2016       --
 --                                                                    --
---                                Last revision :  14:07 11 Nov 2019  --
+--                                Last revision :  09:13 12 Jun 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -63,6 +63,19 @@ package body GNAT.Sockets.MQTT is
    Password            : constant := 6;
 
    Topic_Name          : constant := 1;
+
+   procedure Check_Length (Peer : MQTT_Peer) is
+   begin
+       if Peer.Length > Peer.Data'Length then
+          Raise_Exception
+          (  Data_Error'Identity,
+             "MQTT message length"                         &
+             Stream_Element_Count'Image (Peer.Length)      &
+             " exceeds set maximim"                        &
+             Stream_Element_Count'Image (Peer.Data'Length)
+          );
+       end if;
+   end Check_Length;
 
    function Check_Topic (Topic : String) return Boolean is
       Pointer  : Integer := Topic'First;
@@ -183,7 +196,6 @@ package body GNAT.Sockets.MQTT is
    begin
       Finalize (Connection (Peer));
       Free (Peer.Data);
-      Free (Peer.Secondary);
       Free (Peer.Secondary);
    end Finalize;
 
@@ -790,6 +802,7 @@ package body GNAT.Sockets.MQTT is
                   Do_On_Publish;
                   Peer.State := MQTT_Header;
                else
+                  Check_Length (Peer);
                   Peer.Count := 0;
                   Peer.State := MQTT_Data;
                end if;
@@ -973,7 +986,7 @@ package body GNAT.Sockets.MQTT is
                      Raise_Exception
                      (  Data_Error'Identity,
                         "MQTT internal error, invalid connect " &
-                        "string index " &
+                        "string index "                         &
                         Image (Peer.List_Length)
                      );
                end case;
@@ -986,6 +999,7 @@ package body GNAT.Sockets.MQTT is
                               Do_On_Publish;
                               Peer.State := MQTT_Header;
                            else
+                              Check_Length (Peer);
                               Peer.Count := 0;
                               Peer.State := MQTT_Data;
                            end if;
@@ -1027,7 +1041,7 @@ package body GNAT.Sockets.MQTT is
                   Raise_Exception
                   (  Data_Error'Identity,
                      "MQTT UNSUBSCRIBE request topic " &
-                     Image (Peer.List_Length + 1) &
+                     Image (Peer.List_Length + 1)      &
                      " is shorter than 2 octets"
                   );
                elsif Peer.List_Length >= Peer.Max_Subscribe_Topics then
@@ -1043,7 +1057,7 @@ package body GNAT.Sockets.MQTT is
                Raise_Exception
                (  Data_Error'Identity,
                   "MQTT internal error, unexpected String_Received " &
-                  "for header " &
+                  "for header "                                      &
                   Header_Image (Peer.Header)
                );
          end case;

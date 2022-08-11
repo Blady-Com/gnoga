@@ -3,7 +3,7 @@
 --     Parsers.JSON.Generic_Parser                 Luebeck            --
 --  Implementation                                 Autumn, 2019       --
 --                                                                    --
---                                Last revision :  20:10 14 Sep 2019  --
+--                                Last revision :  18:40 23 Oct 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -45,7 +45,13 @@ package body Parsers.JSON.Generic_Parser is
                Left  : Tokens.Argument_Token renames List (List'First);
                Right : Tokens.Argument_Token renames List (List'Last);
             begin
-               if Left.Value.Value.JSON_Type /= JSON_String then
+               if Left.Value.Nothing then
+                  Raise_Exception
+                  (  Parsers.Syntax_Error'Identity,
+                     (  "JSON object is missing at "
+                     &  Image (Left.Location)
+                  )  );
+               elsif Left.Value.Data.Value.JSON_Type /= JSON_String then
                   Raise_Exception
                   (  Parsers.Syntax_Error'Identity,
                      (  "A string literal is expected left of "
@@ -54,7 +60,10 @@ package body Parsers.JSON.Generic_Parser is
                   )  );
                end if;
                return
-               (  (Left.Value.Value.Text, Right.Value.Value),
+               (  (  Nothing => False,
+                     Data    => (  Name  => Left.Value.Data.Value.Text,
+                                   Value => Right.Value.Data.Value
+                  )             ),
                   Left.Location & Right.Location
                );
             end;
@@ -76,26 +85,44 @@ package body Parsers.JSON.Generic_Parser is
             declare
                type Ptr_Type is access JSON_Pair_Array;
                for Ptr_Type'Storage_Pool use Context.Arena.all;
-               Ptr : constant Ptr_Type :=
-                              new JSON_Pair_Array (1..List'Length);
+               Ptr : Ptr_Type;
             begin
-               for Index in List'Range loop
-                  declare
-                     This : JSON_Argument renames List (Index).Value;
-                  begin
-                     if This.Name = null then
-                        Raise_Exception
-                        (  Parsers.Syntax_Error'Identity,
-                           (  "Unnamed JSON object element is found at "
-                           &  Image (List (Index).Location)
-                        )  );
-                     end if;
-                     Ptr (Integer (Index - List'First) + 1) :=
-                        (This.Name, This.Value);
-                  end;
-               end loop;
+               if (  List'Length = 1
+                  and then
+                     List (List'First).Value.Nothing
+                  )  then -- Empty object
+                  Ptr := new JSON_Pair_Array (1..0);
+               else
+                  Ptr := new JSON_Pair_Array (1..List'Length);
+                  for Index in List'Range loop
+                     declare
+                        This : Argument_Item renames List (Index).Value;
+                     begin
+                        if This.Nothing then
+                           Raise_Exception
+                           (  Parsers.Syntax_Error'Identity,
+                              (  "JSON object element is missing at "
+                              &  Image (List (Index).Location)
+                           )  );
+                        elsif This.Data.Name = null then
+                           Raise_Exception
+                           (  Parsers.Syntax_Error'Identity,
+                              (  "Unnamed JSON element is "
+                              &  "found at "
+                              &  Image (List (Index).Location)
+                           )  );
+                        end if;
+                        Ptr (Integer (Index - List'First) + 1) :=
+                           (This.Data.Name, This.Data.Value);
+                     end;
+                  end loop;
+               end if;
                return
-               (  (null, (JSON_Object, Ptr.all'Unchecked_Access)),
+               (  (  Nothing => False,
+                     Data    => (  Name  => null,
+                                   Value => (  JSON_Object,
+                                               Ptr.all'Unchecked_Access
+                  )             )           ),
                   Left.Location & Right.Location
                );
             end;
@@ -103,26 +130,43 @@ package body Parsers.JSON.Generic_Parser is
             declare
                type Ptr_Type is access JSON_Sequence;
                for Ptr_Type'Storage_Pool use Context.Arena.all;
-               Ptr : constant Ptr_Type :=
-                              new JSON_Sequence (1..List'Length);
+               Ptr : Ptr_Type;
             begin
-               for Index in List'Range loop
-                  declare
-                     This : JSON_Argument renames List (Index).Value;
-                  begin
-                     if This.Name /= null then
-                        Raise_Exception
-                        (  Parsers.Syntax_Error'Identity,
-                           (  "Named JSON array element is found at "
-                           &  Image (List (Index).Location)
-                        )  );
-                     end if;
-                     Ptr (Integer (Index - List'First) + 1) :=
-                       This.Value;
-                  end;
-               end loop;
+               if (  List'Length = 1
+                  and then
+                     List (List'First).Value.Nothing
+                  )  then -- Empty array
+                  Ptr := new JSON_Sequence (1..0);
+               else
+                  Ptr := new JSON_Sequence (1..List'Length);
+                  for Index in List'Range loop
+                     declare
+                        This : Argument_Item renames List (Index).Value;
+                     begin
+                        if This.Nothing then
+                           Raise_Exception
+                           (  Parsers.Syntax_Error'Identity,
+                              (  "JSON array element is missing at "
+                              &  Image (List (Index).Location)
+                           )  );
+                        elsif This.Data.Name /= null then
+                           Raise_Exception
+                           (  Parsers.Syntax_Error'Identity,
+                              (  "Named JSON array element is found at "
+                              &  Image (List (Index).Location)
+                           )  );
+                        end if;
+                        Ptr (Integer (Index - List'First) + 1) :=
+                          This.Data.Value;
+                     end;
+                  end loop;
+               end if;
                return
-               (  (null, (JSON_Array, Ptr.all'Unchecked_Access)),
+               (  (  Nothing => False,
+                     Data    => (  Name  => null,
+                                   Value => (  JSON_Array,
+                                               Ptr.all'Unchecked_Access
+                  )             )           ),
                   Left.Location & Right.Location
                );
             end;
@@ -159,7 +203,14 @@ package body Parsers.JSON.Generic_Parser is
                   Pointer := Pointer + 5;
                   Set_Pointer (Code, Pointer);
                   Argument :=
-                     ((null, (JSON_Boolean, False)), Link (Code));
+                     (  (  Nothing =>
+                              False,
+                           Data =>
+                              (  Name  => null,
+                                 Value => (JSON_Boolean, False)
+                        )     ),
+                        Link (Code)
+                     );
                   Got_It := True;
                end if;
             when 't' =>
@@ -171,7 +222,14 @@ package body Parsers.JSON.Generic_Parser is
                   Pointer := Pointer + 4;
                   Set_Pointer (Code, Pointer);
                   Argument :=
-                     ((null, (JSON_Boolean, True)), Link (Code));
+                     (  (  Nothing =>
+                              False,
+                           Data =>
+                              (  Name  => null,
+                                 Value => (JSON_Boolean, True)
+                        )     ),
+                        Link (Code)
+                     );
                   Got_It := True;
                end if;
             when 'n' =>
@@ -183,7 +241,14 @@ package body Parsers.JSON.Generic_Parser is
                   Pointer := Pointer + 4;
                   Set_Pointer (Code, Pointer);
                   Argument :=
-                     ((null, (JSON_Type => JSON_Null)), Link (Code));
+                     (  (  Nothing =>
+                              False,
+                           Data =>
+                              (  Name  => null,
+                                 Value => (JSON_Type => JSON_Null)
+                        )     ),
+                        Link (Code)
+                     );
                   Got_It := True;
                end if;
             when '0'..'9' | '+' | '-' | '.' =>
@@ -193,7 +258,14 @@ package body Parsers.JSON.Generic_Parser is
                   Get (Line (Pointer..Last), Pointer, Value);
                   Set_Pointer (Code, Pointer);
                   Argument :=
-                     ((null, (JSON_Number, Value)), Link (Code));
+                     (  (  Nothing =>
+                              False,
+                           Data =>
+                              (  Name  => null,
+                                 Value => (JSON_Number, Value)
+                        )     ),
+                        Link (Code)
+                     );
                   Got_It := True;
                exception
                   when Constraint_Error =>
@@ -387,9 +459,15 @@ package body Parsers.JSON.Generic_Parser is
                      end loop;
                      Set_Pointer (Code, Pointer);
                      Argument :=
-                        (  (  null,
-                              (JSON_String, Ptr.all'Unchecked_Access)
-                           ),
+                        (  (  Nothing =>
+                                 False,
+                              Data =>
+                                  (  Name =>
+                                        null,
+                                     Value =>
+                                        (  JSON_String,
+                                           Ptr.all'Unchecked_Access
+                           )      )     ),
                            Link (Code)
                         );
                   end;
@@ -428,6 +506,30 @@ package body Parsers.JSON.Generic_Parser is
          Got_It := False;
    end Get_Blank;
 
+   procedure On_Missing_Operand
+             (  Context   : in out Expression;
+                Code      : in out Lexers.Lexer_Source_Type;
+                Operation : Tokens.Operation_Token;
+                Argument  : out Tokens.Argument_Token
+             )  is
+   begin
+      case Operation.Operation is
+         when Left_Bracket | Left_Brace =>
+            Argument :=
+               (  (  Nothing => True,
+                     Data    => (null, (JSON_Type => JSON_Null))
+                  ),
+                  Link (Code)
+               );
+         when others =>
+            Raise_Exception
+            (  Syntax_Error'Identity,
+               (  "Operand is expected at "
+               &  Sources.Image (Sources.Link (Code))
+            )  );
+      end case;
+   end On_Missing_Operand;
+
    function Parse
             (  Code  : access Source_Type;
                Arena : access Root_Storage_Pool'Class
@@ -436,14 +538,14 @@ package body Parsers.JSON.Generic_Parser is
       Result  : Tokens.Argument_Token;
    begin
       Lexers.Parse (Context, Code.all, Result);
-      if Result.Value.Name /= null then
+      if Result.Value.Data.Name /= null then
          Raise_Exception
          (  Parsers.Syntax_Error'Identity,
             (  "Named JSON value is found at "
             &  Image (Result.Location)
          )  );
       end if;
-      return Result.Value.Value;
+      return Result.Value.Data.Value;
    end Parse;
 
 begin

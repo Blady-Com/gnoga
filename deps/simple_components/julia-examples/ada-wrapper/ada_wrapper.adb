@@ -25,12 +25,14 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.Text_IO;   use Ada.Text_IO;
-with Interfaces.C;  use Interfaces.C;
-with Julia;         use Julia;
+with Ada.Calendar;           use Ada.Calendar;
+with Ada.Text_IO;            use Ada.Text_IO;
+with Interfaces.C;           use Interfaces.C;
+with Julia;                  use Julia;
+with Strings_Edit.ISO_8601;  use Strings_Edit.ISO_8601;
 
 procedure Ada_Wrapper is
-   Bin : constant String := "D:\Julia-1.2.0\bin";
+   Bin : constant String := "D:\Julia-1.6.3\bin";
 begin
    Load (Bin & "\libjulia.dll");  -- Load library
    Init;
@@ -58,5 +60,21 @@ begin
       Eval_String ("println(x)");
    end;
 
+   declare
+      Ada_Time       : Time := Clock;
+      Ada_Day_Time   : Day_Duration;
+      Julia_Time     : value_t;
+      Julia_Day_Time : value_t;
+   begin
+      Put_Line ("Clock:" & Image (Ada_Time));
+      Julia_Time := To_Julia (Ada_Time);
+      Ada_Time   := Value (Julia_Time);
+      Put_Line ("     :" & Image (Ada_Time));
+
+      Julia_Day_Time := To_Julia (Day_Duration'(600.020513));
+      Ada_Day_Time   := Value (Julia_Day_Time);
+      Put_Line ("Time:" & Day_Duration'Image (Ada_Day_Time));
+
+   end;
    AtExit_Hook;                   -- Finalize environment
 end Ada_Wrapper;

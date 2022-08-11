@@ -3,7 +3,7 @@
 --     Persistent.Blocking_Files.                  Luebeck            --
 --        Transactional                            Spring, 2014       --
 --  Interface                                                         --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  11:02 11 Apr 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,9 +25,9 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 --
---  This  package provides the type Persistent_Transactional_Array which
---  derived  from Persistent_Array that  provides transactional I/O safe
---  against computer crash.
+--  This  package   provides  the  type  Persistent_Transactional_Array.
+--  It is derived from  Persistent_Array and  provides transactional I/O
+--  safe against computer crash.
 --
 --  Note that the implementation is not task-safe.
 --

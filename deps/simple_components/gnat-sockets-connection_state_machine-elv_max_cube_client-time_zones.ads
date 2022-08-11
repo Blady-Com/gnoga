@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     ELV_MAX_Cube_Client.Time_Zones              Spring, 2019       --
 --  Interface                                                         --
---                                Last revision :  10:32 11 May 2019  --
+--                                Last revision :  20:46 27 Aug 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -45,7 +45,7 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
    EET   : constant Zone_Data := (3, 10, Su, 3,  2.0 * 3600.0, "EET" );
    FET   : constant Zone_Data := (3, 10, Su, 3,  3.0 * 3600.0, "FET" );
    MSK   : constant Zone_Data := (3, 10, Su, 3,  3.0 * 3600.0, "MSK" );
-   AMT   : constant Zone_Data := (3, 10, Su, 3,  4.0 * 3600.0, "AMT" );
+   SAMT  : constant Zone_Data := (4, 10, Su, 3,  4.0 * 3600.0, "SAMT");
    YEKT  : constant Zone_Data := (4, 10, Su, 3,  5.0 * 3600.0, "YEKT");
    OMST  : constant Zone_Data := (4, 10, Su, 3,  6.0 * 3600.0, "OMST");
    KRAT  : constant Zone_Data := (4, 10, Su, 3,  7.0 * 3600.0, "KRAT");
@@ -68,22 +68,22 @@ package GNAT.Sockets.Connection_State_Machine.ELV_MAX_Cube_Client.
    BST   : constant Zone_Data := (3, 3, Su, 2,   1.0 * 3600.0, "BST"  );
    EEST  : constant Zone_Data := (4, 3, Su, 2,   3.0 * 3600.0, "EEST" );
    FEST  : constant Zone_Data := (4, 3, Su, 2,   4.0 * 3600.0, "FEST" );
-   MSD   : constant Zone_Data := (3, 3, Su, 2,   4.0 * 3600.0, "MSD"  );
+-- MSD   : constant Zone_Data := (3, 3, Su, 2,   4.0 * 3600.0, "MSD"  );
    CLST  : constant Zone_Data := (4, 3, Su, 2,   5.0 * 3600.0, "CLST" );
-   YEKST : constant Zone_Data := (5, 3, Su, 2,   6.0 * 3600.0, "YEKST");
-   OMSST : constant Zone_Data := (5, 3, Su, 2,   7.0 * 3600.0, "OMSST");
-   KRAST : constant Zone_Data := (5, 3, Su, 2,   8.0 * 3600.0, "KRAST");
-   IRKST : constant Zone_Data := (5, 3, Su, 2,   9.0 * 3600.0, "IRKST");
-   YAKST : constant Zone_Data := (5, 3, Su, 2,  10.0 * 3600.0, "YAKST");
-   VLAST : constant Zone_Data := (5, 3, Su, 2,  11.0 * 3600.0, "VLAST");
-   MAGST : constant Zone_Data := (5, 3, Su, 2,  12.0 * 3600.0, "MAGST");
-   PETST : constant Zone_Data := (5, 3, Su, 2,  13.0 * 3600.0, "PETST");
+-- YEKST : constant Zone_Data := (5, 3, Su, 2,   6.0 * 3600.0, "YEKST");
+-- OMSST : constant Zone_Data := (5, 3, Su, 2,   7.0 * 3600.0, "OMSST");
+-- KRAST : constant Zone_Data := (5, 3, Su, 2,   8.0 * 3600.0, "KRAST");
+-- IRKST : constant Zone_Data := (5, 3, Su, 2,   9.0 * 3600.0, "IRKST");
+-- YAKST : constant Zone_Data := (5, 3, Su, 2,  10.0 * 3600.0, "YAKST");
+-- VLAST : constant Zone_Data := (5, 3, Su, 2,  11.0 * 3600.0, "VLAST");
+-- MAGST : constant Zone_Data := (5, 3, Su, 2,  12.0 * 3600.0, "MAGST");
+-- PETST : constant Zone_Data := (5, 3, Su, 2,  13.0 * 3600.0, "PETST");
    --
    -- South hemisphere
    --
           -- Daylight saving time
    EASST : constant Zone_Data := (5, 10, Su, 3, -5.0 * 3600.0, "EASST");
-   AMST  : constant Zone_Data := (4, 10, Su, 3, -3.0 * 3600.0, "AMST" );
+   SAMST : constant Zone_Data := (5, 10, Su, 3, -3.0 * 3600.0, "SAMST");
    BRST  : constant Zone_Data := (4, 10, Su, 3, -2.0 * 3600.0, "BRST" );
    AWDT  : constant Zone_Data := (4, 10, Su, 3,  9.0 * 3600.0, "AWDT" );
    AEDT  : constant Zone_Data := (4, 10, Su, 3, 11.0 * 3600.0, "AEDT" );

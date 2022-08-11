@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  00:04 22 Jul 2018  --
+--                                Last revision :  18:40 23 Oct 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -3457,6 +3457,7 @@ package body GNUTLS is
             subtype Copy_Array is Stream_Element_Array (Data'Range);
             Copy : Copy_Array;
             for Copy'Address use Internal (Data'Length);
+            pragma Import (Ada, Copy);
          begin
             Result.Size := Data'Length;
             Result.Data := Copy'Address;
@@ -4405,6 +4406,7 @@ package body GNUTLS is
                                    );
             Buffer : Buffer_Type;
             for Buffer'Address use Data.Data;
+            pragma Import (Ada, Buffer);
          begin
             return Buffer;
          end;
@@ -4439,6 +4441,7 @@ package body GNUTLS is
             subtype Buffer_Type is char_array (1..size_t (Data.Size));
             Buffer : Buffer_Type;
             for Buffer'Address use Data.Data;
+            pragma Import (Ada, Buffer);
          begin
             return To_Ada (Buffer, False);
          end;
@@ -4689,6 +4692,7 @@ package body GNUTLS is
                                    );
             Buffer : Data_Buffer;
             for Buffer'Address use Data;
+            pragma Import (Ada, Buffer);
             Pointer : Stream_Element_Offset := Buffer'First;
          begin
             Write (Object.all, Buffer, Pointer);

@@ -3,7 +3,7 @@
 --     GNAT.Sockets.MQTT.Server                    Luebeck            --
 --  Implementation                                 Spring, 2016       --
 --                                                                    --
---                                Last revision :  18:33 02 Dec 2019  --
+--                                Last revision :  13:32 28 Jan 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1820,10 +1820,7 @@ package body GNAT.Sockets.MQTT.Server is
          end if;
          if Last > Named then
             Pump_Unchecked
-            (  Get
-               (  Server.Anonymous,
-                  Last + 1 - Named
-               ) .all
+            (  Get (Server.Anonymous, Last - Named).all
             );
          else
             Pump_Unchecked (Ptr (GetTag (Server.Named, Last)).all);

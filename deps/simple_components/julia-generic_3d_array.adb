@@ -3,7 +3,7 @@
 --     Julia.Generic_3D_Array                      Luebeck            --
 --  Implementation                                 Winter, 2019       --
 --                                                                    --
---                                Last revision :  11:37 20 Jan 2019  --
+--                                Last revision :  18:40 23 Oct 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -165,9 +165,9 @@ package body Julia.Generic_3D_Array is
       Check_Type (Object, X_Size, Y_Size, Z_Size);
       declare
          Value : Element_Array_Type
-                 (  1..X_Index_Type (X_Size),
-                    1..Y_Index_Type (Y_Size),
-                    1..Z_Index_Type (Y_Size)
+                 (  1..X_Index_Type'Base (X_Size),
+                    1..Y_Index_Type'Base (Y_Size),
+                    1..Z_Index_Type'Base (Y_Size)
                  );
       begin
          if (  Value'Length (1) > 0

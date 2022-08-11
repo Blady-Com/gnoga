@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  21:46 10 Dec 2018  --
+--                                Last revision :  10:00 19 May 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1302,7 +1302,7 @@ package body Persistent.SQLite is
                )  );
             Bind (Command, 1, ID);
             if Step (Command) then
-               if "" = Column (Command, 1) then
+               if "" = String'(Column (Command, 1)) then
                   return;
                end if;
             else

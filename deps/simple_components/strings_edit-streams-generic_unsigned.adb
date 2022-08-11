@@ -4,7 +4,7 @@
 --        Generic_Unsigned                         Autumn, 2014       --
 --  Implementation                                                    --
 --                                                                    --
---                                Last revision :  16:33 18 Nov 2016  --
+--                                Last revision :  10:13 29 Nov 2020  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -43,7 +43,7 @@ package body Strings_Edit.Streams.Generic_Unsigned is
          or else
             (  Pointer > Data'Last
             and then
-               Pointer - 1 > Data'Last
+               Pointer - Data'Last /= 1
          )  )
       then
          Raise_Exception

@@ -3,7 +3,7 @@
 --     Persistent.Blocking_Files                   Luebeck            --
 --  Implementation                                 Winter, 2014       --
 --                                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  11:02 11 Apr 2021  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -28,6 +28,8 @@
 with Ada.Unchecked_Deallocation;
 
 package body Persistent.Blocking_Files is
+
+   No_File_Open : constant String := "No file open";
 
    procedure Free is
       new Ada.Unchecked_Deallocation
@@ -108,7 +110,7 @@ package body Persistent.Blocking_Files is
             )  return Block_Type_Ptr is
    begin
       if not Container.Is_Open then
-         Raise_Exception (Use_Error'Identity, "No file open");
+         Raise_Exception (Use_Error'Identity, No_File_Open);
       elsif Mode (Container.File) = In_File then
          Raise_Exception (Use_Error'Identity, "File is read-only");
       end if;
@@ -153,7 +155,7 @@ package body Persistent.Blocking_Files is
       if Container.Is_Open then
          return Block_Count (Container.Size);
       else
-         Raise_Exception (Use_Error'Identity, "No file open");
+         Raise_Exception (Use_Error'Identity, No_File_Open);
       end if;
    end Get_Block_Size;
 
@@ -172,7 +174,7 @@ package body Persistent.Blocking_Files is
       if Container.Is_Open then
          return Name (Container.File);
       else
-         Raise_Exception (Use_Error'Identity, "No file open");
+         Raise_Exception (Use_Error'Identity, No_File_Open);
       end if;
    end Get_Name;
 
@@ -186,7 +188,7 @@ package body Persistent.Blocking_Files is
       if Container.Is_Open then
          return Byte_Index (Container.Size) * Block_Byte_Size;
       else
-         Raise_Exception (Use_Error'Identity, "No file open");
+         Raise_Exception (Use_Error'Identity, No_File_Open);
       end if;
    end Get_Size;
 
@@ -235,7 +237,7 @@ package body Persistent.Blocking_Files is
              )  is
    begin
       if not Container.Is_Open then
-         Raise_Exception (Use_Error'Identity, "No file open");
+         Raise_Exception (Use_Error'Identity, No_File_Open);
       elsif No >= Container.Size then
          Block := null;
       else
@@ -345,7 +347,7 @@ package body Persistent.Blocking_Files is
              )  is
    begin
       if not Container.Is_Open then
-         Raise_Exception (Use_Error'Identity, "No file open");
+         Raise_Exception (Use_Error'Identity, No_File_Open);
       end if;
       declare
          Item : Count := Count (Index / Block_Byte_Size);
@@ -400,7 +402,7 @@ package body Persistent.Blocking_Files is
              )  is
    begin
       if not Container.Is_Open then
-         Raise_Exception (Use_Error'Identity, "No file open");
+         Raise_Exception (Use_Error'Identity, No_File_Open);
       elsif Mode (Container.File) = In_File then
          Raise_Exception (Use_Error'Identity, "File is read-only");
       end if;

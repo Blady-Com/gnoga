@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.Blocking                Luebeck            --
 --  Interface                                      Winter, 2018       --
 --                                                                    --
---                                Last revision :  14:52 29 Feb 2020  --
+--                                Last revision :  08:55 08 Apr 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -73,7 +73,7 @@ package GNAT.Sockets.Server.Blocking is
 --
 -- This procedure  is used  to create  the client for the server.  There
 -- can be only one. Note that the connection object is passed by pointer
--- an maintained by Listener.
+-- and maintained by Listener.
 --
 -- Exceptions :
 --
@@ -120,6 +120,20 @@ package GNAT.Sockets.Server.Blocking is
    function Get_Peer (Listener : Blocking_Server)
       return GNAT.Sockets.Server.Handles.Handle;
 --
+-- Get_Read_Timeout -- Get the read timeout
+--
+--    Listener - The server object
+--    Timeout  - The read timeout
+--
+-- This function returns sets the read timeout (see Set_Read_Timeout).
+--
+-- Returns :
+--
+--    The read timeout
+--
+   function Get_Read_Timeout (Listener : Blocking_Server)
+      return Duration;
+--
 -- Get_Server_Address -- Get the server socket address
 --
 --    Listener - The server object
@@ -148,7 +162,7 @@ package GNAT.Sockets.Server.Blocking is
 -- This procedure  is  called  once when  the reader  task  starts.  The
 -- default implementation does nothing.
 --
-   procedure On_Reader_Start  (Listener : in out Blocking_Server);
+   procedure On_Reader_Start (Listener : in out Blocking_Server);
 --
 -- On_Writer_Start -- Writer task start
 --
@@ -157,9 +171,51 @@ package GNAT.Sockets.Server.Blocking is
 -- This procedure  is  called  once when  the writer  task  starts.  The
 -- default implementation does nothing.
 --
-   procedure On_Writer_Start  (Listener : in out Blocking_Server);
-
+   procedure On_Writer_Start (Listener : in out Blocking_Server);
+--
+-- Set_Read_Timeout -- Set the read timeout
+--
+--    Listener - The server object
+--    Timeout  - The read timeout
+--
+-- This procedure sets the read timeout.  The value limits  the time the
+-- reader waits for an input. Normally, when reading from a serial point
+-- the input timeout expiring does not cause error.  The next attempt to
+-- read is made instead.  In order to prevent infinite  waiting when the
+-- counterpart never sends  anything the read  timeout is applied.  When
+-- expired further  reading attempts are prevented and an input error is
+-- propagated instead. The timeout is set per octet read.
+--
+   procedure Set_Read_Timeout
+             (  Listener : in out Blocking_Server;
+                Timeout  : Duration := Duration'Last
+             );
+--
+-- Wait_For_Tasks -- Wait for I/O tasks to terminate
+--
+--    Listener - The server object
+--    Timeout  - The timeout
+--    Kill     - Terminate I/O tasks when timeout expires
+--
+-- This procedure  awaits for the reader  and writer  tasks to complete.
+-- When  Kill is True upon timeout  expiration the tasks are aborted and
+-- no exception is propagated.
+--
+-- Exceptions :
+--
+--    Timeout_Error - Writer did not complete before timeout expiration
+--
+   procedure Wait_For_Tasks
+             (  Listener : in out Blocking_Server;
+                Timeout  : Duration;
+                Kill     : Boolean
+             );
 private
+   task type Reader
+             (  Listener : access Blocking_Server'Class;
+                Client   : access Connection'Class
+             );
+   type Reader_Ptr is access Reader;
    task type Writer
              (  Listener : access Blocking_Server'Class;
                 Client   : access Connection'Class
@@ -170,16 +226,26 @@ private
    use Stream_FIFO;
 
    protected type IO_Buffer_Event is
+      function Get_Read_Timeout return Duration;
+      function Is_Reader_Completed return Boolean;
       function Is_Exiting return Boolean;
+      function Is_Timed_Out return Boolean;
       procedure Quit;
       procedure Set_Empty (Value : Boolean);
       procedure Set_Full (Value : Boolean);
+      procedure Set_Read_Timeout (Value : Duration);
+      procedure Set_Reader_Completed;
+      procedure Signal_Timeout;
+      entry Unblock;
       entry Wait_Not_Empty;
       entry Wait_Not_Full;
    private
-      Exiting : Boolean := False;
-      Empty   : Boolean := True;
-      Full    : Boolean := False;
+      Exiting      : Boolean  := False;
+      Completed    : Boolean  := False;
+      Timeout      : Boolean  := False;
+      Empty        : Boolean  := True;
+      Full         : Boolean  := False;
+      Read_Timeout : Duration := Duration'Last;
    end IO_Buffer_Event;
 
    type Blocking_Server
@@ -193,6 +259,7 @@ private
                   )  with
    record
       Peer   : GNAT.Sockets.Server.Handles.Handle;
+      Reader : Reader_Ptr;
       Writer : Writer_Ptr;
       Event  : IO_Buffer_Event;
       Input  : Stream_FIFO.FIFO (Input_Size);
@@ -214,6 +281,10 @@ private
                 Client   : in out Connection'Class;
                 Data     : Stream_Element_Array;
                 Last     : out Stream_Element_Offset
+             );
+   procedure Unblock_Send
+             (  Listener : in out Blocking_Server;
+                Client   : in out Connection'Class
              );
 
 end GNAT.Sockets.Server.Blocking;

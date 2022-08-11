@@ -1,3 +1,9 @@
+20220811 - Gnoga V2.1b (2.1.2):
+
+- Add Alire support: alire.toml, lib_gnoga.gpr and .gitignore.
+- Update plugins.gpr, README.md and HISTORY.
+
+
 20220306 - Gnoga V2.1a:
 
 - Update Makefile, TODO, README, TIPS and more.
@@ -53,6 +59,12 @@
 - Add new Image and value conversion functions. Integer Image has the same convention (space prefix) as Ada Image attribute.
 - Change String and Unbounded_String handling to UXStrings.
 - Reformat Gnoga source codes.
+
+
+20220810 - Gnoga V1.6b (1.6.2):
+
+- Add Alire support: alire.toml, lib_gnoga.gpr and .gitignore.
+- Update plugins.gpr, settings.gpr, README.md and HISTORY.
 
 
 20210501 - Gnoga V1.6a:

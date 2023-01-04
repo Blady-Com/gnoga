@@ -5,6 +5,8 @@ with Gnoga.Gui.Element.Canvas.Context_2D;
 
 package GnogaBoard.View is
 
+   subtype String is Gnoga.String;
+
    type Default_View_Type is new Gnoga.Gui.View.View_Type with
       record
          On_Change : Gnoga.Gui.Base.Action_Event := null;

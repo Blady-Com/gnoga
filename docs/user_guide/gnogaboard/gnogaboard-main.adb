@@ -1,5 +1,3 @@
-with Ada.Exceptions;
-
 with Gnoga.Application.Multi_Connect;
 
 with GnogaBoard.Controller;
@@ -15,6 +13,5 @@ begin
    Gnoga.Application.Multi_Connect.Message_Loop;
 exception
    when E : others =>
-      Gnoga.Log (Ada.Exceptions.Exception_Name (E) & " - " &
-                   Ada.Exceptions.Exception_Message (E));
+      Gnoga.Log (E);
 end GnogaBoard.Main;

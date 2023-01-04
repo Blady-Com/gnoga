@@ -55,8 +55,6 @@ package body GnogaBoard.View is
      (Object      : in out Gnoga.Gui.Base.Base_Type'Class;
       Mouse_Event : in     Gnoga.Gui.Base.Mouse_Event_Record)
    is
-      use Gnoga.Gui.Element.Canvas.Context_2D;
-
       View : Default_View_Type renames Default_View_Type (Object.Parent.all);
       --  Since we place the mouse events on the Canvas Object will always
       --  be the Canvas. We can get the parent view using Object.Parent.
@@ -78,8 +76,6 @@ package body GnogaBoard.View is
      (Object      : in out Gnoga.Gui.Base.Base_Type'Class;
       Mouse_Event : in     Gnoga.Gui.Base.Mouse_Event_Record)
    is
-      use Gnoga.Gui.Element.Canvas.Context_2D;
-
       View : Default_View_Type renames Default_View_Type (Object.Parent.all);
    begin
       View.X1 := View.X2;
@@ -98,8 +94,6 @@ package body GnogaBoard.View is
      (Object      : in out Gnoga.Gui.Base.Base_Type'Class;
       Mouse_Event : in     Gnoga.Gui.Base.Mouse_Event_Record)
    is
-      use Gnoga.Gui.Element.Canvas.Context_2D;
-
       View : Default_View_Type renames Default_View_Type (Object.Parent.all);
    begin
       View.X1 := View.X2;

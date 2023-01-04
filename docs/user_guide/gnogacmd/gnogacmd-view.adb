@@ -1,5 +1,6 @@
 with GNAT.OS_Lib;
 with GNAT.Expect;
+with UXStrings;
 
 package body GnogaCMD.View is
 
@@ -61,16 +62,19 @@ package body GnogaCMD.View is
 
       Args   : GNAT.OS_Lib.Argument_List_Access;
       Status : aliased Integer;
+
+      use UXStrings;
+
    begin
-      Args := GNAT.OS_Lib.Argument_String_To_List (View.Cmd_Line.Value);
+      Args := GNAT.OS_Lib.Argument_String_To_List (To_UTF_8 (View.Cmd_Line.Value));
 
       declare
-         Result : String := Gnat.Expect.Get_Command_Output
+         Result : constant String := From_UTF_8 (Gnat.Expect.Get_Command_Output
            (Command    => Args (Args'First).all,
             Arguments  => Args (Args'First + 1 .. Args'Last),
             Input      => "",
             Status     => Status'Access,
-            Err_To_Out => True);
+            Err_To_Out => True));
       begin
          View.Put_HTML ("<pre>" & Result & "</pre>");
          --  Put_HTML is a convenient way to dump pure html in to a view at

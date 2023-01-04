@@ -4,6 +4,8 @@ with Gnoga.Gui.Element.Form;
 
 package GnogaCMD.View is
 
+   subtype String is Gnoga.String;
+
    type Default_View_Type is new Gnoga.Gui.View.Console.Console_View_Type with
       record
          Entry_Form : Gnoga.Gui.Element.Form.Form_Type;

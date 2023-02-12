@@ -8,8 +8,8 @@
 
 with Gnoga.Server.Database.SQLite;
 --  As before we will be using SQLite for this tutorial but changing to a
---  different database enginge is as simple as changing this package and
---  the Connection.Open to match the appropriat enginge.
+--  different database engine is as simple as changing this package and
+--  the Connection.Open to match the appropriate engine.
 
 with Gnoga.Server.Migration;
 
@@ -56,7 +56,7 @@ procedure Tutorial_11 is
       M.Add_Migration_Down ("DROP TABLE `foods`");
       --  In this tutorial our database is a bit more involved and has a one to
       --  many relationship. The "many" references the "one" using a standard
-      --  of tablename(minus plural) + _id, so in our tutorial to reference the
+      --  of tablename (minus plural) + _id, so in our tutorial to reference the
       --  users database, the id of the user would be user_id
    end Migrations;
 
@@ -77,7 +77,7 @@ begin
          Gnoga.Application.Singleton.Initialize (Main_Window => My_Window);
          My_View.Create (My_Window);
          --  This could be a command line only tutorial as there is no
-         --  dependancy on the GUI elements of Gnoga in the database bindings.
+         --  dependency on the GUI elements of Gnoga in the database bindings.
 
          My_View.Put_Line ("Using Gnoga.Server.Model.Table");
 

@@ -1,4 +1,4 @@
---  The HTML5 Canvas offers a great way to create graphics progamatically.
+--  The HTML5 Canvas offers a great way to create graphics programmatically.
 --  SVG is another means offered by Gnoga. The key difference is that SVG
 --  are scalable vector graphics, and the Canvas are raster images. Think
 --  Canvas - Photoshop and SVG - Illustrator.

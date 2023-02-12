@@ -1,5 +1,5 @@
 --  With Gnoga it is possible to build your own custom widgets by compositing
---  elements in to views and build web forms. In the next turorial we will
+--  elements in to views and build web forms. In the next tutorial we will
 --  see how to interact with forms in a more application centric way instead of
 --  as static forms.
 
@@ -49,7 +49,7 @@ procedure Tutorial_08 is
 
       Layout_Table.Dynamic;
       --  Marking an element Dynamic before creation tells Gnoga to garbage
-      --  collect, i.e. deallocate the element when it is parent is finalized.
+      --  collect, i.e. deallocate the element when the parent is finalized.
       Layout_Table.Create (View);
 
       declare
@@ -69,8 +69,8 @@ procedure Tutorial_08 is
 
          View.Name_Input.Required;
          --  By marking Name_Input required, if the submit button is pushed
-         --  it will not allow submission and notify user unless element
-         --  if filled out.
+         --  it will not allow submission and notify user, unless element
+         --  is filled out.
 
          View.Name_Input.Place_Holder ("(Only letters and spaces permitted)");
          View.Name_Input.Pattern ("[a-zA-Z\ ]+");

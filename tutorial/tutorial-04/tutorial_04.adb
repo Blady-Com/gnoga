@@ -79,7 +79,7 @@ procedure Tutorial_04 is
    begin
       App.My_View.Put ("I've been clicked! ");
       --  Put places its text in to a SPAN tag, Put_Line uses a DIV tag.
-      --  This creats the familiar console like affect of Put and Put_Line
+      --  This creates the familiar console like affect of Put and Put_Line
    end On_Click;
 
    procedure On_Exit (Object : in out Gnoga.Gui.Base.Base_Type'Class) is

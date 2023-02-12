@@ -2,7 +2,7 @@
 --  or HTML can. Including popping up additional windows or to use iFrames to
 --  access other content from other sites or the same site. As long as there
 --  is a connection back to the server Gnoga applications can control content
---  from regular HTML files in popups and iFrames if serverd out by the Gnoga
+--  from regular HTML files in popups and iFrames if served out by the Gnoga
 --  application. The limitation that you can not modify HTML from another
 --  server is a security restriction imposed by the browsers, not Gnoga.
 
@@ -108,12 +108,12 @@ procedure Tutorial_06 is
       while App.My_Popup2.Document.Ready_State /= Gnoga.Gui.Document.Complete or App.My_Popup2.Width = 0 loop
          delay 0.25;
       end loop;
-      --  We need to make sure that popup2's contents is load in order to
-      --  be interact with its contents and that My_Popup2 has been created
+      --  We need to make sure that popup2's contents is loaded in order to
+      --  interact with its contents and that My_Popup2 has been created
       --  by the browser. Although we could use My_Popup2 before the browser
       --  displayed the window as long as the Ready_State is Complete,
       --  My_PView will not be sized automatically to fit in to My_Popup2 since
-      --  there is no knowldege yet have the width of the new window delivered
+      --  there is no knowledge yet of the width of the new window delivered
       --  by the browser.
 
       App.My_Popup2.Document.Title ("My Popup");

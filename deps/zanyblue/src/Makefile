@@ -114,7 +114,7 @@ $(ZANYBLUEADS):
 	$(MAKE) -C $(SRCDIR)/root
 
 $(ZBVERSGPR): $(ZBVERSGPRSRC)
-	$(ZBDEV) docsubst $(DOCSUBSTDEFS) $< $@
+	$(GNATPREP) '-DV_MAJOR="$(V_MAJOR)"' '-DV_MINOR="$(V_MINOR)"' '-DV_PATCH="$(V_PATCH)"' $< $@
 
 # Include general rules.
 include $(TOP)/src/mkfile/rules.mk

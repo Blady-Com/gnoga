@@ -350,7 +350,7 @@ studio:
 ifeq ($(BUILD_OS),Windows)
 	cmd /C start /B $(STUDIO) -P src/gnoga.gpr $(GN_OPTIONS) $(ZB_OPTIONS)
 else
-	$(STUDIO) -P src/gnoga.gpr $(GN_OPTIONS) $(ZB_OPTIONS) &
+	$(STUDIO) -P $(PWD)/src/gnoga.gpr $(GN_OPTIONS) $(ZB_OPTIONS) &
 endif
 
 # Use AdaControl to check rules/gnoga.aru

@@ -1,4 +1,4 @@
-with "settings.gpr";
+with "../settings.gpr";
 with "../src/gnoga.gpr";
 with "../ssl/gnoga_secure.gpr";
 

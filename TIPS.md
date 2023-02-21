@@ -149,4 +149,12 @@ On_Connect as for instance with `http://127.0.0.1:8080/toto.html` or with a HTML
 Use the following command line options: `--gnoga-host=<host name> --gnoga-port=<port value> --gnoga-boot=<boot file name> --gnoga-verbose=<true or false>`.<BR>
 Example: `% ./bin/cli --gnoga-verbose=false --gnoga-port=8082`
 
+1. How to disable/enable connections to the server? The On_Connect handler simply must do nothing. Once that handler completes the connection is dropped, but not refused. You can also use it to display a message regarding the status.
+
+1. Recent browsers like Firefox block Javascript execution with alert popup and prevent to answer Gnoga server which issues a timeout exception. By default the timeout value is 3 s. You must thus close the popup before to avoid exceptions. Alert popup should be avoided.
+
+1. A good practice is to register all connection data outside of On_Connect handler with Connection_Data.
+Otherwise as On_Connect local data are deallocated when On_Connect ends,
+the connection may crash for instance when resizing the window because the View data no longueur exist.
+
 1. next tip...

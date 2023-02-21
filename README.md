@@ -1,11 +1,11 @@
 # GNOGA - The GNU Omnificent GUI for Ada
 ## http://www.gnoga.com
 
-Please see the docs directory for documentation and the FAQ.
+Please see the FAQ, TIPS and the docs folder for documentation.
 
 To get started:
 
-Install GNAT (see http://GetAdaNow.com)
+Install GNAT, a recent Ada 2012 compiler, see [Alire](https://alire.ada.dev).
 
 On Windows 32 bit or Linux 32 bit if using GNAT GPL prior to 2014 you need to
 modify the Makfile ATOMIC_ACCESS=GCC-built-ins
@@ -22,19 +22,19 @@ make help # for all options and configuration values
 make all
 ```
 
-then run the snake demo or tutorials in bin directory. There are additional demos in demo directory.
+then run the snake demo or tutorials in bin folder. There are additional demos in demo folder.
 Open a web browser with URL like: "http://127.0.0.1:8080".
 
 See INSTALL for more information about installing Gnoga as a standard gcc/ada
 library if desired.
 
-GNAT Programming Studio (GPS) is available with 'make gps' which launch GPS with the
+GNAT Studio is available with 'make studio' which launches GNAT Studio with the
 actual values of compiler switches for gnoga.gpr project.
-For the demos: open in GPS the demo/demo_agg.gpr project.
-For the tests: open in GPS the test/test_agg.gpr project.
+- For the demos: open demo/demo_agg.gpr project in GNAT Studio.
+- For the tests: open test/test_agg.gpr project in GNAT Studio.
 
-See docs/html/user_guide.html to get started (make html-docs).
-See docs/html/gnoga_rm/index.html for reference manual (make rm-docs).
+See docs/html/user_guide.html to get started (built with make html-docs).
+See docs/html/gnoga_rm/index.html for reference manual (built with make rm-docs).
 
 Gnoga includes a copy of Dmitry A. Kazakov's Simple Components and uses it for http and websockets.
 See deps/simple_components/components.htm for details.

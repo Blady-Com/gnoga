@@ -2,6 +2,8 @@ with Ada.Strings;                use Ada.Strings;
 with Ada.Strings.Wide_Wide_Maps; use Ada.Strings.Wide_Wide_Maps;
 with Ada.Strings.UTF_Encoding;
 with Ada.Characters.Handling;
+with Ada.Characters.Latin_1;
+with Ada.Characters.Wide_Latin_1;
 private with Ada.Finalization;
 private with Ada.Streams;
 
@@ -64,15 +66,17 @@ package UXStrings is
    -- Returns an implementation-defined identifier that identifies the version of the character set standard
    -- that is used for categorizing characters by the implementation.
 
+   Q_L : Latin_1_Character renames Ada.Characters.Latin_1.Question;
+
    function Is_ASCII (Source : UXString; Index : Positive) return Boolean;
    -- Return True if the character of Source at Index position is in ASCII set
    function Is_ASCII (Source : UXString) return Boolean;
    -- Return True if all the characters of Source are in ASCII set
    function Get_ASCII
-     (Source : UXString; Index : Positive; Substitute : in ASCII_Character := '?') return ASCII_Character;
+     (Source : UXString; Index : Positive; Substitute : in ASCII_Character := Q_L) return ASCII_Character;
    -- Return the ASCII character of Source at Index position,
    -- if the character is not in ASCII set then Substitute is returned
-   function To_ASCII (Source : UXString; Substitute : in ASCII_Character := '?') return ASCII_Character_Array;
+   function To_ASCII (Source : UXString; Substitute : in ASCII_Character := Q_L) return ASCII_Character_Array;
    -- Return an array of ASCII characters from Source,
    -- if a character is not in ASCII set then Substitute is returned
    function From_ASCII (Item : ASCII_Character) return UXString;
@@ -82,18 +86,20 @@ package UXStrings is
 
    function Is_ISO_646 (Item : UXString) return Boolean renames Is_ASCII;
    function To_ISO_646
-     (Item : UXString; Substitute : Ada.Characters.Handling.ISO_646 := ' ') return ASCII_Character_Array renames
+     (Item : UXString; Substitute : Ada.Characters.Handling.ISO_646 := Q_L) return ASCII_Character_Array renames
      To_ASCII;
+
+   Inv_Q_L : Latin_1_Character renames Ada.Characters.Latin_1.Inverted_Question;
 
    function Is_Latin_1 (Source : UXString; Index : Positive) return Boolean;
    -- Return True if the character of Source at Index position is in Latin 1 set
    function Is_Latin_1 (Source : UXString) return Boolean;
    -- Return True if all the characters of Source are in Latin 1 set
    function Get_Latin_1
-     (Source : UXString; Index : Positive; Substitute : in Latin_1_Character := '¿') return Latin_1_Character;
+     (Source : UXString; Index : Positive; Substitute : in Latin_1_Character := Inv_Q_L) return Latin_1_Character;
    -- Return the Latin 1 character from Source at Index position,
    -- if the character is not in latin 1 set then Substitute is returned
-   function To_Latin_1 (Source : UXString; Substitute : in Latin_1_Character := '¿') return Latin_1_Character_Array;
+   function To_Latin_1 (Source : UXString; Substitute : in Latin_1_Character := Inv_Q_L) return Latin_1_Character_Array;
    -- Return an array of Latin 1 characters from Source,
    -- if a character is not in latin 1 set then Substitute is returned
    function From_Latin_1 (Item : Latin_1_Character) return UXString;
@@ -101,14 +107,17 @@ package UXStrings is
    function From_Latin_1 (Source : Latin_1_Character_Array) return UXString;
    -- Return an UXString from the array of Latin 1 characters parameter Source
 
+   Inv_Q_B : BMP_Character renames Ada.Characters.Wide_Latin_1.Inverted_Question;
+
    function Is_BMP (Source : UXString; Index : Positive) return Boolean;
    -- Return True if the character of Source at Index position is in BMP set
    function Is_BMP (Source : UXString) return Boolean;
    -- Return True if all the characters of Source are in BMP set
-   function Get_BMP (Source : UXString; Index : Positive; Substitute : in BMP_Character := '¿') return BMP_Character;
+   function Get_BMP
+     (Source : UXString; Index : Positive; Substitute : in BMP_Character := Inv_Q_B) return BMP_Character;
    -- Return the BMP character from Source at Index position,
    -- if the character is not in BMP set then Substitute is returned
-   function To_BMP (Source : UXString; Substitute : in BMP_Character := '¿') return BMP_Character_Array;
+   function To_BMP (Source : UXString; Substitute : in BMP_Character := Inv_Q_B) return BMP_Character_Array;
    -- Return an array of BMP characters from Source,
    -- if a character is not in BMP set then Substitute is returned
    function From_BMP (Item : BMP_Character) return UXString;
@@ -324,7 +333,7 @@ package UXStrings is
    -- Returns the corresponding lower-case value for Item if Is_Upper(Item), and returns Item otherwise.
    function To_Upper (Item : UXString) return UXString;
    -- Returns the corresponding upper-case value for Item if Is_Lower(Item) and Item has an upper-case form,
-   -- and returns Item otherwise. The lower case letters 'ß' and 'ÿ' do not have upper case forms.
+   -- and returns Item otherwise.
    function To_Basic (Item : UXString) return UXString;
    -- Returns the letter corresponding to Item but with no diacritical mark,
    -- if Item is a letter but not a basic letter; returns Item otherwise.

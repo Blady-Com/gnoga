@@ -9,7 +9,7 @@ library project Lib_UXStrings is
    for Library_Dir use "lib";
 
    package Compiler is
-      for Default_Switches ("Ada") use ("-gnatW8", "-g", "-gnata", "-gnatq", "-gnatQ", "-gnatw.eDH.Y", "-gnatVaep", "-gnato", "-fstack-check", "-gnatf", "-gnateE", "-gnateF", "-gnatU", "-Wall");
+      for Default_Switches ("Ada") use ("-g", "-gnata", "-gnatq", "-gnatQ", "-gnatw.eDH.Y", "-gnatVaep", "-gnato", "-fstack-check", "-gnatf", "-gnateE", "-gnateF", "-gnatU", "-Wall");
    end Compiler;
 
    package Binder is

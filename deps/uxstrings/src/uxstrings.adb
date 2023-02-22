@@ -4,13 +4,13 @@
 -- ROLE                         : UXString implementation.
 -- NOTES                        : Ada 202x
 --
--- COPYRIGHT                    : (c) Pascal Pignard 2021
+-- COPYRIGHT                    : (c) Pascal Pignard 2023
 -- LICENCE                      : CeCILL V2.1 (https://cecill.info)
 -- CONTACT                      : http://blady.pagesperso-orange.fr
 -------------------------------------------------------------------------------
 
-with Ada.Strings.Fixed;           use Ada.Strings.Fixed;
-with Ada.Strings.Wide_Wide_Fixed; use Ada.Strings.Wide_Wide_Fixed;
+with Ada.Strings.Fixed;                          use Ada.Strings.Fixed;
+with Ada.Strings.Wide_Wide_Fixed;                use Ada.Strings.Wide_Wide_Fixed;
 --  with Ada.Strings.UTF_Encoding.Conversions;
 with STUTEN.SUEnco; -- Fix an issue in UTF-16 to UTF8 conversion
 with Ada.Strings.UTF_Encoding.Strings;
@@ -164,7 +164,7 @@ package body UXStrings is
       if Source.Full_ASCII then
          Count := Natural'Min (Source.Chars'Length, Max);
       else
-         while Pointer <= Source.Chars'First + Max - 1 and Pointer <= Source.Chars'last loop
+         while Pointer <= Source.Chars'First + Max - 1 and Pointer <= Source.Chars'Last loop
             Get (Source.Chars.all, Pointer, Item);
             Count := Count + 1;
          end loop;
@@ -272,7 +272,7 @@ package body UXStrings is
    ---------------
 
    function Get_ASCII
-     (Source : UXString; Index : Positive; Substitute : in ASCII_Character := '?') return ASCII_Character
+     (Source : UXString; Index : Positive; Substitute : in ASCII_Character := Q_L) return ASCII_Character
    is
       Item    : UTF8_Code_Point;
       Pointer : Integer := Source.Chars'First;
@@ -294,7 +294,7 @@ package body UXStrings is
    -- To_ASCII --
    --------------
 
-   function To_ASCII (Source : UXString; Substitute : in ASCII_Character := '?') return ASCII_Character_Array is
+   function To_ASCII (Source : UXString; Substitute : in ASCII_Character := Q_L) return ASCII_Character_Array is
    begin
       if Source.Full_ASCII then
          return Source.Chars.all;
@@ -350,7 +350,7 @@ package body UXStrings is
    -----------------
 
    function Get_Latin_1
-     (Source : UXString; Index : Positive; Substitute : in Latin_1_Character := '¿') return Latin_1_Character
+     (Source : UXString; Index : Positive; Substitute : in Latin_1_Character := Inv_Q_L) return Latin_1_Character
    is
       Item    : UTF8_Code_Point;
       Pointer : Integer := Source.Chars'First;
@@ -372,7 +372,7 @@ package body UXStrings is
    -- To_Latin_1 --
    ----------------
 
-   function To_Latin_1 (Source : UXString; Substitute : in Latin_1_Character := '¿') return Latin_1_Character_Array is
+   function To_Latin_1 (Source : UXString; Substitute : in Latin_1_Character := Inv_Q_L) return Latin_1_Character_Array is
    begin
       if Source.Full_ASCII then
          return Source.Chars.all;
@@ -427,7 +427,7 @@ package body UXStrings is
    -- Get_BMP --
    -------------
 
-   function Get_BMP (Source : UXString; Index : Positive; Substitute : in BMP_Character := '¿') return BMP_Character is
+   function Get_BMP (Source : UXString; Index : Positive; Substitute : in BMP_Character := Inv_Q_B) return BMP_Character is
       Item    : UTF8_Code_Point;
       Pointer : Integer := Source.Chars'First;
    begin
@@ -448,7 +448,7 @@ package body UXStrings is
    -- To_BMP --
    ------------
 
-   function To_BMP (Source : UXString; Substitute : in BMP_Character := '¿') return BMP_Character_Array is
+   function To_BMP (Source : UXString; Substitute : in BMP_Character := Inv_Q_B) return BMP_Character_Array is
    begin
       if Source.Full_ASCII then
          return Ada.Characters.Conversions.To_Wide_String (Source.Chars.all);
@@ -1130,7 +1130,7 @@ package body UXStrings is
       else
          return
            Replace_Slice
-             (Source, Position, Position + Natural'min (Source.Length - Position + 1, New_Item.Length) - 1, New_Item);
+             (Source, Position, Position + Natural'Min (Source.Length - Position + 1, New_Item.Length) - 1, New_Item);
       end if;
    end Overwrite;
 
@@ -1268,7 +1268,7 @@ package body UXStrings is
          if Source.Full_ASCII then
             return UXS : UXString do
                UXS.Chars :=
-                 new UTF_8_Character_Array'(Source.Chars (Source.Chars'last - Count + 1 .. Source.Chars'Last));
+                 new UTF_8_Character_Array'(Source.Chars (Source.Chars'Last - Count + 1 .. Source.Chars'Last));
                UXS.Full_ASCII := True;
             end return;
          else

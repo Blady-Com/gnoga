@@ -221,9 +221,9 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
 
    procedure Anchor
      (Text        : in out Text_Type;
-      Row, Column : in     Gnoga.Types.Frational_Range_Type)
+      Row, Column : in     Gnoga.Types.Fractional_Range_Type)
    is
-      function Image is new UXStrings.Conversions.Fixed_Point_Image (Gnoga.Types.Frational_Range_Type);
+      function Image is new UXStrings.Conversions.Fixed_Point_Image (Gnoga.Types.Fractional_Range_Type);
    begin
       Gnoga.Server.Connection.Execute_Script
         (Text.Connection_ID, "gnoga['" & Text.ID & "'].anchor = {x:" & Image (Column) & ",y:" & Image (Row) & "};");
@@ -235,10 +235,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
 
    function Row_Anchor
      (Text : in Text_Type)
-      return Gnoga.Types.Frational_Range_Type
+      return Gnoga.Types.Fractional_Range_Type
    is
    begin
-      return Gnoga.Types.Frational_Range_Type (Float'(Text.Execute ("anchor.y")));
+      return Gnoga.Types.Fractional_Range_Type (Float'(Text.Execute ("anchor.y")));
    end Row_Anchor;
 
    -------------------
@@ -247,10 +247,10 @@ package body Gnoga.Gui.Plugin.Pixi.Text is
 
    function Column_Anchor
      (Text : in Text_Type)
-      return Gnoga.Types.Frational_Range_Type
+      return Gnoga.Types.Fractional_Range_Type
    is
    begin
-      return Gnoga.Types.Frational_Range_Type (Float'(Text.Execute ("anchor.x")));
+      return Gnoga.Types.Fractional_Range_Type (Float'(Text.Execute ("anchor.x")));
    end Column_Anchor;
 
    ----------------

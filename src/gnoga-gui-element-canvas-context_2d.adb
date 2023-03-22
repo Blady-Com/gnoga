@@ -486,7 +486,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
 
    procedure Add_Color_Stop
      (Gradient : in out Gradient_Type;
-      Position : in     Gnoga.Types.Frational_Range_Type;
+      Position : in     Gnoga.Types.Fractional_Range_Type;
       Color    : in     Gnoga.Types.RGBA_Type)
    is
    begin
@@ -495,17 +495,17 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
 
    procedure Add_Color_Stop
      (Gradient : in out Gradient_Type;
-      Position : in     Gnoga.Types.Frational_Range_Type;
+      Position : in     Gnoga.Types.Fractional_Range_Type;
       Color    : in     String)
    is
-      function Image is new UXStrings.Conversions.Fixed_Point_Image (Gnoga.Types.Frational_Range_Type);
+      function Image is new UXStrings.Conversions.Fixed_Point_Image (Gnoga.Types.Fractional_Range_Type);
    begin
       Gradient.Execute ("addColorStop (" & Image (Position) & ", '" & Color & "');");
    end Add_Color_Stop;
 
    procedure Add_Color_Stop
      (Gradient : in out Gradient_Type;
-      Position : in     Gnoga.Types.Frational_Range_Type;
+      Position : in     Gnoga.Types.Fractional_Range_Type;
       Color    : in     Gnoga.Types.Colors.Color_Enumeration)
    is
    begin

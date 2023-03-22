@@ -67,10 +67,10 @@ package Gnoga.Types is
    type Connection_Data_Access is access all Connection_Data_Type;
    type Pointer_to_Connection_Data_Class is access all Connection_Data_Type'Class;
 
-   type Frational_Range_Type is delta 0.001 range 0.0 .. 1.0;
-   for Frational_Range_Type'Small use 0.001;
+   type Fractional_Range_Type is delta 0.001 range 0.0 .. 1.0;
+   for Fractional_Range_Type'Small use 0.001;
 
-   subtype Alpha_Type is Frational_Range_Type;
+   subtype Alpha_Type is Fractional_Range_Type;
 
    type Color_Type is range 0 .. 255;
 

@@ -173,13 +173,14 @@ package UXStrings.Text_IO is
 
 private
 
+   type String_Access is access String;
    type File_Type is record
       FD     : GNAT.OS_Lib.File_Descriptor := GNAT.OS_Lib.Invalid_FD;
       Mode   : File_Mode;
       Name   : UXString;
       Scheme : Encoding_Scheme;
       Ending : Line_Ending;
-      Buffer : UXString;
+      Buffer : String_Access               := new String'("");
       EOF    : Boolean                     := False;
    end record;
 

@@ -4,6 +4,10 @@
 
 ## Motivation
 
+My first motivation was to avoid the user of the Ada language from having to make a choice in the representation of character strings.
+With the current Ada 2012 standard, the choice must be made according to the nature of the characters handled (Character, Wide\_Character or Wide\_Wide\_Character) and the adaptation of the string size according to the operations carried out.
+Moreover, depending on the libraries used, making a single choice is generally not possible, which leads to continuous conversions.
+
 Ada GUI library [Gnoga](https://sourceforge.net/projects/gnoga) internal character strings implementation is based on both Ada types String and Unbounded\_String.
 The native Ada String encoding is Latin-1 whereas transactions with the Javascript part are in UTF-8 encoding.
 
@@ -30,16 +34,16 @@ The programmer won't make any representation choice when for example receiving U
 ``` ada
    S2 : UXString;
    ...
-   S2 := "Received: " & From_UTF8 (Message);
+   S2 := "Received: " & From_UTF_8 (Message);
 ```
 
 Automatically S2 will adapt its inner representation to the received characters.
 
 ## UXStrings packages
 
-Package named [UXStrings](https://github.com/Blady-Com/UXStrings/blob/master/src/uxstrings1.ads) (Unicode Extended String) and its [Text_IO](https://github.com/Blady-Com/UXStrings/blob/master/src/uxstrings-text_io1.ads) child package are proposed to bring String enhancements using some Ada 202x features.
+Package named [UXStrings](https://github.com/Blady-Com/UXStrings/blob/master/src/uxstrings1.ads) (Unicode Extended Strings) and its [Text_IO](https://github.com/Blady-Com/UXStrings/blob/master/src/uxstrings-text_io1.ads) child package are proposed to bring String enhancements using some Ada 202x features.
 
-The first part of UXString package contains renaming statements of current Ada types.
+The first part of UXStrings package contains renaming statements of current Ada types.
 Ada current String type is structurally an array of Latin-1 characters thus is renamed as Latin\_1\_Character\_Array.
 And so on.
 
@@ -91,14 +95,6 @@ A first proof of concept implementation is provided. The source code files are e
 UTF-8 encoding is chosen for internal representation. The [Strings_Edit library](http://www.dmitry-kazakov.de/ada/strings_edit.htm) is used for UTF-8 encoding management.
 [GNAT.OS_Lib](https://docs.adacore.com/gnat_rm-docs/html/gnat_rm/gnat_rm/the_gnat_library.html#gnat-os-lib-g-os-lib-ads) is chosen for input / output management.
 
-This implementation which is only for demonstrate the possible usages of UXString has many limitations.
-
-#### Limitations:
-
-- not thread safe
-- single character assignment is not implemented
-- only few API are implemented
-
 ### UXStrings 2
 
 A second proof of concept implementation is provided. The source code files are ending with the number 2 as for instance "uxstrings2.ads". A GNAT project file "uxstrings2.gpr" is provided with some naming conventions for both packages UXStrings  and UXStrings.Text\_IO.
@@ -108,9 +104,17 @@ A second proof of concept implementation is provided. The source code files are 
 In addition to implementation UXStrings 1, some API have been added to support ASCII 7 bits encoding. ASCII is a subset of UTF-8 thus no change with the internal representation.
 However, the API are now aware if content is full ASCII. On one hand, this permits to access directly to the position of one character without iterating on UTF-8 characters. Thus this is a time improvement when content is full ASCII. On the other hand, when content is changing the API check if the content is full ASCII. Thus this is a time penalty when changes are not full ASCII.
 
-This implementation which is only for demonstrate the possible usages of UXString has many limitations.
+### UXStrings 3
 
-#### Limitations:
+A third proof of concept implementation is provided. The source code files are ending with the number 3 as for instance "uxstrings3.ads". A GNAT project file "uxstrings3.gpr" is provided with some naming conventions for both packages UXStrings  and UXStrings.Text\_IO.
+
+#### Implementation choices
+
+In addition to implementation UXStrings 1, Unbounded\_Wide\_Wide\_Strings Ada standard package is chosen for internal representation. Characters are stored as Wide\_Wide\_Characters equivalent to Unicode. Memory management is done with the Unbounded capacity.
+
+### Limitations
+
+These implementations which are only for demonstrate the possible usages of UXString have many limitations.
 
 - not thread safe
 - single character assignment is not implemented
@@ -121,21 +125,28 @@ This implementation which is only for demonstrate the possible usages of UXStrin
 Here are some ideas:
 
 - Use memory management as implemented in XStrings from [GNATColl](https://github.com/AdaCore/gnatcoll-core/blob/master/src/gnatcoll-strings_impl.ads).
-- Use Unbounded\_Strings with UTF-8 encoding.
-- Use Unbounded\_Wide\_Wide\_Strings
+- Use Unbounded\_Strings for memory management with UTF-8 encoding.
 - Adapt the inner implementation to the actual content with 8 bits character encodings, 16 bits or 32 bits.
 
 ## Tests
 
 One test program [test\_uxstrings.adb](https://github.com/Blady-Com/UXStrings/blob/master/tests/test_uxstrings.adb) is provided for UXStrings tests and an other test program [test\_uxstrings\_text\_io.adb](https://github.com/Blady-Com/UXStrings/blob/master/tests/test_uxstrings_text_io.adb) is provided for UXStrings.Text\_IO tests.
 
+## Dependencies
+
+UXStrings library depends on [Strings Edit](http://www.dmitry-kazakov.de/ada/strings_edit.htm) library.
+This latter is also part of [Simple Components](http://www.dmitry-kazakov.de/ada/components.htm) framework available on Alire.
+Get one of these and add the path of strings\_edit.gpr in your GPR\_PROJECT_PATH before building with UXStrings.
+
 ## Using Alire
 
-In your [Alire](https://alire.ada.dev) project, add UXStrings dependency:
+In your own [Alire](https://alire.ada.dev) project, add UXStrings dependency:
 
 `% alr with uxstrings`
 
-Thus you can import the UXStrings package in your programs.
+Then you can import the Ada UXStrings packages in your programs.
+
+Note: Alire will take care of dependencies.
 
 ## Licence
 
@@ -147,4 +158,4 @@ The actual proposed implementation is under [CeCILL](https://cecill.info) licenc
 
 Feel free to send feedback about UXStrings specification source code on [Github](https://github.com/Blady-Com/UXStrings/issues).
 
-Pascal Pignard, April 2021.
+Pascal Pignard, April 2021, August 2022, March 2023.

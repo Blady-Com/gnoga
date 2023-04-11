@@ -803,7 +803,7 @@ package body Gnoga.Server.Connection is
       begin
          for Arg in 1 .. Argument_Count loop
             Arg1 := From_UTF_8 (Argument (Arg));
-            if Arg1.Slice (1, Switch.Length) = Switch then
+            if Arg1.Length > Switch.Length and then Arg1.Slice (1, Switch.Length) = Switch then
                Arg2 := Arg1.Slice (Switch.Length + 1, Arg1.Length);
             end if;
          end loop;

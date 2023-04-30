@@ -1706,8 +1706,9 @@ package body Gnoga.Gui.Element is
    is
       function Img is new UXStrings.Conversions.Scalar_Image (Gnoga.Gui.Element.Font_Weight_Type);
       W : constant String := Img (Value);
+      P : constant String := "Weight_";
    begin
-      return W.Slice (W.First + 7, W.Last);
+      return W.Slice (W.First + P.Length, W.Last);
    end Image;
 
    -----------
@@ -1735,13 +1736,11 @@ package body Gnoga.Gui.Element is
       Weight  : in     Font_Weight_Type  := Weight_Normal;
       Variant : in     Font_Variant_Type := Normal)
    is
-      W : constant String := Image (Weight);
       function Image is new UXStrings.Conversions.Scalar_Image (Font_Style_Type);
       function Image is new UXStrings.Conversions.Scalar_Image (Font_Variant_Type);
    begin
       Element.Style
-        ("font",
-         Image (Style) & " " & Image (Variant) & " " & W.Slice (W.First + 7, W.Last) & " " & Height & " " & Family);
+        ("font", Image (Style) & " " & Image (Variant) & " " & Image (Weight) & " " & Height & " " & Family);
    end Font;
 
    procedure Font

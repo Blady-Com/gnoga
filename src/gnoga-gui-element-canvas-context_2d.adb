@@ -340,10 +340,12 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
       function Image is new UXStrings.Conversions.Scalar_Image (Font_Weight_Type);
       function Image is new UXStrings.Conversions.Scalar_Image (Font_Variant_Type);
       W : constant String := Image (Weight);
+      P : constant String := "Weight_";
    begin
       Context.Property
         ("font",
-         Image (Style) & " " & Image (Variant) & " " & W.Slice (W.First + 7, W.Last) & " " & Height & " " & Family);
+         Image (Style) & " " & Image (Variant) & " " &
+           W.Slice (W.First + P.Length, W.Last) & " " & Height & " " & Family);
    end Font;
 
    procedure Font
@@ -418,15 +420,17 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
       Value   : in     Composite_Method_Type)
    is
       function Image is new UXStrings.Conversions.Scalar_Image (Composite_Method_Type);
-      V : constant String := Image (Value);
+      V  : constant String := Image (Value);
+      PS : constant String := "Source_";
+      PD : constant String := "Destination_";
    begin
       case Value is
          when Lighter | Copy =>
             Context.Property ("globalCompositeOperation", V);
          when Source_Over | Source_Atop | Source_In | Source_Out =>
-            Context.Property ("globalCompositeOperation", "source-" & V.Slice ((V.First + 7), V.Last));
+            Context.Property ("globalCompositeOperation", "source-" & V.Slice ((V.First + PS.Length), V.Last));
          when Destination_Over | Destination_Atop | Destination_In | Destination_Out =>
-            Context.Property ("globalCompositeOperation", "destination-" & V.Slice ((V.First + 12), V.Last));
+            Context.Property ("globalCompositeOperation", "destination-" & V.Slice ((V.First + PD.Length), V.Last));
          when Xor_Copy =>
             Context.Property ("globalCompositeOperation", "xor");
       end case;
@@ -1148,7 +1152,7 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
          end loop;
       end loop;
 
-      Data (Image_Data, S.Slice (1, S.Length - 1));
+      Data (Image_Data, S.Slice (S.First, S.Last - 1));
    end Data;
 
    function Data

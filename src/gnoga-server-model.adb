@@ -60,7 +60,7 @@ package body Gnoga.Server.Model is
 
    procedure Values
      (A   : in out Active_Record;
-      Map : in     Gnoga.Types.Data_Maps.Map)
+      Map : in     Gnoga.Types.Data_Map_Type)
    is
       procedure foreach (Position : in Gnoga.Types.Data_Arrays.Cursor);
 
@@ -125,7 +125,7 @@ package body Gnoga.Server.Model is
 
    function Values
      (A : Active_Record)
-      return Gnoga.Types.Data_Maps.Map
+      return Gnoga.Types.Data_Map_Type
    is
    begin
       return A.Values;

@@ -36,7 +36,6 @@
 ------------------------------------------------------------------------------
 
 with Gnoga.Server.Connection;
-with Ada.Strings.Unbounded;
 with Ada.Numerics;
 
 package body Gnoga.Gui.Plugin.Pixi.Graphics is

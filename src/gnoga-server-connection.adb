@@ -803,8 +803,10 @@ package body Gnoga.Server.Connection is
       begin
          for Arg in 1 .. Argument_Count loop
             Arg1 := From_UTF_8 (Argument (Arg));
-            if Arg1.Length > Switch.Length and then Arg1.Slice (1, Switch.Length) = Switch then
-               Arg2 := Arg1.Slice (Switch.Length + 1, Arg1.Length);
+            if Arg1.Length > Switch.Length and then
+              Arg1.Slice (Arg1.First, Arg1.First + Switch.Length - 1) = Switch
+            then
+               Arg2 := Arg1.Slice (Arg1.First + Switch.Length, Arg1.Last);
             end if;
          end loop;
          return (if Arg2 /= Null_UXString then Arg2 else Default);
@@ -1616,7 +1618,7 @@ package body Gnoga.Server.Connection is
 
    protected body Script_Manager_Type is
       procedure Add_Script_Holder
-        (ID     :    out Gnoga.Types.Connection_ID;
+        (ID     :    out Gnoga.Types.Unique_ID;
          Holder : in     Script_Holder_Access)
       is
       begin
@@ -1626,7 +1628,7 @@ package body Gnoga.Server.Connection is
          ID := Script_ID;
       end Add_Script_Holder;
 
-      procedure Delete_Script_Holder (ID : in Gnoga.Types.Connection_ID) is
+      procedure Delete_Script_Holder (ID : in Gnoga.Types.Unique_ID) is
       begin
          Script_Holder_Map.Delete (ID);
       end Delete_Script_Holder;
@@ -2422,9 +2424,10 @@ package body Gnoga.Server.Connection is
             Source.Buffer.Get_And_Clear (S);
 
             if Length (S) > Chunk_Size then
-               Source.Buffer.Preface (Slice (Source => S, Low => 1 + Chunk_Size, High => Length (S)));
+               Source.Buffer.Preface (Slice (Source => S, Low => S.First + Chunk_Size, High => S.Last));
 
-               return Standard.String (To_UTF_8 (Slice (Source => S, Low => 1, High => Chunk_Size)));
+               return Standard.String (To_UTF_8 (
+                                       Slice (Source => S, Low => S.First, High => S.First + Chunk_Size - 1)));
             else
                return Standard.String (To_UTF_8 (S));
             end if;

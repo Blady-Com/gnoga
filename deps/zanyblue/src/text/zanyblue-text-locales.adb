@@ -339,9 +339,15 @@ package body ZanyBlue.Text.Locales is
       Language  := Empty_Language;
       Script    := Empty_Script;
       Territory := Empty_Territory;
-      Get_Separated_Item (Language, First, Last);
-      Get_Separated_Item (Script, First, Last);
-      Get_Separated_Item (Territory, First, Last);
+      if Last > First then
+         Get_Separated_Item (Language, First, Last);
+      end if;
+      if Last > First then
+         Get_Separated_Item (Script, First, Last);
+      end if;
+      if Last > First then
+         Get_Separated_Item (Territory, First, Last);
+      end if;
       if Script (Script.Last) = ' ' then
          --  Fix up, the script is really the territory
          Territory := Script;

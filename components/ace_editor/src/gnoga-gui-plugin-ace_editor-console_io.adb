@@ -37,7 +37,6 @@
 ------------------------------------------------------------------------------
 
 with Ada.Characters.Wide_Wide_Latin_1;
-with Ada.Strings;
 
 package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
 
@@ -56,23 +55,23 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
          Ind : constant Natural := Index (Buffer, From_Unicode (Ada.Characters.Wide_Wide_Latin_1.CR)) - 1;
       begin
          Last := Line.First + Ind - 1;
-         Line := Slice (Buffer, 1, Ind);
-         Delete (Buffer, 1, Ind + 1); --  Supress CR in addition
+         Line := Slice (Buffer, Buffer.First, Ind);
+         Delete (Buffer, Buffer.First, Ind + 1); --  Supress CR in addition
          NL := Index (Buffer, From_Unicode (Ada.Characters.Wide_Wide_Latin_1.CR)) > 0;
       end Read;
 
       entry Read (Line : out String) when NL is
          Ind : constant Natural := Index (Buffer, From_Unicode (Ada.Characters.Wide_Wide_Latin_1.CR)) - 1;
       begin
-         Line := Slice (Buffer, 1, Ind);
-         Delete (Buffer, 1, Ind + 1); --  Supress CR in addition
+         Line := Slice (Buffer, Buffer.First, Ind);
+         Delete (Buffer, Buffer.First, Ind + 1); --  Supress CR in addition
          NL := Index (Buffer, From_Unicode (Ada.Characters.Wide_Wide_Latin_1.CR)) > 0;
       end Read;
 
       entry Read (Ch : out Unicode_Character) when Length (Buffer) > 0 is
       begin
-         Ch := Element (Buffer, 1);
-         Delete (Buffer, 1, 1);
+         Ch := Element (Buffer, Buffer.First);
+         Delete (Buffer, Buffer.First, Buffer.First);
          NL := Index (Buffer, From_Unicode (Ada.Characters.Wide_Wide_Latin_1.CR)) > 0;
       end Read;
 
@@ -83,8 +82,8 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
       begin
          Available := Length (Buffer) > 0;
          if Available then
-            Ch := Element (Buffer, 1);
-            Delete (Buffer, 1, 1);
+            Ch := Element (Buffer, Buffer.First);
+            Delete (Buffer, Buffer.First, Buffer.First);
          end if;
          NL := Index (Buffer, From_Unicode (Ada.Characters.Wide_Wide_Latin_1.CR)) > 0;
       end Get;
@@ -96,7 +95,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor.Console_IO is
       begin
          Available := Length (Buffer) > 0;
          if Available then
-            Ch := Element (Buffer, 1);
+            Ch := Element (Buffer, Buffer.First);
          end if;
       end Look;
    end Text_Buffer;

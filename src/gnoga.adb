@@ -270,7 +270,7 @@ package body Gnoga is
       end if;
 
       if S (S.First) = Space or S (S.First) = Tab then
-         return Left_Trim (S.Slice ((S.First + 1), S.Last));
+         return Left_Trim (S.Slice (S.First + 1, S.Last));
       else
          return S;
       end if;
@@ -292,7 +292,7 @@ package body Gnoga is
       end if;
 
       if S (S.Last) = Space or S (S.Last) = Tab then
-         return Right_Trim (S.Slice (S.First, (S.Last - 1)));
+         return Right_Trim (S.Slice (S.First, S.Last - 1));
       else
          return S;
       end if;
@@ -315,7 +315,7 @@ package body Gnoga is
       end if;
 
       if S (S.First) = Space or S (S.First) = Tab or S (S.First) = Slash then
-         return Left_Trim_Slashes (S.Slice ((S.First + 1), S.Last));
+         return Left_Trim_Slashes (S.Slice (S.First + 1, S.Last));
       else
          return S;
       end if;
@@ -338,7 +338,7 @@ package body Gnoga is
       end if;
 
       if S (S.Last) = Space or S (S.Last) = Tab or S (S.Last) = Slash then
-         return Right_Trim_Slashes (S.Slice (S.First, (S.Last - 1)));
+         return Right_Trim_Slashes (S.Slice (S.First, S.Last - 1));
       else
          return S;
       end if;

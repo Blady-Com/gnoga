@@ -375,6 +375,6 @@ pretty_print_gnoga:
 pretty_print_test:
 	GPR_PROJECT_PATH=$(CWD)$(PATHSEP)src $(PRETTY_PRINTER) -P test/test.gpr $(GN_OPTIONS)
 pretty_print_demo:
-	for i in snake mine_detector connect_four chattanooga adaedit adablog password_gen linxtris random_int adaothello tic_tac_toe leaves db_maker logo localize; do (GPR_PROJECT_PATH=$(CWD)$(PATHSEP)src:$(CWD)$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)src $(PRETTY_PRINTER) -P demo/$$i/$$i.gpr $(GN_OPTIONS)); done
+	for i in snake mine_detector connect_four chattanooga adaedit adablog linxtris random_int adaothello tic_tac_toe leaves logo localize; do (GPR_PROJECT_PATH=$(CWD)$(PATHSEP)src:$(CWD)$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)src $(PRETTY_PRINTER) -P demo/$$i/$$i.gpr $(GN_OPTIONS)); done
 pretty_print_tutorial:
 	for i in 01 02 03 04 05 06 07 08 09 10 11; do (GPR_PROJECT_PATH=$(CWD)$(PATHSEP)src:$(CWD)$(PATHSEP)deps$(PATHSEP)zanyblue$(PATHSEP)src $(PRETTY_PRINTER) -P tutorial/tutorial-$$i/tutorial_$$i.gpr $(GN_OPTIONS)); done

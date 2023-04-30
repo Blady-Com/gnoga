@@ -10,8 +10,8 @@ project Test is
                  "storage.adb", "media.adb", "bootjs.adb", "ttables.adb", "menu.adb",
                  "jdemo.adb", "svg_demo.adb", "align.adb", "pack.adb", "ding.adb",
                  "message_boxes.adb", "tree.adb", "plot_test.adb", "test_modal_dialog.adb",
-                 "demo.adb", "db_sqlite.adb", "db_active.adb", "db_mysql.adb",
-                 "singleton.adb", "mac_test.adb", "pragma_sqlite.adb", "files_ops.adb");
+                 "db_sqlite.adb", "db_active.adb", "pragma_sqlite.adb", "files_ops.adb",
+                 "mac_test.adb", "singleton.adb", "demo.adb", "db_mysql.adb");
    for Create_Missing_Dirs use Settings'Create_Missing_Dirs;
 
    package Builder is

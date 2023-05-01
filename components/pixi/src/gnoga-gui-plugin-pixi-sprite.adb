@@ -450,9 +450,9 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
 
    procedure Anchor
      (Sprite      : in out Sprite_Type;
-      Row, Column : in     Gnoga.Types.Frational_Range_Type)
+      Row, Column : in     Gnoga.Types.Fractional_Range_Type)
    is
-      function Image is new UXStrings.Conversions.Fixed_Point_Image (Gnoga.Types.Frational_Range_Type);
+      function Image is new UXStrings.Conversions.Fixed_Point_Image (Gnoga.Types.Fractional_Range_Type);
    begin
       Gnoga.Server.Connection.Execute_Script
         (Sprite.Connection_ID, "gnoga['" & Sprite.ID & "'].anchor = {x:" & Image (Column) & ",y:" & Image (Row) & "};");
@@ -464,10 +464,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
 
    function Row_Anchor
      (Sprite : in Sprite_Type)
-      return Gnoga.Types.Frational_Range_Type
+      return Gnoga.Types.Fractional_Range_Type
    is
    begin
-      return Gnoga.Types.Frational_Range_Type (Float'(Sprite.Execute ("anchor.y")));
+      return Gnoga.Types.Fractional_Range_Type (Float'(Sprite.Execute ("anchor.y")));
    end Row_Anchor;
 
    -------------------
@@ -476,10 +476,10 @@ package body Gnoga.Gui.Plugin.Pixi.Sprite is
 
    function Column_Anchor
      (Sprite : in Sprite_Type)
-      return Gnoga.Types.Frational_Range_Type
+      return Gnoga.Types.Fractional_Range_Type
    is
    begin
-      return Gnoga.Types.Frational_Range_Type (Float'(Sprite.Execute ("anchor.x")));
+      return Gnoga.Types.Fractional_Range_Type (Float'(Sprite.Execute ("anchor.x")));
    end Column_Anchor;
 
    ----------------

@@ -119,13 +119,13 @@ package Gnoga.Gui.Plugin.Pixi.Text is
 
    procedure Anchor
      (Text        : in out Text_Type;
-      Row, Column : in     Gnoga.Types.Frational_Range_Type);
+      Row, Column : in     Gnoga.Types.Fractional_Range_Type);
    function Row_Anchor
      (Text : in Text_Type)
-      return Gnoga.Types.Frational_Range_Type;
+      return Gnoga.Types.Fractional_Range_Type;
    function Column_Anchor
      (Text : in Text_Type)
-      return Gnoga.Types.Frational_Range_Type;
+      return Gnoga.Types.Fractional_Range_Type;
    --  The anchor sets the origin point of the texture.
    --  The default is 0,0 this means the texture's origin is the top left
    --  Setting the anchor to 0.5,0.5 means the texture's origin is centered

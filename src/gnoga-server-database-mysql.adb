@@ -39,7 +39,7 @@ package body Gnoga.Server.Database.MySQL is
 
    --  Binding related specs
 
-   Nul : constant Unicode_Character := Unicode_Character'First;
+   Nul : constant Character := Character'First;
    --  nul terminator for binding to C string parameters
 
    type Ulonglong is new Natural;
@@ -86,19 +86,19 @@ package body Gnoga.Server.Database.MySQL is
 
       function MYSQL_Real_Connect
         (mysql       : MySQL_ID;
-         mHost       : String  := Host & Nul;
-         mUser       : String  := User & Nul;
-         Passwd      : String  := Password & Nul;
-         Db          : Integer := 0;
-         Port        : Integer := 0;
-         Unix_Socket : Integer := 0;
-         Clientflag  : Integer := 0)
+         mHost       : Standard.String := To_UTF_8 (Host) & Nul;
+         mUser       : Standard.String := To_UTF_8 (User) & Nul;
+         Passwd      : Standard.String := To_UTF_8 (Password) & Nul;
+         Db          : Integer         := 0;
+         Port        : Integer         := 0;
+         Unix_Socket : Integer         := 0;
+         Clientflag  : Integer         := 0)
          return MySQL_ID;
       pragma Import (C, MYSQL_Real_Connect, "mysql_real_connect");
 
       function MYSQL_Select_DB
-        (mysql : MySQL_ID := C.Server_ID;
-         db    : String   := Database & Nul)
+        (mysql : MySQL_ID        := C.Server_ID;
+         db    : Standard.String := To_UTF_8 (Database) & Nul)
          return Integer;
       pragma Import (C, MYSQL_Select_DB, "mysql_select_db");
    begin
@@ -141,10 +141,11 @@ package body Gnoga.Server.Database.MySQL is
      (C   : in out Connection;
       SQL :        String)
    is
+      S : constant Standard.String := To_UTF_8 (SQL);
       function MYSQL_Real_Query
-        (mysql : MySQL_ID := C.Server_ID;
-         q     : String   := SQL;
-         l     : Natural  := SQL.Length)
+        (mysql : MySQL_ID        := C.Server_ID;
+         q     : Standard.String := S;
+         l     : Natural         := S'Length)
          return Integer;
       pragma Import (C, MYSQL_Real_Query, "mysql_real_query");
    begin
@@ -318,11 +319,12 @@ package body Gnoga.Server.Database.MySQL is
       return Gnoga.Server.Database.Recordset'Class
    is
       RS : Recordset (C.Server_ID);
+      S  : constant Standard.String := To_UTF_8 (SQL);
 
       function MYSQL_Real_Query
-        (mysql : MySQL_ID := RS.Server_ID;
-         q     : String   := SQL;
-         l     : Natural  := SQL.Length)
+        (mysql : MySQL_ID        := RS.Server_ID;
+         q     : Standard.String := S;
+         l     : Natural         := S'Length)
          return Integer;
       pragma Import (C, MYSQL_Real_Query, "mysql_real_query");
 

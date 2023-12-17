@@ -7,6 +7,8 @@ with Gnoga.Gui.Window;
 with Gnoga.Gui.View;
 with Gnoga.Gui.View.Docker;
 
+with User_Defined_Logging;
+
 procedure Align is
    use Gnoga;
    use Gnoga.Gui.Element;
@@ -66,8 +68,20 @@ procedure Align is
 
    procedure Calculate (Element : in out Gnoga.Gui.Base.Base_Type'Class) is
       pragma Unreferenced (Element);
+      function Factorial
+        (N : Natural)
+         return Natural
+      is
+      begin
+         return (if N = 0 then 1 else N * Factorial (N - 1));
+      end Factorial;
    begin
-      Main_View.Put_Line (Number_Choice.Value);
+      Main_View.Put_Line (Image (Factorial (Number_Choice.Value)));
+   exception
+      when E : others =>
+         Log ("Calculation error.");
+         Log (E);
+         Main_View.Put_Line ("Error !");
    end Calculate;
 
    procedure Radio_Select (Element : in out Gnoga.Gui.Base.Base_Type'Class) is
@@ -82,7 +96,8 @@ procedure Align is
 begin
 --     Gnoga.Application.Open_URL;
 
-   Gnoga.Application.Singleton.Initialize (Main_Window, "localhost");
+   Gnoga.Application.Singleton.Initialize
+     (Main_Window, "localhost", Logging => User_Defined_Logging.Create_User_Defined_Logging);
 
    Main_View.Create (Main_Window);
    Main_View.Text_Alignment (Center);

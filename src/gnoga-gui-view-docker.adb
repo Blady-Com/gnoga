@@ -35,8 +35,6 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Exceptions;
-
 package body Gnoga.Gui.View.Docker is
 
    ------------
@@ -99,7 +97,7 @@ package body Gnoga.Gui.View.Docker is
    exception
       when E : others =>
          Log ("Error Update_Dock.");
-         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+         Log (E);
    end Update_Dock;
 
    --------------

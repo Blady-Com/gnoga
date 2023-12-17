@@ -35,8 +35,6 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Exceptions;
-
 with Gnoga.Server.Connection;
 
 package body Gnoga.Gui.Plugin.Ace_Editor is
@@ -960,7 +958,7 @@ package body Gnoga.Gui.Plugin.Ace_Editor is
    exception
       when E : others =>
          Log ("Error Editor_Execute converting to Integer (forced to 0).");
-         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+         Log (E);
          return 0;
    end Editor_Execute;
 

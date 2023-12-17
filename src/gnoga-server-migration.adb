@@ -37,7 +37,6 @@
 
 with Ada.Command_Line;
 with Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants;
-with Ada.Exceptions;
 
 with Gnoga.Server.Model.Table;
 
@@ -143,7 +142,7 @@ package body Gnoga.Server.Migration is
          when E : Gnoga.Server.Database.Query_Error =>
             --  table already exists
             Log ("Error Create_Param_Table table already exists.");
-            Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+            Log (E);
       end Create_Param_Table;
 
       Collection.Migrate_To (Connection, Collection.Migrations_Up.Last_Index);

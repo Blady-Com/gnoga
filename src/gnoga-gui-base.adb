@@ -35,8 +35,6 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Exceptions;
-
 with Ada.Unchecked_Deallocation;
 with Ada.Characters.Conversions;
 
@@ -111,7 +109,7 @@ package body Gnoga.Gui.Base is
       exception
          when E : others =>
             Log ("Error Parse_Mouse_Event converting to Integer" & " (forced to 0).");
-            Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+            Log (E);
             return 0;
       end Split;
 
@@ -180,7 +178,7 @@ package body Gnoga.Gui.Base is
       exception
          when E : others =>
             Log ("Error Parse_Keyboard_Event converting to Integer" & " (forced to 0).");
-            Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+            Log (E);
             return 0;
       end Split;
 
@@ -238,7 +236,7 @@ package body Gnoga.Gui.Base is
       exception
          when E : others =>
             Log ("Error Parse_Drop_Event converting to Integer" & " (forced to 0).");
-            Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+            Log (E);
             return 0;
       end Split;
    begin
@@ -277,7 +275,7 @@ package body Gnoga.Gui.Base is
                   when E : Gnoga.Server.Connection.Connection_Error =>
                      --  Socket error to browser
                      Log ("Error connection " & Object.ID & " socket error to browser.");
-                     Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+                     Log (E);
                end;
             end if;
             Object.Connection_ID := Gnoga.Types.No_Connection;
@@ -288,7 +286,7 @@ package body Gnoga.Gui.Base is
    exception
       when E : others =>
          Log ("Error finalizing ID " & Object.ID);
-         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+         Log (E);
    end Finalize;
 
    ----------
@@ -2064,7 +2062,7 @@ package body Gnoga.Gui.Base is
             Object.In_Resize := False;
          end if;
       else
-         Gnoga.Log ("Unhandled Event : " & Event);
+         Log ("Unhandled Event : " & Event);
       end if;
    end On_Message;
 
@@ -2266,7 +2264,7 @@ package body Gnoga.Gui.Base is
    exception
       when E : others =>
          Log ("Error jQuery_Execute converting to Integer (forced to 0).");
-         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+         Log (E);
          return 0;
    end jQuery_Execute;
 
@@ -2281,7 +2279,7 @@ package body Gnoga.Gui.Base is
    exception
       when E : others =>
          Log ("Error jQuery_Execute converting to Float (forced to 0.0).");
-         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+         Log (E);
          return 0.0;
    end jQuery_Execute;
 end Gnoga.Gui.Base;

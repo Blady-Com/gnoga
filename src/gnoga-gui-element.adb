@@ -35,8 +35,6 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Exceptions;
-
 with Gnoga.Server.Connection;
 
 package body Gnoga.Gui.Element is
@@ -75,7 +73,7 @@ package body Gnoga.Gui.Element is
             P : Natural := Index (Source => HTML, Pattern => ">");
          begin
             if P = 0 then
-               Gnoga.Log ("Malformed HTML = " & HTML);
+               Log ("Malformed HTML = " & HTML);
             else
                if HTML (P - 1) = '/' then
                   P := P - 1;
@@ -199,7 +197,7 @@ package body Gnoga.Gui.Element is
    exception
       when E : others =>
          Log ("Error Style converting to Integer (forced to 0).");
-         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+         Log (E);
          return 0;
    end Style;
 
@@ -403,7 +401,7 @@ package body Gnoga.Gui.Element is
    exception
       when E : others =>
          Log ("Error Overflow converting to Overflow_Type" & " (forced to Visible).");
-         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+         Log (E);
          return Visible;
    end Overflow;
 
@@ -468,7 +466,7 @@ package body Gnoga.Gui.Element is
    exception
       when E : others =>
          Log ("Error Resizable converting to Resizable_Type" & " (forced to None).");
-         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+         Log (E);
          return None;
    end Resizable;
 
@@ -495,7 +493,7 @@ package body Gnoga.Gui.Element is
    exception
       when E : others =>
          Log ("Error Position converting to Position_Type" & " (forced to Static).");
-         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+         Log (E);
          return Static;
    end Position;
 
@@ -1374,7 +1372,7 @@ package body Gnoga.Gui.Element is
    exception
       when E : others =>
          Log ("Error Opacity converting to Alpha_Type (forced to 1.0).");
-         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+         Log (E);
          return 1.0;
    end Opacity;
 

@@ -36,7 +36,6 @@
 ------------------------------------------------------------------------------
 
 with Ada.Numerics.Elementary_Functions;
-with Ada.Strings;
 with Gnoga.Server.Connection;
 
 package body Gnoga.Gui.Plugin.Pixi.Sprite is

@@ -38,7 +38,6 @@
 with Ada.Strings.Wide_Wide_Maps;
 with Ada.Calendar.Formatting;
 with Ada.Unchecked_Deallocation;
-with Ada.Exceptions;
 
 with Gnoga.Client.Storage;
 with Gnoga.Server.Connection;
@@ -120,7 +119,7 @@ package body Gnoga.Gui.Window is
    exception
       when E : others =>
          Log ("Error finalizing Window ID " & Object.ID);
-         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+         Log (E);
    end Finalize;
 
    ------------
@@ -170,7 +169,7 @@ package body Gnoga.Gui.Window is
    exception
       when E : others =>
          Log ("Unable to find gnoga['Connection_ID'] on " & ID & " eval returned : " & CID);
-         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+         Log (E);
          raise Not_A_Gnoga_Window;
    end Attach;
 

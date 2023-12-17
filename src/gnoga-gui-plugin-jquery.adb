@@ -35,8 +35,6 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Exceptions;
-
 with Gnoga.Server.Connection;
 
 package body Gnoga.Gui.Plugin.jQuery is
@@ -83,10 +81,10 @@ package body Gnoga.Gui.Plugin.jQuery is
       when E : Gnoga.Server.Connection.Connection_Error =>
          --  Socket error to browser
          Log ("Connection" & Image (Object.Connection_ID) & " socket error to browser.");
-         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+         Log (E);
       when E : others =>
          Log ("Error finalizing jQuery Object - " & Gnoga_Var (Object));
-         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+         Log (E);
    end Finalize;
 
    ------------

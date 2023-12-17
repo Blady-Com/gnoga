@@ -40,6 +40,7 @@
 
 with Gnoga.Server.Connection;
 with Gnoga.Gui.Window;
+with Gnoga.Loggings;
 
 package Gnoga.Application.Multi_Connect is
 
@@ -63,6 +64,7 @@ package Gnoga.Application.Multi_Connect is
       Host    : in String                    := "";
       Port    : in Integer                   := 8_080;
       Boot    : in String                    := "boot.html";
+      Logging : in Gnoga.Loggings.Root_Logging_Class := Gnoga.Loggings.Create_Console_Logging;
       Verbose : in Boolean                   := True);
    --  Initialize an application for multiple connections using
    --  Event for the default Connection Handler and Boot for bootstrap html.

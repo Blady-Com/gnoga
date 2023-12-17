@@ -109,11 +109,12 @@ package body Gnoga.Application.Singleton is
       Host        : in     String  := "";
       Port        : in     Integer := 8_080;
       Boot        : in     String  := "boot.html";
+      Logging     : in Gnoga.Loggings.Root_Logging_Class := Gnoga.Loggings.Create_Console_Logging;
       Verbose     : in     Boolean := True)
    is
    begin
       Gnoga.Activate_Exception_Handler (Ada.Task_Identification.Current_Task);
-      Gnoga.Server.Connection.Initialize (Host, Port, Boot, Verbose);
+      Gnoga.Server.Connection.Initialize (Host, Port, Boot, Logging, Verbose);
 
       if Verbose then
          Gnoga.Write_To_Console ("Singleton application.");

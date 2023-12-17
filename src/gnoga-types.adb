@@ -35,8 +35,6 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Exceptions;
-
 package body Gnoga.Types is
    function To_RGBA_From_Hex
      (Value : String)
@@ -121,7 +119,7 @@ package body Gnoga.Types is
    exception
       when E : others =>
          Log ("Error converting to rbga value from " & Value);
-         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+         Log (E);
          return RGBA;
    end To_RGBA_From_Hex;
 

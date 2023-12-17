@@ -1,7 +1,5 @@
 --  Inspired by GWindows and jdemo
 
-with Ada.Exceptions;
-
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Plugin.jQueryUI.Widget;
 
@@ -54,7 +52,7 @@ package body Gnoga.Gui.Plugin.Message_Boxes is
          pragma Unreferenced (Object);
       begin
          if Result = None then
-            Gnoga.Log ("fermeture 'croix'");
+            Log ("fermeture 'croix'");
             Result := Cancel;
          end if;
       end Cancel_Window_Dialog;
@@ -111,17 +109,17 @@ package body Gnoga.Gui.Plugin.Message_Boxes is
          when Yes_No_Cancel_Def_Box =>
             cancel_btn.Focus;
       end case;
-      Gnoga.Log ("entrée de la boucle");
+      Log ("entrée de la boucle");
       loop
          delay 0.10;
          exit when Result /= None;
       end loop;  -- Waiting for a click into OK
-      Gnoga.Log ("sortie de la boucle");
+      Log ("sortie de la boucle");
       return Result;
    exception
       when E : others =>
          Log ("Error Message_Box.");
-         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+         Log (E);
          return Cancel;
    end Message_Box;
 

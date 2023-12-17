@@ -37,6 +37,7 @@
 
 with Gnoga.Types;
 with Gnoga.Gui.Base;
+with Gnoga.Loggings;
 
 package Gnoga.Server.Connection is
 
@@ -44,6 +45,7 @@ package Gnoga.Server.Connection is
      (Host    : in String  := "";
       Port    : in Integer := 8_080;
       Boot    : in String  := "boot.html";
+      Logging : in Gnoga.Loggings.Root_Logging_Class := Gnoga.Loggings.Create_Console_Logging;
       Verbose : in Boolean := True);
    --  Initialize connection to webserver and dispatchers
    --  If Host = "" then server will listen on all network interfaces.

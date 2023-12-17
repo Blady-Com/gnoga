@@ -36,7 +36,6 @@
 ------------------------------------------------------------------------------
 
 with Ada.Calendar.Formatting;
-with Ada.Exceptions;
 
 package body Gnoga.Server.Model is
 
@@ -283,7 +282,7 @@ package body Gnoga.Server.Model is
    exception
       when E : Gnoga.Server.Database.End_Of_Recordset =>
          Log ("Error End_Of_Recordset.");
-         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+         Log (E);
          if Create_New then
             A.Value ("id", "");
             RS.Close;

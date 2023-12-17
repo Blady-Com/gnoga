@@ -36,10 +36,8 @@
 ------------------------------------------------------------------------------
 
 with Ada.Containers.Indefinite_Ordered_Maps;
-with Ada.Exceptions;
 
 with Gnoga.Gui.Navigator;
-
 with Gnoga.Types;
 
 package body Gnoga.Application.Multi_Connect is
@@ -111,13 +109,13 @@ package body Gnoga.Application.Multi_Connect is
       when E : Gnoga.Server.Connection.Connection_Error =>
          --  Browser window was closed
          Log ("Error connection" & Image (ID) & " browser window was closed.");
-         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+         Log (E);
 
       when E : others =>
          Connection.Release;
 
          Log ("Error connection" & Image (ID) & " closed by exception.");
-         Log (From_UTF_8 (Ada.Exceptions.Exception_Information (E)));
+         Log (E);
    end On_Connect;
 
    ----------------
@@ -129,10 +127,11 @@ package body Gnoga.Application.Multi_Connect is
       Host    : in String                    := "";
       Port    : in Integer                   := 8_080;
       Boot    : in String                    := "boot.html";
+      Logging : in Gnoga.Loggings.Root_Logging_Class := Gnoga.Loggings.Create_Console_Logging;
       Verbose : in Boolean                   := True)
    is
    begin
-      Gnoga.Server.Connection.Initialize (Host, Port, Boot, Verbose);
+      Gnoga.Server.Connection.Initialize (Host, Port, Boot, Logging, Verbose);
 
       if Verbose then
          Gnoga.Write_To_Console ("Multi-connect application.");

@@ -35,19 +35,14 @@
 --  For more information please go to http://www.gnoga.com                  --
 ------------------------------------------------------------------------------
 
-with Ada.Calendar;
-with Ada.Calendar.Formatting;
-with Ada.Calendar.Time_Zones;
 with Ada.Integer_Text_IO;
 with Ada.Task_Termination;
 
 with UXStrings.Text_IO;
 
-package body Gnoga is
+with Gnoga.Loggings;
 
-   Use_File        : Boolean := False;
-   Automatic_Flush : Boolean := False;
-   Log_File        : UXStrings.Text_IO.File_Type;
+package body Gnoga is
 
    -------------------------
    -- Escape_Inner_Quotes --
@@ -383,15 +378,7 @@ package body Gnoga is
       Flush_Auto : in Boolean := False)
    is
    begin
-      UXStrings.Text_IO.Create
-        (File   => Log_File, Mode => UXStrings.Text_IO.Append_File, Name => File_Name, Scheme => UTF_8,
-         Ending => UXStrings.Text_IO.LF_Ending);
-
-      Use_File        := True;
-      Automatic_Flush := Flush_Auto;
-   exception
-      when E : others =>
-         Log ("Error failed to open log file " & File_Name, E);
+      Gnoga.Loggings.Logging (Gnoga.Loggings.Create_File_Logging (File_Name, Flush_Auto));
    end Log_To_File;
 
    ---------
@@ -399,22 +386,8 @@ package body Gnoga is
    ---------
 
    procedure Log (Message : in String) is
-      T            : constant Ada.Calendar.Time := Ada.Calendar.Clock;
-      Date_Message : constant String            :=
-        From_ASCII
-          (Ada.Calendar.Formatting.Image
-             (Date => T, Include_Time_Fraction => True, Time_Zone => Ada.Calendar.Time_Zones.UTC_Time_Offset (T)) &
-           " : ") &
-        Message;
    begin
-      if Use_File then
-         UXStrings.Text_IO.Put_Line (Log_File, Date_Message);
-         if Automatic_Flush then
-            Flush_Log;
-         end if;
-      else
-         Write_To_Console (Date_Message);
-      end if;
+      Gnoga.Loggings.Root_Logging_Class (Gnoga.Loggings.Root_Logging_Access (Gnoga.Loggings.Logging)).Log (Message);
    end Log;
 
    procedure Log
@@ -422,12 +395,13 @@ package body Gnoga is
       Occurrence : in Ada.Exceptions.Exception_Occurrence)
    is
    begin
-      Log (Message & From_UTF_8 (Ada.Exceptions.Exception_Information (Occurrence)));
+      Gnoga.Loggings.Root_Logging_Class (Gnoga.Loggings.Root_Logging_Access (Gnoga.Loggings.Logging)).Log
+        (Message, Occurrence);
    end Log;
 
    procedure Log (Occurrence : in Ada.Exceptions.Exception_Occurrence) is
    begin
-      Log (From_UTF_8 (Ada.Exceptions.Exception_Information (Occurrence)));
+      Gnoga.Loggings.Root_Logging_Class (Gnoga.Loggings.Root_Logging_Access (Gnoga.Loggings.Logging)).Log (Occurrence);
    end Log;
 
    ---------------
@@ -436,7 +410,7 @@ package body Gnoga is
 
    procedure Flush_Log is
    begin
-      UXStrings.Text_IO.Flush (Log_File);
+      Gnoga.Loggings.File_Logging_Access (Gnoga.Loggings.Logging).Flush;
    end Flush_Log;
 
    --------------------------------

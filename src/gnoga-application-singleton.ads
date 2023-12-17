@@ -36,6 +36,7 @@
 ------------------------------------------------------------------------------
 
 with Gnoga.Gui.Window;
+with Gnoga.Loggings;
 
 package Gnoga.Application.Singleton is
 
@@ -49,6 +50,7 @@ package Gnoga.Application.Singleton is
       Host        : in     String  := "";
       Port        : in     Integer := 8_080;
       Boot        : in     String  := "boot.html";
+      Logging     : in Gnoga.Loggings.Root_Logging_Class := Gnoga.Loggings.Create_Console_Logging;
       Verbose     : in     Boolean := True);
    --  Initialize application for single connection is Boot for bootstrap html.
    --  If Host = "" then will listen on all network interfaces.

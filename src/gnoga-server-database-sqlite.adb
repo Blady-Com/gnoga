@@ -670,13 +670,13 @@ package body Gnoga.Server.Database.SQLite is
       S : String)
       return String
    is
-      pragma Unreferenced (C);
-
       New_String : String;
    begin
       for J in S loop
-         if S (J) = ''' then
+         if not C.Backslash_Mode and S (J) = ''' then
             New_String := New_String & "''";
+         elsif C.Backslash_Mode and (S (J) = ''' or S (J) = '"' or S (J) = '\') then
+            New_String := New_String & "\" & S (J);
          else
             New_String := New_String & S (J);
          end if;
@@ -785,4 +785,24 @@ package body Gnoga.Server.Database.SQLite is
    begin
       return C.UTF8_String;
    end UTF8_String;
+
+   --------------------
+   -- Backslash_Mode --
+   --------------------
+
+   procedure Backslash_Mode
+     (C      : in out Connection;
+      Active :        Boolean := True)
+   is
+   begin
+      C.Backslash_Mode := Active;
+   end Backslash_Mode;
+
+   function Backslash_Mode
+     (C : in out Connection)
+      return Boolean
+   is
+   begin
+      return C.Backslash_Mode;
+   end Backslash_Mode;
 end Gnoga.Server.Database.SQLite;

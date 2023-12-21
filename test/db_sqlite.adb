@@ -88,7 +88,9 @@ begin
       V.Put_Line ("Default     : " & Description.Default_Value);
    end loop;
 
-   V.Put_Line (Connection.Escape_String ("I've been thinking.. ""escaped"" \ is it?"));
+   V.Put_Line ("Standard mode: " & Connection.Escape_String ("I've been thinking... ""escaped"" \ is it?"));
+   Connection.Backslash_Mode;
+   V.Put_Line ("Backslash mode: " & Connection.Escape_String ("I've been thinking... ""escaped"" \ is it?"));
 
    declare
       RS : Gnoga.Server.Database.Recordset'Class := Connection.Query ("select * from users");

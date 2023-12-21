@@ -262,10 +262,19 @@ package Gnoga.Server.Database.SQLite is
       return Boolean;
    --  Property to treat String as UTF-8 (default) or treat String as Latin-1
 
+   procedure Backslash_Mode
+     (C      : in out Connection;
+      Active :        Boolean := True);
+   function Backslash_Mode
+     (C : in out Connection)
+      return Boolean;
+   --  Property to escape strings with backslash character in Escape_String
+
 private
    type Connection is new Gnoga.Server.Database.Connection with record
-      Server_ID   : aliased SQLite_ID := null;
-      UTF8_String : Boolean           := True;
+      Server_ID      : aliased SQLite_ID := null;
+      Backslash_Mode : Boolean           := False;
+      UTF8_String    : Boolean           := True;
          --  Consider string query parameter
          --  with UTF-8 encoding otherwise with Ada native Latin-1 encoding
    end record;

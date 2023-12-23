@@ -68,30 +68,38 @@ procedure Canvas_Test is
       Button1.Place_Inside_Top_Of (Main_Window.Document.Body_Element.all);
       Button1.On_Click_Handler (On_Click'Unrestricted_Access);
 
-      App.My_Canvas.Create (Main_Window, 400, 400);
+      App.My_Canvas.Create (Main_Window, 800, 400);
       App.My_Canvas.Border;
       App.My_Canvas.Place_Inside_Bottom_Of (App.Main_Window.Document.Body_Element.all);
+      delay 2.0;
 
       C.Get_Drawing_Context_2D (App.My_Canvas);
 
       C.Stroke_Color ("yellow");
-      C.Rectangle ((5, 5, 150, 100));
+      C.Rectangle ((5, 5, 100, 50));
       C.Line_Width (8);
       C.Stroke;
+      delay 2.0;
+
       C.Fill_Color (RGBA_Type'(0, 255, 255, 1.0));
       C.Fill;
-      C.Fill_Color (RGBA_Type'(0, 0, 255, 0.75));
+      delay 2.0;
 
-      C.Fill_Rectangle ((20, 20, 150, 100));
+      C.Fill_Color (RGBA_Type'(0, 0, 255, 0.75));
+      C.Fill_Rectangle ((50, 40, 100, 50));
+      delay 2.0;
+
       C.Fill_Color (RGBA_Type'(0, 0, 255, 0.50));
-      C.Fill_Rectangle ((30, 30, 150, 100));
+      C.Fill_Rectangle ((100, 80, 100, 50));
+      delay 2.0;
 
       G.Create_Linear_Gradient (Context => C, X_1 => 0, Y_1 => 0, X_2 => 200, Y_2 => 200);
       G.Add_Color_Stop (Position => 0.0, Color => RGBA_Type'(255, 255, 255, 1.0));
       G.Add_Color_Stop (Position => 1.0, Color => "purple");
       G.Add_Color_Stop (Position => 1.0, Color => "pink");
       C.Fill_Gradient (G);
-      C.Fill_Rectangle ((40, 40, 150, 100));
+      C.Fill_Rectangle ((150, 120, 150, 100));
+      delay 2.0;
 
       G.Create_Radial_Gradient (Context => C, X_1 => 50, Y_1 => 50, R_1 => 0, X_2 => 150, Y_2 => 100, R_2 => 360);
       G.Add_Color_Stop (Position => 0.0, Color => "orange");
@@ -102,24 +110,29 @@ procedure Canvas_Test is
       C.Save;
       C.Shadow_Color ("black");
       C.Shadow_Blur (20);
-      C.Fill_Rectangle ((50, 50, 150, 100));
+      C.Fill_Rectangle ((200, 160, 100, 50));
       C.Restore;
+      delay 2.0;
 
       I.Create (App.My_Canvas, "/img/pattern.png");
       P.Create_Pattern (Context => C, Image => I, Repeat_Pattern => Context_2D.Repeat);
       C.Fill_Pattern (P);
-      C.Fill_Rectangle ((80, 80, 150, 100));
+      C.Fill_Rectangle ((250, 200, 100, 50));
+      delay 2.0;
 
       C.Fill_Color ("purple");
       C.Font (Height => "40px");
       C.Text_Alignment (Right);
       C.Fill_Text ("Hello World!", 200, 200);
+      delay 2.0;
 
       C.Get_Image_Data (Image_Data => Img_Dat, Left => 25, Top => 25, Width => 150, Height => 150);
 
-      C.Put_Image_Data (Image_Data => Img_Dat, Left => 100, Top => 100);
+      C.Put_Image_Data (Image_Data => Img_Dat, Left => 450, Top => 100);
 
       Gnoga.Log ("Get Data");
+      delay 2.0;
+
       declare
          D : Gnoga.Types.Pixel_Data_Type := Img_Dat.Data;
       begin
@@ -143,7 +156,8 @@ procedure Canvas_Test is
          Img_Dat.Data (D);
 
          Gnoga.Log ("Display Data");
-         C.Put_Image_Data (Image_Data => Img_Dat, Left => 150, Top => 150);
+         C.Put_Image_Data (Image_Data => Img_Dat, Left => 620, Top => 200);
+         delay 2.0;
 
          C.Pixel (0, 0, (0, 0, 0, 0));
 
@@ -158,8 +172,8 @@ procedure Canvas_Test is
             Button1.Background_Color (R);
          end;
 
-         for X in 50 .. 75 loop
-            C.Pixel (X - 50, 125, C.Pixel (X, 20));
+         for X in 200 .. 225 loop
+            C.Pixel (X + 100, 100, C.Pixel (X - 5, 190));
          end loop;
 
          Gnoga.Log ("Done with Data");

@@ -344,8 +344,8 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
    begin
       Context.Property
         ("font",
-         Image (Style) & " " & Image (Variant) & " " &
-           W.Slice (W.First + P.Length, W.Last) & " " & Height & " " & Family);
+         Image (Style) & " " & Image (Variant) & " " & W.Slice (W.First + P.Length, W.Last) & " " & Height & " " &
+         Family);
    end Font;
 
    procedure Font
@@ -914,8 +914,8 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
       return
         Value
           (Gnoga.Server.Connection.Execute_Script
-             (ID     => Context.Connection_ID,
-              Script => "gnoga['" & Context.Context_ID & "'].measureText ('" & Escape_Quotes (Text) & "').width"));
+             (ID      => Context.Connection_ID,
+               Script => "gnoga['" & Context.Context_ID & "'].measureText ('" & Escape_Quotes (Text) & "').width"));
    end Measure_Text_Width;
 
    ----------------
@@ -977,8 +977,9 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
 
       D : Gnoga.Types.Pixel_Data_Type (1 .. Width, 1 .. Height);
 
-      S : Integer := Value.First;
-      F : Integer := Value.First - 1;
+      S          : Integer;
+      F          : Integer := Value.First - 1;
+      R, G, B, A : Color_Type;
 
       function Split return Color_Type;
       --  Split string and extract values
@@ -997,9 +998,13 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
          return Val (Value.Slice (S, F - 1));
       end Split;
    begin
-      for X in 1 .. Width loop
-         for Y in 1 .. Height loop
-            D (X, Y) := (Split, Split, Split, Split);
+      for Y in 1 .. Height loop
+         for X in 1 .. Width loop
+            R        := Split;
+            G        := Split;
+            B        := Split;
+            A        := Split;
+            D (X, Y) := (R, G, B, A);
          end loop;
       end loop;
 
@@ -1140,8 +1145,8 @@ package body Gnoga.Gui.Element.Canvas.Context_2D is
       C : constant String := ",";
       S : String;
    begin
-      for X in 1 .. Value'Length (1) loop
-         for Y in 1 .. Value'Length (2) loop
+      for Y in 1 .. Value'Length (2) loop
+         for X in 1 .. Value'Length (1) loop
             declare
                T : constant String :=
                  Image (Value (X, Y).Red) & C & Image (Value (X, Y).Green) & C & Image (Value (X, Y).Blue) & C &

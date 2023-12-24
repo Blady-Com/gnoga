@@ -48,7 +48,7 @@ procedure DB_MySQL is
    M : Gnoga.Gui.Window.Window_Type;
    V : Gnoga.Gui.View.View_Type;
 begin
-   Gnoga.Log ("Openning connection to MySQL database.");
+   Gnoga.Log ("Opening connection to MySQL database.");
 
    Connection.Connect (Database => "xxx", Host => "xxx", User => "xxx", Password => "xxx");
 

@@ -49,7 +49,7 @@ procedure DB_Active is
    M : Gnoga.Gui.Window.Window_Type;
    V : Gnoga.Gui.View.View_Type;
 begin
-   Gnoga.Log ("Openning database file: ./active_test.db");
+   Gnoga.Log ("Opening database file: ./active_test.db");
 
    Connection := Gnoga.Server.Database.SQLite.Connect ("active_test.db");
 

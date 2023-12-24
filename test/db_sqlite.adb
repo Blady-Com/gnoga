@@ -45,7 +45,7 @@ procedure DB_SQLite is
    M : Gnoga.Gui.Window.Window_Type;
    V : Gnoga.Gui.View.View_Type;
 begin
-   Gnoga.Log ("Openning database file: ./test.db");
+   Gnoga.Log ("Opening database file: ./test.db");
 
    Connection.Connect (Database => "test.db");
 

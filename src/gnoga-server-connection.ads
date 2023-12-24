@@ -2,7 +2,7 @@
 --                                                                          --
 --                   GNOGA - The GNU Omnificent GUI for Ada                 --
 --                                                                          --
---                 G N O G A . S E R V E R . C O N N E C I O N              --
+--                 G N O G A . S E R V E R . C O N N E C T I O N            --
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --

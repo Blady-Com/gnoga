@@ -108,7 +108,7 @@ package body Gnoga.Gui.Base is
          end if;
       exception
          when E : others =>
-            Log ("Error Parse_Mouse_Event converting to Integer" & " (forced to 0).");
+            Log ("Error Parse_Mouse_Event converting " & S & " to Integer (forced to 0).");
             Log (E);
             return 0;
       end Split;
@@ -177,7 +177,7 @@ package body Gnoga.Gui.Base is
          end if;
       exception
          when E : others =>
-            Log ("Error Parse_Keyboard_Event converting to Integer" & " (forced to 0).");
+            Log ("Error Parse_Keyboard_Event converting " & S & " to Integer (forced to 0).");
             Log (E);
             return 0;
       end Split;
@@ -235,7 +235,7 @@ package body Gnoga.Gui.Base is
          end if;
       exception
          when E : others =>
-            Log ("Error Parse_Drop_Event converting to Integer" & " (forced to 0).");
+            Log ("Error Parse_Drop_Event converting " & S & " to Integer (forced to 0).");
             Log (E);
             return 0;
       end Split;
@@ -2263,7 +2263,7 @@ package body Gnoga.Gui.Base is
       end if;
    exception
       when E : others =>
-         Log ("Error jQuery_Execute converting to Integer (forced to 0).");
+         Log ("Error jQuery_Execute converting " & R & " to Integer (forced to 0).");
          Log (E);
          return 0;
    end jQuery_Execute;
@@ -2278,7 +2278,7 @@ package body Gnoga.Gui.Base is
       return Value (R);
    exception
       when E : others =>
-         Log ("Error jQuery_Execute converting to Float (forced to 0.0).");
+         Log ("Error jQuery_Execute converting " & R & " to Float (forced to 0.0).");
          Log (E);
          return 0.0;
    end jQuery_Execute;

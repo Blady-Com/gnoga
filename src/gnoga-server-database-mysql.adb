@@ -89,9 +89,9 @@ package body Gnoga.Server.Database.MySQL is
          mHost       : Standard.String := To_UTF_8 (Host) & Nul;
          mUser       : Standard.String := To_UTF_8 (User) & Nul;
          Passwd      : Standard.String := To_UTF_8 (Password) & Nul;
-         Db          : Integer         := 0;
+         Db          : Standard.String := (1 => Nul);
          Port        : Integer         := 0;
-         Unix_Socket : Integer         := 0;
+         Unix_Socket : Standard.String := (1 => Nul);
          Clientflag  : Integer         := 0)
          return MySQL_ID;
       pragma Import (C, MYSQL_Real_Connect, "mysql_real_connect");

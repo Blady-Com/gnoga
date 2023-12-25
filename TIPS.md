@@ -157,4 +157,11 @@ Example: `% ./bin/cli --gnoga-verbose=false --gnoga-port=8082`
 Otherwise as On_Connect local data are deallocated when On_Connect ends,
 the connection may crash for instance when resizing the window because the View data no longueur exist.
 
+1. User defined logging is supported: declare a type inherited from Gnoga.Loggings.Root_Logging_Type and redefined the 3 forms of log:
+    - `procedure Log (Object : Root_Logging_Type; Message : in String);`
+    - `procedure Log (Object : Root_Logging_Type; Occurrence : in Ada.Exceptions.Exception_Occurrence);`
+    - `procedure Log (Object : Root_Logging_Type; Message : in String; Occurrence : in Ada.Exceptions.Exception_Occurrence);`
+
+    See example in tests/user_defined_logging.ads (only one form of log is redefined from Gnoga.Loggings.Console_Logging_Type)
+
 1. next tip...

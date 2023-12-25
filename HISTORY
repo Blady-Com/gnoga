@@ -1,4 +1,21 @@
-2022xxxx - Gnoga V2.2-alpha:
+2024xxxx - Gnoga V2.2-beta:
+- ...
+
+
+20240225 - Gnoga V2.2-alpha:
+- Add SVG mime type (from Stéphane LOS).
+- Fix usage of apostrophes in HTML attributes by replacing them with HTML equivalent &apos;.
+- If present command line options gnoga-host, gnoga-port, gnoga-boot and gnoga-verbose will override host, port, boot file and verbosity programmed in source code (see TIPS).
+- Fix String conversions in calls to MySQL C API (reported by Stéphane Rivière).
+- Improve logging implementation in a separate package in order to allow user defined logging handlers.
+- Add a backslash compatibility mode on the behavior of Escape_String for SQLite with the one for MySQL.
+- Fix some issues in Image Data API (reported by Jeff Carter).
+- Fix a bunch of typos (reported by Stéphane Rivière).
+- Change MYSQL_Real_Connect profile to better match with documentation 
+- Add more information for debugging.
+
+
+20231117 - Gnoga V1.8-alpha:
 - ...
 
 

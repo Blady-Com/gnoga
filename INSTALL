@@ -43,11 +43,11 @@ make PREFIX=/path/to/install install
 In your gpr file use:
 with "gnoga.gpr"
 
-and add this option to your grpbuild: -aP/path/to/install/share/gpr -aP/path/to/install/lib/gnat
+and add this option to your grpbuild: -aP/path/to/install/share/gpr
 or for Unix like
-export GPR_PROJECT_PATH=/path/to/install/share/gpr:/path/to/install/lib/gnat
+export GPR_PROJECT_PATH=/path/to/install/share/gpr
 or for Windows
-set GPR_PROJECT_PATH=/path/to/install/share/gpr;/path/to/install/lib/gnat
+set GPR_PROJECT_PATH=/path/to/install/share/gpr
 
 NB: Zanyblue installation doesn't support paths including space character.
 
@@ -57,8 +57,8 @@ NB: Zanyblue installation doesn't support paths including space character.
 
 make all
 
-In your own gpr file add GPR full path for Gnoga and other projects needed:
-with "/path/to/gnoga/src/gnoga.gpr" (instead of with "gnoga.gpr").
+In your own gpr file, add GPR full path for Gnoga and other projects needed:
+'with "/path/to/gnoga/src/gnoga.gpr"' (instead of 'with "gnoga.gpr"').
 That's all.
 
 If you want to add only GPR names:

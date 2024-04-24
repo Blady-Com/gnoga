@@ -52,7 +52,7 @@ package body Gnoga.Gui.Base is
    --  to the actual X,Y of the target.
 
    Keyboard_Event_Script : constant String :=
-     "e.keyCode + '|' + e.charCode + '|' + e.altKey + '|' + e.ctrlKey + '|'" & " + e.shiftKey + '|' + e.metaKey + '|'";
+     "e.key + '|' + e.keyCode + '|' + e.charCode + '|' + e.altKey + '|' + e.ctrlKey + '|'" & " + e.shiftKey + '|' + e.metaKey + '|'";
 
    function Parse_Mouse_Event
      (Message       : String;
@@ -193,6 +193,7 @@ package body Gnoga.Gui.Base is
       end Split;
    begin
       Event.Message  := Keyboard_Message;
+      Event.Key      := Split;
       Event.Key_Code := Split;
       Event.Key_Char := Split;
       Event.Alt      := Split;

@@ -41,7 +41,7 @@ procedure Essai11 is
    is
       pragma Unreferenced (Object);
    begin
-      Text_View.Put (From_ASCII (Key));
+      Text_View.Put (From_Latin_1 (Key));
    end On_Key_Char_Event;
 
    procedure On_Key_Press_Event
@@ -53,6 +53,8 @@ procedure Essai11 is
    begin
       Gnoga.Log
         (Image (Keyboard_Event.Message) &
+         ',' &
+         Keyboard_Event.Key &
          ',' &
          Image (Keyboard_Event.Key_Code) &
          ',' &

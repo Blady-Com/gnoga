@@ -367,6 +367,7 @@ package Gnoga.Gui.Base is
 
    type Keyboard_Event_Record is record
       Message  : Keyboard_Message_Type := Unknown;
+      Key      : String;
       Key_Code : Integer;
       Key_Char : Wide_Character;
       Alt      : Boolean               := False;

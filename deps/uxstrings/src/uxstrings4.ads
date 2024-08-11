@@ -4,7 +4,7 @@ with Ada.Strings.UTF_Encoding;
 with Ada.Characters.Handling;
 with Ada.Characters.Latin_1;
 with Ada.Characters.Wide_Latin_1;
-private with Ada.Strings.Wide_Wide_Unbounded;
+with Ada.Containers.Vectors;
 private with Ada.Streams;
 
 limited with UXStrings.Lists;
@@ -41,11 +41,24 @@ package UXStrings is
    subtype UTF_16_Character_Array is Ada.Strings.UTF_Encoding.UTF_String;
    -- Array of 8 bits values representing UTF encodings (UTF-8, UTF-16BE, or UTF-16LE)
 
+   package UXString_Vector is new Ada.Containers.Vectors (Positive, Unicode_Character);
    type UXString is tagged private with
-     Constant_Indexing => Element,
-     Iterable          => (First => First, Next => Next, Has_Element => Has_Element, Element => Element),
+     Constant_Indexing => Constant_Reference, Variable_Indexing => Reference, Default_Iterator => Iterate,
+     Iterator_Element  => Unicode_Character,
+     Aggregate => (Empty => Empty, Add_Unnamed => Append, New_Indexed => New_Vector, Assign_Indexed => Replace_Element),
      String_Literal    => From_Unicode;
    -- Container type of Unicode characters with dynamic size usually named string
+
+   function Constant_Reference
+     (Container : aliased UXString; Index : Positive) return UXString_Vector.Constant_Reference_Type;
+   function Reference (Container : aliased in out UXString; Index : Positive) return UXString_Vector.Reference_Type;
+   function Iterate (Container : UXString) return UXString_Vector.Vector_Iterator_Interfaces.Reversible_Iterator'Class;
+   function Iterate
+     (Container : UXString; Start : UXString_Vector.Cursor)
+      return UXString_Vector.Vector_Iterator_Interfaces.Reversible_Iterator'Class;
+   function Empty (Capacity : Natural := 10) return UXString;
+   function New_Vector (First, Last : Positive) return UXString;
+   procedure Replace_Element (Container : in out UXString; Index : Positive; New_Item : Unicode_Character);
 
    Null_UXString : constant UXString;
    -- Represent the null string
@@ -189,7 +202,7 @@ package UXStrings is
 
    function Slice (Source : UXString; Low : Positive; High : Integer) return UXString;
    -- Return the slice at positions Low through High from Source
-   procedure Slice (Source : UXString; Target : out UXString; Low : Integer; High : Natural);
+   procedure Slice (Source : UXString; Target : out UXString; Low : Positive; High : Integer);
    -- Set Target to the slice at positions Low through High from Source
 
    function "=" (Left : UXString; Right : UXString) return Boolean;
@@ -286,7 +299,7 @@ package UXStrings is
    -- Update Source whom characters with positions from Low to High are replaced with parameter By
    function Insert (Source : UXString; Before : Positive; New_Item : UXString) return UXString;
    -- Return Source with New_Item inserted at position ahead of parameter Before
-   procedure Insert (Source : in out UXString; Before : Positive; New_Item : UXString);
+   procedure Insert (Source : in out UXString; Before : Natural; New_Item : UXString);
    -- Update Source with New_Item inserted at position ahead of parameter Before
    function Overwrite (Source : UXString; Position : Positive; New_Item : UXString) return UXString;
    -- Return Source whom characters starting at Position are replaced with parameter New_Item
@@ -418,10 +431,7 @@ package UXStrings is
 
 private
 
-   type UTF_8_Characters_Access is access UTF_8_Character_Array;
-   type UXString is tagged record
-      Chars : Ada.Strings.Wide_Wide_Unbounded.Unbounded_Wide_Wide_String;
-   end record;
+   type UXString is new UXString_Vector.Vector with null record;
 
    procedure Bounded_Move (Source : in out UXString; Target : out UXString; Max : Natural; Last : out Natural);
 
@@ -431,6 +441,6 @@ private
    procedure UXString_Write (Stream : not null access Ada.Streams.Root_Stream_Type'Class; Item : UXString);
    for UXString'Write use UXString_Write;
 
-   Null_UXString : constant UXString := (Chars => Ada.Strings.Wide_Wide_Unbounded.Null_Unbounded_Wide_Wide_String);
+   Null_UXString : constant UXString := (UXString_Vector.Empty_Vector with null record);
 
 end UXStrings;

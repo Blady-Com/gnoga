@@ -2,18 +2,20 @@
 -- NAME (body)                  : uxstrings3.adb
 -- AUTHOR                       : Pascal Pignard
 -- ROLE                         : UXString implementation.
--- NOTES                        : Ada 202x
+-- NOTES                        : Ada 2022
 --
--- COPYRIGHT                    : (c) Pascal Pignard 2023
--- LICENCE                      : CeCILL V2.1 (https://cecill.info)
--- CONTACT                      : http://blady.pagesperso-orange.fr
+-- COPYRIGHT                    : (c) Pascal Pignard 2024
+-- LICENCE                      : CeCILL-C (https://cecill.info)
+-- CONTACT                      : http://blady.chez.com
 -------------------------------------------------------------------------------
 
 with Ada.Strings.UTF_Encoding.Wide_Wide_Strings; use Ada.Strings.UTF_Encoding.Wide_Wide_Strings;
 with Ada.Wide_Wide_Characters.Handling;          use Ada.Wide_Wide_Characters.Handling;
 with Ada.Characters.Conversions;                 use Ada.Characters.Conversions;
-with Ada.Wide_Characters.Handling;
+with Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants;
 with GNAT.UTF_32;
+
+with UXStrings.Lists;
 
 package body UXStrings is
 
@@ -52,7 +54,7 @@ package body UXStrings is
 
    procedure Bounded_Move (Source : in out UXString; Target : out UXString; Max : Natural; Last : out Natural) is
    begin
-      Last   := Natural'Min (Target.Length, Max);
+      Last   := Natural'Min (Target.Last, Max);
       Target := Source.Slice (1, Last);
       Delete (Source, 1, Last);
    end Bounded_Move;
@@ -125,7 +127,7 @@ package body UXStrings is
 
    function Character_Set_Version return UXString is
    begin
-      return From_ASCII (Ada.Wide_Characters.Handling.Character_Set_Version);
+      return From_ASCII (Character_Set_Version);
    end Character_Set_Version;
 
    --------------
@@ -147,19 +149,30 @@ package body UXStrings is
    end Is_ASCII;
 
    ---------------
+   -- To_ASCII --
+   ---------------
+
+   function To_ASCII
+     (Item : unicode_character; Substitute : in ASCII_Character := Q_L) return ASCII_Character
+   is
+      Pos : constant Natural := Unicode_Character'Pos (Item);
+   begin
+      if Pos > 16#7F# then
+         return Substitute;
+      else
+         return ASCII_Character'Val (Pos);
+      end if;
+   end To_ASCII;
+
+  ---------------
    -- Get_ASCII --
    ---------------
 
    function Get_ASCII
      (Source : UXString; Index : Positive; Substitute : in ASCII_Character := Q_L) return ASCII_Character
    is
-      Item : constant Natural := Unicode_Character'Pos (Source (Index));
    begin
-      if Item > 16#7F# then
-         return Substitute;
-      else
-         return ASCII_Character'Val (Item);
-      end if;
+      return to_ascii (Source (Index), substitute);
    end Get_ASCII;
 
    --------------
@@ -168,13 +181,7 @@ package body UXStrings is
 
    function To_ASCII (Source : UXString; Substitute : in ASCII_Character := Q_L) return ASCII_Character_Array is
    begin
-      --  return [for Ind in Source.First .. Source.Last => Source.Get_ASCII (Ind, Substitute)];
-      --  GNAT BUG DETECTED in gnat_to_gnu_entity, at ada/gcc-interface/decl.cc:472
-      return ACA : ASCII_Character_Array (1 .. Source.Length) := (others => Substitute) do
-         for Ind in ACA'Range loop
-            ACA (Ind) := Source.Get_ASCII (Ind, Substitute);
-         end loop;
-      end return;
+      return [for E of Source => to_ascii (E , substitute)];
    end To_ASCII;
 
    ----------------
@@ -522,7 +529,7 @@ package body UXStrings is
    -- Slice --
    -----------
 
-   function Slice (Source : UXString; Low : Positive; High : Natural) return UXString is
+   function Slice (Source : UXString; Low : Positive; High : Integer) return UXString is
    begin
       return From_Unicode (Slice (Source.Chars, Low, High));
    end Slice;
@@ -531,7 +538,7 @@ package body UXStrings is
    -- Slice --
    -----------
 
-   procedure Slice (Source : UXString; Target : out UXString; Low : Positive; High : Natural) is
+   procedure Slice (Source : UXString; Target : out UXString; Low : Integer; High : Natural) is
    begin
       Target := Slice (Source, Low, High);
    end Slice;
@@ -723,7 +730,6 @@ package body UXStrings is
    is
    begin
       Find_Token (Source.Chars, Set, From, Test, First, Last);
-
    end Find_Token;
 
    ----------------
@@ -1023,5 +1029,274 @@ package body UXStrings is
    begin
       return From_Unicode (To_Basic (To_Wide_Wide_String (Item.Chars)));
    end To_Basic;
+
+   --------------
+   -- Contains --
+   --------------
+
+   function Contains (Source : UXString; Pattern : UXString; Sensitivity : Case_Sensitivity := Sensitive) return Boolean
+   is
+   begin
+      if Sensitivity = Sensitive then
+         return Source.Index (Pattern) > 0;
+      else
+         return Source.Index (Pattern, Forward, Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants.Lower_Case_Map) > 0;
+      end if;
+   end Contains;
+
+   ---------------
+   -- Ends_With --
+   ---------------
+
+   function Ends_With
+     (Source : UXString; Pattern : UXString; Sensitivity : Case_Sensitivity := Sensitive) return Boolean
+   is
+   begin
+      if Sensitivity = Sensitive then
+         return Source.Index (Pattern) = Source.Last - Pattern.Length + 1;
+      else
+         return
+           Source.Index (Pattern, Forward, Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants.Lower_Case_Map) =
+           Source.Last - Pattern.Length + 1;
+      end if;
+   end Ends_With;
+
+   -----------------
+   -- Starts_With --
+   -----------------
+
+   function Starts_With
+     (Source : UXString; Pattern : UXString; Sensitivity : Case_Sensitivity := Sensitive) return Boolean
+   is
+   begin
+      if Sensitivity = Sensitive then
+         return Source.Index (Pattern) = 1;
+      else
+         return Source.Index (Pattern, Forward, Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants.Lower_Case_Map) = 1;
+      end if;
+   end Starts_With;
+
+   --------------
+   -- Is_Lower --
+   --------------
+
+   function Is_Lower (Source : UXString) return Boolean is
+   begin
+      return Source = Source.To_Lower;
+   end Is_Lower;
+
+   --------------
+   -- Is_Upper --
+   --------------
+
+   function Is_Upper (Source : UXString) return Boolean is
+   begin
+      return Source = Source.To_Upper;
+   end Is_Upper;
+
+   --------------
+   -- Is_Basic --
+   --------------
+
+   function Is_Basic (Source : UXString) return Boolean is
+   begin
+      return Source = Source.To_Basic;
+   end Is_Basic;
+
+   --------------
+   -- Is_Empty --
+   --------------
+
+   function Is_Empty (Source : UXString) return Boolean is
+   begin
+      return Source = Null_UXString;
+   end Is_Empty;
+
+   ------------
+   -- Remove --
+   ------------
+
+   function Remove
+     (Source : UXString; Pattern : Unicode_Character; Sensitivity : Case_Sensitivity := Sensitive) return UXString
+   is
+   begin
+      return Source.Remove (From_Unicode (Pattern), Sensitivity);
+   end Remove;
+
+   ------------
+   -- Remove --
+   ------------
+
+   procedure Remove (Source : in out UXString; Pattern : Unicode_Character; Sensitivity : Case_Sensitivity := Sensitive)
+   is
+   begin
+      Source := Remove (Source, Pattern, Sensitivity);
+   end Remove;
+
+   ------------
+   -- Remove --
+   ------------
+
+   function Remove (Source : UXString; Pattern : UXString; Sensitivity : Case_Sensitivity := Sensitive) return UXString
+   is
+      Result : UXString;
+      Ind1   : Positive := Source.First;
+      Ind2   : Natural  := Ind1;
+   begin
+      while Ind1 <= Source.Last and Ind2 > 0 loop
+         if Sensitivity = Sensitive then
+            Ind2 := Source.Index (Pattern, Ind1);
+         else
+            Ind2 :=
+              Source.Index (Pattern, Ind1, Forward, Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants.Lower_Case_Map);
+         end if;
+         if Ind2 > 0 then
+            Result.Append (Source.Slice (Ind1, Ind2 - 1));
+            Ind1 := Ind2 + Pattern.Length;
+         end if;
+      end loop;
+      Result.Append (Source.Slice (Ind1, Source.Last));
+      return Result;
+   end Remove;
+
+   ------------
+   -- Remove --
+   ------------
+
+   procedure Remove (Source : in out UXString; Pattern : UXString; Sensitivity : Case_Sensitivity := Sensitive) is
+   begin
+      Source := Remove (Source, Pattern, Sensitivity);
+   end Remove;
+
+   -------------
+   -- Replace --
+   -------------
+
+   function Replace
+     (Source : UXString; Before, After : Unicode_Character; Sensitivity : Case_Sensitivity := Sensitive) return UXString
+   is
+   begin
+      return Source.Replace (From_Unicode (Before), From_Unicode (After), Sensitivity);
+   end Replace;
+
+   -------------
+   -- Replace --
+   -------------
+
+   procedure Replace
+     (Source : in out UXString; Before, After : Unicode_Character; Sensitivity : Case_Sensitivity := Sensitive)
+   is
+   begin
+      Source := Replace (Source, Before, After, Sensitivity);
+   end Replace;
+
+   -------------
+   -- Replace --
+   -------------
+
+   function Replace
+     (Source : UXString; Before, After : UXString; Sensitivity : Case_Sensitivity := Sensitive) return UXString
+   is
+      Result : UXString;
+      Ind1   : Positive := Source.First;
+      Ind2   : Natural  := Ind1;
+   begin
+      while Ind1 <= Source.Last and Ind2 > 0 loop
+         if Sensitivity = Sensitive then
+            Ind2 := Source.Index (Before, Ind1);
+         else
+            Ind2 := Source.Index (Before, Ind1, Forward, Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants.Lower_Case_Map);
+         end if;
+         if Ind2 > 0 then
+            Result.Append (Source.Slice (Ind1, Ind2 - 1));
+            Result.Append (After);
+            Ind1 := Ind2 + Before.Length;
+         end if;
+      end loop;
+      Result.Append (Source.Slice (Ind1, Source.Last));
+      return Result;
+   end Replace;
+
+   -------------
+   -- Replace --
+   -------------
+
+   procedure Replace (Source : in out UXString; Before, After : UXString; Sensitivity : Case_Sensitivity := Sensitive)
+   is
+   begin
+      Source := Replace (Source, Before, After, Sensitivity);
+   end Replace;
+
+   -----------
+   -- Split --
+   -----------
+
+   function Split
+     (Source : UXString; Separator : Unicode_Character; Sensitivity : Case_Sensitivity := Sensitive;
+     Keep_Empty_Parts : Boolean := True)
+      return UXStrings.Lists.UXString_List
+   is
+   begin
+      return Split (Source, From_Unicode (Separator), Sensitivity, Keep_Empty_Parts);
+   end Split;
+
+   -----------
+   -- Split --
+   -----------
+
+   function Split
+     (Source : UXString; Separator : UXString; Sensitivity : Case_Sensitivity := Sensitive;
+     Keep_Empty_Parts : Boolean := True) return UXStrings.Lists.UXString_List
+   is
+      Result : UXStrings.Lists.UXString_List;
+      Ind1   : Positive := Source.First;
+      Ind2   : Natural  := Ind1;
+   begin
+      while Ind1 <= Source.Last and Ind2 > 0 loop
+         if Sensitivity = Sensitive then
+            Ind2 := Source.Index (Separator, Ind1);
+         else
+            Ind2 :=
+              Source.Index (Separator, Ind1, Forward, Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants.Lower_Case_Map);
+         end if;
+         if Ind2 > 0 then
+            if Ind1 < Ind2 - 1 or Keep_Empty_Parts then
+               Result.Append (Source.Slice (Ind1, Ind2 - 1));
+            end if;
+            Ind1 := Ind2 + Separator.Length;
+         end if;
+      end loop;
+      if Ind1 <Source.Last or Keep_Empty_Parts then
+         Result.Append (Source.Slice (Ind1, Source.Last));
+      end if;
+      return Result;
+   end Split;
+
+   -----------
+   -- Split --
+   -----------
+
+   function Split
+     (Source : UXString; Separator : Wide_Wide_Character_Set; Test : Membership := Inside;
+     Keep_Empty_Parts : Boolean := True) return UXStrings.Lists.UXString_List
+   is
+      Result : UXStrings.Lists.UXString_List;
+      Ind1   : Positive := Source.First;
+      Ind2   : Natural  := Ind1;
+   begin
+      while Ind1 <= Source.Last and Ind2 > 0 loop
+         Ind2 := Source.Index (Separator, Ind1, Test);
+         if Ind2 > 0 then
+            if Ind1 < Ind2 - 1 or Keep_Empty_Parts then
+               Result.Append (Source.Slice (Ind1, Ind2 - 1));
+            end if;
+            Ind1 := Ind2 + 1;
+         end if;
+      end loop;
+            if Ind1 <Source.Last or Keep_Empty_Parts then
+         Result.Append (Source.Slice (Ind1, Source.Last));
+         end if;
+      return Result;
+   end Split;
 
 end UXStrings;

@@ -5,9 +5,10 @@
 -- NOTES                        : Ada 202x
 --
 -- COPYRIGHT                    : (c) Pascal Pignard 2023
--- LICENCE                      : CeCILL V2.1 (https://cecill.info)
--- CONTACT                      : http://blady.pagesperso-orange.fr
+-- LICENCE                      : CeCILL-C (https://cecill.info)
+-- CONTACT                      : http://blady.chez.com
 -------------------------------------------------------------------------------
+
 with Ada.Unchecked_Deallocation;
 with Strings_Edit.UTF8;
 
@@ -25,18 +26,18 @@ package body UXStrings.Text_IO is
 
    LM : UXString := From_ASCII (Character'Val (13) & Character'Val (10)); -- Default is CRLF for Line_Mark function
 
-   ------------------
-   -- Slice_Buffer --
-   ------------------
+   ---------------------
+   -- Truncate_Buffer --
+   ---------------------
 
-   procedure Slice_Buffer (File : in out File_Type; From : Positive) is
+   procedure Truncate_Buffer (File : in out File_Type; From : Positive) is
       Saved_Access : String_Access := File.Buffer;
       procedure Free is new Ada.Unchecked_Deallocation (String, String_Access);
       pragma Warnings (Off, Saved_Access);
    begin
       File.Buffer := new String'(File.Buffer (From .. File.Buffer'Last));
       Free (Saved_Access);
-   end Slice_Buffer;
+   end Truncate_Buffer;
 
    ----------------
    -- Add_Buffer --
@@ -68,7 +69,7 @@ package body UXStrings.Text_IO is
    end Read_More;
 
    ----------
-   -- Skip --
+   -- Step --
    ----------
 
    procedure Step
@@ -76,26 +77,27 @@ package body UXStrings.Text_IO is
    is
       subtype Offset_Type is Integer range -1 .. 1;
       subtype Size_Type is Positive range 1 .. 2;
-      procedure Check_EOL_And_Update_Pointer (Offset : Offset_Type; Size : Size_Type) is
+      procedure Check_EOL_And_Update_Pointer (Read_Offset, Fix_Offset : Offset_Type; Size : Size_Type) is
       begin
          case File.Ending is
             when CR_Ending =>
-               End_Of_line := File.Buffer (Pointer + Offset) = Character'Val (13);
-               Pointer     := Pointer + Offset + Size;
+               End_Of_line := File.Buffer (Pointer + Read_Offset) = Character'Val (13);
+               Pointer     := Pointer + Fix_Offset + Size;
             when LF_Ending =>
-               End_Of_line := File.Buffer (Pointer + Offset) = Character'Val (10);
-               Pointer     := Pointer + Offset + Size;
+               End_Of_line := File.Buffer (Pointer + Read_Offset) = Character'Val (10);
+               Pointer     := Pointer + Fix_Offset + Size;
             when CRLF_Ending =>
-               if File.Buffer (Pointer + Offset) = Character'Val (13) and then File.Buffer'Last - Size >= Pointer then
-                  End_Of_line := File.Buffer (Pointer + Offset + Size) = Character'Val (10);
+               if File.Buffer (Pointer + Read_Offset) = Character'Val (13) and then File.Buffer'Last - Size >= Pointer
+               then
+                  End_Of_line := File.Buffer (Pointer + Read_Offset + Size) = Character'Val (10);
                   if End_Of_line then
-                     Pointer := Pointer + Offset + Size * 2;
+                     Pointer := Pointer + Fix_Offset + Size * 2;
                   else
-                     Pointer := Pointer + Offset + Size;
+                     Pointer := Pointer + Fix_Offset + Size;
                   end if;
                else
                   End_Of_line := False;
-                  Pointer     := Pointer + Offset + Size;
+                  Pointer     := Pointer + Fix_Offset + Size;
                end if;
          end case;
       end Check_EOL_And_Update_Pointer;
@@ -111,37 +113,47 @@ package body UXStrings.Text_IO is
          Available := True;
          case File.Scheme is
             when ASCII_7 =>
-               Check_EOL_And_Update_Pointer (0, 1);
+               Check_EOL_And_Update_Pointer (0, 0, 1);
             when Latin_1 =>
-               Check_EOL_And_Update_Pointer (0, 1);
+               Check_EOL_And_Update_Pointer (0, 0, 1);
             when UTF_8 =>
                declare
                   CP : Strings_Edit.UTF8.UTF8_Code_Point;
+                  use type Strings_Edit.UTF8.Code_Point;
                begin
                   Strings_Edit.UTF8.Get (File.Buffer.all, Pointer, CP);
+                  Check_EOL_And_Update_Pointer (-1, -1, 1);
+                  if CP = 16#FEFF# then -- Check for Ada.Strings.UTF_Encoding.BOM_8
+                     Step (File, Pointer, Available, End_Of_line);
+                  end if;
                end;
-               Check_EOL_And_Update_Pointer (-1, 1);
             when UTF_16BE =>
                case File.Buffer (Pointer) is
                   when Character'Val (16#00#) .. Character'Val (16#D7#) =>
-                     Check_EOL_And_Update_Pointer (0, 2);
+                     Check_EOL_And_Update_Pointer (1, 0, 2);
                   when Character'Val (16#D8#) .. Character'Val (16#DF#) =>
                      Pointer     := Pointer + 4;
                      End_Of_line := False;
                   when Character'Val (16#E0#) .. Character'Val (16#FF#) =>
                      Pointer     := Pointer + 2;
                      End_Of_line := False;
+                     if File.Buffer (Pointer - 2 .. Pointer - 1) = Ada.Strings.UTF_Encoding.BOM_16BE then
+                        Step (File, Pointer, Available, End_Of_line);
+                     end if;
                end case;
             when UTF_16LE =>
                case File.Buffer (Pointer + 1) is
                   when Character'Val (16#00#) .. Character'Val (16#D7#) =>
-                     Check_EOL_And_Update_Pointer (1, 2);
+                     Check_EOL_And_Update_Pointer (0, 0, 2);
                   when Character'Val (16#D8#) .. Character'Val (16#DF#) =>
                      Pointer     := Pointer + 4;
                      End_Of_line := False;
                   when Character'Val (16#E0#) .. Character'Val (16#FF#) =>
                      Pointer     := Pointer + 2;
                      End_Of_line := False;
+                     if File.Buffer (Pointer - 2 .. Pointer - 1) = Ada.Strings.UTF_Encoding.BOM_16LE then
+                        Step (File, Pointer, Available, End_Of_line);
+                     end if;
                end case;
          end case;
       end if;
@@ -160,7 +172,7 @@ package body UXStrings.Text_IO is
       if Last > 0 then
          Item (Item'First .. Item'First + Last - 1) := File.Buffer (File.Buffer'First .. File.Buffer'First + Last - 1);
       end if;
-      Slice_Buffer (File, File.Buffer'First + Last);
+      Truncate_Buffer (File, File.Buffer'First + Last);
    end Read_Stream;
 
    -----------------
@@ -583,10 +595,26 @@ package body UXStrings.Text_IO is
    -- Skip_Line --
    ---------------
 
-   procedure Skip_Line (File : in File_Type; Spacing : in Positive_Count := 1) is
+   procedure Skip_Line (File : in out File_Type; Spacing : in Positive_Count := 1) is
+      Pointer   : Positive;
+      Available : Boolean;
+      EOL       : Boolean := False;
    begin
-      pragma Compile_Time_Warning (Standard.True, "Skip_Line unimplemented");
-      raise Program_Error with "Unimplemented procedure Skip_Line";
+      -- Read one more time even if EOF is set, in case of standard input was empty
+      if File.Buffer'Length = 0 then
+         Read_More (File);
+      end if;
+      Pointer := File.Buffer'First;
+      for Skip in 1 .. Spacing loop
+         while not EOL loop
+            Step (File, Pointer, Available, EOL);
+            if not Available then
+               raise End_Error;
+            end if;
+         end loop;
+         EOL := False;
+      end loop;
+      Truncate_Buffer (File, Pointer);
    end Skip_Line;
 
    ---------------
@@ -595,18 +623,25 @@ package body UXStrings.Text_IO is
 
    procedure Skip_Line (Spacing : in Positive_Count := 1) is
    begin
-      pragma Compile_Time_Warning (Standard.True, "Skip_Line unimplemented");
-      raise Program_Error with "Unimplemented procedure Skip_Line";
+      Skip_Line (Cur_In, Spacing);
    end Skip_Line;
 
    -----------------
    -- End_Of_Line --
    -----------------
 
-   function End_Of_Line (File : in File_Type) return Boolean is
+   function End_Of_Line (File : in out File_Type) return Boolean is
+      Pointer   : Positive;
+      Available : Boolean;
+      EOL       : Boolean;
    begin
-      pragma Compile_Time_Warning (Standard.True, "End_Of_Line unimplemented");
-      return raise Program_Error with "Unimplemented function End_Of_Line";
+      -- Read one more time even if EOF is set, in case of standard input was empty
+      if File.Buffer'Length = 0 then
+         Read_More (File);
+      end if;
+      Pointer := File.Buffer'First;
+      Step (File, Pointer, Available, EOL);
+      return EOL or not Available;
    end End_Of_Line;
 
    -----------------
@@ -615,8 +650,7 @@ package body UXStrings.Text_IO is
 
    function End_Of_Line return Boolean is
    begin
-      pragma Compile_Time_Warning (Standard.True, "End_Of_Line unimplemented");
-      return raise Program_Error with "Unimplemented function End_Of_Line";
+      return End_Of_Line (Cur_In);
    end End_Of_Line;
 
    ---------------
@@ -710,9 +744,18 @@ package body UXStrings.Text_IO is
    -- End_Of_File --
    -----------------
 
-   function End_Of_File (File : in File_Type) return Boolean is
+   function End_Of_File (File : in out File_Type) return Boolean is
+      Pointer   : Positive;
+      Available : Boolean;
+      EOL       : Boolean;
    begin
-      return File.EOF and then File.Buffer'Length = 0;
+      -- Read one more time even if EOF is set, in case of standard input was empty
+      if File.Buffer'Length = 0 then
+         Read_More (File);
+      end if;
+      Pointer := File.Buffer'First;
+      Step (File, Pointer, Available, EOL);
+      return File.EOF and then (File.Buffer'Length = 0 or (EOL and Pointer = File.Buffer'Last + 1));
    end End_Of_File;
 
    -----------------
@@ -721,7 +764,7 @@ package body UXStrings.Text_IO is
 
    function End_Of_File return Boolean is
    begin
-      return End_Of_File (Current_Input);
+      return End_Of_File (Cur_In);
    end End_Of_File;
 
    -------------
@@ -862,7 +905,7 @@ package body UXStrings.Text_IO is
       Available         : Boolean;
       EOL               : Boolean;
    begin
-      -- Read one more time even if EOF is set, in case of empty standard input
+      -- Read one more time even if EOF is set, in case of standard input was empty
       if File.Buffer'Length = 0 then
          Read_More (File);
       end if;
@@ -870,10 +913,10 @@ package body UXStrings.Text_IO is
       Previous := Current;
       loop
          Step (File, Current, Available, EOL);
-         exit when not Available or not EOL;
+         exit when not EOL;
          Previous := Current;
       end loop;
-      if not Available and EOL then
+      if not Available then
          raise End_Error;
       end if;
       case File.Scheme is
@@ -886,9 +929,9 @@ package body UXStrings.Text_IO is
          when UTF_16BE =>
             Item := From_UTF_16 (File.Buffer (Previous .. Current - 1), UTF_16BE) (1);
          when UTF_16LE =>
-            Item := From_UTF_16 (File.Buffer (Previous .. Current - 2), UTF_16LE) (1);
+            Item := From_UTF_16 (File.Buffer (Previous .. Current - 1), UTF_16LE) (1);
       end case;
-      Slice_Buffer (File, Current);
+      Truncate_Buffer (File, Current);
    end Get;
 
    ---------
@@ -952,7 +995,7 @@ package body UXStrings.Text_IO is
       Pointer   : Positive;
       Available : Boolean;
    begin
-      -- Read one more time even if EOF is set, in case of empty standard input
+      -- Read one more time even if EOF is set, in case of standard input was empty
       if File.Buffer'Length = 0 then
          Read_More (File);
       end if;
@@ -969,7 +1012,7 @@ package body UXStrings.Text_IO is
             when UTF_16BE =>
                Item := From_UTF_16 (File.Buffer (File.Buffer'First .. Pointer - 1), UTF_16BE) (1);
             when UTF_16LE =>
-               Item := From_UTF_16 (File.Buffer (File.Buffer'First .. Pointer - 2), UTF_16LE) (1);
+               Item := From_UTF_16 (File.Buffer (File.Buffer'First .. Pointer - 1), UTF_16LE) (1);
          end case;
       else
          End_Of_Line := True;
@@ -994,7 +1037,7 @@ package body UXStrings.Text_IO is
       Available : Boolean;
       EOL       : Boolean;
    begin
-      -- Read one more time even if EOF is set, in case of empty standard input
+      -- Read one more time even if EOF is set, in case of standard input was empty
       if File.Buffer'Length = 0 then
          Read_More (File);
       end if;
@@ -1013,9 +1056,9 @@ package body UXStrings.Text_IO is
          when UTF_16BE =>
             Item := From_UTF_16 (File.Buffer (File.Buffer'First .. Pointer - 1), UTF_16BE) (1);
          when UTF_16LE =>
-            Item := From_UTF_16 (File.Buffer (File.Buffer'First .. Pointer - 2), UTF_16LE) (1);
+            Item := From_UTF_16 (File.Buffer (File.Buffer'First .. Pointer - 1), UTF_16LE) (1);
       end case;
-      Slice_Buffer (File, Pointer);
+      Truncate_Buffer (File, Pointer);
    end Get_Immediate;
 
    -------------------
@@ -1035,7 +1078,7 @@ package body UXStrings.Text_IO is
       Pointer : Positive;
       EOL     : Boolean;
    begin
-      -- Read one more time even if EOF is set, in case of empty standard input
+      -- Read one more time even if EOF is set, in case of standard input was empty
       if File.Buffer'Length = 0 then
          Read_More (File);
       end if;
@@ -1054,9 +1097,9 @@ package body UXStrings.Text_IO is
          when UTF_16BE =>
             Item := From_UTF_16 (File.Buffer (File.Buffer'First .. Pointer - 1), UTF_16BE) (1);
          when UTF_16LE =>
-            Item := From_UTF_16 (File.Buffer (File.Buffer'First .. Pointer - 2), UTF_16LE) (1);
+            Item := From_UTF_16 (File.Buffer (File.Buffer'First .. Pointer - 1), UTF_16LE) (1);
       end case;
-      Slice_Buffer (File, Pointer);
+      Truncate_Buffer (File, Pointer);
    end Get_Immediate;
 
    -------------------
@@ -1144,7 +1187,7 @@ package body UXStrings.Text_IO is
       EOL       : Boolean;
       Offset    : Natural range 0 .. 2;
    begin
-      -- Read one more time even if EOF is set, in case of empty standard input
+      -- Read one more time even if EOF is set, in case of standard input was empty
       if File.Buffer'Length = 0 then
          Read_More (File);
       end if;
@@ -1173,9 +1216,9 @@ package body UXStrings.Text_IO is
          when UTF_16BE =>
             Item := From_UTF_16 (File.Buffer (File.Buffer'First .. Pointer - Offset * 2 - 1), File.Scheme);
          when UTF_16LE =>
-            Item := From_UTF_16 (File.Buffer (File.Buffer'First .. Pointer - Offset * 2 - 2), File.Scheme);
+            Item := From_UTF_16 (File.Buffer (File.Buffer'First .. Pointer - Offset * 2 - 1), File.Scheme);
       end case;
-      Slice_Buffer (File, Pointer);
+      Truncate_Buffer (File, Pointer);
    end Get_Line;
 
    --------------

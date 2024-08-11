@@ -81,10 +81,10 @@ package UXStrings.Text_IO is
    procedure New_Line (File : in File_Type; Spacing : in Positive_Count := 1);
    procedure New_Line (Spacing : in Positive_Count := 1);
 
-   procedure Skip_Line (File : in File_Type; Spacing : in Positive_Count := 1);
+   procedure Skip_Line (File : in out File_Type; Spacing : in Positive_Count := 1);
    procedure Skip_Line (Spacing : in Positive_Count := 1);
 
-   function End_Of_Line (File : in File_Type) return Boolean;
+   function End_Of_Line (File : in out File_Type) return Boolean;
    function End_Of_Line return Boolean;
 
    function Line_Mark return UXString;
@@ -101,7 +101,7 @@ package UXStrings.Text_IO is
 
    function Page_Mark return UXString;
 
-   function End_Of_File (File : in File_Type) return Boolean;
+   function End_Of_File (File : in out File_Type) return Boolean;
    function End_Of_File return Boolean;
 
    procedure Set_Col (File : in File_Type; To : in Positive_Count);

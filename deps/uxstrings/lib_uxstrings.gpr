@@ -3,6 +3,7 @@ with "../simple_components/lib_components.gpr";
 
 library project Lib_UXStrings is
 
+   for Languages use ("Ada");
    for Library_Kind use "static";
    for Library_Name use "uxstrings";
    for Source_Dirs use ("src");
@@ -10,28 +11,54 @@ library project Lib_UXStrings is
    for Library_Dir use "lib";
    for Create_Missing_Dirs use "True";
 
-SRC := (
-        "uxstrings-conversions.adb",
-        "uxstrings-conversions.ads",
-        "uxstrings-formatting.adb",
-        "uxstrings-formatting.ads",
-        "uxstrings-hash.adb",
-        "uxstrings-hash.ads",
-        "uxstrings-hash_case_insensitive.adb",
-        "uxstrings-hash_case_insensitive.ads",
-        "uxstrings-text_io-text_streams.adb",
-        "uxstrings-text_io-text_streams.ads",
-        "uxstrings-text_io1.adb",
-        "uxstrings-text_io1.ads",
-        "uxstrings3.adb",
-        "uxstrings3.ads"
-        );
+   type UXStrings_Variants is ("UXS1", "UXS2", "UXS3", "UXS4");
+   UXStrings_Variant : UXStrings_Variants := external ("UXS_VARIANT", "UXS3");
+
+   SRC := (
+           "uxstrings-conversions.adb",
+           "uxstrings-conversions.ads",
+           "uxstrings-formatting.adb",
+           "uxstrings-formatting.ads",
+           "uxstrings-hash.adb",
+           "uxstrings-hash.ads",
+           "uxstrings-hash_case_insensitive.adb",
+           "uxstrings-hash_case_insensitive.ads",
+           "uxstrings-lists.adb",
+           "uxstrings-lists.ads",
+           "uxstrings-text_io-text_streams.adb",
+           "uxstrings-text_io-text_streams.ads",
+           "uxstrings-text_io1.adb",
+           "uxstrings-text_io1.ads"
+          );
+
+   case UXStrings_Variant is
+      when "UXS1" =>
+         SRC := SRC & ("uxstrings1.ads", "uxstrings1.adb");
+      when "UXS2" =>
+         SRC := SRC & ("uxstrings2.ads", "uxstrings2.adb");
+      when "UXS3" =>
+         SRC := SRC & ("uxstrings3.ads", "uxstrings3.adb");
+      when "UXS4" =>
+         SRC := SRC & ("uxstrings4.ads", "uxstrings4.adb");
+   end case;
 
    for Source_Files use SRC;
 
    package Naming is
-      for Spec ("UXStrings") use "uxstrings3.ads";
-      for Body ("UXStrings") use "uxstrings3.adb";
+      case UXStrings_Variant is
+         when "UXS1" =>
+            for Spec ("UXStrings") use "uxstrings1.ads";
+            for Body ("UXStrings") use "uxstrings1.adb";
+         when "UXS2" =>
+            for Spec ("UXStrings") use "uxstrings2.ads";
+            for Body ("UXStrings") use "uxstrings2.adb";
+         when "UXS3" =>
+            for Spec ("UXStrings") use "uxstrings3.ads";
+            for Body ("UXStrings") use "uxstrings3.adb";
+         when "UXS4" =>
+            for Spec ("UXStrings") use "uxstrings4.ads";
+            for Body ("UXStrings") use "uxstrings4.adb";
+      end case;
       for Spec ("UXStrings.Text_IO") use "uxstrings-text_io1.ads";
       for Body ("UXStrings.Text_IO") use "uxstrings-text_io1.adb";
    end Naming;
@@ -39,7 +66,7 @@ SRC := (
    package Compiler is
       for Default_Switches ("ada") use ("-gnatU", "-gnatf", "-gnatVaep", "-gnatw.eDH.Y.N",
                                         "-fstack-check", "-g", "-gnato", "-gnata",
-                                        "-gnateE", "-gnateF", "-Wall");
+                                        "-gnateE", "-gnateF", "-gnat2022", "-Wall");
       for Local_Configuration_Pragmas use "pragma_debug.adc";
    end Compiler;
 

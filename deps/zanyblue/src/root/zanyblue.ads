@@ -60,7 +60,7 @@ package ZanyBlue is
    Revision : constant String := "3199";
    --  The Subversion revision number for the build.
 
-   Copyright_Year : constant Positive := 2023;
+   Copyright_Year : constant Positive := 2024;
    --  The copyright year for the build.
 
    Max_Float_Precision : constant := 5000;

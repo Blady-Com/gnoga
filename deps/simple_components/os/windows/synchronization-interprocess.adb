@@ -3,7 +3,7 @@
 --     Synchronization.Interprocess                Luebeck            --
 --  Implementation                                 Spring, 2018       --
 --                                                                    --
---                                Last revision :  01:09 01 May 2018  --
+--                                Last revision :  18:00 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -34,11 +34,11 @@ with System.Address_To_Access_Conversions;
 
 package body Synchronization.Interprocess is
 
-   package Conversions is
+   package Y_Of is
       new System.Address_To_Access_Conversions (Head);
 
    package body Generic_Memory_Mapper is
-      package Conversions is
+      package Y_Of is
          new System.Address_To_Access_Conversions (Object_Type);
 
       function Map
@@ -59,7 +59,7 @@ package body Synchronization.Interprocess is
             end;
          else
             declare
-               use Conversions;
+               use Y_Of;
             begin
                return To_Pointer (Location).all'Unchecked_Access;
             end;
@@ -206,7 +206,7 @@ package body Synchronization.Interprocess is
             end;
          end if;
          Shared.Map :=
-            Conversions.To_Pointer (Location).all'Unchecked_Access;
+            Y_Of.To_Pointer (Location).all'Unchecked_Access;
          Shared.Map.Checksum    := Stream.Sum_1 * 2**16 + Stream.Sum_2;
          Shared.Map.Size        := Stream.Size;
          Shared.Map.Initialized := False;
@@ -248,7 +248,7 @@ package body Synchronization.Interprocess is
             end;
          end if;
          Shared.Map :=
-            Conversions.To_Pointer (Location).all'Unchecked_Access;
+            Y_Of.To_Pointer (Location).all'Unchecked_Access;
       end;
       while not Shared.Map.Initialized loop
          delay 0.1;

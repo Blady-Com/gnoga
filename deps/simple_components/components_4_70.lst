@@ -56,6 +56,7 @@
 ./components-ntp.gpr
 ./components-odbc.gpr
 ./components-openssl.gpr
+./components-python.gpr
 ./components-sqlite.gpr
 ./components.gpr
 ./components.htm
@@ -360,6 +361,7 @@
 ./lexer.jpg
 ./long_float_chebyshev_polynomials.ads
 ./long_float_cubic_spline.ads
+./long_float_waveform.ads
 ./next.gif
 ./object-archived-handle.adb
 ./object-archived-handle.ads
@@ -410,6 +412,7 @@
 ./openssl.adb
 ./openssl.ads
 ./os/linux/julia-load_julia_library.adb
+./os/linux/py-load_python_library.adb
 ./os/linux/synchronization-interprocess-events.adb
 ./os/linux/synchronization-interprocess-events.ads
 ./os/linux/synchronization-interprocess-mutexes.adb
@@ -423,6 +426,7 @@
 ./os/linux/synchronization_linux.c
 ./os/linux/system_errno.ads
 ./os/pthreads/julia-load_julia_library.adb
+./os/pthreads/py-load_python_library.adb
 ./os/pthreads/synchronization-interprocess-events.adb
 ./os/pthreads/synchronization-interprocess-events.ads
 ./os/pthreads/synchronization-interprocess-mutexes.adb
@@ -435,6 +439,7 @@
 ./os/pthreads/synchronization-pthreads.ads
 ./os/pthreads/system_errno.ads
 ./os/windows/julia-load_julia_library.adb
+./os/windows/py-load_python_library.adb
 ./os/windows/synchronization-interprocess-events.adb
 ./os/windows/synchronization-interprocess-events.ads
 ./os/windows/synchronization-interprocess-mutexes.adb
@@ -568,6 +573,10 @@
 ./persistent-memory_pools-streams-generic_external_b_tree.ads
 ./persistent-memory_pools-streams-generic_external_ptr_b_tree.adb
 ./persistent-memory_pools-streams-generic_external_ptr_b_tree.ads
+./persistent-memory_pools-streams-generic_float_waveform.adb
+./persistent-memory_pools-streams-generic_float_waveform.ads
+./persistent-memory_pools-streams-ieee_754.adb
+./persistent-memory_pools-streams-ieee_754.ads
 ./persistent-memory_pools-streams.adb
 ./persistent-memory_pools-streams.ads
 ./persistent-memory_pools.adb
@@ -608,6 +617,18 @@
 ./pipe_streams.ads
 ./prev.gif
 ./pulse_event.gif
+./py-load_python_library.ads
+./py.adb
+./py.ads
+./python-examples/class/py-class.adb
+./python-examples/class/py-class.ads
+./python-examples/class/test_class.adb
+./python-examples/class/test_class.gpr
+./python-examples/module/py-module.adb
+./python-examples/module/py-module.ads
+./python-examples/module/test_module.adb
+./python-examples/module/test_module.gpr
+./py_conversions.c
 ./readme_components.txt
 ./single-task/object.adb
 ./single-task/persistent-data_bank-mutexes.ads
@@ -700,6 +721,7 @@
 ./test_components/components-ntp-test_ntp.gpr
 ./test_components/components-odbc-odbc_bindings_tests.gpr
 ./test_components/components-odbc-odbc_persistence_tests.gpr
+./test_components/components-python-test_python.gpr
 ./test_components/components-sqlite-benchmark_tests.gpr
 ./test_components/components-sqlite-sqlite_persistence_tests.gpr
 ./test_components/components-tests.gpr
@@ -777,6 +799,7 @@
 ./test_components/test_infinity_server.adb
 ./test_components/test_infinity_servers.adb
 ./test_components/test_infinity_servers.ads
+./test_components/test_integer_b_trees.adb
 ./test_components/test_integer_b_trees.ads
 ./test_components/test_integer_fifo.adb
 ./test_components/test_integer_fifo.ads
@@ -837,6 +860,7 @@
 ./test_components/test_persistent_tree.adb
 ./test_components/test_persistent_tree.ads
 ./test_components/test_pipe_streams.adb
+./test_components/test_python.adb
 ./test_components/test_record_blackboards.ads
 ./test_components/test_safe_string_blackboards.ads
 ./test_components/test_sequencer.adb

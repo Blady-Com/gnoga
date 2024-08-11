@@ -1,0 +1,31 @@
+with "components.gpr";
+with "tables.gpr";
+
+project Components.Python is
+   for Languages use ("Ada", "C");
+
+   case Tables.Target_OS is
+      when "Windows" | "Windows_NT" =>
+         for Source_Dirs use (".", "os/windows");
+      when "Linux" | "UNIX" | "auto" =>
+         for Source_Dirs use (".", "os/linux");
+      when "OSX" | "FreeBSD" =>
+         for Source_Dirs use (".", "os/pthreads");
+   end case;   
+
+   for Source_Files use
+       (  "py.adb",
+          "py.ads",
+          "py-load_python_library.adb",
+          "py-load_python_library.ads",
+          "py_conversions.c"
+       );
+
+   for Object_Dir use Components'Object_Dir;
+
+   package Compiler renames Components.Compiler;
+   package Binder   renames Components.Binder;
+   package Builder  renames Components.Builder;
+   package Linker   renames Components.Linker;
+
+end Components.Python;

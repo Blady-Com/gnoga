@@ -3,7 +3,7 @@
 --     Persistent.Blocking_Files.                  Luebeck            --
 --        Transactional                            Spring, 2014       --
 --  Implementation                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  18:00 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -28,6 +28,10 @@
 package body Persistent.Blocking_Files.Transactional is
 
    Min_Map_Size : constant := 16;
+
+   No_File_Open    : constant String := "No file open";
+   Invalid_Segment : constant String := "Invalid block number of " &
+                                        "a map segment";
 
    function Allocate
             (  Container : Persistent_Transactional_Array
@@ -266,7 +270,7 @@ package body Persistent.Blocking_Files.Transactional is
                if Segment = null then
                   Raise_Exception
                   (  Data_Error'Identity,
-                     "Invalid block number of a map segment in Expand"
+                     Invalid_Segment
                   );
                end if;
                Segment.Modified := True;
@@ -373,7 +377,7 @@ package body Persistent.Blocking_Files.Transactional is
       Physical : Block_Count;
    begin
       if not Container.Is_Open then
-         Raise_Exception (Use_Error'Identity, "No file open");
+         Raise_Exception (Use_Error'Identity, No_File_Open);
       elsif Mode (Container.File) = In_File then
          Raise_Exception (Use_Error'Identity, "File is read-only");
       end if;
@@ -417,7 +421,7 @@ package body Persistent.Blocking_Files.Transactional is
       or Shift_Left (Unsigned_64 (Block (Offset + 4)), 32)
       or Shift_Left (Unsigned_64 (Block (Offset + 5)), 40)
       or Shift_Left (Unsigned_64 (Block (Offset + 6)), 48)
-      or Shift_Left (Unsigned_64 (Block (Offset + 7)), 52)
+      or Shift_Left (Unsigned_64 (Block (Offset + 7)), 56)
       );
    end Get;
 
@@ -465,7 +469,7 @@ package body Persistent.Blocking_Files.Transactional is
       if Container.Is_Open then
          return Container.Width;
       else
-         Raise_Exception (Use_Error'Identity, "No file open");
+         Raise_Exception (Use_Error'Identity, No_File_Open);
       end if;
    end Get_Block_Size;
 
@@ -493,7 +497,7 @@ package body Persistent.Blocking_Files.Transactional is
             )  return Natural is
    begin
       if not Container.Is_Open then
-         Raise_Exception (Use_Error'Identity, "No file open");
+         Raise_Exception (Use_Error'Identity, No_File_Open);
       else
          return
             Natural (Container.List (Container.List'Last).Height) + 1;
@@ -574,7 +578,7 @@ package body Persistent.Blocking_Files.Transactional is
       if Container.Is_Open then
          return Container.Sequence;
       else
-         Raise_Exception (Use_Error'Identity, "No file open");
+         Raise_Exception (Use_Error'Identity, No_File_Open);
       end if;
    end Get_Sequence_No;
 
@@ -585,7 +589,7 @@ package body Persistent.Blocking_Files.Transactional is
       if Container.Is_Open then
          return Byte_Index (Container.Width) * Block_Byte_Size;
       else
-         Raise_Exception (Use_Error'Identity, "No file open");
+         Raise_Exception (Use_Error'Identity, No_File_Open);
       end if;
    end Get_Size;
 
@@ -596,7 +600,7 @@ package body Persistent.Blocking_Files.Transactional is
       if Container.Is_Open then
          return Byte_Index (Container.Length) * Block_Byte_Size;
       else
-         Raise_Exception (Use_Error'Identity, "No file open");
+         Raise_Exception (Use_Error'Identity, No_File_Open);
       end if;
    end Get_Used_Size;
 
@@ -692,7 +696,7 @@ package body Persistent.Blocking_Files.Transactional is
       if Ptr = null then
          Raise_Exception
          (  Data_Error'Identity,
-            "Invalid block number of a map segment"
+            Invalid_Segment
          );
       end if;
       declare
@@ -744,7 +748,7 @@ package body Persistent.Blocking_Files.Transactional is
       if Ptr = null then
          Raise_Exception
          (  Data_Error'Identity,
-            "Invalid block number of a map segment"
+            Invalid_Segment
          );
       end if;
       declare
@@ -798,7 +802,7 @@ package body Persistent.Blocking_Files.Transactional is
       Physical : Block_Count;
    begin
       if not Container.Is_Open then
-         Raise_Exception (Use_Error'Identity, "No file open");
+         Raise_Exception (Use_Error'Identity, No_File_Open);
       elsif Virtual > Container.Width then -- Outside the virtual file
          return null;
       else
@@ -909,7 +913,7 @@ package body Persistent.Blocking_Files.Transactional is
             5 => Unsigned_8 (16#FF# and Shift_Right (Value, 32)),
             6 => Unsigned_8 (16#FF# and Shift_Right (Value, 40)),
             7 => Unsigned_8 (16#FF# and Shift_Right (Value, 48)),
-            8 => Unsigned_8 (16#FF# and Shift_Right (Value, 52))
+            8 => Unsigned_8 (16#FF# and Shift_Right (Value, 56))
          );
    end Put;
 
@@ -940,7 +944,7 @@ package body Persistent.Blocking_Files.Transactional is
       Physical : Block_Count;
    begin
       if not Container.Is_Open then
-         Raise_Exception (Use_Error'Identity, "No file open");
+         Raise_Exception (Use_Error'Identity, No_File_Open);
       elsif Virtual > Container.Width then -- Outside the virtual file
          Raise_Exception (End_Error'Identity, "Out of file");
       end if;
@@ -1066,7 +1070,7 @@ package body Persistent.Blocking_Files.Transactional is
       if Ptr = null then
          Raise_Exception
          (  Data_Error'Identity,
-            "Invalid block number of a map segment"
+            Invalid_Segment
          );
       end if;
       Segment.Modified := False;
@@ -1111,7 +1115,7 @@ package body Persistent.Blocking_Files.Transactional is
             if Parent = null then
                Raise_Exception
                (  Data_Error'Identity,
-                  "Invalid block number of a map segment"
+                  Invalid_Segment
                );
             end if;
             Parent.Map (Offset) := Physical;
@@ -1142,7 +1146,7 @@ package body Persistent.Blocking_Files.Transactional is
       if Ptr = null then
          Raise_Exception
          (  Data_Error'Identity,
-            "Invalid block number of a map segment"
+            Invalid_Segment
          );
       end if;
       declare
@@ -1227,7 +1231,7 @@ package body Persistent.Blocking_Files.Transactional is
       Virtual : constant Block_Index := Get_Index (Index);
    begin
       if not Container.Is_Open then
-         Raise_Exception (Use_Error'Identity, "No file open");
+         Raise_Exception (Use_Error'Identity, No_File_Open);
       elsif Mode (Container.File) = In_File then
          Raise_Exception (Use_Error'Identity, "File is read-only");
       elsif Virtual > Container.Width then -- Outside the virtual file
@@ -1295,7 +1299,7 @@ package body Persistent.Blocking_Files.Transactional is
       Physical : Block_Count;
    begin
       if not Container.Is_Open then
-         Raise_Exception (Use_Error'Identity, "No file open");
+         Raise_Exception (Use_Error'Identity, No_File_Open);
       elsif Mode (Container.File) = In_File then
          Raise_Exception (Use_Error'Identity, "File is read-only");
       end if;

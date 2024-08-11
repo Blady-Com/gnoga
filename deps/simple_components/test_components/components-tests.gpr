@@ -35,6 +35,7 @@ project Components.Tests is
           "test_ieee_754.adb",
           "test_interprocess_data.ads",
           "test_interprocess_synchronization.adb",
+          "test_integer_b_trees.adb",
           "test_integer_b_trees.ads",
           "test_integer_fifo.adb",
           "test_integer_fifo.ads",

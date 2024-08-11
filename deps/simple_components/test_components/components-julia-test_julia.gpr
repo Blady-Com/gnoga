@@ -5,6 +5,6 @@ project Components.Julia.Test_Julia is
 
    for Source_Files use ("test_julia.adb");
    for Main use ("test_julia.adb");
-   for Object_Dir use Components.Object_Dir_Path;
+   for Object_Dir use Components'Object_Dir;
 
 end Components.Julia.Test_Julia;

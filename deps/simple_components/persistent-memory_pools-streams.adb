@@ -3,7 +3,7 @@
 --      Persistent.Memory_Pools.                   Luebeck            --
 --         Streams                                 Winter, 2014       --
 --  Implementation                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  18:00 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -40,17 +40,6 @@ package body Persistent.Memory_Pools.Streams is
 --
 --   Length <= Size - 8 + 4
 --
-   function Image (Data : Byte_Array) return String is
-      Result : String (1..Data'Length);
-      Index  : Integer := Result'First;
-   begin
-      for Element in Data'Range loop
-         Result (Index) := Character'Val (Data (Element));
-         Index := Index + 1;
-      end loop;
-      return Result;
-   end Image;
-
    procedure Look_Ahead
              (  Stream    : Input_Stream'Class;
                 Visit     : Visitor_Type;
@@ -305,6 +294,14 @@ package body Persistent.Memory_Pools.Streams is
       Do_Compare (Left, On_Data'Access, Result);
       return Result;
    end Compare;
+
+   procedure Complete
+             (  State    : in out Tagging_Progress;
+                Progress : Advance
+             )  is
+   begin
+      null;
+   end Complete;
 
    function Count
             (  Stream : Unchecked_Input_Stream;
@@ -754,6 +751,16 @@ package body Persistent.Memory_Pools.Streams is
          Open (Stream, Stream.Start);
       end if;
    end Rewind;
+
+   procedure Start (State : in out Tagging_Progress) is
+   begin
+      null;
+   end Start;
+
+   procedure Stop  (State : in out Tagging_Progress) is
+   begin
+      null;
+   end Stop;
 
    procedure Write
              (  Stream : in out Input_Stream;

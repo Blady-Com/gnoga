@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2012       --
 --                                                                    --
---                                Last revision :  10:00 19 May 2022  --
+--                                Last revision :  10:37 10 Mar 2023  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -387,7 +387,8 @@ package body GNAT.Sockets.Server is
             Server   => Client.Client_Address,
             Timeout  => 0.0,
 --          Selector => Listener.Selector'Unchecked_Access,
-            Selector => +Listener.Selector'Address, -- GNAT 12.1 bug
+--          Selector => +Listener.Selector'Address, -- GNAT 12.1 bug
+            Selector => Listener.Selector'Unrestricted_Access, -- ditto
             Status   => Status
          );
          if Status = Completed then

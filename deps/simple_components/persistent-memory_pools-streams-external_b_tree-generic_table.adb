@@ -3,7 +3,7 @@
 --     Persistent.Memory_Pools.Streams.            Luebeck            --
 --        External_B_Tree.Generic_Table            Autumn, 2014       --
 --  Implementation                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  18:00 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -36,6 +36,8 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
    Values_Offs : constant Block_Offset :=
                           (Key_Index'Pos (Key_Index'Last) + 1) * 8;
 
+   Not_Empty   : constant String := "Table is not empty";
+
    procedure Add
              (  Container : in out Table;
                 Keys      : Keys_Tuple;
@@ -51,14 +53,14 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                Index     : Key_Index;
                Left      : Byte_Index;
                Right     : Byte_Index
-            )  return Outcome is
+            )  return Precedence is
    begin
       if Left = Right then
-         return Same;
+         return Equal;
       elsif Left < Right then
-         return Before;
+         return Less;
       else
-         return After;
+         return Greater;
       end if;
    end Compare;
 
@@ -79,9 +81,12 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
       procedure Free is
          new Ada.Unchecked_Deallocation (B_Tree'Class, B_Tree_Ptr);
    begin
-      for Index in Key_Index'Range loop
-         Free (Container.Roots (Index));
-      end loop;
+      if Is_Writable (Container.Pool.File.all) then
+         Erase (Container);
+         for Index in Key_Index'Range loop
+            Free (Container.Roots (Index));
+         end loop;
+      end if;
       Finalize (Limited_Controlled (Container));
    end Finalize;
 
@@ -149,7 +154,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
    function Get_Bucket_Size (Row : Row_Ptr) return Natural is
    begin
       if Row.Node = 0 then
-         Raise_Exception (Constraint_Error'Identity, "No row");
+         Raise_Exception (Constraint_Error'Identity, Bad_Row);
       else
          return Get_Bucket_Size
                 (  Item_Ptr'
@@ -177,7 +182,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
    function Get_Index (Row : Row_Ptr) return Positive is
    begin
       if Row.Node = 0 then
-         Raise_Exception (Constraint_Error'Identity, "No item");
+         Raise_Exception (Constraint_Error'Identity, Invalid_Item);
       else
          return Row.Index;
       end if;
@@ -758,6 +763,14 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
       Put (Block, Offset, Value);
    end Replace;
 
+   procedure Restore
+             (  Container : in out Table;
+                Reference : Byte_Index
+             )  is
+   begin
+      Set_Root_Address (Container, Reference);
+   end Restore;
+
    procedure Set_Root_Address
              (  Container : in out Table;
                 Root      : Byte_Index
@@ -767,6 +780,14 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
                Load (Container.Pool.File, Root).all;
       Offset : Block_Offset := Get_Offset (Root);
    begin
+      if Container.Address /= 0 then
+         Raise_Exception (Status_Error'Identity, Not_Empty);
+      end if;
+      for Index in Container.Roots'Range loop
+         if Container.Roots (Index).Root_Bucket /= 0 then
+            Raise_Exception (Status_Error'Identity, Not_Empty);
+         end if;
+      end loop;
       for Index in Container.Roots'Range loop
          Container.Roots (Index).Root_Bucket := Get (Block, Offset);
          Offset := Offset + 8;
@@ -797,6 +818,19 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree.
          Offset := Offset + 8;
       end loop;
    end Set_Values;
+
+   procedure Store
+             (  Container : in out Table;
+                Reference : out Byte_Index
+             )  is
+      Lock : Holder (Container.Pool);
+   begin
+      Reference := Get_Root_Address (Container);
+      Container.Address := 0;
+      for Index in Container.Roots'Range loop
+         Container.Roots (Index).Root_Bucket := 0;
+      end loop;
+   end Store;
 
    function Sup
             (  Container : Table;

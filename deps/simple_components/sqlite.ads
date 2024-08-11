@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  00:34 26 Oct 2019  --
+--                                Last revision :  08:30 04 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -73,6 +73,14 @@ package SQLite is
 -- Data_Base -- The type encapsulating a SQLite data base
 --
    type Data_Base is tagged private;
+--
+-- Close -- Close the database.
+--
+--   Base - The data-base object
+--
+-- This closes the data-base and finalizes all relevant objects.
+--
+   procedure Close (Base : in out Data_Base);
 --
 -- Filename -- The database file name
 --
@@ -347,7 +355,7 @@ package SQLite is
 --    Command - The statement being execured
 --
 -- This  function returns an  UTF-8 string  containing  the SQL text  of
--- the statement with bound parameters expanded.
+-- the statement without bound parameters expanded.
 --
 -- Returns :
 --
@@ -359,6 +367,24 @@ package SQLite is
 --    Status_Error     - Access error
 --
    function SQL (Command : Statement) return String;
+--
+-- SQL_Show -- The original SQL command text of the prepared statement
+--
+--    Command - The statement being execured
+--
+-- This  function returns an  UTF-8 string  containing  the SQL text  of
+-- the statement with bound parameters expanded.
+--
+-- Returns :
+--
+--    The statement text
+--
+-- Exceptions :
+--
+--    Constraint_Error - Command is an invalid handle
+--    Status_Error     - Access error
+--
+   function SQL_Show (Command : Statement) return String;
 --
 -- Step -- Execue prepared command
 --

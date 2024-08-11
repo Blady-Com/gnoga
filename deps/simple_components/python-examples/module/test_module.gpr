@@ -1,0 +1,15 @@
+with "../../components.gpr";
+with "../../components-python.gpr";
+
+project Test_Module is
+
+   for Source_Dirs use (".");
+   for Main use ("test_module.adb");
+   for Source_Files use
+       (  "py-module.adb",
+          "py-module.ads",
+          "test_module.adb"
+       );
+   for Object_Dir use Components.Object_Dir_Path;
+
+end Test_Module;

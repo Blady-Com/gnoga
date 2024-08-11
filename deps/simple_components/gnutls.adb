@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2015       --
 --                                                                    --
---                                Last revision :  18:40 23 Oct 2021  --
+--                                Last revision :  08:30 04 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -818,7 +818,7 @@ package body GNUTLS is
       Check
       (  Internal
          (  Credentials.Handle,
-            Data (Data'First)'Address,
+            Data'Address,
             Data'Length,
             Format
       )  );
@@ -1183,7 +1183,7 @@ package body GNUTLS is
       Result :=
          Internal
          (  Credentials.Handle,
-            List (List'First)'Address,
+            List'Address,
             List'Length
          );
       if Result < 0 then
@@ -1235,7 +1235,7 @@ package body GNUTLS is
       Result :=
          Internal
          (  Credentials.Handle,
-            List (List'First)'Address,
+            List'Address,
             List'Length,
             Format
          );
@@ -1266,7 +1266,7 @@ package body GNUTLS is
       Result :=
          Internal
          (  Credentials.Handle,
-            List (List'First)'Address,
+            List'Address,
             List'Length,
             Format
          );
@@ -1295,7 +1295,7 @@ package body GNUTLS is
       Check
       (  Internal
          (  Credentials.Handle,
-            List (List'First)'Address,
+            List'Address,
             List'Length,
             Key
       )  );
@@ -1565,7 +1565,7 @@ package body GNUTLS is
       Result :=
          Internal
          (  Credentials.Handle,
-            List (List'First)'Address,
+            List'Address,
             List'Length
          );
       if Result < 0 then

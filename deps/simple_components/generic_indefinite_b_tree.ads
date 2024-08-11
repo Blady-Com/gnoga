@@ -3,7 +3,7 @@
 --     Generic_Indefinite_B_Tree                   Luebeck            --
 --  Interface                                      Spring, 2014       --
 --                                                                    --
---                                Last revision :  13:51 30 May 2014  --
+--                                Last revision :  18:00 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -32,8 +32,9 @@ with Ada.Finalization;
 with System;
 
 generic
-   type Key_Type (<>) is private;
+   type Key_Type    (<>) is private;
    type Object_Type (<>) is private;
+   type Tag_Type    (<>) is private;
    Width : Positive := 256;
    with function "<" (Left, Right : Key_Type) return Boolean is <>;
    with function "=" (Left, Right : Key_Type) return Boolean is <>;
@@ -67,6 +68,16 @@ package Generic_Indefinite_B_Tree is
 --
    function Get_Bucket_Size (Item : Item_Ptr) return Natural;
 --
+-- Get_First -- Get the child item with the least key
+--
+--    Item  - Pointer to an item
+--
+-- Returns :
+--
+--    The item with the least key or no item if Item is no item
+--
+   function Get_First (Item : Item_Ptr) return Item_Ptr;
+--
 -- Get_Index -- The position of the item in its bucket
 --
 --    Item - Pointer to the item
@@ -81,6 +92,22 @@ package Generic_Indefinite_B_Tree is
 --
    function Get_Index (Item : Item_Ptr) return Positive;
 --
+-- Get_Item -- Get item by its position in its bucket
+--
+--    Item  - Pointer to an item in the bucket
+--    Index - The position 1..Get_Bucket_Size
+--
+-- Returns :
+--
+--    The item or no item
+--
+-- Exceptions :
+--
+--    Constraint_Error - Item is no item
+--
+   function Get_Item (Item : Item_Ptr; Index : Positive)
+      return Item_Ptr;
+--
 -- Get_Key -- The key corresponding to the item
 --
 --    Item - Pointer to the item
@@ -94,6 +121,46 @@ package Generic_Indefinite_B_Tree is
 --    Constraint_Error - No or illegal item
 --
    function Get_Key (Item : Item_Ptr) return Key_Type;
+--
+-- Get_Last -- Get the child item with the greatest key
+--
+--    Item  - Pointer to an item
+--
+-- Returns :
+--
+--    The item with the greatest key or no item if Item is no item
+--
+   function Get_Last (Item : Item_Ptr) return Item_Ptr;
+--
+-- Get_Left_Child -- Get immediate child item
+--
+--    Item  - Pointer to the item
+--
+-- This function returns the child with the greatest key less than the
+-- item's key.
+--
+-- Returns :
+--
+--    The item or no item
+--
+   function Get_Left_Child (Item : Item_Ptr) return Item_Ptr;
+--
+-- Get_Left_Parent -- The parent
+--
+--    Item  - Pointer to the item
+--
+-- This function  returns the parent  item with the keys lesser than the
+-- item's key.
+--
+-- Returns :
+--
+--    A pointer to the parent item or no item
+--
+-- Exceptions :
+--
+--    Constraint_Error - No or illegal item
+--
+   function Get_Left_Parent (Item : Item_Ptr) return Item_Ptr;
 --
 -- Get_Next -- The next item
 --
@@ -115,6 +182,36 @@ package Generic_Indefinite_B_Tree is
 --
    function Get_Previous (Item : Item_Ptr) return Item_Ptr;
 --
+-- Get_Right_Child -- Get immediate child item
+--
+--    Item  - Pointer to the item
+--
+-- This function returns  the child with  the least key greater than the
+-- item's key.
+--
+-- Returns :
+--
+--    The item or no item
+--
+   function Get_Right_Child (Item : Item_Ptr) return Item_Ptr;
+--
+-- Get_Right_Parent -- The parent
+--
+--    Item - Pointer to the item
+--
+-- This function  returns the parent item with the keys greater than the
+-- item's key.
+--
+-- Returns :
+--
+--    A pointer to the parent item or no item
+--
+-- Exceptions :
+--
+--    Constraint_Error - No or illegal item
+--
+   function Get_Right_Parent (Item : Item_Ptr) return Item_Ptr;
+--
 -- Get_Root -- The root item of the tree
 --
 --    Item - Pointer to the item
@@ -124,6 +221,20 @@ package Generic_Indefinite_B_Tree is
 --    The first item in the root bucket or no item
 --
    function Get_Root (Item : Item_Ptr) return Item_Ptr;
+--
+-- Get_Tag -- The tag corresponding to the item's bucket
+--
+--    Item - Pointer to the item
+--
+-- Returns :
+--
+--    The tag
+--
+-- Exceptions :
+--
+--    Constraint_Error - No or illegal item
+--
+   function Get_Tag (Item : Item_Ptr) return Tag_Type;
 --
 -- Get_Value -- The object corresponding to the item
 --
@@ -164,6 +275,20 @@ package Generic_Indefinite_B_Tree is
 --    Constraint_Error - No item
 --
    procedure Replace (Item : Item_Ptr; Value : Object_Type);
+--
+-- Set_Tag -- Set tag corresponding to the item's bucket
+--
+--    Item - Pointer to the item
+--    Tag  - The tag to set
+--
+-- Tag  can be any value used extension purpose.  Initially it is set to
+-- zero.
+--
+-- Exceptions :
+--
+--    Constraint_Error - No or illegal item
+--
+   procedure Set_Tag (Item : Item_Ptr; Tag : Tag_Type);   
 ------------------------------------------------------------------------
 --
 -- B_Tree -- B tree object
@@ -247,6 +372,16 @@ package Generic_Indefinite_B_Tree is
 --
    function Get_Last (Container : B_Tree) return Item_Ptr;
 --
+-- Get_Root -- The root item of the tree
+--
+--    Item - Pointer to the item
+--
+-- Returns :
+--
+--    The first item in the root bucket or no item
+--
+   function Get_Root (Container : B_Tree) return Item_Ptr;
+--
 -- Inf -- Find an item that is less than or equal to the key
 --
 --    Container - The tree
@@ -324,6 +459,87 @@ package Generic_Indefinite_B_Tree is
 --    True if both trees contain same items
 --
    function "=" (Left, Right : B_Tree) return Boolean;
+--
+-- Generic_Traverse -- Shallow tree traversal
+--
+--    Container - The tree to traverse
+--    From      - The item to start at
+--    To        - The key to stop at
+--
+-- This procedure traverses items  of the tree with the keys starting at
+-- the item From less than or equal to To. The traversals is shallow, if
+-- a bucket  contains items with  the keys in the range,  which includes
+-- items of all subtrees,  then it is visited as a whole once. There are
+-- two visitor functions:
+--
+--    Visit_Range - This function  is called  for  each  bucket of items
+--                  within the range.  An item from the bucket is passed
+--       to identify it.  The function returns False  to  stop traversal
+--       immediately. All items are visited in the key-ascending order.
+--
+--    Visit_Item  - This function  is called  for each tree item that is
+--                  not in a bucket for which Visit_Range is called. The
+--       functions returns one of the following values:
+--
+--       Quite stops the traversal immediately;
+--       Step_Over continues traversal to the next tree bucket;
+--       Step_In continues traversal into the bucket.
+--
+   type Bucket_Traversal is (Quit, Step_Over, Step_In);
+   generic
+      with function Visit_Item
+                    (  Container : B_Tree;
+                       Key       : Key_Type;
+                       Item      : Item_Ptr
+                    )  return Boolean is <>;
+      with function Visit_Range
+                    (  Container : B_Tree;
+                       Item      : Item_Ptr
+                    )  return Bucket_Traversal is <>;
+   procedure Generic_Traverse
+             (  Container : B_Tree;
+                From      : Item_Ptr;
+                To        : Key_Type
+             );
+--
+-- Abstract_Visitor -- Abstract visitor base type
+--
+   type Abstract_Visitor is abstract
+      new Ada.Finalization.Limited_Controlled with null record;
+--
+-- Visit_Item -- Equivalent to the generic variant
+--
+   function Visit_Item
+            (  Iterator  : access Abstract_Visitor;
+               Container : B_Tree'Class;
+               Key       : Key_Type;
+               Item      : Item_Ptr
+            )  return Boolean is abstract;
+--
+-- Visit_Range -- Equivalent to the generic variant
+--
+   function Visit_Range
+            (  Iterator  : access Abstract_Visitor;
+               Container : B_Tree'Class;
+               Item      : Item_Ptr
+            )  return Bucket_Traversal is abstract;
+--
+-- Traverse -- Non-generic tree traversal
+--
+--    Container - The tree to traverse
+--    Iterator  - The iterator object to use
+--    From      - The item to start at
+--    To        - The key to stop at
+--
+-- This procedure traverses  items of the tree starting at the item From
+-- less than or equal to To using the Iterator object.
+--
+   procedure Traverse
+             (  Container : B_Tree;
+                Iterator  : in out Abstract_Visitor'Class;
+                From      : Item_Ptr;
+                To        : Key_Type
+             );
 
 private
    type Node_Type;
@@ -336,6 +552,7 @@ private
 
    type Key_Ptr is access Key_Type;
    type Object_Ptr is access Object_Type;
+   type Tag_Ptr is access Tag_Type;
    type Pair_Type is record
       Key   : Key_Ptr;
       Value : Object_Ptr;
@@ -348,6 +565,7 @@ private
    type Node_Type is record
       Length   : Integer := 0;
       Parent   : Item_Ptr;
+      Tag      : Tag_Ptr;
       Pairs    : Pair_Array     (1..Width);
       Children : Node_Ptr_Array (1..Width + 1);
    end record;

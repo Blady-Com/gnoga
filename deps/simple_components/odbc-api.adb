@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2002       --
 --                                                                    --
---                                Last revision :  09:02 17 Oct 2020  --
+--                                Last revision :  12:14 22 Apr 2023  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1262,7 +1262,8 @@ package body ODBC.API is
             (  Connection : ODBC_Connection
             )  return Boolean is
    begin
-      return "Y" = Get_Info (Connection, SQL_ACCESSIBLE_PROCEDURES);
+      return "Y"
+           = String'(Get_Info (Connection, SQL_ACCESSIBLE_PROCEDURES));
    exception
       when End_Error => -- No data, assume false
          return False;
@@ -1272,7 +1273,8 @@ package body ODBC.API is
             (  Connection : ODBC_Connection
             )  return Boolean is
    begin
-      return "Y" = Get_Info (Connection, SQL_ACCESSIBLE_TABLES);
+      return "Y"
+           = String'(Get_Info (Connection, SQL_ACCESSIBLE_TABLES));
    exception
       when End_Error => -- No data, assume false
          return False;
@@ -1337,11 +1339,12 @@ package body ODBC.API is
    begin
       return
       (  SQL_ASYNC_ENABLE_ON
-      =  Get_Attribute
-         (  Connection,
-            SQL_ATTR_ASYNC_DBC_FUNCTIONS_ENABLE,
-            Filter_HYC00_HY114'Access
-      )  );
+      =  SQLULEN'
+         (  Get_Attribute
+            (  Connection,
+               SQL_ATTR_ASYNC_DBC_FUNCTIONS_ENABLE,
+               Filter_HYC00_HY114'Access
+      )  )  );
    exception
       when End_Error => -- No data, assume false
          return False;
@@ -1622,11 +1625,12 @@ package body ODBC.API is
    begin
       return
       (  SQL_TRUE
-      =  Get_Attribute
-         (  Connection,
-            SQL_ATTR_AUTO_IPD,
-            Filter_HYC00_HY114'Access
-      )  );
+      =  SQLULEN'
+         (  Get_Attribute
+            (  Connection,
+               SQL_ATTR_AUTO_IPD,
+              Filter_HYC00_HY114'Access
+      )  )  );
    exception
       when Use_Error =>
          return False;
@@ -1638,8 +1642,9 @@ package body ODBC.API is
    begin
       return
       (  SQL_AUTOCOMMIT_ON
-      =  Get_Attribute (Connection, SQL_ATTR_AUTOCOMMIT)
-      );
+      =  SQLULEN'
+         (  Get_Attribute (Connection, SQL_ATTR_AUTOCOMMIT)
+      )  );
    end Get_Autocommit;
 
    function Get_Batch_Row_Count
@@ -1691,7 +1696,8 @@ package body ODBC.API is
             (  Connection : ODBC_Connection
             )  return Boolean is
    begin
-      return "Y" = Get_Info (Connection, SQL_CATALOG_NAME);
+      return "Y"
+           = String'(Get_Info (Connection, SQL_CATALOG_NAME));
    exception
       when End_Error => -- No data, assume false
          return False;
@@ -1778,7 +1784,8 @@ package body ODBC.API is
             (  Connection : ODBC_Connection
             )  return Boolean is
    begin
-      return "Y" = Get_Info (Connection, SQL_COLUMN_ALIAS);
+      return "Y"
+           = String'(Get_Info (Connection, SQL_COLUMN_ALIAS));
    exception
       when End_Error => -- No data, assume false
          return False;
@@ -1854,8 +1861,9 @@ package body ODBC.API is
    begin
       return
       (  SQL_CD_TRUE
-      =  Get_Attribute (Connection, SQL_ATTR_CONNECTION_DEAD)
-      );
+      =  SQLULEN'
+         (  Get_Attribute (Connection, SQL_ATTR_CONNECTION_DEAD)
+      )  );
    end Get_Connection_Dead;
 
    function Get_Connection_Name
@@ -3056,7 +3064,8 @@ package body ODBC.API is
             (  Connection : ODBC_Connection
             )  return Boolean is
    begin
-      return "Y" = Get_Info (Connection, SQL_DATA_SOURCE_READ_ONLY);
+      return "Y"
+           = String'(Get_Info (Connection, SQL_DATA_SOURCE_READ_ONLY));
    end Get_Data_Source_Readonly;
 
    function Get_Database_Name
@@ -3127,7 +3136,8 @@ package body ODBC.API is
             (  Connection : ODBC_Connection
             )  return Boolean is
    begin
-      return "Y" = Get_Info (Connection, SQL_DESCRIBE_PARAMETER);
+      return "Y"
+           = String'(Get_Info (Connection, SQL_DESCRIBE_PARAMETER));
    exception
       when End_Error => -- No data, assume false
          return False;
@@ -3376,7 +3386,8 @@ package body ODBC.API is
             (  Connection : ODBC_Connection
             )  return Boolean is
    begin
-      return "Y" = Get_Info (Connection, SQL_EXPRESSIONS_IN_ORDERBY);
+      return "Y"
+           = String'(Get_Info (Connection, SQL_EXPRESSIONS_IN_ORDERBY));
    exception
       when End_Error => -- No data, assume false
          return False;
@@ -3901,7 +3912,7 @@ package body ODBC.API is
             (  Connection : ODBC_Connection
             )  return Boolean is
    begin
-      return "Y" = Get_Info (Connection, SQL_INTEGRITY);
+      return "Y" = String'(Get_Info (Connection, SQL_INTEGRITY));
    exception
       when End_Error => -- No data, assume false
          return False;
@@ -3962,7 +3973,8 @@ package body ODBC.API is
             (  Connection : ODBC_Connection
             )  return Boolean is
    begin
-      return "Y" = Get_Info (Connection, SQL_LIKE_ESCAPE_CLAUSE);
+      return
+         "Y" = String'(Get_Info (Connection, SQL_LIKE_ESCAPE_CLAUSE));
    exception
       when End_Error => -- No data, assume false
          return False;
@@ -4367,7 +4379,9 @@ package body ODBC.API is
             )  return Boolean is
    begin
       return
-         "Y" = Get_Info (Connection, SQL_MAX_ROW_SIZE_INCLUDES_LONG);
+      (  "Y"
+      =  String'(Get_Info (Connection, SQL_MAX_ROW_SIZE_INCLUDES_LONG))
+      );
    exception
       when End_Error => -- No data, assume false
          return False;
@@ -4555,7 +4569,9 @@ package body ODBC.API is
             )  return Boolean is
    begin
       return
-         "Y" = Get_Info (Connection, SQL_MULT_RESULT_SETS);
+      (  "Y"
+      =  String'(Get_Info (Connection, SQL_MULT_RESULT_SETS))
+      );
    exception
       when End_Error => -- No data, assume false
          return False;
@@ -4566,7 +4582,9 @@ package body ODBC.API is
             )  return Boolean is
    begin
       return
-         "Y" = Get_Info (Connection, SQL_MULTIPLE_ACTIVE_TXN);
+      (  "Y"
+      =  String'(Get_Info (Connection, SQL_MULTIPLE_ACTIVE_TXN))
+      );
    exception
       when End_Error => -- No data, assume false
          return False;
@@ -4616,7 +4634,7 @@ package body ODBC.API is
             )  return Boolean is
    begin
       return
-         "Y" = Get_Info (Connection, SQL_NEED_LONG_DATA_LEN);
+         "Y" = String'(Get_Info (Connection, SQL_NEED_LONG_DATA_LEN));
    exception
       when End_Error => -- No data, assume false
          return False;
@@ -4723,7 +4741,10 @@ package body ODBC.API is
             )  return Boolean is
    begin
       return
-         "Y" = Get_Info (Connection, SQL_ORDER_BY_COLUMNS_IN_SELECT);
+      (  "Y"
+      =  String'
+         (  Get_Info (Connection, SQL_ORDER_BY_COLUMNS_IN_SELECT)
+      )  );
    exception
       when End_Error => -- No data, assume false
          return False;
@@ -4781,7 +4802,8 @@ package body ODBC.API is
             (  Connection : ODBC_Connection
             )  return Boolean is
    begin
-      return "Y" = Get_Info (Connection, SQL_PROCEDURES);
+      return "Y"
+           = String'(Get_Info (Connection, SQL_PROCEDURES));
    exception
       when End_Error => -- No data, assume false
          return False;
@@ -5038,7 +5060,8 @@ package body ODBC.API is
             (  Connection : ODBC_Connection
             )  return Boolean is
    begin
-      return "Y" = Get_Info (Connection, SQL_ROW_UPDATES);
+      return "Y"
+           = String'(Get_Info (Connection, SQL_ROW_UPDATES));
    exception
       when End_Error => -- No data, assume false
          return False;
@@ -5608,7 +5631,8 @@ package body ODBC.API is
             (  Connection : ODBC_Connection
             )  return Boolean is
    begin
-      return SQL_TRUE = Get_Attribute (Connection, SQL_ATTR_TRACE);
+      return SQL_TRUE
+           = SQLULEN'(Get_Attribute (Connection, SQL_ATTR_TRACE));
    end Get_Trace;
 
    function Get_Tracefile

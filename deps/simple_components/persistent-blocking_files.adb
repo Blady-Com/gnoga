@@ -3,7 +3,7 @@
 --     Persistent.Blocking_Files                   Luebeck            --
 --  Implementation                                 Winter, 2014       --
 --                                                                    --
---                                Last revision :  11:02 11 Apr 2021  --
+--                                Last revision :  18:00 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -24,6 +24,8 @@
 --  exception  does not however invalidate any other reasons why the  --
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
+
+with Strings_Edit.Integers;  use Strings_Edit.Integers;
 
 with Ada.Unchecked_Deallocation;
 
@@ -192,6 +194,45 @@ package body Persistent.Blocking_Files is
       end if;
    end Get_Size;
 
+   function Image (Data : Byte_Array) return String is
+   begin
+      if Data'Length = 0 then
+         return "";
+      end if;
+      declare
+         Result  : String (1..Data'Length * 3 - 1);
+         Pointer : Integer := Result'First;
+      begin
+         for Element in Data'Range loop
+            if Element /= Data'First then
+               Result (Pointer) := ' ';
+               Pointer := Pointer + 1;
+            end if;
+            Put
+            (  Destination => Result,
+               Pointer     => Pointer,
+               Value       => Integer (Data (Element)),
+               Base        => 16,
+               Field       => 2,
+               Justify     => Strings_Edit.Right,
+               Fill        => '0'
+            );
+         end loop;
+         return Result;
+      end;
+   end Image;
+
+   function Image
+            (  Container : access Persistent_Array;
+               Location  : Byte_Index;
+               Count     : Positive
+            )  return String is
+      Block  : Block_Type renames Load (Container, Location).all;
+      Offset : constant Block_Offset := Get_Offset (Location);
+   begin
+      return Image (Block (Offset..Offset + Block_Offset (Count - 1)));
+   end Image;
+
    function Is_Open (Container : Persistent_Array) return Boolean is
    begin
       return Container.Is_Open;
@@ -262,15 +303,6 @@ package body Persistent.Blocking_Files is
             This.Used    := True;
          end;
       end if;
-   end Load;
-
-   procedure Load
-             (  Container : in out Persistent_Array;
-                Index     : Byte_Index;
-                Block     : out Cashed_Block_Ptr
-             )  is
-   begin
-      Load (Container, Count (Index / Block_Byte_Size), Block);
    end Load;
 
    function Load

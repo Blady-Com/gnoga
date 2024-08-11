@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Spring, 2014       --
 --                                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  18:00 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -34,8 +34,10 @@ with Ada.Unchecked_Deallocation;
 
 package body Generic_B_Tree is
 
-   Left_Half  : constant Positive := (Width + 1) / 2 - 1;
-   Right_Half : constant Positive := Width - Left_Half;
+   Left_Half     : constant Positive := (Width + 1) / 2 - 1;
+   Right_Half    : constant Positive := Width - Left_Half;
+
+   No_Item_Error : constant String   := "No item";
 
 --     function Image (Node : Node_Ptr) return String is
 --        use System.Storage_Elements;
@@ -258,6 +260,115 @@ package body Generic_B_Tree is
       end if;
    end Find;
 
+   type Children_Location is (Left, Right);
+
+   procedure Generic_Traverse
+             (  Container : B_Tree;
+                From      : Item_Ptr;
+                To        : Key_Type
+             )  is
+      Stop : Boolean  := False;
+      This : Item_Ptr := From;
+      Next : Item_Ptr;
+
+      function Overshot (Children_At : Children_Location)
+         return Boolean is
+         Key  : constant Key_Type := Get_Key (Next);
+         Skip : Item_Ptr;
+      begin
+         if To < Key then
+            return True;
+         end if;
+         case Children_At is
+            when Left =>
+               Skip := Get_Left_Child (Next);
+            when Right =>
+               Skip := Get_Right_Child (This);
+         end case;
+         if Skip.Node /= null then
+            case Visit_Range (Container, Skip) is
+               when Quit =>
+                  Stop := True;
+                  return True;
+               when Step_Over =>
+                  null;
+               when Step_In =>
+                  loop
+                     This := (Skip.Node, 1);           -- The first item
+                     Skip := Get_Left_Child (This);    -- in the bucket
+                     if Skip.Node = null then
+                        Stop := not Visit_Item         -- Leaf visit it
+                                    (  Container,      -- and return
+                                       Get_Key (This),
+                                       This
+                                    );
+                        return Stop;
+                     end if;
+                     case Visit_Range (Container, Skip) is
+                        when Quit =>
+                           Stop := True;
+                           return True;
+                        when Step_Over =>
+                           This := Skip;
+                           return False;
+                        when Step_In =>
+                           null;
+                     end case;
+                  end loop;
+            end case;
+         end if;
+         Stop := not Visit_Item (Container, Key, Next);
+         This := Next;
+         return Stop;
+      end Overshot;
+   begin
+      if This = No_Item then
+         return;
+      end if;
+      declare
+         Key : constant Key_Type := Get_Key (This);
+      begin
+         if To < Key or else not Visit_Item (Container, Key, This) then
+            return;
+         end if;
+      end;
+      loop
+         Next := Get_Item (This, This.Index + 1);
+         if Next.Node = null then
+            declare -- Searching fpr a right parent item
+               Current : Item_Ptr := This;
+            begin
+               loop
+                  Next := Get_Right_Parent (Current);
+                  exit when Next.Node /= null;
+                  Next := Get_Left_Parent (Current);
+                  exit when Next.Node = null;
+                  Current := Next;
+               end loop;
+            end;
+            if Next.Node = null or else Overshot (Right) then
+               if Stop then
+                  return;
+               end if;
+               Next := Get_Right_Child (This);
+               if Next.Node = null or else Overshot (Left) or else Stop
+               then
+                  return;
+               end if;
+            end if;
+         else
+            if Overshot (Right) then
+               exit when Stop;
+               Next := Get_Right_Child (This);
+               if Next.Node = null or else Overshot (Left) or else Stop
+               then
+                  return;
+               end if;
+            end if;
+         end if;
+      end loop;
+   end Generic_Traverse;
+
    function Get
             (  Container : B_Tree;
                Key       : Key_Type
@@ -267,7 +378,7 @@ package body Generic_B_Tree is
       if Item.Node = null then
          Raise_Exception
          (  Constraint_Error'Identity,
-            "No item"
+            No_Item_Error
          );
       end if;
       return Item.Node.Pairs (Item.Index).Value;
@@ -292,6 +403,21 @@ package body Generic_B_Tree is
          return Item.Node.Length;
       end if;
    end Get_Bucket_Size;
+
+   function Get_First (Item : Item_Ptr) return Item_Ptr is
+      Left : Item_Ptr;
+   begin
+      if Item.Node = null then
+         return No_Item;
+      else
+         Left := Get_Left_Child (Item);
+         if Left.Node = null then
+            return Item;
+         else
+            return Get_First (Left.Node);
+         end if;
+      end if;
+   end Get_First;
 
    function Get_First (Root : Node_Ptr) return Item_Ptr is
       This : Node_Ptr := Root;
@@ -320,18 +446,34 @@ package body Generic_B_Tree is
       if Item.Node = null then
          Raise_Exception
          (  Constraint_Error'Identity,
-            "No item"
+            No_Item_Error
          );
       end if;
       return Item.Index;
    end Get_Index;
+
+   function Get_Item (Item : Item_Ptr; Index : Positive)
+      return Item_Ptr is
+   begin
+      if Item.Node = null then
+         Raise_Exception
+         (  Constraint_Error'Identity,
+            No_Item_Error
+         );
+      end if;
+      if Index > Item.Node.Length then
+         return No_Item;
+      else
+         return (Item.Node, Index);
+      end if;
+   end Get_Item;
 
    function Get_Key (Item : Item_Ptr) return Key_Type is
    begin
       if Item.Node = null then
          Raise_Exception
          (  Constraint_Error'Identity,
-            "No item"
+            No_Item_Error
          );
       end if;
       declare
@@ -346,6 +488,21 @@ package body Generic_B_Tree is
          return Node.Pairs (Item.Index).Key;
       end;
    end Get_Key;
+
+   function Get_Last (Item : Item_Ptr) return Item_Ptr is
+      Right : Item_Ptr;
+   begin
+      if Item.Node = null then
+         return No_Item;
+      else
+         Right := Get_Right_Child (Item);
+         if Right.Node = null then
+            return Item;
+         else
+            return Get_Last (Right.Node);
+         end if;
+      end if;
+   end Get_Last;
 
    function Get_Last (Root : Node_Ptr) return Item_Ptr is
       This : Node_Ptr := Root;
@@ -372,6 +529,56 @@ package body Generic_B_Tree is
    begin
       return Get_Last (Container.Root);
    end Get_Last;
+
+   function Get_Left_Child (Item : Item_Ptr) return Item_Ptr is
+   begin
+      if Item.Node = null then
+         return No_Item;
+      end if;
+      declare
+         Result : Item_Ptr;
+      begin
+         if Item.Index > Item.Node.Length then
+            Raise_Exception
+            (  Constraint_Error'Identity,
+               "Left to illegal item index"
+            );
+         end if;
+         Result.Node := Item.Node.Children (Item.Index);
+         if Result.Node = null then
+            return No_Item;
+         end if;
+         if Result.Node.Length = 0 then
+            return No_Item;
+         else
+            Result.Index := Result.Node.Length;
+            return Result;
+         end if;
+      end;
+   end Get_Left_Child;
+
+   function Get_Left_Parent (Item : Item_Ptr) return Item_Ptr is
+   begin
+      if Item.Node = null then
+         Raise_Exception
+         (  Constraint_Error'Identity,
+            No_Item_Error
+         );
+      end if;
+      declare
+         Parent : Item_Ptr renames Item.Node.Parent;
+      begin
+         if Parent.Node = null then
+            return No_Item;
+         else
+            if Parent.Index = 1 then
+               return No_Item;
+            else
+               return (Parent.Node, Parent.Index - 1);
+            end if;
+         end if;
+      end;
+   end Get_Left_Parent;
 
    function Get_Next (Item : Item_Ptr) return Item_Ptr is
    begin
@@ -448,6 +655,56 @@ package body Generic_B_Tree is
       end;
    end Get_Previous;
 
+   function Get_Right_Child (Item : Item_Ptr) return Item_Ptr is
+   begin
+      if Item.Node = null then
+         return No_Item;
+      end if;
+      declare
+         Result : Item_Ptr;
+      begin
+         if Item.Index > Item.Node.Length then
+            Raise_Exception
+            (  Constraint_Error'Identity,
+               "Right to illegal item index"
+            );
+         end if;
+         Result.Node := Item.Node.Children (Item.Index + 1);
+         if Result.Node = null then
+            return No_Item;
+         end if;
+         if Result.Node.Length = 0 then
+            return No_Item;
+         else
+            Result.Index := 1;
+            return Result;
+         end if;
+      end;
+   end Get_Right_Child;
+
+   function Get_Right_Parent (Item : Item_Ptr) return Item_Ptr is
+   begin
+      if Item.Node = null then
+         Raise_Exception
+         (  Constraint_Error'Identity,
+            No_Item_Error
+         );
+      end if;
+      declare
+         Parent : Item_Ptr renames Item.Node.Parent;
+      begin
+         if Parent.Node = null then
+            return No_Item;
+         else
+            if Parent.Index > Parent.Node.Length then
+               return No_Item;
+            else
+               return (Parent.Node, Parent.Index);
+            end if;
+         end if;
+      end;
+   end Get_Right_Parent;
+
    function Get_Root (Item : Item_Ptr) return Item_Ptr is
    begin
       if Item.Node = null then
@@ -464,12 +721,32 @@ package body Generic_B_Tree is
       end if;
    end Get_Root;
 
+   function Get_Root (Container : B_Tree) return Item_Ptr is
+   begin
+      if Container.Root = null or else Container.Root.Length = 0 then
+         return No_Item;
+      else
+         return (Container.Root, 1);
+      end if;
+   end Get_Root;
+
+   function Get_Tag (Item : Item_Ptr) return Tag_Type is
+   begin
+      if Item.Node = null then
+         Raise_Exception
+         (  Constraint_Error'Identity,
+            No_Item_Error
+         );
+      end if;
+      return Item.Node.Tag;
+   end Get_Tag;
+
    function Get_Value (Item : Item_Ptr) return Object_Type is
    begin
       if Item.Node = null then
          Raise_Exception
          (  Constraint_Error'Identity,
-            "No item"
+            No_Item_Error
          );
       end if;
       declare
@@ -1075,6 +1352,17 @@ package body Generic_B_Tree is
       end if;
    end Search;
 
+   procedure Set_Tag (Item : Item_Ptr; Tag : Tag_Type) is
+   begin
+      if Item.Node = null then
+         Raise_Exception
+         (  Constraint_Error'Identity,
+            No_Item_Error
+         );
+      end if;
+      Item.Node.Tag := Tag;
+   end Set_Tag;
+
    function Sup (Container : B_Tree; Key : Key_Type) return Item_Ptr is
       Node  : Node_Ptr;
       Index : Integer;
@@ -1090,6 +1378,43 @@ package body Generic_B_Tree is
          return (Node, -Index);
       end if;
    end Sup;
+
+   procedure Traverse
+             (  Container : B_Tree;
+                Iterator  : in out Abstract_Visitor'Class;
+                From      : Item_Ptr;
+                To        : Key_Type
+             )  is
+      function Visit_Item
+               (  Container : B_Tree;
+                  Key       : Key_Type;
+                  Item      : Item_Ptr
+               )  return Boolean is
+      begin
+         return Visit_Item
+                (  Iterator'Unchecked_Access,
+                   Container,
+                   Key,
+                   Item
+                );
+      end Visit_Item;
+
+      function Visit_Range
+               (  Container : B_Tree;
+                  Item      : Item_Ptr
+               )  return Bucket_Traversal is
+      begin
+         return Visit_Range
+                (  Iterator'Unchecked_Access,
+                   Container,
+                   Item
+                );
+      end Visit_Range;
+
+      procedure Walker is new Generic_Traverse;
+   begin
+      Walker (Container, From, To);
+   end Traverse;
 
    function Underfilled_Left (Right : Node_Type) return Boolean is
    begin

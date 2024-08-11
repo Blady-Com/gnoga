@@ -3,7 +3,7 @@
 --     Persistent.Memory_Pools.                    Luebeck            --
 --        Streams                                  Winter, 2014       --
 --  Interface                                                         --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  18:00 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,9 +25,9 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 --
---  This  package  provides  a  stream  interface  to  the  reading  and
---  allocating in memory pools resident in a blocking access file  based
---  on Persistent_Array.
+--  This  package  provides a stream interface to reading and allocating
+--  in  memory  pools  resident  in  a blocking  access  file  based  on
+--  Persistent_Array.
 --
 with Ada.Streams;  use Ada.Streams;
 
@@ -400,9 +400,63 @@ package Persistent.Memory_Pools.Streams is
              (  Stream : in out Output_Stream;
                 Item   : Stream_Element_Array
              );
+--
+-- Tagging_Progress -- Tagging progress indicator
+--
+   subtype Advance is Float range 0.0..1.0;
+   type Tagging_Progress is abstract new Object.Entity with null record;
+--
+-- Complete -- Progress indicator callback
+--
+--    State    - The progress indicator
+--    Progress - The progress 0.0..1.0
+--
+   procedure Complete
+             (  State    : in out Tagging_Progress;
+                Progress : Advance
+             );
+--
+-- Start -- Starting callback
+--
+--    State - The progress indicator
+--
+-- This procedure is called at the beginning of tagging.
+--
+   procedure Start (State : in out Tagging_Progress);
+--
+-- Stop -- Stopping callback
+--
+--    State - The progress indicator
+--
+-- This procedure is called at the end of tagging.
+--
+   procedure Stop  (State : in out Tagging_Progress);
 
 private
    pragma Assert (Stream_Element'Last = 255);
+
+   Bad_Interval   : constant String := "Invalid interval of keys";
+   Bad_Key_Index  : constant String := "Key with illegal item index";
+   Bad_Left_Index : constant String := "Left to illegal item index";
+   Bad_Next_Index : constant String := "Next with illegal item index";
+   Bad_Prev_Index : constant String := "Previous to illegal item index";
+   Bad_Righ_Index : constant String := "Right to illegal item index";
+   Bad_Row        : constant String := "No row";
+   Bad_Val_Index  : constant String := "Value with illegal item index";
+   Empty_Tree     : constant String := "Waveform is empty";
+   Invalid_Item   : constant String := "No item";
+   Key_In_Use     : constant String := "The key is already in use";
+   No_Node_Insert : constant String := "Inserting at null node";
+   No_Right       : constant String := "No right point to interpolate";
+   Not_Found      : constant String := "Not found";
+   Not_Empty      : constant String := "Not empty";
+   Null_Replace   : constant String := "Replacing an non-item";
+   Reinsert_Error : constant String := "Re-inserting a key";
+   Remove_Error   : constant String := "Removing an item with "        &
+                                       "illegal index";
+   Replace_Error  : constant String := "Replacing an item with wrong " &
+                                       "index";
+   Tag_Error      : constant String := "Not tagged";
 
    type Unchecked_Input_Stream
         (  Pool : access Persistent_Pool'Class

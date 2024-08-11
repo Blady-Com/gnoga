@@ -3,7 +3,7 @@
 --     Synchronization.Interprocess.               Luebeck            --
 --     Pulse_Events                                Spring, 2018       --
 --  Implementation                                                    --
---                                Last revision :  01:09 01 May 2018  --
+--                                Last revision :  18:00 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -70,9 +70,9 @@ package body Synchronization.Interprocess.Pulse_Events is
                 Size     : Storage_Count;
                 Owner    : Boolean
              )  is
-      package Conversions is
+      package Y_Of is
          new System.Address_To_Access_Conversions (HANDLE);
-      This : HANDLE renames Conversions.To_Pointer (Location).all;
+      This : HANDLE renames Y_Of.To_Pointer (Location).all;
    begin
       if Owner then
          Object.External := CreateEvent (ManualReset => 0);

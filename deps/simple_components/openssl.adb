@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2019       --
 --                                                                    --
---                                Last revision :  09:42 12 Dec 2020  --
+--                                Last revision :  08:31 04 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -104,14 +104,14 @@ package body OpenSSL is
       pragma Import (C, Internal, "PKCS5_PBKDF2_HMAC");
    begin
       if 1 /= Internal
-              (  Pass    => Password (Password'First)'Address,
+              (  Pass    => Password'Address,
                  Passlen => Password'Length,
-                 Salt    => Salt (Salt'First)'Address,
+                 Salt    => Salt'Address,
                  Saltlen => Salt'Length,
                  Iter    => int (Iterations),
                  Digest  => Digest,
                  Keylen  => Output'Length,
-                 Output  => Output (Output'First)'Address
+                 Output  => Output'Address
               )  then
          Raise_Exception
          (  Constraint_Error'Identity,
@@ -139,12 +139,12 @@ package body OpenSSL is
       pragma Import (C, Internal, "PKCS5_PBKDF2_HMAC");
    begin
       if 1 /= Internal
-              (  Pass    => Password (Password'First)'Address,
+              (  Pass    => Password'Address,
                  Passlen => Password'Length,
                  Iter    => int (Iterations),
                  Digest  => Digest,
                  Keylen  => Output'Length,
-                 Output  => Output (Output'First)'Address
+                 Output  => Output'Address
               )  then
          Raise_Exception
          (  Constraint_Error'Identity,
@@ -171,13 +171,13 @@ package body OpenSSL is
       pragma Import (C, Internal, "PKCS5_PBKDF2_HMAC_SHA1");
    begin
       if 1 /= Internal
-              (  Pass    => Password (Password'First)'Address,
+              (  Pass    => Password'Address,
                  Passlen => Password'Length,
-                 Salt    => Salt (Salt'First)'Address,
+                 Salt    => Salt'Address,
                  Saltlen => Salt'Length,
                  Iter    => int (Iterations),
                  Keylen  => Output'Length,
-                 Output  => Output (Output'First)'Address
+                 Output  => Output'Address
               )  then
          Raise_Exception
          (  Constraint_Error'Identity,
@@ -203,11 +203,11 @@ package body OpenSSL is
       pragma Import (C, Internal, "PKCS5_PBKDF2_HMAC_SHA1");
    begin
       if 1 /= Internal
-              (  Pass    => Password (Password'First)'Address,
+              (  Pass    => Password'Address,
                  Passlen => Password'Length,
                  Iter    => int (Iterations),
                  Keylen  => Output'Length,
-                 Output  => Output (Output'First)'Address
+                 Output  => Output'Address
               )  then
          Raise_Exception
          (  Constraint_Error'Identity,
@@ -220,7 +220,7 @@ package body OpenSSL is
       function Internal (Buf : System.Address; Num : int) return int;
       pragma Import (C, Internal, "RAND_bytes");
    begin
-      case Internal (Buffer (Buffer'First)'Address, Buffer'Length) is
+      case Internal (Buffer'Address, Buffer'Length) is
          when 1 =>
             null;
          when -1 =>
@@ -237,7 +237,7 @@ package body OpenSSL is
       function Internal (Buf : System.Address; Num : int) return int;
       pragma Import (C, Internal, "RAND_priv_bytes");
    begin
-      case Internal (Buffer (Buffer'First)'Address, Buffer'Length) is
+      case Internal (Buffer'Address, Buffer'Length) is
          when 1 =>
             null;
          when -1 =>

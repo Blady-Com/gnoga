@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Server.OpenSSL                 Luebeck            --
 --  Implementation                                 Winter, 2019       --
 --                                                                    --
---                                Last revision :  09:42 12 Dec 2020  --
+--                                Last revision :  08:30 04 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1386,7 +1386,7 @@ package body GNAT.Sockets.Server.OpenSSL is
       if (  SSL_use_certificate_ASN1
             (  Session,
                Certificate'Length,
-               Certificate (Certificate'First)'Address
+               Certificate'Address
             )
          <= 0
          )  then
@@ -1405,7 +1405,7 @@ package body GNAT.Sockets.Server.OpenSSL is
          if (  SSL_CTX_use_certificate_ASN1
                (  Factory.Client_Context,
                   Certificate'Length,
-                  Certificate (Certificate'First)'Address
+                  Certificate'Address
                )
             <= 0
             )  then
@@ -1416,7 +1416,7 @@ package body GNAT.Sockets.Server.OpenSSL is
          if (  SSL_CTX_use_certificate_ASN1
                (  Factory.Server_Context,
                   Certificate'Length,
-                  Certificate (Certificate'First)'Address
+                  Certificate'Address
                )
             <= 0
             )  then
@@ -1529,7 +1529,7 @@ package body GNAT.Sockets.Server.OpenSSL is
       if (  SSL_use_PrivateKey_ASN1
             (  Session,
                Key'Length,
-               Key (Key'First)'Address
+               Key'Address
             )
          <= 0
          )  then
@@ -1548,7 +1548,7 @@ package body GNAT.Sockets.Server.OpenSSL is
          if (  SSL_CTX_use_PrivateKey_ASN1
                (  Factory.Client_Context,
                   Key'Length,
-                  Key (Key'First)'Address
+                  Key'Address
                )
             <= 0
             )  then
@@ -1672,7 +1672,7 @@ package body GNAT.Sockets.Server.OpenSSL is
       if (  SSL_use_RSAPrivateKey_ASN1
             (  Session,
                Key'Length,
-               Key (Key'First)'Address
+               Key'Address
             )
          <= 0
          )  then
@@ -1691,7 +1691,7 @@ package body GNAT.Sockets.Server.OpenSSL is
          if (  SSL_CTX_use_RSAPrivateKey_ASN1
                (  Factory.Client_Context,
                   Key'Length,
-                  Key (Key'First)'Address
+                  Key'Address
                )
             <= 0
             )  then

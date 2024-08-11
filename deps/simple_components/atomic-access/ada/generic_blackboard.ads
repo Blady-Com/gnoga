@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Autumn, 2007       --
 --                                                                    --
---                                Last revision :  17:44 21 Jul 2018  --
+--                                Last revision :  09:15 26 Nov 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -83,7 +83,7 @@ package Generic_Blackboard is
 --    Size - The size of, in storage elements
 --
 -- The  blackboard  size detemines how long survives an element put into
--- the balckboard, after consequent placing other elements into it.
+-- the blackboard, after consequent placing other elements into it.
 --
    type Blackboard (Size : Storage_Count) is
       new Ada.Finalization.Limited_Controlled with private;

@@ -3,7 +3,7 @@
 --     Persistent.Memory_Pools.Streams.            Luebeck            --
 --        Generic_External_B_Tree                  Spring, 2014       --
 --  Interface                                                         --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  18:00 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -106,6 +106,16 @@ package Persistent.Memory_Pools.Streams.Generic_External_B_Tree is
 --
    function Get_Bucket_Size (Item : Item_Ptr) return Natural;
 --
+-- Get_First -- Get the child item with the least key
+--
+--    Item  - Pointer to an item
+--
+-- Returns :
+--
+--    The item with the least key or no item if Item is no item
+--
+   function Get_First (Item : Item_Ptr) return Item_Ptr;
+--
 -- Get_Index -- The position of the item in its bucket
 --
 --    Item - Pointer to the item
@@ -119,6 +129,22 @@ package Persistent.Memory_Pools.Streams.Generic_External_B_Tree is
 --    Constraint_Error - No or illegal item
 --
    function Get_Index (Item : Item_Ptr) return Positive;
+--
+-- Get_Item -- Get item by its position in its bucket
+--
+--    Item  - Pointer to an item in the bucket
+--    Index - The position 1..Get_Bucket_Size
+--
+-- Returns :
+--
+--    The item or no item
+--
+-- Exceptions :
+--
+--    Constraint_Error - Item is no item
+--
+   function Get_Item (Item : Item_Ptr; Index : Positive)
+      return Item_Ptr;
 --
 -- Get_Key -- The key corresponding to the item
 --
@@ -148,6 +174,46 @@ package Persistent.Memory_Pools.Streams.Generic_External_B_Tree is
 --
    function Get_Key_Address (Item : Item_Ptr) return Byte_Index;
 --
+-- Get_Last -- Get the child item with the greatest key
+--
+--    Item  - Pointer to an item
+--
+-- Returns :
+--
+--    The item with the greatest key or no item if Item is no item
+--
+   function Get_Last (Item : Item_Ptr) return Item_Ptr;
+--
+-- Get_Left_Child -- Get immediate child item
+--
+--    Item  - Pointer to the item
+--
+-- This function returns the child with the greatest key less than the
+-- item's key.
+--
+-- Returns :
+--
+--    The item or no item
+--
+   function Get_Left_Child (Item : Item_Ptr) return Item_Ptr;
+--
+-- Get_Left_Parent -- The parent
+--
+--    Item  - Pointer to the item
+--
+-- This function  returns the parent  item with the keys lesser than the
+-- item's key.
+--
+-- Returns :
+--
+--    A pointer to the parent item or no item
+--
+-- Exceptions :
+--
+--    Constraint_Error - No or illegal item
+--
+   function Get_Left_Parent (Item : Item_Ptr) return Item_Ptr;
+--
 -- Get_Next -- The next item
 --
 --    Item - Pointer to the item
@@ -168,6 +234,36 @@ package Persistent.Memory_Pools.Streams.Generic_External_B_Tree is
 --
    function Get_Previous (Item : Item_Ptr) return Item_Ptr;
 --
+-- Get_Right_Child -- Get immediate child item
+--
+--    Item  - Pointer to the item
+--
+-- This function returns  the child with  the least key greater than the
+-- item's key.
+--
+-- Returns :
+--
+--    The item or no item
+--
+   function Get_Right_Child (Item : Item_Ptr) return Item_Ptr;
+--
+-- Get_Right_Parent -- The parent
+--
+--    Item  - Pointer to the item
+--
+-- This function  returns the parent item with the keys greater than the
+-- item's key.
+--
+-- Returns :
+--
+--    A pointer to the parent item or no item
+--
+-- Exceptions :
+--
+--    Constraint_Error - No or illegal item
+--
+   function Get_Right_Parent (Item : Item_Ptr) return Item_Ptr;
+--
 -- Get_Root -- The root item of the tree
 --
 --    Item - Pointer to the item
@@ -177,6 +273,20 @@ package Persistent.Memory_Pools.Streams.Generic_External_B_Tree is
 --    The first item in the root bucket or no item
 --
    function Get_Root (Item : Item_Ptr) return Item_Ptr;
+--
+-- Get_Tag -- The tag corresponding to the item's bucket
+--
+--    Item - Pointer to the item
+--
+-- Returns :
+--
+--    The tag
+--
+-- Exceptions :
+--
+--    Constraint_Error - No or illegal item
+--
+   function Get_Tag (Item : Item_Ptr) return Byte_Index;
 --
 -- Get_Value -- The value corresponding to the item
 --
@@ -261,6 +371,20 @@ package Persistent.Memory_Pools.Streams.Generic_External_B_Tree is
              (  Item     : Item_Ptr;
                 Producer : in out Abstract_Value_Access'Class
              );
+--
+-- Set_Tag -- Set tag corresponding to the item's bucket
+--
+--    Item - Pointer to the item
+--    Tag  - The tag to set
+--
+-- Tag  can be any value used extension purpose.  Initially it is set to
+-- zero.
+--
+-- Exceptions :
+--
+--    Constraint_Error - No or illegal item
+--
+   procedure Set_Tag (Item : Item_Ptr; Tag : Byte_Index);
 ------------------------------------------------------------------------
 --
 -- B_Tree -- B tree object
@@ -383,6 +507,16 @@ package Persistent.Memory_Pools.Streams.Generic_External_B_Tree is
 --
    function Get_Last (Container : B_Tree) return Item_Ptr;
 --
+-- Get_Root -- The root item of the tree
+--
+--    Item - Pointer to the item
+--
+-- Returns :
+--
+--    The first item in the root bucket or no item
+--
+   function Get_Root (Container : B_Tree) return Item_Ptr;
+--
 -- Get_Root_Address -- The byte index of the tree root
 --
 --    Container - The tree
@@ -479,6 +613,20 @@ package Persistent.Memory_Pools.Streams.Generic_External_B_Tree is
                 Producer  : in out Abstract_Value_Access'Class
              );
 --
+-- Restore -- Restore tree stored using Store
+--
+--    Container - The tree
+--    Reference - Obtained by Store
+--
+-- Exceptions :
+--
+--    Status_Error - The tree is not empty
+--
+   procedure Restore
+             (  Container : in out B_Tree;
+                Reference : Byte_Index
+             );
+--
 -- Set_Root_Address -- Set the byte index of the tree root
 --
 --    Container - The tree
@@ -491,6 +639,34 @@ package Persistent.Memory_Pools.Streams.Generic_External_B_Tree is
                 Root      : Byte_Index
              );
 --
+-- Store -- Store the tree
+--
+--    Container - The tree
+--    Reference - To the tree
+--
+-- This procedure stores the tree. It must be called before finalization
+-- if the tree must persist. Otherwise it will be erased.  The tree  can
+-- be restored using Restore:
+--
+--    declare
+--       Tree : B_Tree (...); -- A new tree
+--    begin
+--       ... -- Work with the tree
+--       Store (Tree, Reference);
+--    end;
+--    ...
+--    declare
+--       Tree : B_Tree (...); -- A tree
+--    begin
+--       Restore (Tree, Reference);
+--       ... -- Continue to work with the tree
+--    end;
+--
+   procedure Store
+             (  Container : in out B_Tree;
+                Reference : out Byte_Index
+             );
+--
 -- Sup -- Find an item that is greater than or equal to the key
 --
 --    Container - The tree
@@ -501,7 +677,87 @@ package Persistent.Memory_Pools.Streams.Generic_External_B_Tree is
 --    The pointer to found item or no item
 --
    function Sup (Container : B_Tree; Key : Key_Type) return Item_Ptr;
-
+--
+-- Generic_Traverse -- Shallow tree traversal
+--
+--    Container - The tree to traverse
+--    From      - The item to start at
+--    To        - The key to stop at
+--
+-- This procedure traverses items  of the tree with the keys starting at
+-- the item From less than or equal to To. The traversals is shallow, if
+-- a bucket  contains items with  the keys in the range,  which includes
+-- items of all subtrees,  then it is visited as a whole once. There are
+-- two visitor functions:
+--
+--    Visit_Range - This function  is called  for  each  bucket of items
+--                  within the range.  An item from the bucket is passed
+--       to identify it.  The function returns False  to  stop traversal
+--       immediately. All items are visited in the key-ascending order.
+--
+--    Visit_Item  - This function  is called  for each tree item that is
+--                  not in a bucket for which Visit_Range is called. The
+--       functions returns one of the following values:
+--
+--       Quite stops the traversal immediately;
+--       Step_Over continues traversal to the next tree bucket;
+--       Step_In continues traversal into the bucket.
+--
+   type Bucket_Traversal is (Quit, Step_Over, Step_In);
+   generic
+      with function Visit_Item
+                    (  Container : B_Tree;
+                       Key       : Key_Type;
+                       Item      : Item_Ptr
+                    )  return Boolean is <>;
+      with function Visit_Range
+                    (  Container : B_Tree;
+                       Item      : Item_Ptr
+                    )  return Bucket_Traversal is <>;
+   procedure Generic_Traverse
+             (  Container : B_Tree;
+                From      : Item_Ptr;
+                To        : Key_Type
+             );
+--
+-- Abstract_Visitor -- Abstract visitor base type
+--
+   type Abstract_Visitor is abstract
+      new Ada.Finalization.Limited_Controlled with null record;
+--
+-- Visit_Item -- Equivalent to the generic variant
+--
+   function Visit_Item
+            (  Iterator  : access Abstract_Visitor;
+               Container : B_Tree'Class;
+               Key       : Key_Type;
+               Item      : Item_Ptr
+            )  return Boolean is abstract;
+--
+-- Visit_Range -- Equivalent to the generic variant
+--
+   function Visit_Range
+            (  Iterator  : access Abstract_Visitor;
+               Container : B_Tree'Class;
+               Item      : Item_Ptr
+            )  return Bucket_Traversal is abstract;
+--
+-- Traverse -- Non-generic tree traversal
+--
+--    Container - The tree to traverse
+--    Iterator  - The iterator object to use
+--    From      - The item to start at
+--    To        - The key to stop at
+--
+-- This procedure traverses  items of the tree starting at the item From
+-- less than or equal to To using the Iterator object.
+--
+   procedure Traverse
+             (  Container : B_Tree;
+                Iterator  : in out Abstract_Visitor'Class;
+                From      : Item_Ptr;
+                To        : Key_Type
+             );
 private
    type B_Tree_Ptr is access all B_Tree'Class;
 
@@ -511,17 +767,19 @@ private
       Index : Positive;
    end record;
 
-   Width : constant := (Max_Size - 4 - 2 - 2 - 8 - 8) / (3 * 8);
+   Width : constant :=
+                    (Byte_Count'Last - 4 - 2 - 2 - 8 - 8 - 8) / (3 * 8);
 
    Length_Offset         : constant := 2; -- Skips the block margin
-   Parent_Index_Offset   : constant := Length_Offset + 2;
-   Parent_Address_Offset : constant := Parent_Index_Offset + 2;
-   Key_Offset            : constant := Parent_Address_Offset + 8;
+   Parent_Index_Offset   : constant := Length_Offset         + 2;
+   Parent_Address_Offset : constant := Parent_Index_Offset   + 2;
+   Node_Tag_Offset       : constant := Parent_Address_Offset + 8;
+   Key_Offset            : constant := Node_Tag_Offset       + 8;
    Value_Offset          : constant := Key_Offset   + 8 * Width;
    Child_Offset          : constant := Value_Offset + 8 * Width;
    Node_Size             : constant := Child_Offset + 8 * (Width + 1);
 
-   pragma Assert (Node_Size <= Block_Byte_Size);
+   pragma Assert (Node_Size <= Byte_Count'Last);
 
    type B_Tree
         (  Pool : access Persistent_Pool'Class

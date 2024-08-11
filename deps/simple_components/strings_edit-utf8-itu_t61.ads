@@ -3,7 +3,7 @@
 --     Strings_Edit.UTF8.ITU_T61                   Luebeck            --
 --  Interface                                      Spring, 2019       --
 --                                                                    --
---                                Last revision :  13:36 23 Jun 2019  --
+--                                Last revision :  17:59 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,7 +25,7 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 --
---  This package provides conversions between UTF-8 strings and ITU T.61
+--  This package provides Y_Of between UTF-8 strings and ITU T.61
 --  encoded strings. 
 --
 package Strings_Edit.UTF8.ITU_T61 is

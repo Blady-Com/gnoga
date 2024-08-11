@@ -3,7 +3,7 @@
 --     Test_Interprocess_Synchronization           Luebeck            --
 --  Test                                           Spring, 2018       --
 --                                                                    --
---                                Last revision :  17:45 21 Jul 2018  --
+--                                Last revision :  14:26 25 Apr 2024  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -58,7 +58,7 @@ procedure Test_Interprocess_Synchronization is
    Name   : constant String := "sync_test";
    Master : Boolean;
 
-   package Conversions is
+   package Y_Of is
       new System.Address_To_Access_Conversions (Integer);
 
    procedure Put_Pool_Statistics
@@ -297,7 +297,6 @@ begin
                   This : constant String :=
                                   "packet" & Integer'Image (Index);
                begin
-put_line(image(item));
                   declare
                      That : constant String := Get (Data.Board, Item);
                   begin
@@ -467,7 +466,7 @@ put_line(image(item));
             Put_Line
             (  "Integer from other process:"
             &  Integer'Image
-               (  Conversions.To_Pointer
+               (  Y_Of.To_Pointer
                   (  To_Address (Data.Pool, Pointer)
                   ) .all
             )  );

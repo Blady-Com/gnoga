@@ -3,7 +3,7 @@
 --     Persistent.Memory_Pools.Streams.            Luebeck            --
 --        External_B_Tree.Generic_Table            Autumn, 2014       --
 --  Interface                                                         --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  18:00 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -325,13 +325,12 @@ package Persistent.Memory_Pools.Streams.External_B_Tree.Generic_Table is
 --
 --    If keys are equal
 --
-   type Outcome is (Before, Same, After);
    function Compare
             (  Container : Table;
                Index     : Key_Index;
                Left      : Byte_Index;
                Right     : Byte_Index
-            )  return Outcome;
+            )  return Precedence;
 --
 -- Erase -- Remove all items from the table
 --
@@ -447,6 +446,10 @@ package Persistent.Memory_Pools.Streams.External_B_Tree.Generic_Table is
 -- Returns :
 --
 --    The table root byte index
+--
+-- Exceptions :
+--
+--    Status_Error - The table is not empty
 --
    function Get_Root_Address (Container : Table) return Byte_Index;
 --
@@ -588,6 +591,34 @@ package Persistent.Memory_Pools.Streams.External_B_Tree.Generic_Table is
    procedure Set_Root_Address
              (  Container : in out Table;
                 Root      : Byte_Index
+             );
+--
+-- Store -- Store the waveform
+--
+--    Container - The waveform
+--    Reference - To the waveform
+--
+-- This procedure stores the table.  It must be  called before finaliza-
+-- tion if the  table must  persist.  Otherwise it  will be erased.  The
+-- table can be restored using Restore:
+--
+--    declare
+--       Data : Table (...); -- A new table
+--    begin
+--       ... -- Work with the table
+--       Store (Data, Reference);
+--    end;
+--    ...
+--    declare
+--       Data : Table (...); -- A table
+--    begin
+--       Restore (Data, Reference);
+--       ... -- Continue to work with the table
+--    end;
+--
+   procedure Store
+             (  Container : in out Table;
+                Reference : out Byte_Index
              );
 --
 -- Sup -- Find an item that is greater than or equal to the key

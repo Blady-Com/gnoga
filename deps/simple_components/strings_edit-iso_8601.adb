@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Summer, 2019       --
 --                                                                    --
---                                Last revision :  11:26 29 May 2020  --
+--                                Last revision :  08:30 04 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -264,6 +264,9 @@ package body Strings_Edit.ISO_8601 is
          raise Layout_Error;
       end if;
       Index := Pointer;
+      if Index > Source'Last then
+         raise End_Error;
+      end if;
       case Source (Index) is
          when '-' | '+' =>
             if Index > Source'Last - 4 then
@@ -424,7 +427,7 @@ package body Strings_Edit.ISO_8601 is
              )  is
       type Component is
            (None, Year, Month, Week, Day, Hour, Minute, Second);
-      Data   : String    := Source;
+      Data   : String (Source'Range) := Source;
       Got_It : Component := None;
       Time   : Boolean   := False;
       Result : Float     := 0.0;

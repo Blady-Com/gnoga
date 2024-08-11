@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2018       --
 --                                                                    --
---                                Last revision :  18:40 23 Oct 2021  --
+--                                Last revision :  09:15 26 Nov 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1746,7 +1746,7 @@ package body Julia is
          (  Use_Error'Identity,
             (  "Failed to locate entry "
             &  Entry_Name
-            &  " in the Julia DLL "
+            &  " in the Julia library "
             &  Quote (Library_Name)
          )  );
       end Error;

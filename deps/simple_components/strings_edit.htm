@@ -11,7 +11,7 @@
 <BODY bgcolor="#FFFFFF" link="#0000FF" vlink="#800000">
 <P align="center">
 <BIG><BIG><BIG><B>STRINGS EDIT</B></BIG></BIG><BR>
-<EM>version 3.7</EM><BR>
+<EM>version 3.8</EM><BR>
 by Dmitry A. Kazakov</BIG><BR>
 (<A HREF="mailto:mailbox@dmitry-kazakov.de">mailbox@dmitry-kazakov.de</A>)<br>
 <a href="http://www.dmitry-kazakov.de"><img border="0" src="home.jpg" alt="[Home]" width="40" height="40"></a>
@@ -94,7 +94,7 @@ can be here.</p>
 		<td style="border-top-style: none; border-top-width: medium" align="right">
 &nbsp;</td>
 		<td>&nbsp;</td>
-		<td align="center">
+		<td align="center" colspan="2">
 		ARM</td>
 		<td align="center" colspan="2">
 		Intel</td>
@@ -105,7 +105,9 @@ can be here.</p>
 <b>Platform:</b></td>
 		<td>&nbsp;</td>
 		<td align="center">
-		v7</td>
+		64-</td>
+		<td align="center">
+		32-</td>
 		<td align="center">
 		64-</td>
 		<td align="center">
@@ -120,6 +122,9 @@ can be here.</p>
 		<td style="border-top-style: solid; border-top-width: 1px">precompiled and packaged using RPM</td>
 		<td style="border-top-style: solid; border-top-width: 1px">&nbsp;</td>
 		<td>&nbsp;</td>
+		<td align="right">
+		<a href="http://www.dmitry-kazakov.de/distributions/strings_edit_fedora_aarch64.htm">
+		<img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
 		<td align="right">
 		<a href="http://www.dmitry-kazakov.de/distributions/strings_edit_fedora_armv7hl.htm">
 		<img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
@@ -140,6 +145,7 @@ can be here.</p>
 		<td style="border-top-style: solid; border-top-width: 1px">&nbsp;</td>
 		<td>&nbsp;</td>
 		<td align="right">&nbsp;</td>
+		<td align="right">&nbsp;</td>
 		<td><a href="http://www.dmitry-kazakov.de/distributions/centos/strings_edit_centos_x86_64.htm">
 		<img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
 		<td><a href="http://www.dmitry-kazakov.de/distributions/centos/strings_edit_centos_i686.htm">
@@ -153,6 +159,9 @@ can be here.</p>
 		<td style="border-top-style: solid; border-top-width: 1px; ">&nbsp;</td>
 		<td style="border-top-style: solid; border-top-width: 1px; " colspan="2">precompiled and packaged for dpkg</td>
 		<td>&nbsp;</td>
+		<td align="right">
+		<a href="http://www.dmitry-kazakov.de/distributions/strings_edit_debian_aarch64.htm">
+		<img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
 		<td align="right">
 		<a href="http://www.dmitry-kazakov.de/distributions/strings_edit_debian_armhf.htm">
 		<img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
@@ -171,6 +180,7 @@ can be here.</p>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
 		<td style="border-top-style: solid; border-top-width: 1px; border-bottom-style: solid; border-bottom-width: 1px" colspan="2">precompiled and packaged for dpkg</td>
 		<td>&nbsp;</td>
+		<td align="right"><a href="http://www.dmitry-kazakov.de/distributions/ubuntu/strings_edit_ubuntu_aarch64.htm"><img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
 		<td align="right"><a href="http://www.dmitry-kazakov.de/distributions/ubuntu/strings_edit_ubuntu_armhf.htm"><img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
 		<td><a href="http://www.dmitry-kazakov.de/distributions/ubuntu/strings_edit_ubuntu_x86_64.htm"><img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
 		<td><a href="http://www.dmitry-kazakov.de/distributions/ubuntu/strings_edit_ubuntu_i686.htm"><img src="in.jpg" align=middle alt="[Download page]" width="29" height="29"></a></td>
@@ -179,15 +189,11 @@ can be here.</p>
 		<td style="border-bottom-style: solid; border-bottom-width: 1px" colspan="2">Source distribution (any platform)</td>
 		<td style="border-bottom-style: solid; border-bottom-width: 1px">&nbsp;</td>
 		<td style="border-bottom-style: solid; border-bottom-width: 1px" colspan="2">
-<a href="http://www.dmitry-kazakov.de/ada/strings_3_7.tgz">strings_3_7.tgz</a> (<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
+<a href="http://www.dmitry-kazakov.de/ada/strings_3_8.tgz">strings_3_8.tgz</a> (<b>tar</b> + <b>gzip</b>, Windows users may use WinZip)</td>
 		<td>&nbsp;</td>
-		<td align="center">
-		&nbsp;</td>
-		<td align="center">
-		<a href="http://www.dmitry-kazakov.de/ada/strings_3_7.tgz">
+		<td align="center" colspan="4">
+		<a href="http://www.dmitry-kazakov.de/ada/strings_3_8.tgz">
  <img src="download.jpg" align=middle alt="[Download]" width="29" height="29"></a></td>
-		<td align="center">
-		&nbsp;</td>
 	</tr>
 </table>
 <P>See also
@@ -884,7 +890,7 @@ to specify the output precision:
     is represented as 12.3.
   <LI>
     The parameter <b>AbsSmall</b> determines the rightmost correct
-    digit of the mantissa. For example, with <b>AbsSmall</b>=0,
+    digit of the value. For example, with <b>AbsSmall</b>=0,
     <b>Base</b>=10, the number 1.234567e+01 is represented as 12 (i.e.
     12.34567 rounded to 10<SUP>0</SUP>).
 </UL>
@@ -5869,6 +5875,10 @@ The following versions were tested with the compilers:</i>
 <i>GNAT Community 2018 (20180523-73)</i></li>
 	<li><i>GNAT 8-12</i></li>
   </ul>
+<P>
+Changes (5 August 2022) to the version 3.7:<ul>
+	<li>Minor bug fixes in Strings_Edit-ISO_8601.</li>
+	</ul>
 <P>
 Changes (31 May 2020) to the version 3.6:<ul>
 	<li>Code cleanup;</li>

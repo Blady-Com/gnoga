@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2002       --
 --                                                                    --
---                                Last revision :  20:41 21 Jul 2017  --
+--                                Last revision :  18:00 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -453,5 +453,7 @@ private
 
    Root_Directory : constant Deposit_Handle :=
       (Deposit_Handles.Handles.Null_Handle with null record);
+
+   No_Item_Error : constant String   := "No item";
 
 end Persistent;

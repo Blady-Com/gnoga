@@ -3,7 +3,7 @@
 --  Implementation                                 Luebeck            --
 --                                                 Winter, 2009       --
 --                                                                    --
---                                Last revision :  14:47 31 Oct 2019  --
+--                                Last revision :  12:39 04 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -280,7 +280,7 @@ package body SQLite is
          Internal
          (  Object.Handle,
             int (Parameter),
-            Value (Value'First)'Address,
+            Value'Address,
             (Value'Length * Stream_Element'Size + 7) / 8
       )  );
    end Bind;
@@ -401,6 +401,12 @@ package body SQLite is
          Internal (Object.Handle, int (Parameter))
       );
    end Bind;
+
+   procedure Close (Base : in out Data_Base) is
+   begin
+      Invalidate (Base.Handle);
+   end Close;
+
 
    function Column
             (  Command  : Statement;
@@ -937,39 +943,25 @@ package body SQLite is
       end;
       return 0;
    end Trace_Callbak;
---
--- The sqlite3_trace_v2 fallback for older versions of SQLite with no
--- tracing support.
---
-   function SQLite_Trace_Fallback
+
+   function sqlite3_trace_v2
             (  db       : SQLite_Handle;
                Mask     : unsigned;
                Callback : Trace_Callbak_Ptr;
                Context  : Address
             )  return int;
-   pragma External (C, SQLite_Trace_Fallback, "sqlite3_trace_v2");
-   pragma Weak_External (SQLite_Trace_Fallback);
-
-   function SQLite_Trace_Fallback
-            (  db       : SQLite_Handle;
-               Mask     : unsigned;
-               Callback : Trace_Callbak_Ptr;
-               Context  : Address
-            )  return int is
-   begin
-      return SQLITE_OK;
-   end SQLite_Trace_Fallback;
+   pragma Import (C, sqlite3_trace_v2, "sqlite3_trace_v2");
+   pragma Weak_External (sqlite3_trace_v2);
 
    procedure Set_Trace (Base : in out Data_Base_Object'Class) is
-      function Internal
-               (  db       : SQLite_Handle;
-                  Mask     : unsigned;
-                  Callback : Trace_Callbak_Ptr;
-                  Context  : Address
-               )  return int;
-      pragma Import (C, Internal, "sqlite3_trace_v2");
       Mask : unsigned := 0;
    begin
+      if sqlite3_trace_v2'Address = Null_Address then
+         Raise_Exception
+         (  Use_Error'Identity,
+            "sqlite3_trace_v2 is not supported"
+         );
+      end if;
       if (  Base.Do_Statement = null
          and then
             Base.Do_Profile = null
@@ -980,7 +972,7 @@ package body SQLite is
          )  then
          Check
          (  Base.Handle,
-            Internal
+            sqlite3_trace_v2
             (  Base.Handle,
                0,
                null,
@@ -1001,7 +993,7 @@ package body SQLite is
          end if;
          Check
          (  Base.Handle,
-            Internal
+            sqlite3_trace_v2
             (  Base.Handle,
                Mask,
                Trace_Callbak'Access,
@@ -1050,6 +1042,29 @@ package body SQLite is
          return Value (Result);
       end if;
    end SQL;
+
+   function sqlite3_expanded_sql
+            (  Statement : SQLite_Handle
+            )  return chars_ptr;
+   pragma Import (C, sqlite3_expanded_sql, "sqlite3_expanded_sql");
+   pragma Weak_External (sqlite3_expanded_sql);
+
+   function SQL_Show (Command : Statement) return String is
+      Object : Statement_Object'Class renames Ptr (Command.Handle).all;
+   begin
+      if sqlite3_expanded_sql'Address = Null_Address then
+         return "";
+      end if;
+      declare
+         Result : chars_ptr := sqlite3_expanded_sql (Object.Handle);
+      begin
+         if Result = Null_Ptr then
+            return "";
+         else
+            return Value (Result);
+         end if;
+      end;
+   end SQL_Show;
 
    function Step (Command : Statement) return Boolean is
       function Internal (pStmt : SQLite_Handle) return int;

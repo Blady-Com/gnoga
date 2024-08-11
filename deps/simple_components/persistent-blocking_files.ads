@@ -3,7 +3,7 @@
 --     Persistent.Blocking_Files                   Luebeck            --
 --  Interface                                      Winter, 2014       --
 --                                                                    --
---                                Last revision :  10:05 22 Nov 2014  --
+--                                Last revision :  18:00 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -54,6 +54,8 @@ package Persistent.Blocking_Files is
    for Byte_Array'Component_Size use 8;
    subtype Block_Type is Byte_Array (Block_Offset'Range);
    pragma Assert (Block_Type'Size = Block_Byte_Size);
+
+   function Image (Data : Byte_Array) return String;
 
    type Block_Type_Ptr is access all Block_Type;
    type Block_Type_Ref is access constant Block_Type;
@@ -223,6 +225,30 @@ package Persistent.Blocking_Files is
 --    I/O exceptions
 --
    function Get_Size (Container : Persistent_Array) return Byte_Index;
+--
+-- Image -- File block contents
+--
+--    Container - The array
+--    Location  - The file location
+--    Count     - Number of bytes
+--
+-- The contents must not cross block margins.
+--
+-- Returns :
+--
+--    Human-readable repsesentation starting from Location Count bytes
+--
+-- Exceptions :
+--
+--    Constraint_Error - Block margin violation
+--    Use_Error        - No file open
+--    I/O exceptions
+--
+   function Image
+            (  Container : access Persistent_Array;
+               Location  : Byte_Index;
+               Count     : Positive
+            )  return String;
 --
 -- Is_Open -- Check if the file is open
 --

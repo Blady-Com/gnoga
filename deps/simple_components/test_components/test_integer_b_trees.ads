@@ -3,7 +3,7 @@
 --     Test_Integer_B_Trees                        Luebeck            --
 --  Instantiation                                  Spring, 2014       --
 --                                                                    --
---                                Last revision :  23:22 29 Sep 2017  --
+--                                Last revision :  18:00 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -31,7 +31,18 @@ with Persistent.Memory_Pools.Streams.Generic_External_Ptr_B_Tree;
 with Persistent.Memory_Pools.Streams.External_B_Tree.Generic_Table;
 
 package Test_Integer_B_Trees is
-   package Internal is new Generic_B_Tree (Integer, Integer, 3);
+   type Min_Max is record
+      Min : Integer;
+      Max : Integer;
+   end record;
+   package Internal is
+      new Generic_B_Tree
+          (  Integer,
+             Integer,
+             Min_Max,
+             (Integer'Last, Integer'First),
+             3
+          );
    package External is
       new Persistent.Memory_Pools.Streams.Generic_External_B_Tree
           (  Integer,
@@ -53,4 +64,12 @@ package Test_Integer_B_Trees is
       new Persistent.Memory_Pools.Streams.External_B_Tree.
           Generic_Table (Keys, Values);
 
+   type Indicator is
+      new Persistent.Memory_Pools.Streams.Tagging_Progress with
+          null record;
+
+   procedure Complete
+             (  State    : in out Indicator;
+                Progress : Persistent.Memory_Pools.Streams.Advance
+             );
 end Test_Integer_B_Trees;

@@ -3,7 +3,7 @@
 --  Interface                                      Luebeck            --
 --                                                 Winter, 2018       --
 --                                                                    --
---                                Last revision :  18:40 23 Oct 2021  --
+--                                Last revision :  09:15 26 Nov 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1027,6 +1027,7 @@ private
    pragma Convention (C, Get_PTLS_States_Ptr);
 
    type Get_Safe_Restore_Ptr is access function return Address;
+   pragma Convention (C, Get_Safe_Restore_Ptr);
 
    type Init_Ptr is access procedure;
    pragma Convention (C, Init_Ptr);
@@ -1095,6 +1096,7 @@ private
    pragma Convention (C, Set_Nth_Field_Ptr);
 
    type Set_Safe_Restore_Ptr is access procedure (Bufffer : Address);
+   pragma Convention (C, Set_Safe_Restore_Ptr);
 
 -- type Setjmp_Ptr is access function
 --      (  Buffer : Address;

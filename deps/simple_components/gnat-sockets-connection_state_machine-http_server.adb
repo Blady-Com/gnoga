@@ -3,7 +3,7 @@
 --     GNAT.Sockets.Connection_State_Machine.      Luebeck            --
 --     HTTP_Server                                 Winter, 2013       --
 --  Implementation                                                    --
---                                Last revision :  20:46 27 Aug 2020  --
+--                                Last revision :  09:15 26 Nov 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -1556,6 +1556,8 @@ package body GNAT.Sockets.Connection_State_Machine.HTTP_Server is
       Client.Specific           := (others => False);
       Client.Suffix             := Stream_Element_Count'First;
       Client.CGI.Keys           := null;
+      Client.Stub               := null;
+      Deallocate_All (Client.Pool);
       Erase (Client.Ranges);
       if Request (Pointer) = '*' then
          Pointer := Pointer + 1;

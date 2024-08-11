@@ -3,7 +3,7 @@
 --  Test                                           Luebeck            --
 --                                                 Autumn, 2014       --
 --                                                                    --
---                                Last revision :  23:22 29 Sep 2017  --
+--                                Last revision :  18:00 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -30,38 +30,290 @@ with Ada.Exceptions;                use Ada.Exceptions;
 with Ada.Text_IO;                   use Ada.Text_IO;
 with Persistent.Blocking_Files;     use Persistent.Blocking_Files;
 with Persistent.Memory_Pools;       use Persistent.Memory_Pools;
-with Persistent.Memory_Pools.Dump;  use Persistent.Memory_Pools.Dump;
+--with Persistent.Memory_Pools.Dump;  use Persistent.Memory_Pools.Dump;
 with Strings_Edit;                  use Strings_Edit;
 with Strings_Edit.Floats;           use Strings_Edit.Floats;
 with Strings_Edit.Integers;         use Strings_Edit.Integers;
 with System.Storage_Elements;       use System.Storage_Elements;
 with Test_Integer_Sets;             use Test_Integer_Sets;
 
+with Ada.Unchecked_Conversion;
+with Interfaces;
+with Long_Float_Waveform;
 with Persistent.Blocking_Files.Text_IO;
 with Persistent.Memory_Pools.Streams.External_B_Tree;
 with Test_Integer_B_Trees;
 with Test_String_B_Trees;
+--with System.Exception_Traces;
 
 procedure Test_B_Trees is
    use Persistent.Blocking_Files.Text_IO;
 
-   procedure Dump (Tree : Test_Integer_B_Trees.Internal.B_Tree) is
-      use Test_Integer_B_Trees.Internal;
-      This : Item_Ptr := Get_First (Tree);
+   function Get_Depth
+            (  This  : Persistent.Memory_Pools.Streams.External_B_Tree.
+                       Item_Ptr;
+               Count : Natural := 20
+            )  return String is
+      use Persistent.Memory_Pools.Streams.External_B_Tree;
+      Parent : Item_Ptr := Get_Left_Parent (This);
    begin
-      while This /= No_Item loop
+      if Parent = No_Item then
+         Parent := Get_Right_Parent (This);
+         if Parent = No_Item then
+            return "";
+         end if;
+      end if;
+      if Count = 0 then
+         return
+         (  "error at "
+         &  Image (Get_Index (This))
+         &  "/"
+         &  Image (Get_Bucket_Size (This))
+         &  " "
+         &  Image (Get_Bucket_Address (This))
+         );
+      else
+         return "|  " & Get_Depth (Parent, Count - 1);
+      end if;
+   end Get_Depth;
+
+   function Get_Depth
+            (  This  : Test_Integer_B_Trees.Internal.Item_Ptr;
+               Count : Natural := 20
+            )  return String is
+      use Test_Integer_B_Trees.Internal;
+      Parent : Item_Ptr := Get_Left_Parent (This);
+   begin
+      if Parent = No_Item then
+         Parent := Get_Right_Parent (This);
+         if Parent = No_Item then
+            return "";
+         end if;
+      end if;
+      if Count = 0 then
+         return
+         (  "error at "
+         &  Image (Get_Index (This))
+         &  "/"
+         &  Image (Get_Bucket_Size (This))
+         &  " "
+         &  Integer_Address'Image
+            (  To_Integer (Get_Bucket_Address (This))
+         )  );
+      else
+         return "|  " & Get_Depth (Parent, Count - 1);
+      end if;
+   end Get_Depth;
+
+   function Get_Parent
+            (  This : Persistent.Memory_Pools.Streams.External_B_Tree.
+                      Item_Ptr
+            )  return String is
+      use Persistent.Memory_Pools.Streams.External_B_Tree;
+      Parent : Item_Ptr;
+      Left   : constant Item_Ptr := Get_Left_Parent  (This);
+      Right  : constant Item_Ptr := Get_Right_Parent (This);
+      function Index_Image (Item : Item_Ptr) return String is
+      begin
+         if Item = No_Item then
+            return "*";
+         else
+            return Image (Get_Index (Item));
+         end if;
+      end Index_Image;
+   begin
+      if Left = No_Item then
+         if Right = No_Item then
+            return "";
+         else
+            Parent := Right;
+         end if;
+      else
+         Parent := Left;
+      end if;
+      return
+      (  Character'Val (9)
+      &  Get_Depth (Parent)
+      &  "|<--"
+      &  Image (Get_Bucket_Address (Parent))
+      &  " "
+      &  Index_Image (Left)
+      &  "|"
+      &  Index_Image (Right)
+      &  "/"
+      &  Image (Get_Bucket_Size (Parent))
+      );
+   end Get_Parent;
+
+   function Get_Parent
+            (  This : Test_Integer_B_Trees.Internal.Item_Ptr
+            )  return String is
+      use Test_Integer_B_Trees.Internal;
+      Parent : Item_Ptr;
+      Left   : constant Item_Ptr := Get_Left_Parent  (This);
+      Right  : constant Item_Ptr := Get_Right_Parent (This);
+      function Index_Image (Item : Item_Ptr) return String is
+      begin
+         if Item = No_Item then
+            return "*";
+         else
+            return Image (Get_Index (Item));
+         end if;
+      end Index_Image;
+   begin
+      if Left = No_Item then
+         if Right = No_Item then
+            return "";
+         else
+            Parent := Right;
+         end if;
+      else
+         Parent := Left;
+      end if;
+      return
+      (  Character'Val (9)
+      &  Get_Depth (Parent)
+      &  "|<--"
+      &  Integer_Address'Image
+         (  To_Integer (Get_Bucket_Address (Parent))
+         )
+      &  " "
+      &  Index_Image (Left)
+      &  "|"
+      &  Index_Image (Right)
+      &  "/"
+      &  Image (Get_Bucket_Size (Parent))
+      );
+   end Get_Parent;
+
+   procedure Dump
+             (  Tree  : Long_Float_Waveform.Waveform;
+                Max   : Natural    := Natural'Last;
+                First : Long_Float := Long_Float'First;
+                Last  : Long_Float := Long_Float'Last;
+                File  : File_Type  := Standard_Output
+             )  is
+      use Long_Float_Waveform;
+      use Persistent.Memory_Pools.Streams.External_B_Tree;
+      This  : Item_Ptr := Get_First (Tree);
+      Count : Integer  := Max;
+      Low   : Long_Float;
+      High  : Long_Float;
+   begin
+      while This /= No_Item and then Count > 0 loop
+         Get_Tag (This, Low, High);
+         Low  := Long_Float'Max (Long_Float (Float'First), Low);
+         High := Long_Float'Min (Long_Float (Float'Last),  High);
          Put_Line
-         (  Image (Get_Key (This))
+         (  File,
+            (  Image (Float (Get_Point (This).X))
+            &  " ->"
+            &  Image (Float (Get_Point (This).Y))
+            &  Character'Val (9)
+            &  "at "
+            &  Image (Get_Index (This))
+            &  "/"
+            &  Image (Get_Bucket_Size (This))
+            &  " "
+            &  Image (Get_Bucket_Address (This))
+            &  Get_Parent (This)
+            &  " Min/Max "
+            &  Image (Float (Low))
+            &  ".."
+            &  Image (Float (High))
+            &  " at "
+            &  Image (Get_Tag (This))
+            &  ": "
+            &  Image (Tree.Pool.File, Get_Tag (This), 8)
+         )  );
+         if Low < First or else High > Last then
+            return;
+         end if;
+         Count := Count - 1;
+         This  := Get_Next (This);
+      end loop;
+   end Dump;
+
+   procedure Dump
+             (  Tree  : Long_Float_Waveform.Waveform;
+                Max   : Natural    := Natural'Last;
+                First : Long_Float := Long_Float'First;
+                Last  : Long_Float := Long_Float'Last;
+                File  : String
+             )  is
+      This : File_Type;
+   begin
+      if Long_Float_Waveform.Is_Tagged (Tree) then
+         Create (This, Out_File, File);
+         Dump (Tree, Max, First, Last, This);
+         Close (This);
+         Put_Line ("Tree dump in " & File);
+      else
+         Put_Line ("Tree is not tagged");
+      end if;
+   end Dump;
+
+   procedure Dump
+             (  Tree : Persistent.Memory_Pools.Streams.External_B_Tree.
+                       B_Tree;
+                Max  : Natural := Natural'Last
+             )  is
+      use Persistent.Memory_Pools.Streams.External_B_Tree;
+      This  : Item_Ptr := Get_First (Tree);
+      Count : Integer  := Max;
+   begin
+      while This /= No_Item and then Count > 0 loop
+         Put_Line
+         (  "  "
+         &  Byte_Index'Image (Get_Key (This))
+         &  Character'Val (9)
+         &  "->"
+         &  Byte_Index'Image (Get_Value (This))
+         &  Character'Val (9)
+         &  "at "
+         &  Image (Get_Index (This))
+         &  "/"
+         &  Image (Get_Bucket_Size (This))
+         &  " "
+         &  Image (Get_Bucket_Address (This))
+         &  Get_Parent (This)
+         );
+         Count := Count - 1;
+         This  := Get_Next (This);
+      end loop;
+   end Dump;
+
+   procedure Dump
+             (  Tree : Test_Integer_B_Trees.Internal.B_Tree;
+                Max  : Natural := Natural'Last
+             )  is
+      use Test_Integer_B_Trees.Internal;
+      This  : Item_Ptr := Get_First (Tree);
+      Count : Integer  := Max;
+   begin
+      while This /= No_Item and then Count > 0 loop
+         Put_Line
+         (  "  "
+         &  Image (Get_Key (This))
+         &  Character'Val (9)
          &  "->"
          &  Image (Get_Value (This))
-         &  " at "
+         &  Character'Val (9)
+         &  "at "
          &  Image (Get_Index (This))
          &  "/"
          &  Image (Get_Bucket_Size (This))
          &  Integer_Address'Image
             (  To_Integer (Get_Bucket_Address (This))
-         )  );
-         This := Get_Next (This);
+            )
+         &  Get_Parent (This)
+         &  " Min/Max "
+         &  Image (Get_Tag (This).Min)
+         &  ".."
+         &  Image (Get_Tag (This).Max)
+         );
+         Count := Count - 1;
+         This  := Get_Next (This);
       end loop;
    end Dump;
 
@@ -71,9 +323,12 @@ procedure Test_B_Trees is
    begin
       while This /= No_Item loop
          Put_Line
-         (  Image (Get_Key (This))
+         (  "  "
+         &  Image (Get_Key (This))
+         &  Character'Val (9)
          &  "->"
          &  Image (Get_Value (This))
+         &  Character'Val (9)
          &  " at "
          &  Image (Get_Index (This))
          &  "/"
@@ -91,9 +346,12 @@ procedure Test_B_Trees is
    begin
       while This /= No_Item loop
          Put_Line
-         (  Image (Get_Key (This))
+         (  "  "
+         &  Image (Get_Key (This))
+         &  Character'Val (9)
          &  "->"
          &  Image (Integer (Get_Pointer (This)))
+         &  Character'Val (9)
          &  " at "
          &  Image (Get_Index (This))
          &  "/"
@@ -111,9 +369,12 @@ procedure Test_B_Trees is
    begin
       while This /= No_Item loop
          Put_Line
-         (  Get_Key (This)
+         (  "  "
+         &  Get_Key (This)
+         &  Character'Val (9)
          &  "->"
          &  Image (Get_Value (This))
+         &  Character'Val (9)
          &  " at "
          &  Image (Get_Index (This))
          &  "/"
@@ -133,9 +394,12 @@ procedure Test_B_Trees is
    begin
       while This /= No_Item loop
          Put_Line
-         (  Image (Get_Key (This))
+         (  "  "
+         &  Image (Get_Key (This))
+         &  Character'Val (9)
          &  "->"
          &  Image (Get_Value (This))
+         &  Character'Val (9)
          &  " at "
          &  Image (Get_Index (This))
          &  "/"
@@ -663,14 +927,582 @@ procedure Test_B_Trees is
    Stop   : Time;
    D1, D2 : Duration;
 begin
+--   System.Exception_Traces.Trace_On
+--   (  System.Exception_Traces.Every_Raise
+--   );
    Put_Line ("Testing B-trees ...");
+   declare
+      use Test_Integer_B_Trees.Internal;
+      T : B_Tree;
+
+      function Visit_Item
+               (  Tree : Test_Integer_B_Trees.Internal.B_Tree;
+                  Key  : Integer;
+                  Item : Test_Integer_B_Trees.Internal.Item_Ptr
+               )  return Boolean is
+         use Test_Integer_B_Trees.External_Ptr;
+      begin
+         Put_Line
+         (  Image (Key)
+         &  Character'Val (9) & Character'Val (9) & Character'Val (9)
+         &  "at "
+         &  Image (Get_Index (Item))
+         &  "/"
+         &  Image (Get_Bucket_Size (Item))
+         &  Integer_Address'Image
+            (  To_Integer (Get_Bucket_Address (Item))
+            )
+         &  Get_Parent (Item)
+         &  Character'Val (9)
+         &  " Min/Max "
+         &  Image (Get_Tag (Item).Min)
+         &  ".."
+         &  Image (Get_Tag (Item).Max)
+         );
+         return True;
+      end Visit_Item;
+
+      function Visit_Range
+               (  Tree : Test_Integer_B_Trees.Internal.B_Tree;
+                  Item : Test_Integer_B_Trees.Internal.Item_Ptr
+               )  return Bucket_Traversal is
+         use Test_Integer_B_Trees.External_Ptr;
+      begin
+         Put_Line
+         (  Image (Get_Key (Get_First (Get_Item (Item, 1))))
+         &  ".."
+         &  Image
+            (  Get_Key
+               (  Get_Last (Get_Item (Item, Get_Bucket_Size (Item)))
+            )  )
+         &  " ["
+         &  Image (Get_Key (Get_Item (Item, 1)))
+         &  ".."
+         &  Image (Get_Key (Get_Item (Item, Get_Bucket_Size (Item))))
+         &  "] "
+         &  Character'Val (9)
+         &  "at "
+         &  Image (Get_Index (Item))
+         &  "/"
+         &  Image (Get_Bucket_Size (Item))
+         &  Integer_Address'Image
+            (  To_Integer (Get_Bucket_Address (Item))
+            )
+         &  Get_Parent (Item)
+         &  Character'Val (9)
+         &  " Min/Max "
+         &  Image (Get_Tag (Item).Min)
+         &  ".."
+         &  Image (Get_Tag (Item).Max)
+         );
+         return Step_Over;
+      end Visit_Range;
+
+      procedure Traverse is
+         new Test_Integer_B_Trees.Internal.Generic_Traverse;
+
+      procedure Tag
+                (  Root   : Item_Ptr;
+                   Prefix : String  := "";
+                   Print  : Boolean := True
+                )  is
+         use Test_Integer_B_Trees;
+         Result : Min_Max := (Integer'Last, Integer'First);
+         Length : Natural := Get_Bucket_Size (Root);
+         Child  : Item_Ptr;
+         This   : Min_Max;
+      begin
+         if Length > 0 then
+            if Print then
+               Put
+               (  Prefix
+               &  Image (Length)
+               &  Integer_Address'Image
+                  (  To_Integer (Get_Bucket_Address (Root))
+                  )
+               &  " "
+               &  Character'Val (9)
+               );
+            end if;
+            for Item in 1..Length loop
+               if Print then
+                  if Item /= 1 then
+                     Put (" | ");
+                  end if;
+                  Put (Image (Get_Key (Get_Item (Root, Item))));
+               end if;
+               This.Min   := Get_Value (Get_Item (Root, Item));
+               Result.Min := Integer'Min (Result.Min, This.Min);
+               Result.Max := Integer'Max (Result.Max, This.Min);
+            end loop;
+            if Print then
+               New_Line;
+            end if;
+            for Item in 1..Length loop
+               Child := Get_Left_Child (Get_Item (Root, Item));
+               if Child /= No_Item then
+                  Tag (Child, Prefix & "   ", Print);
+                  This := Get_Tag (Child);
+                  Result.Min := Integer'Min (Result.Min, This.Min);
+                  Result.Max := Integer'Max (Result.Max, This.Max);
+               end if;
+            end loop;
+            Child := Get_Right_Child (Get_Item (Root, Length));
+            if Child /= No_Item then
+               Tag (Child, Prefix & "   ", Print);
+               This := Get_Tag (Child);
+               Result.Min := Integer'Min (Result.Min, This.Min);
+               Result.Max := Integer'Max (Result.Max, This.Max);
+            end if;
+            Set_Tag (Root, Result);
+         end if;
+      end Tag;
+
+      Value : constant Integer := 10;
+      Count : Natural := 0;
+      type Integer_Array is array (Positive range <>) of Integer;
+      Found : Integer_Array (1..100);
+      function Generate (From, To : Integer) return Integer_Array is
+         Length : Natural := 0;
+      begin
+         for Index in From..To loop
+            if 10 = (Index mod 20) then
+               Length := Length + 1;
+               Found (Length) := Index;
+            end if;
+         end loop;
+         return Found (1..Length);
+      end Generate;
+      Expected : constant Integer_Array := Generate (100, 500);
+
+      function Find_Item
+               (  Tree : B_Tree;
+                  Key  : Integer;
+                  Item : Item_Ptr
+               )  return Boolean is
+      begin
+         if Get_Value (Item) = Value then
+            Count := Count + 1;
+            Found (Count) := Key;
+         end if;
+         return True;
+      end Find_Item;
+
+      function Find_Range
+               (  Tree : B_Tree;
+                  Item : Item_Ptr
+               )  return Bucket_Traversal is
+         This : constant Test_Integer_B_Trees.Min_Max := Get_Tag (Item);
+      begin
+         if Value in This.Min..This.Max then
+            return Step_In;
+         else
+            return Step_Over;
+         end if;
+      end Find_Range;
+
+      procedure Find is
+         new Test_Integer_B_Trees.Internal.Generic_Traverse
+             (  Visit_Item  => Find_Item,
+                Visit_Range => Find_Range
+             );
+   begin
+      Put_Line ("Testing B-tree traversal...");
+      for Index in 1..1000 loop
+         Add (T, Index, Index mod 20);
+      end loop;
+      Tag (Get_Root (T), Print => True);
+--      Traverse (T, Inf (T, 100), 500);
+      Find (T, Inf (T, 100), 500);
+      for Index in Expected'Range loop
+         if (  Index > Count
+            or else
+               Found (Index) /= Expected (Index)
+            )  then
+            Raise_Exception
+            (  Data_Error'Identity,
+               "Not found " & Image (Expected (Index))
+            );
+         end if;
+      end loop;
+      if Count > Expected'Length then
+         Raise_Exception
+         (  Data_Error'Identity,
+            "Not to be found " & Image (Found (Expected'Length + 1))
+         );
+      end if;
+   end;
+   declare
+      use Long_Float_Waveform;
+      File      : aliased Persistent_Array;
+      Reference : Byte_Index;
+
+      function Diff (Left, Right : Long_Float) return Boolean is
+      begin
+         return abs (Left - Right) >= 0.0001;
+      end Diff;
+   begin
+      Put_Line ("Testing waveform ...");
+      Open (File, 10);
+      declare
+         Pool : aliased Persistent_Pool (File'Access);
+         T    : Waveform (Pool'Access);
+         X, Y : Long_Float;
+      begin
+         for Index in 1..10 loop
+            Add (T, Long_Float (Index),      Long_Float (Index));
+            Add (T, Long_Float (21 - Index), Long_Float (Index));
+         end loop;
+         if Diff (1.0, Get (T, 1.0, None)) then
+            Raise_Exception (Data_Error'Identity, "Get error at 1.0");
+         end if;
+         begin
+            Y := Get (T, 1.5, None);
+            Raise_Exception (Data_Error'Identity, "Found non-existing");
+         exception
+            when End_Error =>
+               null;
+         end;
+         if Diff (1.0, Get (T, 1.5, Rightmost)) then
+            Raise_Exception
+            (  Data_Error'Identity,
+               "Rightmost interpolation at 1.5 error"
+            );
+         end if;
+         if Diff (1.5, Get (T, 1.5, Linear)) then
+            Raise_Exception
+            (  Data_Error'Identity,
+               "Linear interpolation at 1.5 error"
+            );
+         end if;
+         declare
+            Result : Search_Outcome;
+         begin
+            Result := Get (T, 0.0);
+            if Result.Kind_Of /= Less then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Get at 0.5 error " &
+                  Location_Type'Image (Result.Kind_Of)
+               );
+            end if;
+            Result := Get (T, 21.0);
+            if Result.Kind_Of /= Greater then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Get at 21.0 error " &
+                  Location_Type'Image (Result.Kind_Of)
+               );
+            end if;
+            Result := Get (T, 5.5);
+            if Result.Kind_Of /= Inside then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Get at 5.5 error " &
+                  Location_Type'Image (Result.Kind_Of)
+               );
+            elsif Diff (Result.X1, 5.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Get at 5.5 error X1" & Long_Float'Image (Result.X1)
+               );
+            elsif Diff (Result.X2, 6.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Get at 5.5 error X2" & Long_Float'Image (Result.X2)
+               );
+            elsif Diff (Result.Y1, 5.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Get at 5.5 error Y1" & Long_Float'Image (Result.Y1)
+               );
+            elsif Diff (Result.Y2, 6.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Get at 5.5 error Y2" & Long_Float'Image (Result.Y2)
+               );
+            end if;
+         end;
+         if Diff (Get_First_X (T), 1.0) then
+            Raise_Exception
+            (  Data_Error'Identity, "Get_First_X error"
+            );
+         end if;
+         if Diff (Get_First_Y (T), 1.0) then
+            Raise_Exception
+            (  Data_Error'Identity, "Get_First_Y error"
+            );
+         end if;
+         if Diff (Get_Last_X (T), 20.0) then
+            Raise_Exception
+            (  Data_Error'Identity, "Get_Last_X error"
+            );
+         end if;
+         if Diff (Get_Last_Y (T), 1.0) then
+            Raise_Exception
+            (  Data_Error'Identity, "Get_Last_Y error"
+            );
+         end if;
+         declare
+            Y1, Y2 : Long_Float;
+         begin
+            Get_Convex (T, 5.5, 18.5, None, Y1, Y2);
+            if Diff (Y1, 3.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Get_Convex none error Y1 =" & Long_Float'Image (Y1)
+               );
+            end if;
+            if Diff (Y2, 10.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Get_Convex none error Y2 =" & Long_Float'Image (Y2)
+               );
+            end if;
+            Get_Convex (T, 5.5, 8.5, Rightmost, Y1, Y2);
+            if Diff (Y1, 5.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Get_Convex rightmost error Y1 =" &
+                  Long_Float'Image (Y1)
+               );
+            end if;
+            if Diff (Y2, 8.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Get_Convex rightmost error Y2 =" &
+                  Long_Float'Image (Y2)
+               );
+            end if;
+            Get_Convex (T, 5.5, 8.5, Linear, Y1, Y2);
+            if Diff (Y1, 5.5) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Get_Convex linear error Y1 =" &
+                  Long_Float'Image (Y1)
+               );
+            end if;
+            if Diff (Y2, 8.5) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Get_Convex linear error Y2 =" &
+                  Long_Float'Image (Y2)
+               );
+            end if;
+         end;
+         declare
+            X : Long_Float;
+         begin
+            X := Find (T, 2.0, 20.0, 6.0, Above, None);
+            if Diff (X, 6.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Find above none error X =" & Long_Float'Image (X)
+               );
+            end if;
+            X := Find (T, 10.0, 20.0, 7.5, Below, None);
+            if Diff (X, 14.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Find below none error X =" & Long_Float'Image (X)
+               );
+            end if;
+            X := Find (T, 1.0, 20.0, 5.0, 8.0, Inside, None);
+            if Diff (X, 5.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Find inside none error X =" & Long_Float'Image (X)
+               );
+            end if;
+            X := Find (T, 5.0, 20.0, 5.0, 8.0, Outside, None);
+            if Diff (X, 9.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Find outside none error X =" & Long_Float'Image (X)
+               );
+            end if;
+
+            X := Find (T, 2.0, 20.0, 6.5, Above, Rightmost);
+            if Diff (X, 7.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Find above rightmost error X =" &
+                  Long_Float'Image (X)
+               );
+            end if;
+            X := Find (T, 10.0, 20.0, 7.5, Below, Rightmost);
+            if Diff (X, 14.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Find below rightmost error X =" &
+                  Long_Float'Image (X)
+               );
+            end if;
+            X := Find (T, 1.0, 20.0, 5.5, 8.5, Inside, Rightmost);
+            if Diff (X, 6.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Find inside rightmost error X =" &
+                  Long_Float'Image (X)
+               );
+            end if;
+            X := Find (T, 5.0, 20.0, 5.0, 8.5, Outside, Rightmost);
+            if Diff (X, 9.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Find outside rightmost error X =" &
+                  Long_Float'Image (X)
+               );
+            end if;
+
+            X := Find (T, 2.0, 20.0, 6.5, Above, Linear);
+            if Diff (X, 6.5) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Find above linear error X =" & Long_Float'Image (X)
+               );
+            end if;
+            X := Find (T, 10.0, 20.0, 7.5, Below, Linear);
+            if Diff (X, 13.5) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Find below linear error X =" & Long_Float'Image (X)
+               );
+            end if;
+            X := Find (T, 1.0, 20.0, 5.5, 8.5, Inside, Linear);
+            if Diff (X, 5.5) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Find inside linear error X =" & Long_Float'Image (X)
+               );
+            end if;
+            X := Find (T, 10.0, 20.0, 5.5, 8.5, Inside, Linear);
+            if Diff (X, 12.5) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Find inside linear error X =" & Long_Float'Image (X)
+               );
+            end if;
+            X := Find (T, 5.0, 20.0, 5.0, 8.3, Outside, Linear);
+            if Diff (X, 8.3) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Find outside linear error X =" & Long_Float'Image (X)
+               );
+            end if;
+            X := Find (T, 10.0, 20.0, 5.0, 10.0, Outside, Linear);
+            if Diff (X, 16.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Find outside linear error X =" & Long_Float'Image (X)
+               );
+            end if;
+            X := Find (T, 10.0, 20.0, 5.3, 10.0, Outside, Linear);
+            if Diff (X, 15.7) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Find outside linear error X =" & Long_Float'Image (X)
+               );
+            end if;
+         end;
+         Erase (T);
+         for Index in 1..10_000 loop
+            Add (T, Long_Float (Index), Long_Float (Index));
+         end loop;
+         declare
+            Y1, Y2 : Long_Float;
+         begin
+            Get_Convex (T, 1.0, 10_000.0, None, Y1, Y2);
+            if Diff (Y1, 1.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Convex none error Y1 =" & Long_Float'Image (Y1)
+               );
+            end if;
+            if Diff (Y2, 10_000.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Convex none error Y2 =" & Long_Float'Image (Y2)
+               );
+            end if;
+            Get_Convex (T, 10.5, 7_002.5, Linear, Y1, Y2);
+            if Diff (Y1, 10.5) then
+               Dump (T, File => "c:\temp\dump.txt");
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Convex linear error Y1 =" & Long_Float'Image (Y1)
+               );
+            end if;
+            if Diff (Y2, 7_002.5) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Convex none error Y2 =" & Long_Float'Image (Y2)
+               );
+            end if;
+--          Dump (T, File=>"c:\temp\dump1.txt");
+         end;
+         Store (T, Reference);
+      end;
+      declare
+         Pool : aliased Persistent_Pool (File'Access);
+         T    : Waveform (Pool'Access);
+      begin
+         Restore (T, Reference);
+--       Dump (T, File=>"c:\temp\dump2.txt");
+         declare
+            Y1, Y2 : Long_Float;
+         begin
+            Get_Convex (T, 1.0, 10_000.0, None, Y1, Y2);
+            if Diff (Y1, 1.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Convex none error Y1 =" & Long_Float'Image (Y1)
+               );
+            end if;
+            if Diff (Y2, 10_000.0) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Convex none error Y2 =" & Long_Float'Image (Y2)
+               );
+            end if;
+            Get_Convex (T, 10.5, 7_002.5, Linear, Y1, Y2);
+            if Diff (Y1, 10.5) then
+               Dump (T, File => "c:\temp\dump.txt");
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Convex linear error Y1 =" & Long_Float'Image (Y1)
+               );
+            end if;
+            if Diff (Y2, 7_002.5) then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Convex none error Y2 =" & Long_Float'Image (Y2)
+               );
+            end if;
+         end;
+      end;
+      --  declare
+      --     Pool : aliased Persistent_Pool (File'Access);
+      --     T    : Waveform (Pool'Access);
+      --  begin
+      --     for Index in 1..1_000_000 loop
+      --        Add (T, Long_Float (Index), Long_Float (Index));
+      --     end loop;
+      --     declare
+      --        Progress : Test_Integer_B_Trees.Indicator;
+      --     begin
+      --        Tag (T, Progress);
+      --     end;
+      --     return;
+      --  end;
+   end;
    declare
       use Test_Integer_B_Trees;
       use Test_Integer_B_Trees.Tables;
       Count : constant := 10_000;
       File  : aliased Persistent_Array;
    begin
-      Put ("Testing external raw tables ...");
+      Put_Line ("Testing external raw tables ...");
       Open (File, 10);
       declare
          Pool : aliased Persistent_Pool (File'Access);
@@ -930,6 +1762,226 @@ begin
       Put ("Testing external raw B-trees ...");
       Open (File, 10);
       declare
+         subtype U is Interfaces.Unsigned_16;
+         type Min_Max is record
+            Min : U;
+            Max : U;
+         end record;
+
+         function Image (Value : U) return String is
+         begin
+            return Image (Integer (Value));
+         end Image;
+
+         function Get_Tag (Item : Item_Ptr) return Min_Max is
+            function To_Min_Max is
+               new Ada.Unchecked_Conversion (Byte_Index, Min_Max);
+         begin
+            return
+               To_Min_Max
+               (  Persistent.Memory_Pools.Streams.External_B_Tree.
+                  Get_Tag
+                  (  Item
+               )  );
+         end Get_Tag;
+
+         Pool : aliased Persistent_Pool (File'Access);
+         T    : B_Tree (Pool'Access);
+
+         function Visit_Item
+                  (  Tree : B_Tree;
+                     Key  : Byte_Index;
+                     Item : Item_Ptr
+                  )  return Boolean is
+         begin
+            Put_Line
+            (  Image (U (Key))
+            &  Character'Val (9) & Character'Val (9) & Character'Val (9)
+            &  "at "
+            &  Image (Get_Index (Item))
+            &  "/"
+            &  Image (Get_Bucket_Size (Item))
+            &  " "
+            &  Image (Get_Bucket_Address (Item))
+            &  Get_Parent (Item)
+            &  Character'Val (9)
+            &  " Min/Max "
+            &  Image (Get_Tag (Item).Min)
+            &  ".."
+            &  Image (Get_Tag (Item).Max)
+            );
+            return True;
+         end Visit_Item;
+
+         function Visit_Range
+                  (  Tree : B_Tree;
+                     Item : Item_Ptr
+                  )  return Bucket_Traversal is
+            use Test_Integer_B_Trees.External_Ptr;
+         begin
+            Put_Line
+            (  Image (U (Get_Key (Get_First (Get_Item (Item, 1)))))
+            &  ".."
+            &  Image
+               (  U
+                  (  Get_Key
+                     (  Get_Last
+                        (  Get_Item (Item, Get_Bucket_Size (Item))
+               )  )  )  )
+            &  " ["
+            &  Image (U (Get_Key (Get_Item (Item, 1))))
+            &  ".."
+            &  Image
+               (  U (Get_Key (Get_Item (Item, Get_Bucket_Size (Item))))
+               )
+            &  "] "
+            &  Character'Val (9)
+            &  "at "
+            &  Image (Get_Index (Item))
+            &  "/"
+            &  Image (Get_Bucket_Size (Item))
+            &  " "
+            &  Image (Get_Bucket_Address (Item))
+            &  " "
+            &  Get_Parent (Item)
+            &  Character'Val (9)
+            &  " Min/Max "
+            &  Image (Get_Tag (Item).Min)
+            &  ".."
+            &  Image (Get_Tag (Item).Max)
+            );
+            return Step_Over;
+         end Visit_Range;
+
+         procedure Traverse is new Generic_Traverse;
+
+         procedure Tag (Root : Item_Ptr; Prefix : String := "") is
+            use Test_Integer_B_Trees;
+            Result : Min_Max := (U'Last, U'First);
+            Length : constant Natural := Get_Bucket_Size (Root);
+            Child  : Item_Ptr;
+            This   : Min_Max;
+            function From_Min_Max is
+               new Ada.Unchecked_Conversion (Min_Max, Byte_Index);
+         begin
+            if Length > 0 then
+               Put
+               (  Prefix
+               &  Image (Length)
+               &  " "
+               &  Image (Get_Bucket_Address (Root))
+               &  "   "
+               );
+               for Item in 1..Length loop
+                  if Item /= 1 then
+                     Put (" | ");
+                  end if;
+                  Put (Image (U (Get_Key (Get_Item (Root, Item)))));
+                  This.Min   := U (Get_Value (Get_Item (Root, Item)));
+                  Result.Min := U'Min (Result.Min, This.Min);
+                  Result.Max := U'Max (Result.Max, This.Min);
+               end loop;
+               New_Line;
+               for Item in 1..Length loop
+                  Child := Get_Left_Child (Get_Item (Root, Item));
+                  if Child /= No_Item then
+                     Tag (Child, Prefix & "   ");
+                     This := Get_Tag (Child);
+                     Result.Min := U'Min (Result.Min, This.Min);
+                     Result.Max := U'Max (Result.Max, This.Max);
+                  end if;
+               end loop;
+               Child := Get_Right_Child (Get_Item (Root, Length));
+               if Child /= No_Item then
+                  Tag (Child, Prefix & "   ");
+                  This := Get_Tag (Child);
+                  Result.Min := U'Min (Result.Min, This.Min);
+                  Result.Max := U'Max (Result.Max, This.Max);
+               end if;
+               Set_Tag (Root, From_Min_Max (Result));
+            end if;
+         end Tag;
+
+         Value : constant Byte_Index := 10;
+         Count : Natural := 0;
+         type Byte_Index_Array is
+            array (Positive range <>) of Byte_Index;
+         Found : Byte_Index_Array (1..100);
+         function Generate (From, To : Byte_Index)
+            return Byte_Index_Array is
+            Length : Natural := 0;
+         begin
+            for Index in Byte_Index range From..To loop
+               if 10 = (Index mod 20) then
+                  Length := Length + 1;
+                  Found (Length) := Index;
+               end if;
+            end loop;
+            return Found (1..Length);
+         end Generate;
+         Expected : constant Byte_Index_Array := Generate (100, 500);
+
+         function Find_Item
+                  (  Tree : B_Tree;
+                     Key  : Byte_Index;
+                     Item : Item_Ptr
+                  )  return Boolean is
+         begin
+            if Get_Value (Item) = Value then
+               Count := Count + 1;
+               Found (Count) := Key;
+            end if;
+            return True;
+         end Find_Item;
+
+         function Find_Range
+                  (  Tree : B_Tree;
+                     Item : Item_Ptr
+                  )  return Bucket_Traversal is
+            This : constant Min_Max := Get_Tag (Item);
+         begin
+            if Value in Byte_Index (This.Min)..Byte_Index (This.Max)
+            then
+               return Step_In;
+            else
+               return Step_Over;
+            end if;
+         end Find_Range;
+
+         procedure Find is
+            new Generic_Traverse
+                (  Visit_Item  => Find_Item,
+                   Visit_Range => Find_Range
+                );
+      begin
+         Put_Line ("Testing B-tree traversal...");
+         for Index in Byte_Index range 1..1000 loop
+            Add (T, Index, Index mod 20);
+         end loop;
+         Tag (Get_Root (T));
+         Dump (T);
+         Traverse (T, Inf (T, 100), 500);
+         Find (T, Inf (T, 100), 500);
+         for Index in Expected'Range loop
+            if (  Index > Count
+               or else
+                  Found (Index) /= Expected (Index)
+               )  then
+               Raise_Exception
+               (  Data_Error'Identity,
+                  "Not found" & Byte_Index'Image (Expected (Index))
+               );
+            end if;
+         end loop;
+         if Count > Expected'Length then
+            Raise_Exception
+            (  Data_Error'Identity,
+               "Not to be found" &
+               Byte_Index'Image (Found (Expected'Length + 1))
+            );
+         end if;
+      end;
+      declare
          Pool : aliased Persistent_Pool (File'Access);
          T    : B_Tree (Pool'Access);
 
@@ -1168,6 +2220,32 @@ begin
       use Test_Integer_B_Trees.External_Ptr;
       Count : constant := 10_000;
       File  : aliased Persistent_Array;
+
+      function Visit_Item
+               (  Tree : B_Tree;
+                  Key  : Integer;
+                  Item : Item_Ptr
+               )  return Boolean is
+      begin
+         Put_Line (Image (Key));
+         return True;
+      end Visit_Item;
+
+      function Visit_Range
+               (  Tree : B_Tree;
+                  Item : Item_Ptr
+               )  return Bucket_Traversal is
+      begin
+         Put_Line
+         (  Image (Get_Key (Get_Item (Item, 1)))
+         &  ".."
+         &  Image (Get_Key (Get_Item (Item, Get_Bucket_Size (Item))))
+         );
+         return Step_Over;
+      end Visit_Range;
+
+      procedure Traverse is
+         new Test_Integer_B_Trees.External_Ptr.Generic_Traverse;
    begin
       Put ("Testing external pointer B-trees ...");
       Open (File, 10);
@@ -1381,6 +2459,11 @@ begin
                end if;
             end;
          end;
+         Erase (T);
+         for Index in 1..1_400 loop
+            Add (T, Index, Byte_Index (Index));
+         end loop;
+         Traverse (T, Inf (T, 340), 1_300);
       end;
 --        Dump (T);
 --        for Index in Visited'Range loop

@@ -3,7 +3,7 @@
 --     Julia.Load_Julia_Library                    Luebeck            --
 --  Implementation                                 Winter, 2019       --
 --                                                                    --
---                                Last revision :  11:37 20 Jan 2019  --
+--                                Last revision :  09:15 26 Nov 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,14 +25,13 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 
-with Ada.IO_Exceptions;           use Ada.IO_Exceptions;
-with Strings_Edit;                use Strings_Edit;
-with Strings_Edit.Integers;       use Strings_Edit.Integers;
-with Strings_Edit.Quoted;         use Strings_Edit.Quoted;
-with Strings_Edit.UTF8.Handling;  use Strings_Edit.UTF8.Handling;
+with Ada.IO_Exceptions;      use Ada.IO_Exceptions;
+with Strings_Edit;           use Strings_Edit;
+with Strings_Edit.Integers;  use Strings_Edit.Integers;
+with Strings_Edit.Quoted;    use Strings_Edit.Quoted;
 
-with Ada.Streams.Stream_IO;
-with Interfaces;
+with Ada.Directories;
+with Ada.Unchecked_Deallocation;
 
 package body Julia.Load_Julia_Library is
 
@@ -409,19 +408,133 @@ package body Julia.Load_Julia_Library is
    Library : Address := Null_Address;
    Loaded  : Boolean := False;
 
+   type Found (Name_Length, Path_Length : Natural) is record
+      Major : Integer;
+      Name  : String (1..Name_Length);
+      Path  : String (1..Path_Length);
+   end record;
+   type Found_Ptr is access Found;
+   procedure Free is
+      new Ada.Unchecked_Deallocation (Found, Found_Ptr);
+
+   function "<" (Left : Found_Ptr; Right : Integer) return Boolean is
+   begin
+      return Left = null or else Left.Major < Right;
+   end "<";
+
+   Searched : Boolean := False;
+   Most     : Found_Ptr;
+
+   procedure Search (Major : Natural) is
+      use Ada.Directories;
+      Prefix : constant String := "libjulia.1.";
+
+      procedure Set_Newly_Found (Path : String; Version : Integer) is
+      begin
+          Free (Most);
+          for Index in reverse Path'Range loop
+             if Path (Index) = '/' then
+                Most :=
+                   new Found'
+                       (  Name_Length => Path'Last - Index,
+                          Path_Length => Index - Path'First + 1,
+                          Major       => Version,
+                          Name        => Path (Index + 1..Path'Last),
+                          Path        => Path (Path'First..Index)
+                       );
+                return;
+             end if;
+          end loop;
+          Most :=
+             new Found'
+                 (  Name_Length => Path'Length,
+                    Path_Length => 0,
+                    Major       => Version,
+                    Name        => Path,
+                    Path        => ""
+                 );
+      end Set_Newly_Found;
+
+      procedure Scan
+                (  Path    : String;
+                   Descend : Natural := 0;
+                   Top     : Boolean := False
+                )  is
+         Items : Search_Type;
+         This  : Directory_Entry_Type;
+      begin
+         if not Exists (Path) then
+            return;
+         end if;
+         Start_Search (Items, Path, "*");
+         while More_Entries (Items) loop
+             Get_Next_Entry (Items, This);
+             case Kind (This) is
+                when Ordinary_File =>
+                   declare
+                      Name    : constant String := Simple_Name (This);
+                      Version : Integer;
+                      Pointer : Integer := Name'First;
+                   begin
+                      if Is_Prefix (Prefix, Name) then
+                         Pointer := Pointer + Prefix'Length;
+                         Get (Name, Pointer, Version);
+                         while Pointer <= Name'Last loop
+                            exit when Name (Pointer) = '.';
+                            Pointer := Pointer + 1;
+                         end loop;
+                         if (  Name (Pointer..Name'Last) = ".dylib"
+                            and then
+                               Version >= Major
+                            and then
+                               Most < Version
+                            )  then
+                            Set_Newly_Found (Full_Name (This), Version);
+                         end if;
+                      end if;
+                   exception
+                      when others =>
+                         null;
+                   end;
+                when Directory =>
+                   if Top then
+                      if Is_Prefix ("Julia", Simple_Name (This)) then
+                         Scan (Full_Name (This), Descend - 1);
+                      end if;
+                   else
+                      if Descend > 0 then
+                         Scan (Full_Name (This), Descend - 1);
+                      end if;
+                   end if;
+                when Special_File =>
+                   null;
+             end case;
+         end loop;
+         End_Search (Items);
+      exception
+         when others =>
+            null;
+      end Scan;
+   begin
+      if not Searched then
+         Searched := True;
+         Scan ("/Applications", 5, True);
+      end if;
+   end Search;
+
    function Get_Default_Name return String is
    begin
-      return "libjulia.so.1";
+      return "libjulia.dylib";
    end Get_Default_Name;
 
    function Get_Default_Relative_Path return String is
    begin
-      return "julia/sys.so";
+      return "julia/sys.dylib";
    end Get_Default_Relative_Path;
 
    function Get_Extension return String is
    begin
-      return "*.so.*";
+      return "*.dylib";
    end Get_Extension;
 
    function Is_Loaded return Boolean is
@@ -433,7 +546,12 @@ package body Julia.Load_Julia_Library is
       function Get_Library_Path return String is
       begin
          if Name'Length = 0 then
-            return Get_Default_Name;
+            Search (6);
+            if Most = null then
+               return Get_Default_Name;
+            else
+               return Most.Path & Most.Name;
+            end if;
          else
             return Trim (Name);
          end if;

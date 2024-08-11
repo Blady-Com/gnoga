@@ -3,7 +3,7 @@
 --     Persistent.Memory_Pools                     Luebeck            --
 --  Interface                                      Winter, 2014       --
 --                                                                    --
---                                Last revision :  19:18 30 Apr 2018  --
+--                                Last revision :  18:00 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -31,6 +31,7 @@
 with Persistent.Blocking_Files;  use Persistent.Blocking_Files;
 
 with Ada.Finalization;
+with Ada.Task_Identification;
 with Interfaces;
 
 package Persistent.Memory_Pools is
@@ -382,6 +383,7 @@ package Persistent.Memory_Pools is
    procedure Initialize (Object : in out Holder);
 
 private
+   use Ada.Task_Identification;
    use Interfaces;
 
    pragma Inline (Get_Blocks_Free);
@@ -414,7 +416,9 @@ private
       procedure Set_Root_Index (Index : Root_Index; Value : Byte_Index);
       entry Seize;
    private
-      Locked : Boolean := False;
+      entry Lounge;
+      Owner : Task_ID := Null_Task_ID;
+      Count : Natural := 0;
    end Persistent_Mutex;
 
    type Free_Block_Lists is array (Block_Size_Index) of Byte_Index;

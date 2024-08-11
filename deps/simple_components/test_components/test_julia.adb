@@ -3,7 +3,7 @@
 --  Test                                           Luebeck            --
 --                                                 Winter, 2019       --
 --                                                                    --
---                                Last revision :  11:34 10 May 2020  --
+--                                Last revision :  09:15 26 Nov 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -118,8 +118,8 @@ begin
 --
 -- Windows
 --
-   Load ("D:\Julia-1.4.0\bin\libjulia.dll");
-   Init_With_Image ("D:\Julia-1.4.0\bin");
+-- Load ("D:\Julia-1.4.0\bin\libjulia.dll");
+-- Init_With_Image ("D:\Julia-1.4.0\bin");
 --
 -- Debian, package libjulia1
 --
@@ -133,7 +133,11 @@ begin
 --
 -- Load ("/usr/lib/libjulia.so.1");
 -- Init_With_Image ("/usr/lib");
-
+--
+-- OSX
+--
+   Load;
+   Init;
    Eval_String ("println(sqrt(2.0))");
    begin
       Eval_String ("this_function_does_not_exist()");

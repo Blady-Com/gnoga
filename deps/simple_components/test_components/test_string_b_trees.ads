@@ -3,7 +3,7 @@
 --     Test_String_B_Trees                         Luebeck            --
 --  Instantiation                                  Spring, 2014       --
 --                                                                    --
---                                Last revision :  23:22 29 Sep 2017  --
+--                                Last revision :  18:00 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -30,7 +30,7 @@ with Persistent.Memory_Pools.Streams.Generic_External_B_Tree;
 
 package Test_String_B_Trees is
    package Internal is
-      new Generic_Indefinite_B_Tree (String, Integer, 10);
+      new Generic_Indefinite_B_Tree (String, Integer, Integer, 10);
    package External is
       new Persistent.Memory_Pools.Streams.Generic_External_B_Tree
           (  String,

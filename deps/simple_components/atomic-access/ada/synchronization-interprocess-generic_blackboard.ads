@@ -3,7 +3,7 @@
 --     Synchronization.Interprocess.               Luebeck            --
 --     Generic_Blackboard                          Spring, 2018       --
 --  Interface                                                         --
---                                Last revision :  17:44 21 Jul 2018  --
+--                                Last revision :  09:15 26 Nov 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -70,7 +70,7 @@ package Synchronization.Interprocess.Generic_Blackboard is
 --    Size - The size of, in storage elements
 --
 -- The  blackboard  size detemines how long survives an element put into
--- the  balckboard, after consequent placing other elements into it. The
+-- the  blackboard, after consequent placing other elements into it. The
 -- blackboard requires a mutex used when putting data into it. The mutex
 -- must be placed in the shared environment object before the queue. For
 -- example:

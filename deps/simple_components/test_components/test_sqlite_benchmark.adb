@@ -3,7 +3,7 @@
 --     Test_SQLite_Benchmark                       Luebeck            --
 --  Benchmark SQLite vs B-trees                    Autumn, 2014       --
 --                                                                    --
---                                Last revision :  13:13 14 Sep 2019  --
+--                                Last revision :  18:00 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -166,7 +166,7 @@ begin
                end;
             end loop;
             Seconds := Clock - Start;
-            Tree_Address := Get_Root_Address (Tree);
+            Store (Tree, Tree_Address);
             Put_Line
             (  "Blocking file "
             &  Image (Count)
@@ -244,7 +244,7 @@ begin
             Pool : aliased Persistent_Pool (DB'Access);
             Tree : B_Tree (Pool'Access);
          begin
-            Set_Root_Address (Tree, Tree_Address);
+            Restore (Tree, Tree_Address);
             Reset (Letter_Dice, Letter_State);
             Reset (Length_Dice, Length_State);
             Start := Clock;
@@ -334,7 +334,7 @@ begin
             Pool : aliased Persistent_Pool (DB'Access);
             Tree : B_Tree (Pool'Access);
          begin
-            Set_Root_Address (Tree, Tree_Address);
+            Restore (Tree, Tree_Address);
             Reset (Letter_Dice, Letter_State);
             Reset (Length_Dice, Length_State);
             Start := Clock;
@@ -355,6 +355,7 @@ begin
             &  Image (1000.0 * (Float (Seconds) / Float (Count)))
             &  "ms per operation"
             );
+            Store (Tree, Tree_Address);
          end;
       end;
    end if;
@@ -414,7 +415,7 @@ begin
             Pool : aliased Persistent_Pool (DB'Access);
             Tree : B_Tree (Pool'Access);
          begin
-            Set_Root_Address (Tree, Tree_Address);
+            Restore (Tree, Tree_Address);
             Reset (Letter_Dice, Letter_State);
             Reset (Length_Dice, Length_State);
             Start := Clock;

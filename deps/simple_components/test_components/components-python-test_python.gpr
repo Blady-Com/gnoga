@@ -1,0 +1,10 @@
+with "../components.gpr";
+with "../components-python.gpr";
+
+project Components.Python.Test_Python is
+
+   for Source_Files use ("test_python.adb");
+   for Main use ("test_python.adb");
+   for Object_Dir use Components'Object_Dir;
+
+end Components.Python.Test_Python;

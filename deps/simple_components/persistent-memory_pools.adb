@@ -3,7 +3,7 @@
 --      Persistent.Memory_Pools                    Luebeck            --
 --  Implementation                                 Winter, 2014       --
 --                                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  18:00 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -26,8 +26,6 @@
 --____________________________________________________________________--
 
 with Ada.IO_Exceptions;  use Ada.IO_Exceptions;
-
-with Ada.Unchecked_Deallocation;
 
 package body Persistent.Memory_Pools is
 --  --
@@ -108,14 +106,33 @@ package body Persistent.Memory_Pools is
          return Pool.Root (Index);
       end Get_Root_Index;
 
+      entry Lounge when Count = 0 is
+      begin
+         Owner := Lounge'Caller;
+         Count := 1;
+      end Lounge;
+
       procedure Release is
       begin
-         Locked := False;
+         if Count = 0 then
+            Raise_Exception (Program_Error'Identity, "Not owned");
+         elsif Current_Task /= Owner then
+            Raise_Exception (Program_Error'Identity, "Not the owner");
+         else
+            Count := Count - 1;
+         end if;
       end Release;
 
-      entry Seize when not Locked is
+      entry Seize when True is
       begin
-         Locked := True;
+         if Count = 0 then
+            Owner := Seize'Caller;
+            Count := 1;
+         elsif Owner = Seize'Caller then
+            Count := Count + 1;
+         else
+            requeue Lounge with abort;
+         end if;
       end Seize;
 
       procedure Set_Root_Index
@@ -153,7 +170,7 @@ package body Persistent.Memory_Pools is
       or Shift_Left (Unsigned_64 (Block (Offset + 4)), 32)
       or Shift_Left (Unsigned_64 (Block (Offset + 5)), 40)
       or Shift_Left (Unsigned_64 (Block (Offset + 6)), 48)
-      or Shift_Left (Unsigned_64 (Block (Offset + 7)), 52)
+      or Shift_Left (Unsigned_64 (Block (Offset + 7)), 56)
       );
    end Get;
 
@@ -194,7 +211,7 @@ package body Persistent.Memory_Pools is
             5 => Unsigned_8 (16#FF# and Shift_Right (Value, 32)),
             6 => Unsigned_8 (16#FF# and Shift_Right (Value, 40)),
             7 => Unsigned_8 (16#FF# and Shift_Right (Value, 48)),
-            8 => Unsigned_8 (16#FF# and Shift_Right (Value, 52))
+            8 => Unsigned_8 (16#FF# and Shift_Right (Value, 56))
          );
    end Put;
 

@@ -3,7 +3,7 @@
 --     Strings_Edit.UTF8.ISO_8859_10               Luebeck            --
 --  Interface                                      Autumn, 2018       --
 --                                                                    --
---                                Last revision :  12:27 04 Nov 2018  --
+--                                Last revision :  17:59 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -25,7 +25,7 @@
 --  executable file might be covered by the GNU Public License.       --
 --____________________________________________________________________--
 --
---  This package provides conversions between UTF-8 strings and  ISO/IEC
+--  This package provides Y_Of between UTF-8 strings and  ISO/IEC
 --  8859-10 encoded strings. 
 --
 package Strings_Edit.UTF8.ISO_8859_10 is

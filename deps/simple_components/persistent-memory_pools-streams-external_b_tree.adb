@@ -3,7 +3,7 @@
 --     Persistent.Memory_Pools.Streams.            Luebeck            --
 --        External_B_Tree                          Autumn, 2014       --
 --  Implementation                                                    --
---                                Last revision :  22:45 07 Apr 2016  --
+--                                Last revision :  18:00 18 Aug 2022  --
 --                                                                    --
 --  This  library  is  free software; you can redistribute it and/or  --
 --  modify it under the terms of the GNU General Public  License  as  --
@@ -13,7 +13,7 @@
 --  ANY   WARRANTY;   without   even   the   implied   warranty   of  --
 --  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU  --
 --  General  Public  License  for  more  details.  You  should  have  --
---  received  a  copy  of  the GNU General Public License along with  --
+--  received  a  Copy  of  the GNU General Public License along with  --
 --  this library; if not, write to  the  Free  Software  Foundation,  --
 --  Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.    --
 --                                                                    --
@@ -26,25 +26,26 @@
 --____________________________________________________________________--
 
 with Ada.IO_Exceptions;  use Ada.IO_Exceptions;
-with Ada.Tags;           use Ada.Tags;
+--with Ada.Tags;           use Ada.Tags;
+--with Ada.Text_IO;
 
-with Persistent.Blocking_Files.Text_IO;
-use  Persistent.Blocking_Files.Text_IO;
+--with Persistent.Blocking_Files.Text_IO;
+--use  Persistent.Blocking_Files.Text_IO;
 
-with Persistent.Memory_Pools.Streams;
-use  Persistent.Memory_Pools.Streams;
+--with Persistent.Memory_Pools.Streams;
+--use  Persistent.Memory_Pools.Streams;
 
-with Persistent.Memory_Pools.Dump;
-use  Persistent.Memory_Pools.Dump;
+--with Persistent.Memory_Pools.Dump;
+--use  Persistent.Memory_Pools.Dump;
 
---  with Ada.Text_IO,
---       Strings_Edit.Integers,
---       Persistent.Blocking_Files.Text_IO;
+--with Ada.Text_IO,
+--     Strings_Edit.Integers,
+--     Persistent.Blocking_Files.Text_IO;
 
 package body Persistent.Memory_Pools.Streams.External_B_Tree is
 
-   Left_Half  : constant Positive := (Width + 1) / 2 - 1;
-   Right_Half : constant Positive := Width - Left_Half;
+   Left_Half     : constant Positive := (Width + 1) / 2 - 1;
+   Right_Half    : constant Positive := Width - Left_Half;
 
    type Byte_Index_Array is array (Positive range <>) of Byte_Index;
 
@@ -89,6 +90,12 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
    begin
       return Natural (Unsigned_16'(Get (Block, Length_Offset)));
    end Get_Length;
+
+   function Get_Node_Tag (Block : Block_Type) return Byte_Index is
+      pragma Inline (Get_Node_Tag);
+   begin
+      return Get (Block, Node_Tag_Offset);
+   end Get_Node_Tag;
 
    function Get_Parent_Address (Block : Block_Type) return Byte_Index is
       pragma Inline (Get_Parent_Address);
@@ -143,6 +150,14 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
       Put (Block, Length_Offset, Unsigned_16 (Length));
    end Set_Length;
 
+   procedure Set_Node_Tag
+             (  Block : in out Block_Type;
+                Tag   : Byte_Index
+             )  is
+   begin
+      Put (Block, Node_Tag_Offset, Tag);
+   end Set_Node_Tag;
+
    procedure Set_Parent_Address
              (  Block  : in out Block_Type;
                 Parent : Byte_Index
@@ -168,76 +183,93 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
       Put (Block, To_Value (No), Value);
    end Set_Value;
 
---     procedure Dump
---               (  Pool   : B_Tree'Class;
---                  Node   : Byte_Index;
---                  Prefix : String := ""
---               )  is
---        use Ada.Text_IO;
---        use Strings_Edit.Integers;
---        use Persistent.Blocking_Files.Text_IO;
---        Length : Natural;
---        Child  : Byte_Index;
---     begin
---        Put (Prefix);
---        Put ("at ");
---        Put (Image (Node));
---        declare
---           Block : Block_Type renames Load (Pool.Pool.File, Node).all;
---        begin
---           Length := Get_Length (Block);
---           if Get_Parent_Address (Block) /= 0 then
---              Put (" [");
---              Put (Image (Get_Parent_Address (Block)));
---              Put ("|");
---              Put (Image (Get_Parent_Index (Block)));
---              Put ("]");
---           end if;
---        end;
---        Put (":");
---        declare
---           Key : Byte_Index;
---        begin
---           for Index in 1..Length loop
---              declare
---                 Block : Block_Type renames
---                         Load (Pool.Pool.File, Node).all;
---              begin
---                 Child := Get_Child (Block, Index);
---                 if Child = 0 then
---                    Put (" .");
---                 else
---                    Put (' ' & Image (Child));
---                 end if;
---                 Put (" /");
---                 Key := Get_Key (Block, Index);
---              end;
---              Put (Byte_Index'Image (Key));
---              Put ("\");
---           end loop;
---           declare
---              Block : Block_Type renames Load (Pool.Pool.File, Node).all;
---           begin
---              Child := Get_Child (Block, Length + 1);
---              if Child = 0 then
---                 Put (" .");
---              else
---                 Put (' ' & Image (Child));
---              end if;
---           end;
---        end;
---        New_Line;
---        for Index in 1..Length + 1 loop
---           declare
---              Block : Block_Type renames Load (Pool.Pool.File, Node).all;
---           begin
---              Child := Get_Child (Block, Index);
---           end;
---           if Child /= 0 then
---              Dump (Pool, Child, "  " & Prefix & Image (Index) & ".");
---           end if;
---        end loop;
---     end Dump;
+   --  procedure Dump
+   --            (  Pool   : B_Tree'Class;
+   --               Node   : Byte_Index;
+   --               Prefix : String := ""
+   --            )  is
+   --     use Ada.Text_IO;
+   --     use Strings_Edit.Integers;
+   --     use Persistent.Blocking_Files.Text_IO;
+   --     Length : Natural;
+   --     Child  : Byte_Index;
+   --  begin
+   --     Put (Prefix);
+   --     Put ("at ");
+   --     Put (Image (Node));
+   --     declare
+   --        Block : Block_Type renames Load (Pool.Pool.File, Node).all;
+   --     begin
+   --        Length := Get_Length (Block);
+   --        if Get_Parent_Address (Block) /= 0 then
+   --           Put (" [");
+   --           Put (Image (Get_Parent_Address (Block)));
+   --           Put ("|");
+   --           Put (Image (Get_Parent_Index (Block)));
+   --           Put ("]");
+   --        end if;
+   --     end;
+   --     Put (":");
+   --     declare
+   --        Key : Byte_Index;
+   --     begin
+   --        for Index in 1..Length loop
+   --           declare
+   --              Block : Block_Type renames
+   --                      Load (Pool.Pool.File, Node).all;
+   --           begin
+   --              Child := Get_Child (Block, Index);
+   --              if Child = 0 then
+   --                 Put (" .");
+   --              else
+   --                 Put (' ' & Image (Child));
+   --              end if;
+   --              Put (" /");
+   --              Key := Get_Key (Block, Index);
+   --           end;
+   --           Put (Byte_Index'Image (Key));
+   --           Put ("\");
+   --        end loop;
+   --        declare
+   --           Block : Block_Type renames Load (Pool.Pool.File, Node).all;
+   --        begin
+   --           Child := Get_Child (Block, Length + 1);
+   --           if Child = 0 then
+   --              Put (" .");
+   --           else
+   --              Put (' ' & Image (Child));
+   --           end if;
+   --        end;
+   --     end;
+   --     New_Line;
+   --     for Index in 1..Length + 1 loop
+   --        declare
+   --           Block : Block_Type renames Load (Pool.Pool.File, Node).all;
+   --        begin
+   --           Child := Get_Child (Block, Index);
+   --        end;
+   --        if Child /= 0 then
+   --           Dump (Pool, Child, "  " & Prefix & Image (Index) & ".");
+   --        end if;
+   --     end loop;
+   --  end Dump;
+
+   procedure Set_Parent
+             (  File      : access Persistent_Array'Class;
+                Child     : Byte_Index;
+                Parent    : Byte_Index;
+                Index     : Positive
+             )  is
+   begin
+      if Child /= 0 then
+         declare
+            Block : Block_Type renames Update (File, Child).all;
+         begin
+            Set_Parent_Address (Block, Parent);
+            Set_Parent_Index   (Block, Index);
+         end;
+      end if;
+   end Set_Parent;
 
    procedure Copy
              (  File       : access Persistent_Array'Class;
@@ -267,13 +299,14 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
             .. To_Value (From_Last) + 7
             );
          for Index in Children'Range loop
-            Children (Index) := Get_Child (Block, Index);
+            Children (Index) :=
+               Get_Child (Block, From_First + Index - To_First);
          end loop;
       end;
       declare
          Block : Block_Type renames Update (File, To_Node).all;
       begin
-         Block (Keys'Range) := Keys;
+         Block (Keys'Range)   := Keys;
          Block (Values'Range) := Values;
          for Index in Children'Range loop
             Set_Child (Block, Index, Children (Index));
@@ -281,10 +314,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
       end;
       for Index in Children'Range loop
          if Children (Index) /= 0 then
-            Set_Parent_Index
-            (  Update (File, Children (Index)).all,
-               Index
-            );
+            Set_Parent (File, Children (Index), To_Node, Index);
          end if;
       end loop;
    end Copy;
@@ -346,31 +376,14 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
          end loop;
       end;
       for Index in Children'Range loop
-         if Children (Index) /= 0 then
-            Set_Parent_Index
+         if Children (Index) /= 0 then -- The same parent only index
+            Set_Parent_Index           -- change
             (  Update (File, Children (Index)).all,
                Index
             );
          end if;
       end loop;
    end Move;
-
-   procedure Set_Parent
-             (  File      : access Persistent_Array'Class;
-                Child     : Byte_Index;
-                Parent    : Byte_Index;
-                Index     : Positive
-             )  is
-   begin
-      if Child /= 0 then
-         declare
-            Block : Block_Type renames Update (File, Child).all;
-         begin
-            Set_Parent_Address (Block, Parent);
-            Set_Parent_Index (Block, Index);
-         end;
-      end if;
-   end Set_Parent;
 
    function Is_Empty (Container : B_Tree) return Boolean is
       Lock : Holder (Container.Pool);
@@ -411,14 +424,14 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
             (  Container : B_Tree;
                Left      : Byte_Index;
                Right     : Byte_Index
-            )  return Outcome is
+            )  return Precedence is
    begin
       if Left = Right then
-         return Same;
+         return Equal;
       elsif Left < Right then
-         return Before;
+         return Less;
       else
-         return After;
+         return Greater;
       end if;
    end Compare;
 
@@ -475,6 +488,9 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
 --              (  GNAT.Most_Recent_Exception.Occurrence
 --           )  );
 --        end if;
+      if Is_Writable (Container.Pool.File.all) then
+         Erase (Container);
+      end if;
       Finalize (Limited_Controlled (Container));
    end Finalize;
 
@@ -510,14 +526,14 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
                   );
             begin
                case Compare (Derived, Key, Current) is
-                  when Same =>
+                  when Equal =>
                      return This;
-                  when Before =>
+                  when Less =>
                      if This - From <= 1 then
                         return -This;
                      end if;
                      To := This;
-                  when After =>
+                  when Greater =>
                      if To - This <= 1 then
                         return - This - 1;
                      end if;
@@ -544,6 +560,118 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
       end if;
    end Find;
 
+   type Children_Location is (Left, Right);
+
+   procedure Generic_Traverse
+             (  Container : B_Tree;
+                From      : Item_Ptr;
+                To        : Byte_Index
+             )  is
+      Derived : B_Tree'Class renames B_Tree'Class (Container);
+      Stop    : Boolean  := False;
+      This    : Item_Ptr := From;
+      Next    : Item_Ptr;
+
+      function Overshot (Children_At : Children_Location)
+         return Boolean is
+         Key  : constant Byte_Index := Get_Key (Next);
+         Skip : Item_Ptr;
+      begin
+         if Compare (Derived, To, Key) = Less then
+            return True;
+         end if;
+         case Children_At is
+            when Left =>
+               Skip := Get_Left_Child (Next);
+            when Right =>
+               Skip := Get_Right_Child (This);
+         end case;
+         if Skip.Node /= 0 then
+            case Visit_Range (Container, Skip) is
+               when Quit =>
+                  Stop := True;
+                  return True;
+               when Step_Over =>
+                  null;
+               when Step_In =>
+                  loop
+                     This := (Skip.Tree, Skip.Node, 1); -- The first
+                     Skip := Get_Left_Child (This);     -- item in the
+                     if Skip.Node = 0 then              -- bucket
+                        Stop := not Visit_Item          -- Leaf visit it
+                                    (  Container,       -- and return
+                                       Get_Key (This),
+                                       This
+                                    );
+                        return Stop;
+                     end if;
+                     case Visit_Range (Container, Skip) is
+                        when Quit =>
+                           Stop := True;
+                           return True;
+                        when Step_Over =>
+                           This := Skip;
+                           return False;
+                        when Step_In =>
+                           null;
+                     end case;
+                  end loop;
+            end case;
+         end if;
+         Stop := not Visit_Item (Container, Key, Next);
+         This := Next;
+         return Stop;
+      end Overshot;
+   begin
+      if This = No_Item then
+         return;
+      end if;
+      declare
+         Key : constant Byte_Index := Get_Key (This);
+      begin
+         if Compare (Derived, To, Key) = Less then
+            return;
+         elsif not Visit_Item (Container, Key, This) then
+            return;
+         end if;
+      end;
+      loop
+         Next := Get_Item (This, This.Index + 1);
+         if Next.Node = 0 then
+            declare -- Searching fpr a right parent item
+               Current : Item_Ptr := This;
+            begin
+               loop
+                  Next := Get_Right_Parent (Current);
+                  exit when Next.Node /= 0;
+                  Next := Get_Left_Parent (Current);
+                  exit when Next.Node = 0;
+                  Current := Next;
+               end loop;
+            end;
+            if Next.Node = 0 or else Overshot (Right) then
+               if Stop then
+                  return;
+               end if;
+               Next := Get_Right_Child (This);
+               if Next.Node = 0 or else Overshot (Left) or else Stop
+               then
+                  return;
+               end if;
+            end if;
+         else
+            if Overshot (Right) then
+               exit when Stop;
+               Next := Get_Right_Child (This);
+               if Next.Node = 0 or else Overshot (Left) or else Stop
+               then
+                  return;
+               end if;
+            end if;
+         end if;
+      end loop;
+   end Generic_Traverse;
+
    function Get
             (  Container : B_Tree;
                Key       : Byte_Index
@@ -554,10 +682,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
    begin
       Search (Container, Container.Root_Bucket, Key, Node, Index);
       if Node = 0 then
-         Raise_Exception
-         (  Constraint_Error'Identity,
-            "No item"
-         );
+         Raise_Exception (Constraint_Error'Identity, No_Item_Error);
       end if;
       return Get_Value (Load (Container.Pool.File, Node).all, Index);
    end Get;
@@ -612,42 +737,52 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
       return Get_First (Container, Container.Root_Bucket);
    end Get_First;
 
+   function Get_First (Item : Item_Ptr) return Item_Ptr is
+      Left : Item_Ptr;
+   begin
+      if Item.Node = 0 then
+         return No_Item;
+      else
+         Left := Get_Left_Child (Item);
+         if Left.Node = 0 then
+            return Item;
+         else
+            return Get_First (Left.Tree.all, Left.Node);
+         end if;
+      end if;
+   end Get_First;
+
    function Get_Index (Item : Item_Ptr) return Positive is
    begin
       if Item.Node = 0 then
-         Raise_Exception
-         (  Constraint_Error'Identity,
-            "No item"
-         );
+         Raise_Exception (Constraint_Error'Identity, No_Item_Error);
       end if;
       return Item.Index;
    end Get_Index;
 
-   function Get_Index
-            (  Container : B_Tree;
-               Key       : Byte_Index
-            )  return Byte_Index is
-      Lock  : Holder (Container.Pool);
-      Node  : Byte_Index;
-      Index : Integer;
+   function Get_Item (Item : Item_Ptr; Index : Positive)
+      return Item_Ptr is
    begin
-      Search (Container, Container.Root_Bucket, Key, Node, Index);
-      if Node = 0 then
-         Raise_Exception
-         (  Constraint_Error'Identity,
-            "No item"
-         );
+      if Item.Node = 0 then
+         Raise_Exception (Constraint_Error'Identity, No_Item_Error);
       end if;
-      return Get_Value (Load (Container.Pool.File, Node).all, Index);
-   end Get_Index;
+      declare
+         Pool  : Persistent_Pool'Class renames Item.Tree.Pool.all;
+         Lock  : Holder (Item.Tree.Pool);
+         Block : Block_Type renames Load (Pool.File, Item.Node).all;
+      begin
+         if Index > Get_Length (Block) then
+            return No_Item;
+         else
+            return (Item.Tree, Item.Node, Index);
+         end if;
+      end;
+   end Get_Item;
 
    function Get_Key (Item : Item_Ptr) return Byte_Index is
    begin
       if Item.Node = 0 then
-         Raise_Exception
-         (  Constraint_Error'Identity,
-            "No item"
-         );
+         Raise_Exception (Constraint_Error'Identity, No_Item_Error);
       end if;
       declare
          Pool  : Persistent_Pool'Class renames Item.Tree.Pool.all;
@@ -655,37 +790,11 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
          Block : Block_Type renames Load (Pool.File, Item.Node).all;
       begin
          if Item.Index > Get_Length (Block) then
-            Raise_Exception
-            (  Constraint_Error'Identity,
-               "Key with illegal item index"
-            );
+            Raise_Exception (Constraint_Error'Identity, Bad_Key_Index);
          end if;
          return Get_Key (Block, Item.Index);
       end;
    end Get_Key;
-
-   function Get_Key_Address (Item : Item_Ptr) return Byte_Index is
-   begin
-      if Item.Node = 0 then
-         Raise_Exception
-         (  Constraint_Error'Identity,
-            "No item"
-         );
-      end if;
-      declare
-         Pool  : Persistent_Pool'Class renames Item.Tree.Pool.all;
-         Lock  : Holder (Item.Tree.Pool);
-         Block : Block_Type renames Load (Pool.File, Item.Node).all;
-      begin
-         if Item.Index > Get_Length (Block) then
-            Raise_Exception
-            (  Constraint_Error'Identity,
-               "Key with illegal item index"
-            );
-         end if;
-         return Get_Key (Block, Item.Index);
-      end;
-   end Get_Key_Address;
 
    function Get_Last
             (  Container : B_Tree;
@@ -697,7 +806,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
       Length : Integer;
    begin
       if This = 0 then
-         return (null, 0, 1);
+         return No_Item;
       end if;
       Length := Get_Length (Load (Pool.File, This).all);
       if Length < 0 then
@@ -728,6 +837,79 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
       return Get_Last (Container, Container.Root_Bucket);
    end Get_Last;
 
+   function Get_Last (Item : Item_Ptr) return Item_Ptr is
+      Right : Item_Ptr;
+   begin
+      if Item.Node = 0 then
+         return No_Item;
+      else
+         Right := Get_Right_Child (Item);
+         if Right.Node = 0 then
+            return Item;
+         else
+            return Get_Last (Right.Tree.all, Right.Node);
+         end if;
+      end if;
+   end Get_Last;
+
+   function Get_Left_Child (Item : Item_Ptr) return Item_Ptr is
+   begin
+      if Item.Node = 0 then
+         return No_Item;
+      end if;
+      declare
+         Pool   : Persistent_Pool'Class renames Item.Tree.Pool.all;
+         Lock   : Holder (Item.Tree.Pool);
+         Block  : Block_Type_Ref := Load (Pool.File, Item.Node);
+         Length : Integer := Get_Length (Block.all);
+         Result : Item_Ptr;
+      begin
+         if Item.Index > Length then
+            Raise_Exception (Constraint_Error'Identity, Bad_Left_Index);
+         end if;
+         Result.Tree := Item.Tree;
+         Result.Node := Get_Child (Block.all, Item.Index);
+         if Result.Node = 0 then
+            return No_Item;
+         end if;
+         Block  := Load (Pool.File, Result.Node);
+         Length := Get_Length (Block.all);
+         if Length = 0 then
+            return No_Item;
+         else
+            Result.Index := Length;
+            return Result;
+         end if;
+      end;
+   end Get_Left_Child;
+
+   function Get_Left_Parent (Item : Item_Ptr) return Item_Ptr is
+   begin
+      if Item.Node = 0 then
+         Raise_Exception (Constraint_Error'Identity, No_Item_Error);
+      end if;
+      declare
+         Pool  : Persistent_Pool'Class renames Item.Tree.Pool.all;
+         Lock  : Holder (Item.Tree.Pool);
+         Block : Block_Type renames Load (Pool.File, Item.Node).all;
+         Node  : constant Byte_Index := Get_Parent_Address (Block);
+      begin
+         if Node = 0 then
+            return No_Item;
+         else
+            declare
+               Index : constant Natural := Get_Parent_Index (Block);
+            begin
+               if Index = 1 then
+                  return No_Item;
+               else
+                  return (Item.Tree, Node, Index - 1);
+               end if;
+            end;
+         end if;
+      end;
+   end Get_Left_Parent;
+
    function Get_Next
             (  Container : B_Tree;
                Node      : Byte_Index;
@@ -743,10 +925,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
          Length : constant Integer := Get_Length (Block.all);
       begin
          if Index > Length then
-            Raise_Exception
-            (  Constraint_Error'Identity,
-               "Next with illegal item index"
-            );
+            Raise_Exception (Constraint_Error'Identity, Bad_Next_Index);
          end if;
          declare
             First : Item_Ptr :=
@@ -800,10 +979,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
          Length : constant Integer := Get_Length (Block.all);
       begin
          if Index > Length then
-            Raise_Exception
-            (  Constraint_Error'Identity,
-               "Previous to illegal item index"
-            );
+            Raise_Exception (Constraint_Error'Identity, Bad_Prev_Index);
          end if;
          declare
             Last : Item_Ptr :=
@@ -846,6 +1022,64 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
       return Get_Previous (Item.Tree.all, Item.Node, Item.Index);
    end Get_Previous;
 
+   function Get_Right_Child (Item : Item_Ptr) return Item_Ptr is
+   begin
+      if Item.Node = 0 then
+         return No_Item;
+      end if;
+      declare
+         Pool   : Persistent_Pool'Class renames Item.Tree.Pool.all;
+         Lock   : Holder (Item.Tree.Pool);
+         Block  : Block_Type_Ref := Load (Pool.File, Item.Node);
+         Length : Integer := Get_Length (Block.all);
+         Result : Item_Ptr;
+      begin
+         if Item.Index > Length then
+            Raise_Exception (Constraint_Error'Identity, Bad_Righ_Index);
+         end if;
+         Result.Tree := Item.Tree;
+         Result.Node := Get_Child (Block.all, Item.Index + 1);
+         if Result.Node = 0 then
+            return No_Item;
+         end if;
+         Block  := Load (Pool.File, Result.Node);
+         Length := Get_Length (Block.all);
+         if Length = 0 then
+            return No_Item;
+         else
+            Result.Index := 1;
+            return Result;
+         end if;
+      end;
+   end Get_Right_Child;
+
+   function Get_Right_Parent (Item : Item_Ptr) return Item_Ptr is
+   begin
+      if Item.Node = 0 then
+         Raise_Exception (Constraint_Error'Identity, No_Item_Error);
+      end if;
+      declare
+         Pool  : Persistent_Pool'Class renames Item.Tree.Pool.all;
+         Lock  : Holder (Item.Tree.Pool);
+         Block : Block_Type renames Load (Pool.File, Item.Node).all;
+         Node  : constant Byte_Index := Get_Parent_Address (Block);
+      begin
+         if Node = 0 then
+            return No_Item;
+         else
+            declare
+               Index : constant Natural := Get_Parent_Index (Block);
+            begin
+               if Index > Get_Length (Load (Pool.File, Node).all) then
+                  return No_Item;
+               else
+                  return (Item.Tree, Node, Index);
+               end if;
+            end;
+         end if;
+      end;
+   end Get_Right_Parent;
+
    function Get_Root (Item : Item_Ptr) return Item_Ptr is
       Container : B_Tree'Class renames Item.Tree.all;
    begin
@@ -869,13 +1103,43 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
       end if;
    end Get_Root;
 
+   function Get_Root (Container : B_Tree) return Item_Ptr is
+      Lock : Holder (Container.Pool);
+   begin
+      if Container.Root_Bucket = 0 then
+         return No_Item;
+      else
+         return (Container.Self, Container.Root_Bucket, 1);
+      end if;
+   end Get_Root;
+
+   function Get_Self (Container : B_Tree) return B_Tree_Ptr is
+   begin
+      return Container.Self;
+   end Get_Self;
+
+   function Get_Self (Item : Item_Ptr) return B_Tree_Ptr is
+   begin
+      return Item.Tree;
+   end Get_Self;
+
+   function Get_Tag (Item : Item_Ptr) return Byte_Index is
+   begin
+      if Item.Node = 0 then
+         Raise_Exception (Constraint_Error'Identity, No_Item_Error);
+      end if;
+      declare
+         Pool : Persistent_Pool'Class renames Item.Tree.Pool.all;
+         Lock : Holder (Item.Tree.Pool);
+      begin
+         return Get_Node_Tag (Load (Pool.File, Item.Node).all);
+      end;
+   end Get_Tag;
+
    function Get_Value (Item : Item_Ptr) return Byte_Index is
    begin
       if Item.Node = 0 then
-         Raise_Exception
-         (  Constraint_Error'Identity,
-            "No item"
-         );
+         Raise_Exception (Constraint_Error'Identity, No_Item_Error);
       end if;
       declare
          Lock  : Holder (Item.Tree.Pool);
@@ -883,10 +1147,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
                  Load (Item.Tree.Pool.File, Item.Node).all;
       begin
          if Item.Index > Get_Length (Block) then
-            Raise_Exception
-            (  Constraint_Error'Identity,
-               "Value with illegal item index"
-            );
+            Raise_Exception (Constraint_Error'Identity, Bad_Val_Index);
          end if;
          return Get_Value (Block, Item.Index);
       end;
@@ -949,10 +1210,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
                    );
          begin
             if Index > 0 then
-               Raise_Exception
-               (  Data_Error'Identity,
-                  "Re-inserting a key"
-               );
+               Raise_Exception (Data_Error'Identity, Reinsert_Error);
             end if;
             Insert
             (  (Container.Self, Parent, -Index),
@@ -977,21 +1235,18 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
       Index     : Integer := Parent.Index;
    begin
       if Parent.Node = 0 then -- Creating new root node
-         Raise_Exception
-         (  Data_Error'Identity,
-            "Inserting at null node"
-         );
+         Raise_Exception (Data_Error'Identity, No_Node_Insert);
       end if;
       declare
          Block : Block_Type renames
                  Load (Container.Pool.File, Parent.Node).all;
       begin
-         Length   := Get_Length (Block);
+         Length := Get_Length (Block);
          if Length < Width then -- Have place in the bucket
             Move
             (  Container.Pool.File,
                Parent.Node,
-               Index + 1,
+               Index  + 1,
                Length + 1,
                Index
             );
@@ -1025,39 +1280,39 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
                      Get_Length (Load (Container.Pool.File, Left).all);
                   if Space < Width then -- Underfilled left
                      Copy
-                     (  Container.Pool.File, -- Append pair from parent
-                        Left,                -- to the left node
+                     (  Container.Pool.File, -- Append pair from the
+                        Left,                -- parent to the left node
                         Space + 1,
                         Ancestor,
                         Split,
                         True            -- Increment the left's length
                      );
                      Copy
-                     (  Container.Pool.File, -- Copy first child from
-                        Left,                -- the node as the last
-                        Space + 2,           -- child of the left
-                        Space + 1,
+                     (  Container.Pool.File, -- Copy the first child
+                        Left,                -- from the right node as
+                        Space + 2,           -- the last child of the
+                        Space + 1,           -- left node
                         Parent.Node,
                         1
                      );
                      Copy
-                     (  Container.Pool.File, -- Move first pair up to
-                        Ancestor,            -- the parent at the split
-                        Split,
+                     (  Container.Pool.File, -- Move the first pair from
+                        Ancestor,            -- the right node up to the
+                        Split,               -- parent at the split
                         Parent.Node,
                         1
                      );
                      Move
                      (  Container.Pool.File, -- Move pairs and children
-                        Parent.Node,         -- to the left
-                        1,
+                        Parent.Node,         -- of the right node to the
+                        1,                   -- left
                         Width - 1,
                         2,
                         0
                      );
                      Update
-                     (  Container,   -- Insert the key and value
-                        Parent.Node, -- at the end of the node
+                     (  Container,   -- Insert the key and value at the
+                        Parent.Node, -- end of the right node
                         Width,
                         Key,
                         Value,
@@ -1073,24 +1328,17 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
          declare
             Right : Byte_Index;
             Space : Natural;
+            Block : Block_Type renames
+                    Load (Container.Pool.File, Ancestor).all;
          begin
-            if (  Ancestor /= 0
-               and then
-                  (  Split
-                  <= Get_Length
-                     (  Load (Container.Pool.File, Ancestor).all
-               )  )  )
-            then
-               Right := Get_Child
-                        (  Load (Container.Pool.File, Ancestor).all,
-                           Split + 1
-                        );
+            if Ancestor /= 0 and then Split <= Get_Length (Block) then
+               Right := Get_Child (Block, Split + 1);
                if Right /= 0 then
                   Space :=
                      Get_Length (Load (Container.Pool.File, Right).all);
                   if Space < Width then
                      --
-                     -- Fill right sibling without  splitting the bucket
+                     -- Fill right sibling without splitting the bucket
                      --
                      --                         Index = 1
                      --                    K5               K+ < K1
@@ -1160,10 +1408,13 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
          New_Node : constant Byte_Index :=
                     Unchecked_Allocate (Container.Pool.all, Node_Size);
       begin
-         Set_Length
-         (  Update (Container.Pool.File, New_Node).all,
-            Left_Half
-         );
+         declare
+            Block : Block_Type renames
+                    Update (Container.Pool.File, New_Node).all;
+         begin
+            Set_Length (Block, Left_Half);
+            Set_Node_Tag (Block, 0);
+         end;
          Set_Length
          (  Update (Container.Pool.File, Parent.Node).all,
             Right_Half
@@ -1370,6 +1621,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
    begin
       Set_Length (Block, 1);
       Set_Parent_Address (Block, 0);
+      Set_Node_Tag       (Block, 0);
       Set_Parent_Index   (Block, 1);
       Set_Key   (Block, 1, Key);
       Set_Value (Block, 1, Value);
@@ -1404,10 +1656,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
          Length : Integer := Get_Length (Block);
       begin
          if Index > Length then
-            Raise_Exception
-            (  Constraint_Error'Identity,
-               "Removing an item with illegal index"
-            );
+            Raise_Exception (Constraint_Error'Identity, Remove_Error);
          end if;
          Key   := Get_Key   (Block, Index);
          Value := Get_Value (Block, Index);
@@ -1426,7 +1675,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
                   declare
                      Parent : constant Byte_Index :=
                               Get_Parent_Address (Block);
-                     Index  : constant Positive  :=
+                     Index  : constant Positive :=
                               Get_Parent_Index (Block);
                   begin
                      if Parent = 0 then -- No parent
@@ -1483,8 +1732,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
             declare
                Parent : constant Byte_Index :=
                         Get_Parent_Address (Block);
-               Left   : constant Byte_Index :=
-                        Get_Child (Block, 1);
+               Left   : constant Byte_Index := Get_Child (Block, 1);
             begin
                if Length > 1 then
                   Set_Length (Block, Length - 1);
@@ -1685,10 +1933,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
              )  is
    begin
       if Item.Node = 0 then
-         Raise_Exception
-         (  Constraint_Error'Identity,
-            "Replacing an non-item"
-         );
+         Raise_Exception (Constraint_Error'Identity, Null_Replace);
       else
          declare
             Container : B_Tree'Class renames Item.Tree.all;
@@ -1701,7 +1946,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
             if Item.Index > Get_Length (Block) then
                Raise_Exception
                (  Constraint_Error'Identity,
-                  "Replacing an item with wrong index"
+                  Replace_Error
                );
             end if;
             Replaced := Get_Value (Block, Item.Index);
@@ -1767,6 +2012,14 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
       Replace (Container, Key, Value, Old);
    end Replace;
 
+   procedure Restore
+             (  Container : in out B_Tree;
+                Reference : Byte_Index
+             )  is
+   begin
+      Set_Root_Address (Container, Reference);
+   end Restore;
+
    procedure Search
              (  Container : B_Tree;
                 Root      : Byte_Index;
@@ -1807,8 +2060,34 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
              )  is
       Lock : Holder (Container.Pool);
    begin
+      if Container.Root_Bucket /= 0 then
+         Raise_Exception (Status_Error'Identity, Not_Empty);
+      end if;
       Container.Root_Bucket := Root;
    end Set_Root_Address;
+
+   procedure Set_Tag (Item : Item_Ptr; Tag : Byte_Index) is
+   begin
+      if Item.Node = 0 then
+         Raise_Exception (Constraint_Error'Identity, No_Item_Error);
+      end if;
+      declare
+         Pool : Persistent_Pool'Class renames Item.Tree.Pool.all;
+         Lock : Holder (Item.Tree.Pool);
+      begin
+         Set_Node_Tag (Update (Pool.File, Item.Node).all, Tag);
+      end;
+   end Set_Tag;
+
+   procedure Store
+             (  Container : in out B_Tree;
+                Reference : out Byte_Index
+             )  is
+      Lock : Holder (Container.Pool);
+   begin
+      Reference := Container.Root_Bucket;
+      Container.Root_Bucket := 0;
+   end Store;
 
    function Sup
             (  Container : B_Tree;
@@ -1841,12 +2120,49 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
       end if;
    end Sup;
 
+   procedure Traverse
+             (  Container : B_Tree;
+                Iterator  : in out Abstract_Visitor'Class;
+                From      : Item_Ptr;
+                To        : Byte_Index
+             )  is
+      function Visit_Item
+               (  Container : B_Tree;
+                  Key       : Byte_Index;
+                  Item      : Item_Ptr
+               )  return Boolean is
+      begin
+         return Visit_Item
+                (  Iterator'Unchecked_Access,
+                   Container,
+                   Key,
+                   Item
+                );
+      end Visit_Item;
+
+      function Visit_Range
+               (  Container : B_Tree;
+                  Item      : Item_Ptr
+               )  return Bucket_Traversal is
+      begin
+         return Visit_Range
+                (  Iterator'Unchecked_Access,
+                   Container,
+                   Item
+                );
+      end Visit_Range;
+
+      procedure Walker is new Generic_Traverse;
+   begin
+      Walker (Container, From, To);
+   end Traverse;
+
+
    procedure Unchecked_Add
              (  Container : in out B_Tree;
                 Key       : Byte_Index;
                 Value     : Byte_Index
              )  is
-      Pool : Persistent_Pool'Class renames Container.Pool.all;
    begin
       if Container.Root_Bucket = 0 then
          New_Root (Container, Key, Value, 0, 0);
@@ -1864,12 +2180,9 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
                   Parent => (  Container'Unchecked_Access,
                                 Node,
                                -Index
-               )             );
+               )            );
             else
-               Raise_Exception
-               (  Constraint_Error'Identity,
-                  "The key is already in use"
-               );
+               Raise_Exception (Constraint_Error'Identity, Key_In_Use);
             end if;
          end;
       end if;
@@ -1905,10 +2218,7 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
    begin
       Search (Container, Container.Root_Bucket, Key, Node, Index);
       if Node = 0 then
-         Raise_Exception
-         (  Constraint_Error'Identity,
-            "No item"
-         );
+         Raise_Exception (Constraint_Error'Identity, No_Item_Error);
       end if;
       return Get_Value (Load (Container.Pool.File, Node).all, Index);
    end Unchecked_Get;
@@ -1916,20 +2226,14 @@ package body Persistent.Memory_Pools.Streams.External_B_Tree is
    function Unchecked_Get_Value (Item : Item_Ptr) return Byte_Index is
    begin
       if Item.Node = 0 then
-         Raise_Exception
-         (  Constraint_Error'Identity,
-            "No item"
-         );
+         Raise_Exception (Constraint_Error'Identity, No_Item_Error);
       end if;
       declare
          Block : Block_Type renames
                  Load (Item.Tree.Pool.File, Item.Node).all;
       begin
          if Item.Index > Get_Length (Block) then
-            Raise_Exception
-            (  Constraint_Error'Identity,
-               "Value with illegal item index"
-            );
+            Raise_Exception (Constraint_Error'Identity, Bad_Val_Index);
          end if;
          return Get_Value (Block, Item.Index);
       end;

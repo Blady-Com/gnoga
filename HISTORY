@@ -1,6 +1,8 @@
-2024xxxx - Gnoga V2.2-beta:
-- ...
-
+20240908 - Gnoga V2.2-beta:
+- Added key field to keyboard event
+- Upgrade to Simple Components 4.70pre.
+- UXStrings: update versus Github. Choose UXS3 implementation.
+- Update Makefile, HISTORY
 
 20240225 - Gnoga V2.2-alpha:
 - Add SVG mime type (from Stéphane LOS).

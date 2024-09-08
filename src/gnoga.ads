@@ -45,10 +45,10 @@ package Gnoga is
 
    subtype String is UXString;
 
-   Version        : constant String := "2.2-beta";
+   Version        : constant String := "2.2a";
    Version_High   : constant        := 2;
    Version_Low    : constant        := 2;
-   Version_Status : constant String := "beta";
+   Version_Status : constant String := "a";
 
    HTTP_Server_Name : constant String := "gnoga/" & Version;
 

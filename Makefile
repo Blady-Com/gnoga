@@ -1,3 +1,4 @@
+GNATCHECK=$(shell gnat --version)
 GPRCHECK=$(shell gprbuild --version)
 TARGET=$(shell gcc -dumpmachine)
 CWD=$(CURDIR)
@@ -116,10 +117,12 @@ help :
 	@echo "-- Configurable variables:                                                 --"
 	@echo "--                                                                         --"
 	@echo "--         PREFIX           = $(PREFIX)"
+	@echo "--         GNATCHECK        = $(GNATCHECK)"
 	@echo "--         GPRCHECK         = $(GPRCHECK)"
 	@echo "--         TARGET           = $(TARGET)"
 	@echo "--         BUILDER          = $(BUILDER)"
 	@echo "--         PRJ_TARGET       = $(PRJ_TARGET)"
+	@echo "--         PRJ_ARCH         = $(PRJ_ARCH)"
 	@echo "--         BUILD_OS         = $(BUILD_OS)"
 	@echo "--         BUILD_MODE       = $(BUILD_MODE)"
 	@echo "--                                                                         --"

@@ -18,6 +18,7 @@ http://www.gnoga.com or use git to get the latest development version:
 ```
 git clone git://git.code.sf.net/p/gnoga/code gnoga-code
 cd gnoga-code
+git checkout dev_2.2
 make help # for all options and configuration values
 make all
 ```
@@ -41,7 +42,19 @@ See deps/simple_components/components.htm for details.
 It includes an incredible wealth of Ada components you can incorporate in your software freely and
 is under the GMGPLv2.
 
-Here is an overview of Gnoga's framework:
+## Using Alire
+
+In your own [Alire](https://alire.ada.dev) project, add Gnoga dependency:
+
+`% alr with gnoga`
+
+Then you can import the Ada Gnoga packages in your programs and GPR projects:
+
+`with "lib_gnoga.gpr";`
+
+Note: Alire will take care of dependencies.
+
+## Here is an overview of Gnoga's framework
 
 1. The communication platform between the Ada code and the browser / native
       Gnoga.Server.Connection

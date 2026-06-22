@@ -1,12 +1,14 @@
+with "settings.gpr";
+
 abstract project Plugins is
 
 Source_Dirs := (
-"../components/ace_editor/src",
-"../components/jqueryui/src",
-"../components/mnmenu/src",
-"../components/jstree/src",
-"../components/pixi/src",
-"../components/bootstrap/src",
-"../components/message_boxes/src");
+Settings'Project_Dir & "components/ace_editor/src",
+Settings'Project_Dir & "components/jqueryui/src",
+Settings'Project_Dir & "components/mnmenu/src",
+Settings'Project_Dir & "components/jstree/src",
+Settings'Project_Dir & "components/pixi/src",
+Settings'Project_Dir & "components/bootstrap/src",
+Settings'Project_Dir & "components/message_boxes/src");
 
 end Plugins;

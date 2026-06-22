@@ -1,10 +1,19 @@
-20240908 - Gnoga V2.2-beta:
+20260622 - Gnoga V2.2b (2.2.2):
+
+- Add Alire support: alire.toml, lib_gnoga.gpr and .gitignore.
+- Update plugins.gpr, README.md and HISTORY.
+
+
+20240908 - Gnoga V2.2-beta / V2.2a:
+
 - Added key field to keyboard event
 - Upgrade to Simple Components 4.70pre.
 - UXStrings: update versus Github. Choose UXS3 implementation.
 - Update Makefile, HISTORY
 
+
 20240225 - Gnoga V2.2-alpha:
+
 - Add SVG mime type (from Stéphane LOS).
 - Fix usage of apostrophes in HTML attributes by replacing them with HTML equivalent &apos;.
 - If present command line options gnoga-host, gnoga-port, gnoga-boot and gnoga-verbose will override host, port, boot file and verbosity programmed in source code (see TIPS).
@@ -19,6 +28,12 @@
 
 20231117 - Gnoga V1.8-alpha:
 - ...
+
+
+20220811 - Gnoga V2.1b (2.1.2):
+
+- Add Alire support: alire.toml, lib_gnoga.gpr and .gitignore.
+- Update plugins.gpr, README.md and HISTORY.
 
 
 20220306 - Gnoga V2.1a:
@@ -76,6 +91,12 @@
 - Add new Image and value conversion functions. Integer Image has the same convention (space prefix) as Ada Image attribute.
 - Change String and Unbounded_String handling to UXStrings.
 - Reformat Gnoga source codes.
+
+
+20220810 - Gnoga V1.6b (1.6.2):
+
+- Add Alire support: alire.toml, lib_gnoga.gpr and .gitignore.
+- Update plugins.gpr, settings.gpr, README.md and HISTORY.
 
 
 20210501 - Gnoga V1.6a:

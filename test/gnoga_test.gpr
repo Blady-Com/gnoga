@@ -1,0 +1,26 @@
+with "settings.gpr";
+with "lib_gnoga.gpr";
+
+project Gnoga_Test is
+
+   for Object_Dir use Settings.Obj_Dir;
+   for Exec_Dir use Settings.Exe_Dir;
+   for Main use ("layouts.adb", "boot_strap_demo.adb", "multiuser.adb", "pixi_sprite_test.adb",
+                 "popups.adb", "forms.adb", "canvas_test.adb", "sprite_test.adb", "cli.adb",
+                 "storage.adb", "media.adb", "bootjs.adb", "ttables.adb", "menu.adb",
+                 "jdemo.adb", "svg_demo.adb", "align.adb", "pack.adb", "ding.adb",
+                 "image_data.adb", "test_keyboard.adb",
+                 "message_boxes.adb", "tree.adb", "plot_test.adb", "test_modal_dialog.adb",
+                 "db_sqlite.adb", "db_active.adb", "pragma_sqlite.adb", "files_ops.adb",
+                 "mac_test.adb");
+   for Create_Missing_Dirs use Settings'Create_Missing_Dirs;
+
+   package Compiler is
+      for Default_Switches ("Ada") use Settings.Compiler'Default_Switches ("Ada") & "-gnatyN";
+   end Compiler;
+
+   package Binder renames Settings.Binder;
+   package Linker renames Settings.Linker;
+   package Pretty_Printer renames Settings.Pretty_Printer;
+
+end Gnoga_Test;

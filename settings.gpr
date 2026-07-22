@@ -57,13 +57,6 @@ abstract project Settings is
          when others =>
             null;
      end case;
-      case Build_Target is
-         when "OSX" =>
-            for Default_Switches ("Ada")
-              use Linker'Default_Switches ("Ada") & ("-Wl,-no_pie");
-         when others =>
-            null;
-      end case;
    end Linker;
 
    --------------------

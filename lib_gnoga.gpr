@@ -8,7 +8,15 @@ with "components/plugins.gpr";
 
 library project Lib_Gnoga is
 
-   for Source_Dirs use ("src") & Plugins.Source_Dirs;
+   type Alire_Type is ("True", "False");
+   Alire : Alire_Type := External ("ALIRE", "False");
+
+   case Alire is
+      when "True" =>
+         for Source_Dirs use ("src", "config") & Plugins.Source_Dirs ;
+      when "False" =>
+         for Source_Dirs use ("src") & Plugins.Source_Dirs;
+   end case;
    for Object_Dir use Settings.Obj_Dir;
    for Library_Name use "gnoga";
    for Library_Dir use Settings.Lib_Dir;
@@ -24,6 +32,12 @@ library project Lib_Gnoga is
          when others =>
             for Body ("Gnoga.Application.Open_command") use "gnoga-application.linux";
       end case;
+   case Alire is
+      when "True" =>
+         for Spec ("Gnoga") use "gnoga.alire";
+      when "False" =>
+         for Spec ("Gnoga") use "gnoga.ads";
+   end case;
    end Naming;
 
    package Compiler renames Settings.Compiler;

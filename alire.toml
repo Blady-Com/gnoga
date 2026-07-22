@@ -1,6 +1,6 @@
 name = "gnoga"
 description = "gnoga - The GNU Omnificent GUI for Ada"
-version = "2.2.2"
+version = "2.2.3-alpha"
 tags = ["gui", "web", "server", "http", "https", "ssl"]
 
 authors = ["David Botton"]

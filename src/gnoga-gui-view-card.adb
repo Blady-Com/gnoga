@@ -275,33 +275,26 @@ package body Gnoga.Gui.View.Card is
    ----------------
 
    procedure Tab_Select (Item : in out Tab_Item_Type) is
-      Dummy_Link : Gnoga.Gui.Element.Element_Type;
    begin
       declare
-         C : Gnoga.Gui.Element.Element_Access := new Gnoga.Gui.Element.Element_Type;
-         N : Gnoga.Gui.Element.Element_Access;
+         Dummy_Link : Gnoga.Gui.Element.Element_Type;
       begin
-         Gnoga.Gui.Element.Element_Access (Item.Parent).First_Child (C.all);
-
-         while C.ID /= "undefined" loop
-            declare
-               Dummy_L : Gnoga.Gui.Element.Element_Type;
-            begin
-               Dummy_L.Attach_Using_Parent (Item, ID => C.ID & "_a");
-               Dummy_L.Background_Color (Tab_Access (Item.Parent).Tab_Color);
-            end;
-
-            N := new Gnoga.Gui.Element.Element_Type;
-            C.Next_Sibling (N.all);
-            C.Free;
-            C := N;
-         end loop;
-
-         C.Free;
+         if Tab_Access (Item.Parent).Selected_Tab /= null then
+            Dummy_Link.Attach_Using_Parent
+              (Tab_Access (Item.Parent).Selected_Tab.all,
+               ID => Tab_Access (Item.Parent).Selected_Tab.ID & "_a");
+            Dummy_Link.Background_Color (Tab_Access (Item.Parent).Tab_Color);
+         end if;
       end;
 
-      Dummy_Link.Attach_Using_Parent (Item, ID => Item.ID & "_a");
-      Dummy_Link.Background_Color (Tab_Access (Item.Parent).Select_Color);
+      declare
+         Dummy_Link : Gnoga.Gui.Element.Element_Type;
+      begin
+         Dummy_Link.Attach_Using_Parent (Item, ID => Item.ID & "_a");
+         Dummy_Link.Background_Color (Tab_Access (Item.Parent).Select_Color);
+      end;
+
+      Tab_Access (Item.Parent).Selected_Tab := Item'Unrestricted_Access;
 
       Tab_Access (Item.Parent).Card_View.Show_Card (Item.Card_Name);
    end Tab_Select;
@@ -314,13 +307,8 @@ package body Gnoga.Gui.View.Card is
      (Item : Tab_Item_Type)
       return Boolean
    is
-      use type Gnoga.Types.RGBA_Type;
-
-      Link : Gnoga.Gui.Element.Element_Type;
    begin
-      Link.Attach_Using_Parent (Item, ID => Item.ID & "_a");
-
-      return Link.Background_Color = Tab_Access (Item.Parent).Select_Color;
+      return Tab_Access (Item.Parent).Selected_Tab = Item'Unrestricted_Access;
    end Tab_Selected;
 
 end Gnoga.Gui.View.Card;

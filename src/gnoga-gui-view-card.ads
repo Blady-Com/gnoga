@@ -186,6 +186,7 @@ private
 
    type Tab_Type is new Gnoga.Gui.View.View_Base_Type with record
       Card_View    : Pointer_To_Card_View_Class := null;
+      Selected_Tab : Tab_Item_Access            := null;
       Select_Color : Gnoga.Types.RGBA_Type;
       Tab_Color    : Gnoga.Types.RGBA_Type;
    end record;

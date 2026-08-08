@@ -1007,7 +1007,7 @@ The Gnoga framework's root package is Gnoga. There are five child packages makin
      - Gnoga.Gui.Element - General binding to all UI objects
      - Gnoga.Gui.Element.Common - Common UI elements
      - Gnoga.Gui.Element.Form - Form-related UI elements
-     - Gnoga.Gui.Ekement.Canvas - Binding to a drawing canvas
+     - Gnoga.Gui.Element.Canvas - Binding to a drawing canvas
      - Gnoga.Gui.Element.Multimedia - Multimedia bindings
      - Gnoga.Gui.Element.SVG - SVG canvas binding
      - Gnoga.Gui.Location - Browser window location control

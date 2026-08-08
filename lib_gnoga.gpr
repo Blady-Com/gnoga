@@ -1,4 +1,5 @@
 with "settings.gpr";
+with "tables.gpr";
 with "components.gpr";
 with "components-connections_server.gpr";
 with "components-connections_server-http_server.gpr";
@@ -24,8 +25,8 @@ library project Lib_Gnoga is
    for Create_Missing_Dirs use Settings'Create_Missing_Dirs;
 
    package Naming is
-      case Settings.Build_Target is
-         when "Windows" =>
+      case Tables.Target_OS is
+         when "Windows" | "Windows_NT" =>
             for Body ("Gnoga.Application.Open_command") use "gnoga-application.windows";
          when "OSX" =>
             for Body ("Gnoga.Application.Open_command") use "gnoga-application.osx";

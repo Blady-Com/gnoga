@@ -26,6 +26,7 @@
 gnatinspect.*
 gpsauto.cgpr
 *-loc.xml
+.clang-format
 /inst_folder/
 demo/connect_four/connectfour_messages-connectfour_strings.adb
 demo/connect_four/connectfour_messages-connectfour_strings.ads

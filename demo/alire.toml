@@ -15,5 +15,17 @@ licenses = "GPL-3.0-only WITH GCC-exception-3.1"
 gnoga = "^2.2.3"
 zblib = "^2.0.1"
 
+[[actions]]
+type = "post-fetch"
+command = ["alr" , "install" , "zbmcompile=2.0.1"]
+
+[[actions]]
+type = "pre-build"
+command = ["sh" , "-c", "$HOME/.alire/bin/zbmcompile -i -v -G strings -d connect_four connectfour_messages connectfour"]
+
+[[actions]]
+type = "pre-build"
+command = ["sh" , "-c", "$HOME/.alire/bin/zbmcompile -i -v -G strings -d logo logo_messages logo"]
+
 [[pins]]
 gnoga = { path='..' }

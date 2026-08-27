@@ -1,9 +1,12 @@
 # GNOGA - The GNU Omnificent GUI for Ada
+
+[![Alire](https://img.shields.io/endpoint?url=https://alire.ada.dev/badges/gnoga.json)](https://alire.ada.dev/crates/gnoga.html)
+
 ## http://www.gnoga.com
 
 Please see the FAQ, TIPS and the docs folder for documentation.
 
-To get started:
+## To get started
 
 Install GNAT, a recent Ada 2012 compiler, see [Alire](https://alire.ada.dev).
 

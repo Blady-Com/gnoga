@@ -21,11 +21,11 @@ command = ["alr" , "install" , "zbmcompile=2.0.1"]
 
 [[actions]]
 type = "pre-build"
-command = ["sh" , "-c", "$HOME/.alire/bin/zbmcompile -i -v -G strings -d connect_four connectfour_messages connectfour"]
+command = ["sh" , "-c", "$HOME/.alire/bin/zbmcompile -i -v -G strings -o connect_four -d connect_four connectfour_messages connectfour"]
 
 [[actions]]
 type = "pre-build"
-command = ["sh" , "-c", "$HOME/.alire/bin/zbmcompile -i -v -G strings -d logo logo_messages logo"]
+command = ["sh" , "-c", "$HOME/.alire/bin/zbmcompile -i -v -G strings -o logo -d logo logo_messages logo"]
 
 [[pins]]
 gnoga = { path='..' }
